@@ -11,16 +11,19 @@ module.exports = {
     version: {
       type: 'String',
       unique: true,
+      notNull: true,
       required: true
     },
 
     title: {
       type: 'String',
+      notNull: true,
       required: true
     },
 
     description: {
       type: 'String',
+      notNull: true,
       required: true
     },
 
@@ -35,6 +38,7 @@ module.exports = {
 
     license: {
       type: 'String',
+      notNull: true,
       required: true
     },
 

@@ -11,6 +11,7 @@ module.exports = {
     name: {
       type: 'String',
       unique: true,
+      notNull: true,
       required: true
     },
 

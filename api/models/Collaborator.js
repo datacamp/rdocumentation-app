@@ -11,7 +11,8 @@ module.exports = {
 
     name : {
       type: 'String',
-      required: true
+      required: true,
+      notNull: true
     },
 
     email : {

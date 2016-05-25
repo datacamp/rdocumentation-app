@@ -8,21 +8,23 @@
 module.exports = {
 
   attributes: {
-    package: {
-      dependant: {
-        model: 'packageVersion',
-      },
-      dependency: {
-        model: 'package',
-      },
-      version: {
-        model: 'String'
-      },
-      comparator: {
-        type: 'String',
-        enum: ['le', 'eq', 'ge', 'gt', 'lt']
-      }
+    dependency: {
+      model: 'package',
+    },
+
+    dependant: {
+      model: 'packageVersion',
+    },
+
+    version: {
+      model: 'String'
+    },
+
+    comparator: {
+      type: 'String',
+      enum: ['le', 'eq', 'ge', 'gt', 'lt']
     }
+
   }
 };
 
