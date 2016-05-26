@@ -4,14 +4,14 @@ Sails app serving rdocumentation.org
 
 #Installation
 
-Run 
+Run
 ```
 docker-compose build
 ```
 to build your local docker image
 
 
-Then 
+Then
 ```
 docker-compose run server npm install --no-bin-links
 ```
@@ -22,3 +22,13 @@ to install npm dependencies
 ```
 docker-compose up
 ```
+
+#Creating a new db migration:
+Run
+```
+node node_modules/db-migrate/bin/db-migrate create migration_name
+```
+then populate the files in
+  - `./migrations/{time}{migration_name}.js`
+  - `./migrations/sqls/{time}{migration_name}.sql`
+  - `./migrations/sqls/{time}{migration_name}.sql`

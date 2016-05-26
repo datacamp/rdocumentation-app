@@ -1,0 +1,10 @@
+{
+  "dev": {
+    "driver": "mysql",
+    "host": "db",
+    "user": "root",
+    "password": "password",
+    "database": "rdoc"
+  },
+  "sql-file" : true
+}
