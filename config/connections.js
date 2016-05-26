@@ -23,17 +23,6 @@ module.exports.connections = {
 
   /***************************************************************************
   *                                                                          *
-  * Local disk storage for DEVELOPMENT ONLY                                  *
-  *                                                                          *
-  * Installed by default.                                                    *
-  *                                                                          *
-  ***************************************************************************/
-  localDiskDb: {
-    adapter: 'sails-disk'
-  },
-
-  /***************************************************************************
-  *                                                                          *
   * MySQL is the world's most popular relational database.                   *
   * http://en.wikipedia.org/wiki/MySQL                                       *
   *                                                                          *
@@ -48,13 +37,15 @@ module.exports.connections = {
   //   database: 'YOUR_MYSQL_DB' //optional
   // },
 
-  mysql: {
-    adapter   : 'sails-mysql',
-    host      : 'db',
-    port      : 3306,
-    user      : 'root',
-    password  : 'password',
-    database  : 'rdoc'
+  sequelize_mysql: {
+    database: 'rdoc',
+    user: 'root',
+    password: 'password',
+    options: {
+      dialect: 'mysql',
+      host   : 'db',
+      port   : 3306
+    }
   }
 
   /***************************************************************************

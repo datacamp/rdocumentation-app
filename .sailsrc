@@ -1,5 +1,11 @@
 {
   "generators": {
     "modules": {}
+  },
+
+  "hooks": {
+    "orm": false,
+    "pubsub": false
   }
+
 }
