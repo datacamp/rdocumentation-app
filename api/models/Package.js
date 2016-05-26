@@ -9,22 +9,21 @@ module.exports = {
 
   attributes: {
     name: {
-      type: 'String',
+      type: Sequelize.STRING,
       unique: true,
-      notNull: true,
-      required: true
-    },
-
-    packageVersion: {
-      collection: 'packageVersion',
-      via: 'package'
-    },
-
-    reverseDependencies: {
-      collection: 'packageVersion',
-      via: 'dependency',
-      through: 'dependency'
+      primaryKey: true,
+      allowNull: false
     }
+
+  },
+  associations: function() {
+    Package.hasMany(PackageVersion, {as: 'package', foreignKey: 'package_name'});
+    Package.belongsTo(PackageVersion, { as: 'latest_version', constraints: false});
+    Package.belongsToMany(PackageVersion, { as: 'dependencies', foreignKey: 'dependency_name', through: Dependency, constraints: false});
+  },
+
+  options: {
+    underscored: true
   }
 };
 

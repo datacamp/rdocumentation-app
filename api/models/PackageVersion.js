@@ -8,53 +8,48 @@
 module.exports = {
 
   attributes: {
+
     version: {
-      type: 'String',
-      unique: true,
-      notNull: true,
-      required: true
+      type: Sequelize.STRING,
+      allowNull: false
     },
 
+
     title: {
-      type: 'String',
-      notNull: true,
-      required: true
+      type: Sequelize.STRING,
+      allowNull: false
     },
 
     description: {
-      type: 'String',
-      notNull: true,
-      required: true
+      type: Sequelize.STRING,
+      allowNull: false
     },
 
-    authors: {
-      collection: 'collaborator',
-      via: 'authoredPackages'
-    },
-
-    releaseDate: {
-      type: 'date'
+    release_date: {
+      type: Sequelize.STRING,
     },
 
     license: {
-      type: 'String',
-      notNull: true,
-      required: true
+      type: Sequelize.STRING,
+      allowNull: false
     },
 
-    maintainer: {
-      model: 'collaborator'
-    },
 
-    package: {
-      model: 'package'
-    },
+  },
+  associations: function() {
+    PackageVersion.belongsToMany(Package, { as: 'dependants', through: Dependency, foreignKey: 'dependant_version_id'});
+    PackageVersion.belongsToMany(Collaborator, {as: 'authored_packages', through: 'Collaborations', foreignKey: 'authored_version_id'});
+  },
 
-    dependencies: {
-      collection: 'package',
-      via: 'dependant',
-      through: 'dependency'
-    }
+  options: {
+    indexes: [
+      {
+        type: 'UNIQUE',
+        fields: ['package_name', 'version']
+      }
+    ],
+
+    underscored: true
   }
 };
 
