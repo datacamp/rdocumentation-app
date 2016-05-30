@@ -11,13 +11,16 @@ module.exports = {
   attributes: {
 
     dependency_version: {
-      type: Sequelize.STRING,
-      required: false
+      type: Sequelize.STRING
     },
 
-    comparator: {
-      type: Sequelize.ENUM('le', 'eq', 'ge', 'gt', 'lt'),
-      required: false
+    version_comparator: {
+      type: Sequelize.ENUM('<', '<=', '=', '>=', '>')
+    },
+
+    type: {
+      type: Sequelize.ENUM('depends', 'imports', 'suggests', 'enhances'),
+      allowNull: true
     }
 
   },

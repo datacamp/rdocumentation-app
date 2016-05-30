@@ -17,9 +17,17 @@ module.exports = {
 
   },
   associations: function() {
-    Package.hasMany(PackageVersion, {as: 'package', foreignKey: 'package_name'});
-    Package.belongsTo(PackageVersion, { as: 'latest_version', constraints: false});
-    Package.belongsToMany(PackageVersion, { as: 'dependencies', foreignKey: 'dependency_name', through: Dependency, constraints: false});
+    Package.hasMany(PackageVersion,
+      {
+        as: 'versions',
+        foreignKey: {
+          name: 'package_name',
+          as: 'versions'
+        }
+      }
+    );
+    Package.belongsTo(PackageVersion, { as: 'latest_version', foreignKey: 'latest_version_id', constraints: false });
+    Package.belongsToMany(PackageVersion, { as: 'reverse_dependencies', foreignKey: 'dependency_name', through: Dependency, constraints: false});
   },
 
   options: {

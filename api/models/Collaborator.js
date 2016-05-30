@@ -15,12 +15,13 @@ module.exports = {
     },
 
     email: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      unique: true
     }
 
   },
   associations: function() {
-    Collaborator.belongsToMany(PackageVersion, {as: 'authors', through: 'Collaborations', foreignKey: 'author_id'});
+    Collaborator.belongsToMany(PackageVersion, {as: 'authored_packages', through: 'Collaborations', foreignKey: 'author_id'});
     Collaborator.hasMany(PackageVersion, {as: 'maintained_packages', foreignKey: 'maintainer_id'});
   },
 
