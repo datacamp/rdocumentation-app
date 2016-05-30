@@ -37,17 +37,6 @@ module.exports.connections = {
   //   database: 'YOUR_MYSQL_DB' //optional
   // },
 
-  sequelize_mysql: {
-    database: 'rdoc',
-    user: 'root',
-    password: 'password',
-    options: {
-      dialect: 'mysql',
-      host   : 'db',
-      port   : 3306
-    }
-  }
-
   /***************************************************************************
   *                                                                          *
   * MongoDB is the leading NoSQL database.                                   *

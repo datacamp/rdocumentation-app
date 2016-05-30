@@ -17,8 +17,16 @@ module.exports = {
    * environment (see config/connections.js and config/models.js )           *
    ***************************************************************************/
 
-  // models: {
-  //   connection: 'someMongodbServer'
-  // }
+  sequelize_mysql: {
+    database: 'rdoc',
+    user: 'root',
+    password: 'password',
+    options: {
+      dialect: 'mysql',
+      host   : 'db',
+      port   : 3306
+    }
+  }
+
 
 };
