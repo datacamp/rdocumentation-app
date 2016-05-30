@@ -17,7 +17,7 @@ module.exports.models = {
   * connections (see `config/connections.js`)                                *
   *                                                                          *
   ***************************************************************************/
-   connection: 'sequelize_mysql',
+  connection: 'sequelize_mysql',
 
   /***************************************************************************
   *                                                                          *

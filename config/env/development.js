@@ -16,16 +16,21 @@ module.exports = {
    * Set the default database connection for models in the development       *
    * environment (see config/connections.js and config/models.js )           *
    ***************************************************************************/
-
-  sequelize_mysql: {
-    database: 'rdoc',
-    user: 'root',
-    password: 'password',
-    options: {
-      dialect: 'mysql',
-      host   : 'db',
-      port   : 3306
+   connections: {
+    sequelize_mysql: {
+      database: 'rdoc',
+      user: 'root',
+      password: 'password',
+      options: {
+        dialect: 'mysql',
+        host   : 'db',
+        port   : 3306
+      }
     }
+  },
+
+  models: {
+    migrate: 'drop'
   }
 
 

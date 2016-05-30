@@ -12,11 +12,15 @@
 
 module.exports = {
 
-  sequelize_mysql: {
-    url: process.env.DATABASE_URL
+  connections: {
+    sequelize_mysql: {
+      url: process.env.DATABASE_URL
+    }
   },
 
-  migrate: 'drop'
+  models: {
+    migrate: 'drop'
+  }
 
 
 };
