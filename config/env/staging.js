@@ -10,14 +10,13 @@
  *
  */
 
-console.log(process.env.DATABASE_URL);
 module.exports = {
 
   connections: {
     sequelize_mysql: {
       database: process.env.DATABASE_NAME,
       user: process.env.DATABASE_USERNAME,
-      password: process.env.PASSWORD,
+      password: process.env.DATABASE_PASSWORD,
       options: {
         dialect: 'mysql',
         host   : process.env.DATABASE_HOST,
