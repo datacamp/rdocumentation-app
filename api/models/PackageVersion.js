@@ -73,7 +73,85 @@ module.exports = {
       }
     ],
 
+    classMethods: {
+
+      createWithDescriptionFile: function(opts) {
+        var description = opts.input;
+        var packageVersion = PackageService.mapDescriptionToPackageVersion(description);
+
+        return sequelize.transaction(function (t) {
+          var package = Package.findOrCreate({
+            where: packageVersion.package,
+            transaction: t
+          });
+
+          var maintainer = Collaborator.findOrCreate({
+            where: {email: packageVersion.maintainer.email},
+            transaction: t,
+            defaults: packageVersion.maintainer
+          });
+
+          var authors = Promise.map(packageVersion.authors, function(author) {
+            return Collaborator.findOrCreate({
+              where: {email: author.email},
+              transaction: t,
+              defaults: author
+            }).spread(function(instance, created) {
+              return instance;
+            });
+          });
+
+          var dependencies = Package.bulkCreate(packageVersion.dependencies.map(function(dependency) {
+            return {name: dependency.dependency_name};
+          }), {
+            transaction: t,
+            fields: ['name'],
+            ignoreDuplicates: true
+          });
+
+
+          return Promise.join(package, maintainer, authors, dependencies,
+            function(packageInstance, maintainerInstance, authorInstances) {
+
+              return PackageVersion.findOrInitialize(
+                {
+                  where: {
+                    package_name: packageVersion.package.name,
+                    version: packageVersion.fields. version
+                  },
+                  transaction: t
+              }).spread(function(packageVersionInstance, initialized) {
+                packageVersionInstance.set(packageVersion.fields);
+                packageVersionInstance.setPackage(packageInstance[0], {save: false});
+                packageVersionInstance.setMaintainer(maintainerInstance[0], {save: false});
+                return packageVersionInstance.save({transaction: t});
+              }).then(function(packageVersionInstance) {
+                var dependencies = packageVersion.dependencies.map(function(dependency) {
+                  return _.merge(dependency, {dependant_version_id: packageVersionInstance.id});
+                });
+
+                var dep = Dependency.bulkCreate(dependencies, {
+                  transaction: t
+                });
+                var auth = packageVersionInstance.setAuthors(authorInstances, {transaction: t});
+                return Promise.join(dep, auth,
+                  function(dependencies, authors) {
+                    return packageVersionInstance;
+                  });
+              });
+
+          });
+
+        });
+      }
+
+
+
+    },
+
     underscored: true
   }
+
+
 };
 
