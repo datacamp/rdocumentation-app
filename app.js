@@ -21,9 +21,9 @@
 // Ensure we're in the project directory, so relative paths work as expected
 // no matter where we actually lift from.
 process.chdir(__dirname);
-
-require('sails-hook-newrelic/register');
 // Ensure a "sails" can be located:
+var newrelic = require('newrelic');
+
 (function() {
   var sails;
   try {
