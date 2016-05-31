@@ -95,8 +95,6 @@ module.exports = {
       .concat(dependencyArrayToRecords('Suggests'))
       .concat(dependencyArrayToRecords('Enhances'));
 
-    console.log(dependencies);
-
 
     return {
       package: {
