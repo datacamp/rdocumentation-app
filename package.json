@@ -23,6 +23,7 @@
     "include-all": "~0.1.6",
     "rc": "1.0.1",
     "sails": "~0.12.3",
+    "sails-hook-newrelic": "^0.2.2",
     "sails-hook-sequelize": "^1.0.1",
     "sails-hook-sequelize-blueprints": "^0.3.0"
   },

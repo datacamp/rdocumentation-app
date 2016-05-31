@@ -22,6 +22,7 @@
 // no matter where we actually lift from.
 process.chdir(__dirname);
 
+require('sails-hook-newrelic/register');
 // Ensure a "sails" can be located:
 (function() {
   var sails;
