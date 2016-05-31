@@ -26,7 +26,14 @@ module.exports = {
         }
       }
     );
-    Package.belongsTo(PackageVersion, { as: 'latest_version', foreignKey: 'latest_version_id', constraints: false });
+    Package.belongsTo(PackageVersion, {
+      as: 'latest_version',
+      foreignKey: {
+        name:'latest_version_id',
+        as: 'latest_version'
+      },
+      constraints: false }
+    );
     Package.belongsToMany(PackageVersion, { as: 'reverse_dependencies', foreignKey: 'dependency_name', through: Dependency, constraints: false});
   },
 

@@ -45,5 +45,11 @@ module.exports.routes = {
   * for configuration options and examples.                                  *
   *                                                                          *
   ***************************************************************************/
+
+  //Post package through a description.json file
   'post /api/package/description': 'PackageVersion.importDescription',
+
+
+  //Package
+  'get /api/package/:name/versions/:version': 'PackageVersion.findByNameVersion'
 };

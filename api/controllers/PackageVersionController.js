@@ -14,11 +14,28 @@ module.exports = {
       //console.log(value.dependencies);
       res.json(value);
     }).catch(function(err){
-        // Differentiate between waterline-originated validation errors
-        // and serious underlying issues. Respond with badRequest if a
-        // validation error is encountered, w/ validation info.
         return res.negotiate(err);
     });
+  },
+
+
+  findByNameVersion: function(req, res) {
+    var packageName = req.param('name');
+    var packageVersion = req.param('version');
+
+
+    PackageVersion.findOne({
+      where: {
+        package_name: packageName,
+        version: packageVersion
+      },
+      include: [{ model: Collaborator, as: 'maintainer' }]
+    }).then(function(version) {
+      res.ok(version);
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
+
   }
 
 };
