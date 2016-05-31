@@ -45,5 +45,5 @@ module.exports.routes = {
   * for configuration options and examples.                                  *
   *                                                                          *
   ***************************************************************************/
-  'post /package/description': 'PackageVersion.importDescription',
+  'post /api/package/description': 'PackageVersion.importDescription',
 };
