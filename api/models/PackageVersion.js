@@ -131,6 +131,7 @@ module.exports = {
                 });
 
                 var dep = Dependency.bulkCreate(dependencies, {
+                  ignoreDuplicates: true,
                   transaction: t
                 });
                 var auth = packageVersionInstance.setAuthors(authorInstances, {transaction: t});
