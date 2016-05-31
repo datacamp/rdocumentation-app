@@ -20,7 +20,12 @@ module.exports = {
       options: {
         dialect: 'mysql',
         host   : process.env.DATABASE_HOST,
-        port   : process.env.DATABASE_PORT
+        port   : process.env.DATABASE_PORT,
+        pool: {
+          max: 10,
+          min: 4,
+          idle: 10000
+        }
       }
     }
   },

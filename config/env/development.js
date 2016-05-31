@@ -24,7 +24,12 @@ module.exports = {
       options: {
         dialect: 'mysql',
         host   : 'db',
-        port   : 3306
+        port   : 3306,
+        pool: {
+          max: 10,
+          min: 4,
+          idle: 10000
+        }
       }
     }
   },
