@@ -1,5 +1,5 @@
 db:
-  image: mysql:latest 
+  image: mysql:latest
   ports:
     - "3306:3306"
   environment:
@@ -10,7 +10,7 @@ server:
   #0.10.32/33/34 (node 0.10.32), stable (latest node 0.10.x), latest (latest node 0.11.x)
   #0.10.32/33/34-pm2 (node 0.10.32), stable-pm2 (latest node 0.10.x), latest-pm2 (latest node 0.11.x)
   build: .
-  command: sails lift --silly
+  command: node app.js --verbose
   volumes:
     - .:/server
   ports:
