@@ -31,9 +31,10 @@ module.exports = {
       },
       include: [{ model: Collaborator, as: 'maintainer' }]
     }).then(function(version) {
-      res.ok(version);
+      if(version === null) res.notFound();
+      else res.json(version);
     }).catch(function(err) {
-      return res.negotiate(err);
+      return res.serverError(err);
     });
 
   }
