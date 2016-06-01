@@ -8,7 +8,7 @@
 module.exports = {
 
 
-  importDescription: function(req, res) {
+  postDescription: function(req, res) {
     var result = PackageVersion.createWithDescriptionFile({input: req.body});
     result.then(function(value) {
       //console.log(value.dependencies);
@@ -29,10 +29,13 @@ module.exports = {
         package_name: packageName,
         version: packageVersion
       },
-      include: [{ model: Collaborator, as: 'maintainer' }]
+      include: [
+        { model: Collaborator, as: 'maintainer', attributes: {} },
+        { model: Collaborator, as: 'authors'}
+      ]
     }).then(function(version) {
-      if(version === null) res.notFound();
-      else res.json(version);
+      if(version === null) return res.notFound();
+      else return res.json(version);
     }).catch(function(err) {
       return res.serverError(err);
     });

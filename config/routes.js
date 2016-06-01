@@ -47,7 +47,7 @@ module.exports.routes = {
   ***************************************************************************/
 
   //Post package through a description.json file
-  'post /api/package/description': 'PackageVersion.importDescription',
+  'post /api/package/description': 'PackageVersion.postDescription',
 
 
   //Package
