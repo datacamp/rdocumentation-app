@@ -22,26 +22,6 @@ module.exports = {
     "Date/Publication": "2016-03-10 17:55:15"
   }
 
-
-  need to translate this something like this
-
-  {
-    version: '1.2',
-    title: 'TEST PACKAGE',
-    description: 'HELLO WORLD',
-    license: 'GPL',
-    release_date: new Date('2004-01-01'),
-    package: {
-      name: 'A3'
-    },
-    authors: [
-      { name: 'John Doe', email: 'john@email.com' }
-    ],
-    maintainer : { name: 'A Maintainer', email: 'maintainer@responsible.com' },
-
-    + dependencies
-  }
-
   */
   mapDescriptionToPackageVersion: function(descriptionJSON) {
     var extractPersonInfo = function(infos) {

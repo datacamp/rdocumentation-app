@@ -51,5 +51,8 @@ module.exports.routes = {
 
 
   //Package
-  'get /api/package/:name/versions/:version': 'PackageVersion.findByNameVersion'
+  'get /api/package/:name/versions/:version': 'PackageVersion.findByNameVersion',
+
+  //Topic
+  'post /api/package/:name/versions/:version/topic': 'Topic.postRdFile',
 };

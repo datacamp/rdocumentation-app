@@ -5,6 +5,7 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 var Promise = require('bluebird');
+var _ = require('lodash');
 
 module.exports = {
 
@@ -62,7 +63,11 @@ module.exports = {
           as: 'maintainer'
         }
       });
-    PackageVersion.belongsToMany(Collaborator, {as: 'authors', through: 'Collaborations', foreignKey: 'authored_version_id'});
+    PackageVersion.belongsToMany(Collaborator, {as: 'authors', through: 'Collaborations', foreignKey: 'authored_version_id', timestamps: false});
+
+    PackageVersion.hasMany(Topic, {as: 'topics', foreignKey: 'package_version_id'});
+
+
   },
 
   options: {
