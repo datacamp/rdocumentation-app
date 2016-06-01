@@ -111,54 +111,57 @@ module.exports = {
 
 
 
-          return Topic.create(topic, {transaction: t})
-            .then(function(topicInstance) {
+          return PackageVersion.findOne({
+            where: {package_name: opts.packageName, version: opts.packageVersion }
+          }).then(function(version) {
+            if (version === null) throw 404;
+            return Topic.create(topic, {transaction: t})
+              .then(function(topicInstance) {
 
-              var topicArguments = _.isEmpty(rdJSON.arguments) ? [] : rdJSON.arguments.map(function(argument) {
-                return _.merge({}, argument, {topic_id: topicInstance.id});
-              });
-
-              var aliases = rdJSON.alias && !(rdJSON.alias instanceof Array) ? [rdJSON.alias] : rdJSON.alias;
-              var aliasesRecords = _.isEmpty(aliases) ? [] : aliases.map(function(alias) {
-                return {name: alias, topic_id: topicInstance.id};
-              });
-
-              var keywords =  _.isEmpty(rdJSON.keyword) ? [] :
-                _.chain(rdJSON.keyword)
-                  .map(function(entry) {console.log(entry); return entry.split(','); })
-                  .flatten()
-                  .map(function(keyword) {
-                    return {name: keyword, topic_id: topicInstance.id};
-                  })
-                  .value();
-
-              var sections = _.toPairs(customSections).map(function(pair) {
-                return { name: pair[0], description: pair[1], topic_id: topicInstance.id };
-              });
-              console.log(sections);
-
-
-              return Promise.all([
-                Argument.bulkCreate(topicArguments, {transaction: t}),
-                Alias.bulkCreate(aliasesRecords, {transaction: t}),
-                Tag.bulkCreate(keywords, {transaction: t}),
-                Section.bulkCreate(sections, {transaction: t})
-              ]).then(function() {
-                return Topic.findOne({
-                  where: {id: topicInstance.id},
-                  transaction: t,
-                  include: [
-                    {model: Argument, as: 'arguments'},
-                    {model: Section, as: 'sections'},
-                    {model: Tag, as: 'keywords'},
-                    {model: Alias, as: 'aliases'}
-                  ]
+                var topicArguments = _.isEmpty(rdJSON.arguments) ? [] : rdJSON.arguments.map(function(argument) {
+                  return _.merge({}, argument, {topic_id: topicInstance.id});
                 });
-              });
 
+                var aliases = rdJSON.alias && !(rdJSON.alias instanceof Array) ? [rdJSON.alias] : rdJSON.alias;
+                var aliasesRecords = _.isEmpty(aliases) ? [] : aliases.map(function(alias) {
+                  return {name: alias, topic_id: topicInstance.id};
+                });
+
+                var keywords = rdJSON.keyword && !(rdJSON.keyword instanceof Array) ? [rdJSON.keyword] : rdJSON.keyword;
+                var keywordsRecords =  _.isEmpty(keywords) ? [] :
+                  _.chain(keywords)
+                    .map(function(entry) {console.log(entry); return entry.split(','); })
+                    .flatten()
+                    .map(function(keyword) {
+                      return {name: keyword, topic_id: topicInstance.id};
+                    })
+                    .value();
+
+                var sections = _.toPairs(customSections).map(function(pair) {
+                  return { name: pair[0], description: pair[1], topic_id: topicInstance.id };
+                });
+                console.log(sections);
+
+
+                return Promise.all([
+                  Argument.bulkCreate(topicArguments, {transaction: t}),
+                  Alias.bulkCreate(aliasesRecords, {transaction: t}),
+                  Tag.bulkCreate(keywordsRecords, {transaction: t}),
+                  Section.bulkCreate(sections, {transaction: t})
+                ]).then(function() {
+                  return Topic.findOne({
+                    where: {id: topicInstance.id},
+                    transaction: t,
+                    include: [
+                      {model: Argument, as: 'arguments'},
+                      {model: Section, as: 'sections'},
+                      {model: Tag, as: 'keywords'},
+                      {model: Alias, as: 'aliases'}
+                    ]
+                  });
+                });
             });
-
-
+          });
 
         });
 

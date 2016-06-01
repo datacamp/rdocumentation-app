@@ -8,7 +8,9 @@
 module.exports = {
 
   postRdFile: function(req, res) {
-    var result = Topic.createWithRdFile({input: req.body});
+    var packageName = req.param('name');
+    var packageVersion = req.param('version');
+    var result = Topic.createWithRdFile({input: req.body, packageName: packageName, packageVersion: packageVersion});
     result.then(function(value) {
       //console.log(value.dependencies);
       res.json(value);
