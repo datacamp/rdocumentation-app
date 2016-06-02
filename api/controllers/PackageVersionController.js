@@ -7,7 +7,33 @@
 
 module.exports = {
 
+  /**
+  * @api {post} /versions Create a new PackageVersion
+  * @apiName Create PackageVersion
+  * @apiGroup PackageVersion
+  *
+  * @apiDescription Create a new PackageVersion from a parsed DESCRIPTION file, for more information
+  * about the fields and their semantic, visit https://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file
+  *
+  * @apiParam {String}  PackageName  Name of the package.
+  * @apiParam {String}  Title        Title of the package version.
+  * @apiParam {String}  Version      String representation of the version of the package
+  * @apiParam {Date}    [Date]         ISO8601 Date formatted representing the release date of the version
+  * @apiParam {String}  Maintainer   Name and email of the maintainer, email is mandatory and must be delimited by `<>`, `<email></email>` or `()`
+  * @apiParam {String}  Description  Description of the package version
+  * @apiParam {String}  License      License used for the package version
+  * @apiParam {String}  [URL]        Comma separated list of url pointing to useful resources
+  * @apiParam {String}  [Copyright]  Information about copyright
+  * @apiParam {String}  [Author]     Comma separated list of package author, email are optional but must be delimited by `<>`, `<email></email>` or `()`
+  * @apiParam {String}  [Depends]    Comma separated list of packages dependencies
+  * @apiParam {String}  [Import]     Comma separated list of imported packages
+  * @apiParam {String}  [Suggests]   Comma separated list of suggested packages
+  * @apiParam {String}  [Enhances]   Comma separated list of enhanced packages
 
+  @apiError 400 ValidationError
+  @apiError 409 ConflictError A package version with the same package name and version already exists
+
+  */
   postDescription: function(req, res) {
     var result = PackageVersion.createWithDescriptionFile({input: req.body});
     result.then(function(value) {
