@@ -46,13 +46,17 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  //Post package through a description.json file
-  'post /api/package/description': 'PackageVersion.postDescription',
-
-
   //Package
-  'get /api/package/:name/versions/:version': 'PackageVersion.findByNameVersion',
+  'get /api/packages/:name': 'Package.findByName',
+
+
+  //PackageVersion
+  'get /api/packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
+
+  'post /api/versions': 'PackageVersion.postDescription',
+
 
   //Topic
-  'post /api/package/:name/versions/:version/topic': 'Topic.postRdFile',
+  'get /api/packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
+  'post /api/packages/:name/versions/:version/topic': 'Topic.postRdFile',
 };

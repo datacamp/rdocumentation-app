@@ -66,6 +66,7 @@ module.exports = {
         as: 'package_version',
         foreignKey: {
           allowNull: false,
+          required: true,
           name: 'package_version_id',
           as: 'package_version'
         }
@@ -91,6 +92,26 @@ module.exports = {
     ],
 
     classMethods: {
+      findOnePopulated: function(criteria, opts) {
+        function customizer(objValue, srcValue) {
+          if (_.isArray(objValue)) {
+            return objValue.concat(srcValue);
+          }
+        }
+
+        var options = _.mergeWith({
+          where: criteria,
+          include: [
+            {model: Argument, as: 'arguments', attributes: ['name', 'description']},
+            {model: Section, as: 'sections', attributes: ['name', 'description']},
+            {model: Tag, as: 'keywords', attributes: ['name']},
+            {model: Alias, as: 'aliases', attributes: ['name']}
+          ]
+        }, opts, customizer);
+
+        return Topic.findOne(options);
+      },
+
       createWithRdFile: function(opts) {
         var rdJSON = opts.input;
         return sequelize.transaction(function (t) {
@@ -112,9 +133,14 @@ module.exports = {
 
 
           return PackageVersion.findOne({
-            where: {package_name: opts.packageName, version: opts.packageVersion }
+            where: {package_name: opts.packageName, version: opts.packageVersion },
+            transaction: t
           }).then(function(version) {
-            if (version === null) throw 404;
+            if (version === null) throw {
+              status: 404,
+              message: 'Package ' + opts.packageName + ' Version ' + opts.packageVersion + ' cannot be found'
+            };
+            else topic.package_version_id = version.id;
             return Topic.create(topic, {transaction: t})
               .then(function(topicInstance) {
 
@@ -148,18 +174,7 @@ module.exports = {
                   Alias.bulkCreate(aliasesRecords, {transaction: t}),
                   Tag.bulkCreate(keywordsRecords, {transaction: t}),
                   Section.bulkCreate(sections, {transaction: t})
-                ]).then(function() {
-                  return Topic.findOne({
-                    where: {id: topicInstance.id},
-                    transaction: t,
-                    include: [
-                      {model: Argument, as: 'arguments'},
-                      {model: Section, as: 'sections'},
-                      {model: Tag, as: 'keywords'},
-                      {model: Alias, as: 'aliases'}
-                    ]
-                  });
-                });
+                ]).then(_.partial(Topic.findOnePopulated, {id: topicInstance.id}, {transaction: t}));
             });
           });
 

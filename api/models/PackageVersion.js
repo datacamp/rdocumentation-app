@@ -10,6 +10,10 @@ var _ = require('lodash');
 module.exports = {
 
   attributes: {
+    package_name: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
 
     version: {
       type: Sequelize.STRING,
@@ -77,6 +81,19 @@ module.exports = {
         fields: ['package_name', 'version']
       }
     ],
+
+    getterMethods: {
+      url: function()  {
+        return sails.getUrlFor({ target: 'PackageVersion.findByNameVersion' })
+          .replace(':name', this.getDataValue('package_name'))
+          .replace(':version', this.getDataValue('version'));
+      },
+      package_url: function() {
+        console.log(sails.config.routes);
+        return '/api/package/:name'
+          .replace(':name', this.getDataValue('package_name'));
+      }
+    },
 
     classMethods: {
 

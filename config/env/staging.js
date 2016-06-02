@@ -31,7 +31,7 @@ module.exports = {
   },
 
   models: {
-    migrate: 'drop'
+    migrate: 'alter'
   }
 
 

@@ -38,6 +38,12 @@ module.exports = {
   },
 
   options: {
+    getterMethods: {
+      url: function()  {
+        return '/api/package/:name'
+          .replace(':name', this.getDataValue('name'));
+      }
+    },
     underscored: true
   }
 };
