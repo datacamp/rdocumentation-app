@@ -24,7 +24,6 @@ module.exports = {
 
   */
   mapRdFileToTopic: function(RdJSON) {
-    console.log(RdJSON);
     return RdJSON;
   }
 

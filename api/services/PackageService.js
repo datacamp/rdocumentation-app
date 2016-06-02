@@ -85,7 +85,9 @@ module.exports = {
         title: descriptionJSON.Title,
         release_date: new Date(descriptionJSON.Date),
         description: descriptionJSON.Description,
-        license: descriptionJSON.License
+        license: descriptionJSON.License,
+        url: descriptionJSON.URL,
+        copyright: descriptionJSON.Copyright
       },
       authors: descriptionJSON.Author.split(',').map(extractPersonInfo),
       maintainer:  extractPersonInfo(descriptionJSON.Maintainer),

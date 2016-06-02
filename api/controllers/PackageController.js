@@ -51,5 +51,22 @@ module.exports = {
 
   }
 
+  /**
+  * @api {get} /packages List all packages
+  * @apiName Get Packages
+  * @apiGroup Package
+  * @apiDescription Return an array of package object containing listed attributes
+  *
+  * @apiParam {String} page    the page number to use when limiting records to send back using perPage (useful for pagination)
+  * @apiParam {String} perPage the maximum number of records to send back (useful for pagination)
+  * @apiParam {String} sort    the order of returned records, e.g. `name ASC` or `name DESC`
+  *
+  * @apiSuccess {String}   name                   Package name
+  * @apiSuccess {String}   latest_version_id      Last version (more recent) of this package
+  * @apiSuccess {String}   url                    Url to `self`
+  * @apiUse Timestamps
+  */
+
+
 };
 

@@ -14,6 +14,7 @@ module.exports = {
   *
   * @apiDescription Create a new PackageVersion from a parsed DESCRIPTION file, for more information
   * about the fields and their semantic, visit https://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file
+  * Note: the Location header of the response is set to the url pointing to the newly created resource
   *
   * @apiParam {String}  PackageName  Name of the package.
   * @apiParam {String}  Title        Title of the package version.
@@ -37,12 +38,14 @@ module.exports = {
   postDescription: function(req, res) {
     var result = PackageVersion.createWithDescriptionFile({input: req.body});
     result.then(function(value) {
-      //console.log(value.dependencies);
+      res.location('/api/packages/' + value.package_name + '/versions/' + value.version);
       res.json(value);
     }).catch(function(err){
         return res.negotiate(err);
     });
   },
+
+
 
 
   /**

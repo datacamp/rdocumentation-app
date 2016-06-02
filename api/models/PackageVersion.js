@@ -26,7 +26,7 @@ module.exports = {
     },
 
     description: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       allowNull: false
     },
 
@@ -37,7 +37,17 @@ module.exports = {
     license: {
       type: Sequelize.STRING,
       allowNull: false
+    },
+
+    url: {
+      type: Sequelize.TEXT,
+    },
+
+    copyright: {
+      type: Sequelize.STRING
     }
+
+
   },
   associations: function() {
     PackageVersion.belongsTo(Package,
@@ -89,7 +99,6 @@ module.exports = {
           .replace(':version', this.getDataValue('version'));
       },
       package_url: function() {
-        console.log(sails.config.routes);
         return '/api/package/:name'
           .replace(':name', this.getDataValue('package_name'));
       }

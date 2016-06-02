@@ -156,7 +156,7 @@ module.exports = {
                 var keywords = rdJSON.keyword && !(rdJSON.keyword instanceof Array) ? [rdJSON.keyword] : rdJSON.keyword;
                 var keywordsRecords =  _.isEmpty(keywords) ? [] :
                   _.chain(keywords)
-                    .map(function(entry) {console.log(entry); return entry.split(','); })
+                    .map(function(entry) { return entry.split(','); })
                     .flatten()
                     .map(function(keyword) {
                       return {name: keyword, topic_id: topicInstance.id};
@@ -166,7 +166,6 @@ module.exports = {
                 var sections = _.toPairs(customSections).map(function(pair) {
                   return { name: pair[0], description: pair[1], topic_id: topicInstance.id };
                 });
-                console.log(sections);
 
 
                 return Promise.all([
