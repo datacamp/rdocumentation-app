@@ -58,5 +58,5 @@ module.exports.routes = {
 
   //Topic
   'get /api/packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
-  'post /api/packages/:name/versions/:version/topic': 'Topic.postRdFile',
+  'post /api/packages/:name/versions/:version/topics': 'Topic.postRdFile',
 };

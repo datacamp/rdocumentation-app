@@ -68,5 +68,22 @@ module.exports = {
   */
 
 
+  /**
+  * @api {post} /packages Create a new package
+  * @apiName Create Package
+  * @apiGroup Package
+  * @apiDescription Return the newly created resource
+  * Note: The Location header contains a url to the newly created resource
+  *
+  * @apiParam {String} name                The name of the package to be created
+  * @apiParam {String} [latest_version_id] The id of the latest package version
+  *
+  * @apiSuccess {String}   name                   Package name
+  * @apiSuccess {String}   latest_version_id      Last version (more recent) of this package
+  * @apiSuccess {String}   url                    Url to `self`
+  * @apiUse Timestamps
+  */
+
+
 };
 

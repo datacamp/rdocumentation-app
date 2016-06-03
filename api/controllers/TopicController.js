@@ -6,13 +6,48 @@
  */
 
 module.exports = {
+  /**
+  * @api {post} /packages/:name/versions/:version/topics Create a new topic
+  * @apiName Create Topic
+  * @apiGroup Topic
+  *
+  * @apiDescription Create a new Topic from a parsed Rd file, for more information
+  * about the fields and their semantic, visit https://developer.r-project.org/parseRd.pdf
+  * Note: the Location header of the response is set to the url pointing to the newly created resource
+  *
+  * @apiParam {String}   name                 `Name` of the topic.
+  * @apiParam {String}   title                `Title` of the topic
+  * @apiParam {String}   [description]        `Description` section of the topic
+  * @apiParam {String}   [usage]              `Usage` section of the topic
+  * @apiParam {String}   [details]            `Details` section of the topic
+  * @apiParam {String}   [value]              `Value` section of the topic
+  * @apiParam {String}   [references]         `References` section of the topic
+  * @apiParam {String}   [note]               `Note` section of the topic
+  * @apiParam {String}   [seealso]            `See Also` section of the topic
+  * @apiParam {String}   [examples]           `Examples` section of the topic
+  * @apiParam {String}   [author]              `Author` section about this topic
+  * @apiParam {Object[]} [arguments]           List of topic arguments (optional)
+  * @apiParam {String}   arguments.name        Name of the argument
+  * @apiParam {String}   arguments.description Description of the argument
+  * @apiParam {String[]} [keywords]            List of topic keywords, either a array of string or a comma separated list, or a combination of both
+  * @apiParam {String[]} [alias]               List of topic aliases, either a array of string or a comma separated list, or a combination of both
+  * @apiParam {Object}   [sectionName]         One or more 'section attributes', the key will be the name of the section, and the value will be the description (must be a string)
 
+  @apiError 400 ValidationError
+  @apiError 404 The specified package version does not exists
+  @apiError 409 ConflictError A topic version with the same name already exists within that package version.
+
+  */
   postRdFile: function(req, res) {
     var packageName = req.param('name');
     var packageVersion = req.param('version');
     var result = Topic.createWithRdFile({input: req.body, packageName: packageName, packageVersion: packageVersion});
     result.then(function(value) {
       res.json(value);
+    }).catch(Sequelize.ValidationError, function (err) {
+      return res.send(400, err);
+    }).catch(Sequelize.UniqueConstraintError, function (err) {
+      return res.send(409, err);
     }).catch(function(err){
         return res.negotiate(err);
     });
@@ -40,6 +75,7 @@ module.exports = {
   * @apiSuccess {String}   details                       `Details` section of this topic
   * @apiSuccess {String}   value                         `Value` section of this topic
   * @apiSuccess {String}   references                    `References` section of this topic
+  * @apiSuccess {String}   author                        `Author` section about this topic
   * @apiSuccess {String}   note                          `Note` section about this topic
   * @apiSuccess {String}   seealso                       `See also` section about this topic
   * @apiSuccess {String}   examples                      `Examples` section about this topic

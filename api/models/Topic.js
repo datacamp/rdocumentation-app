@@ -6,6 +6,7 @@
  */
 
 var _ = require('lodash');
+var Promise = require('bluebird');
 
 module.exports = {
 
@@ -78,7 +79,7 @@ module.exports = {
 
     Topic.hasMany(Alias, {as: 'aliases', foreignKey: 'topic_id'});
 
-    Topic.hasMany(Tag, {as: 'keywords', foreignKey: 'topic_id'});
+    Topic.belongsToMany(Tag, {as: 'keywords', through: 'TopicTags', foreignKey: 'topic_id', timestamps: false});
   },
 
   options: {
@@ -129,7 +130,9 @@ module.exports = {
           ];
           var topic = _.pick(rdJSON, attributes);
           var customSections = _.omit(rdJSON, attributes.concat(['alias', 'arguments', 'keyword', 'author']));
-
+          topic.author = rdJSON.author ? rdJSON.author.map(function(author){
+            return author.name + ' ' +author.email;
+          }).join(', ') : rdJSON.author;
 
 
           return PackageVersion.findOne({
@@ -141,8 +144,24 @@ module.exports = {
               message: 'Package ' + opts.packageName + ' Version ' + opts.packageVersion + ' cannot be found'
             };
             else topic.package_version_id = version.id;
-            return Topic.create(topic, {transaction: t})
-              .then(function(topicInstance) {
+
+
+            var keywords = rdJSON.keyword && !(rdJSON.keyword instanceof Array) ? [rdJSON.keyword] : rdJSON.keyword;
+            var keywordsRecords =  _.isEmpty(keywords) ? [] :
+              _.chain(keywords)
+                .map(function(entry) { return entry.split(','); })
+                .flatten()
+                .map(function(keyword) {
+                  return {name: keyword};
+                })
+                .value();
+
+            return Promise.join(
+              Topic.create(topic, {
+                include: [ {model: Tag, as: 'keywords'} ]
+              }),
+              Tag.bulkCreate(keywordsRecords, {transaction:t, ignoreDuplicates: true})
+            ).then(function(topicInstance, keywordsInstances) {
 
                 var topicArguments = _.isEmpty(rdJSON.arguments) ? [] : rdJSON.arguments.map(function(argument) {
                   return _.merge({}, argument, {topic_id: topicInstance.id});
@@ -153,26 +172,17 @@ module.exports = {
                   return {name: alias, topic_id: topicInstance.id};
                 });
 
-                var keywords = rdJSON.keyword && !(rdJSON.keyword instanceof Array) ? [rdJSON.keyword] : rdJSON.keyword;
-                var keywordsRecords =  _.isEmpty(keywords) ? [] :
-                  _.chain(keywords)
-                    .map(function(entry) { return entry.split(','); })
-                    .flatten()
-                    .map(function(keyword) {
-                      return {name: keyword, topic_id: topicInstance.id};
-                    })
-                    .value();
 
                 var sections = _.toPairs(customSections).map(function(pair) {
                   return { name: pair[0], description: pair[1], topic_id: topicInstance.id };
                 });
 
-
+                console.log(topicInstance);
                 return Promise.all([
                   Argument.bulkCreate(topicArguments, {transaction: t}),
                   Alias.bulkCreate(aliasesRecords, {transaction: t}),
-                  Tag.bulkCreate(keywordsRecords, {transaction: t}),
-                  Section.bulkCreate(sections, {transaction: t})
+                  Section.bulkCreate(sections, {transaction: t}),
+                  topicInstance.setKeywords(keywordsInstances, {transaction: t })
                 ]).then(_.partial(Topic.findOnePopulated, {id: topicInstance.id}, {transaction: t}));
             });
           });

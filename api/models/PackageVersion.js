@@ -99,7 +99,7 @@ module.exports = {
           .replace(':version', this.getDataValue('version'));
       },
       package_url: function() {
-        return '/api/package/:name'
+        return '/api/packages/:name'
           .replace(':name', this.getDataValue('package_name'));
       }
     },

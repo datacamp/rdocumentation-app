@@ -11,9 +11,14 @@ module.exports = {
 
     name: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     }
 
+  },
+
+  associations: function() {
+    Tag.belongsToMany(Topic, { as: 'tags', foreignKey: 'tag_id', through: 'TopicTags', timestamps: false});
   },
 
   options: {
