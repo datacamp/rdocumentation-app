@@ -161,8 +161,13 @@ module.exports = {
                 include: [ {model: Tag, as: 'keywords'} ]
               }),
               Tag.bulkCreate(keywordsRecords, {transaction:t, ignoreDuplicates: true})
-            ).then(function(topicInstance, keywordsInstances) {
-
+              .then(function(instances) {
+                var names = _.map(instances, function (inst) {
+                  return inst.name;
+                });
+                return Tag.findAll({where: {name: {$in: names}}, transaction:t });
+              }),
+              function(topicInstance, keywordsInstances) {
                 var topicArguments = _.isEmpty(rdJSON.arguments) ? [] : rdJSON.arguments.map(function(argument) {
                   return _.merge({}, argument, {topic_id: topicInstance.id});
                 });
@@ -177,12 +182,11 @@ module.exports = {
                   return { name: pair[0], description: pair[1], topic_id: topicInstance.id };
                 });
 
-                console.log(topicInstance);
                 return Promise.all([
                   Argument.bulkCreate(topicArguments, {transaction: t}),
                   Alias.bulkCreate(aliasesRecords, {transaction: t}),
                   Section.bulkCreate(sections, {transaction: t}),
-                  topicInstance.setKeywords(keywordsInstances, {transaction: t })
+                  topicInstance.addKeywords(keywordsInstances, {transaction: t })
                 ]).then(_.partial(Topic.findOnePopulated, {id: topicInstance.id}, {transaction: t}));
             });
           });
