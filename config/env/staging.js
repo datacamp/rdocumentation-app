@@ -27,11 +27,12 @@ module.exports = {
           idle: 10000
         }
       }
-    }
+    },
+
   },
 
   models: {
-    migrate: 'alter'
+    migrate: 'safe'
   }
 
 

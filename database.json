@@ -1,4 +1,6 @@
 {
+  "defaultEnv": {"ENV": "NODE_ENV"},
+
   "dev": {
     "driver": "mysql",
     "host": "db",
@@ -7,5 +9,14 @@
     "database": "rdoc",
     "multipleStatements": true
   },
-  "sql-file" : true
+
+  "staging": {
+    "driver": "mysql",
+    "host": { "ENV": "DATABASE_HOST" },
+    "user": { "ENV": "DATABASE_USERNAME" },
+    "password": { "ENV": "DATABASE_PASSWORD" },
+    "database": { "ENV": "DATABASE_NAME" },
+    "port": { "ENV": "DATABASE_PORT" },
+    "multipleStatements": true
+  }
 }
