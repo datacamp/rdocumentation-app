@@ -4,7 +4,8 @@
     "host": "db",
     "user": "root",
     "password": "password",
-    "database": "rdoc"
+    "database": "rdoc",
+    "multipleStatements": true
   },
   "sql-file" : true
 }
