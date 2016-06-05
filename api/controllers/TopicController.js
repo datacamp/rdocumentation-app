@@ -44,10 +44,11 @@ module.exports = {
     var result = Topic.createWithRdFile({input: req.body, packageName: packageName, packageVersion: packageVersion});
     result.then(function(value) {
       res.json(value);
+    })
+    .catch(Sequelize.UniqueConstraintError, function (err) {
+      return res.send(409, err);
     }).catch(Sequelize.ValidationError, function (err) {
       return res.send(400, err);
-    }).catch(Sequelize.UniqueConstraintError, function (err) {
-      return res.send(409, err);
     }).catch(function(err){
         return res.negotiate(err);
     });

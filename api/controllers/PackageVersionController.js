@@ -40,10 +40,10 @@ module.exports = {
     result.then(function(value) {
       res.location('/api/packages/' + value.package_name + '/versions/' + value.version);
       res.json(value);
-    }).catch(Sequelize.ValidationError, function (err) {
-      return res.send(400, err);
     }).catch(Sequelize.UniqueConstraintError, function (err) {
       return res.send(409, err);
+    }).catch(Sequelize.ValidationError, function (err) {
+      return res.send(400, err);
     }).catch(function(err){
         return res.negotiate(err);
     });
