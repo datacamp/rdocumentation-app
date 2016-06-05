@@ -129,6 +129,20 @@ module.exports = {
             'examples'
           ];
           var topic = _.pick(rdJSON, attributes);
+          if (topic.value instanceof Array) {{
+            var valueArray = topic.value;
+            topic.value = '';
+            valueArray.forEach(function(item) {
+              if ( typeof item === 'string') {
+                topic.value += item;
+              } else if ( typeof item === 'object') {
+                for (var key in item) {
+                  topic.value += '<' + key + '>' + item[key] + '</' + key + '>';
+                }
+              }
+
+            });
+          }}
           var customSections = _.omit(rdJSON, attributes.concat(['alias', 'arguments', 'keyword', 'author']));
           topic.author = rdJSON.author ? rdJSON.author.map(function(author){
             return author.name + ' ' +author.email;
