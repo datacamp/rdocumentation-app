@@ -74,7 +74,7 @@ module.exports = {
       .concat(dependencyArrayToRecords('Imports'))
       .concat(dependencyArrayToRecords('Suggests'))
       .concat(dependencyArrayToRecords('Enhances'));
-
+    var authorArray = descriptionJSON.Author ? descriptionJSON.Author.split(',') : [];
 
     return {
       package: {

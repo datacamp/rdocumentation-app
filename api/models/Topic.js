@@ -160,6 +160,12 @@ module.exports = {
             } else return section;
           });
 
+          topic = _.mapValues(topic, function(section) {
+            if (section instanceof Array) {
+              return reduceArrayToHTMLString(section);
+            } else return section;
+          });
+
           return PackageVersion.findOne({
             where: {package_name: opts.packageName, version: opts.packageVersion },
             transaction: t
