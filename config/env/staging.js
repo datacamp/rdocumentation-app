@@ -22,8 +22,8 @@ module.exports = {
         host   : process.env.DATABASE_HOST,
         port   : process.env.DATABASE_PORT,
         pool: {
-          max: 50,
-          min: 5,
+          max: 10,
+          min: 3,
           idle: 10000
         }
       }
