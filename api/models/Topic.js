@@ -129,33 +129,34 @@ module.exports = {
             'examples'
           ];
 
-          var reduceArrayToString = function(array) {
-            return array.reduce(function(acc, item) {
+          var reduceArrayToHTMLString = function(array) {
+            return '<ul>' + array.reduce(function(acc, item) {
+              acc += '<li>';
               if ( typeof item === 'string') {
-                return acc + item;
+                acc += item;
               } else if ( typeof item === 'object') {
                 for (var key in item) {
                   acc += '<' + key + '>' + item[key] + '</' + key + '>';
                 }
-                return acc;
               }
+              return acc += '</li>';
 
-            }, '');
+            }, '') + '</ul>';
           };
 
           var topic = _.pick(rdJSON, attributes);
           if (topic.value instanceof Array) {
             var valueArray = topic.value;
-            topic.value = reduceArrayToString(reduceArrayToString);
+            topic.value = reduceArrayToHTMLString(valueArray);
           }
           var customSections = _.omit(rdJSON, attributes.concat(['alias', 'arguments', 'keyword', 'author', 'docType', 'Rdversion']));
           topic.author = rdJSON.author ? rdJSON.author.map(function(author){
             return author.name + ' ' +author.email;
           }).join(', ') : rdJSON.author;
 
-          customSections = customSections.map(function(section) {
+          customSections = _.mapValues(customSections, function(section) {
             if (section instanceof Array) {
-              return reduceArrayToString(section);
+              return reduceArrayToHTMLString(section);
             } else return section;
           });
 
