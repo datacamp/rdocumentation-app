@@ -128,26 +128,36 @@ module.exports = {
             'seealso',
             'examples'
           ];
-          var topic = _.pick(rdJSON, attributes);
-          if (topic.value instanceof Array) {{
-            var valueArray = topic.value;
-            topic.value = '';
-            valueArray.forEach(function(item) {
+
+          var reduceArrayToString = function(array) {
+            return array.reduce(function(acc, item) {
               if ( typeof item === 'string') {
-                topic.value += item;
+                return acc + item;
               } else if ( typeof item === 'object') {
                 for (var key in item) {
-                  topic.value += '<' + key + '>' + item[key] + '</' + key + '>';
+                  acc += '<' + key + '>' + item[key] + '</' + key + '>';
                 }
+                return acc;
               }
 
-            });
-          }}
-          var customSections = _.omit(rdJSON, attributes.concat(['alias', 'arguments', 'keyword', 'author']));
+            }, '');
+          };
+
+          var topic = _.pick(rdJSON, attributes);
+          if (topic.value instanceof Array) {
+            var valueArray = topic.value;
+            topic.value = reduceArrayToString(reduceArrayToString);
+          }
+          var customSections = _.omit(rdJSON, attributes.concat(['alias', 'arguments', 'keyword', 'author', 'docType', 'Rdversion']));
           topic.author = rdJSON.author ? rdJSON.author.map(function(author){
             return author.name + ' ' +author.email;
           }).join(', ') : rdJSON.author;
 
+          customSections = customSections.map(function(section) {
+            if (section instanceof Array) {
+              return reduceArrayToString(section);
+            } else return section;
+          });
 
           return PackageVersion.findOne({
             where: {package_name: opts.packageName, version: opts.packageVersion },
