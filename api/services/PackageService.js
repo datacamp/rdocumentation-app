@@ -89,7 +89,7 @@ module.exports = {
         url: descriptionJSON.URL,
         copyright: descriptionJSON.Copyright
       },
-      authors: descriptionJSON.Author.split(',').map(extractPersonInfo),
+      authors: authorArray.map(extractPersonInfo),
       maintainer:  extractPersonInfo(descriptionJSON.Maintainer),
       dependencies: dependencies
     };
