@@ -101,7 +101,7 @@ module.exports = {
             .replace(':topic', this.name);
         } else return sails.getUrlFor({ target: 'Topic.findById' })
           .replace(':id', this.id);
-      },
+      }
     },
 
     classMethods: {

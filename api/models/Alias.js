@@ -18,7 +18,13 @@ module.exports = {
 
   options: {
     underscored: true,
-    timestamps: false
+    timestamps: false,
+
+    indexes: [{
+      name: 'name_index',
+      method: 'BTREE',
+      fields: ['name']
+    }]
   }
 };
 
