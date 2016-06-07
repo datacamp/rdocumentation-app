@@ -140,6 +140,8 @@ module.exports.blueprints = {
 
   populate: false,
 
+  populateLimit: 30,
+
   /****************************************************************************
   *                                                                           *
   * Whether to run Model.watch() in the find and findOne blueprint actions.   *

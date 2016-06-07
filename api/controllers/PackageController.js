@@ -34,13 +34,14 @@ module.exports = {
 
   findByName: function(req, res) {
     var packageName = req.param('name');
+    var populateLimit = req._sails.config.blueprints.populateLimit;
 
     Package.findOne({
       where: {
         name: packageName,
       },
       include: [
-        { model: PackageVersion, as: 'versions' },
+        { model: PackageVersion, as: 'versions', limit: populateLimit },
       ]
     }).then(function(package) {
       if(package === null) return res.notFound();
@@ -49,7 +50,7 @@ module.exports = {
       return res.negotiate(err);
     });
 
-  }
+  },
 
   /**
   * @api {get} /packages List all packages
@@ -57,15 +58,34 @@ module.exports = {
   * @apiGroup Package
   * @apiDescription Return an array of package object containing listed attributes
   *
-  * @apiParam {String} page    the page number to use when limiting records to send back using perPage (useful for pagination)
-  * @apiParam {String} perPage the maximum number of records to send back (useful for pagination)
-  * @apiParam {String} sort    the order of returned records, e.g. `name ASC` or `name DESC`
+  * @apiParam {String} limit    the number to use when limiting records to send back (useful for pagination)
+  * @apiParam {String} skip     the number of records to skip when limiting (useful for pagination)
+  * @apiParam {String} sort     the order of returned records, e.g. `name ASC` or `name DESC`
   *
   * @apiSuccess {String}   name                   Package name
   * @apiSuccess {String}   latest_version_id      Last version (more recent) of this package
   * @apiSuccess {String}   uri                    Url to `self`
   * @apiUse Timestamps
   */
+  find: function(req, res) {
+    var limit = Utils.parseLimit(req),
+      offset = Utils.parseSkip(req),
+      sort = Utils.parseSort(req),
+      criteria = Utils.parseCriteria(req);
+
+    Package.findAll({
+      where: criteria,
+      limit: limit,
+      offset: offset,
+      order: sort,
+      include: []
+    }).then(function(packages) {
+      return res.json(packages);
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
+
+  }
 
 
   /**

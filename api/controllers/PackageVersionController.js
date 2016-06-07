@@ -77,11 +77,14 @@ module.exports = {
   * @apiSuccess {Object[]} authors          List of the authors of this package version
   * @apiSuccess {String}   authors.name     Name of this author of the package version
   * @apiSuccess {String}   authors.email    Email of this author of the package version
+  * @apiSuccess {Object[]} topics           List of topics and their attributes (limited to 30)
+
 
   */
   findByNameVersion: function(req, res) {
     var packageName = req.param('name');
     var packageVersion = req.param('version');
+    var populateLimit = req._sails.config.blueprints.populateLimit;
 
 
     PackageVersion.findOne({
@@ -91,7 +94,8 @@ module.exports = {
       },
       include: [
         { model: Collaborator, as: 'maintainer', attributes: ['name', 'email'] },
-        { model: Collaborator, as: 'authors', attributes: ['name', 'email'] }
+        { model: Collaborator, as: 'authors', attributes: ['name', 'email'] },
+        { model: Topic, as: 'topics', limit: populateLimit }
       ]
     }).then(function(version) {
       if(version === null) return res.notFound();
