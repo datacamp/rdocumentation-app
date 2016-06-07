@@ -69,6 +69,7 @@ module.exports = {
   * @apiUse Timestamps
   * @apiSuccess {Number}   id                            id of this topic
   * @apiSuccess {Number}   package_version_id            id of the PackageVersion
+  * @apiSuccess {Number}   uri                           Uri to `self`
   * @apiSuccess {String}   name                          Name of this topic
   * @apiSuccess {String}   title                         Title of this topic
   * @apiSuccess {String}   description                   `Description` section of this topic

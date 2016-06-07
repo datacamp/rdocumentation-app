@@ -93,12 +93,12 @@ module.exports = {
     ],
 
     getterMethods: {
-      url: function()  {
+      uri: function()  {
         return sails.getUrlFor({ target: 'PackageVersion.findByNameVersion' })
           .replace(':name', this.getDataValue('package_name'))
           .replace(':version', this.getDataValue('version'));
       },
-      package_url: function() {
+      package_uri: function() {
         return '/api/packages/:name'
           .replace(':name', this.getDataValue('package_name'));
       }

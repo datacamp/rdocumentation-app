@@ -39,7 +39,7 @@ module.exports = {
 
   options: {
     getterMethods: {
-      url: function()  {
+      uri: function()  {
         return '/api/packages/:name'
           .replace(':name', this.getDataValue('name'));
       }

@@ -18,7 +18,7 @@ module.exports = {
   * @apiUse Timestamps
   * @apiSuccess {String}   name                   Package name
   * @apiSuccess {String}   latest_version_id      Last version (more recent) of this package
-  * @apiSuccess {String}   url                    Url to `self`
+  * @apiSuccess {String}   uri                    Url to `self`
   * @apiSuccess {Object[]} versions               List of versions of this package
   * @apiSuccess {String}   versions.url           Url to this version
   * @apiSuccess {String}   versions.package_url   Url to the package of this version
@@ -63,7 +63,7 @@ module.exports = {
   *
   * @apiSuccess {String}   name                   Package name
   * @apiSuccess {String}   latest_version_id      Last version (more recent) of this package
-  * @apiSuccess {String}   url                    Url to `self`
+  * @apiSuccess {String}   uri                    Url to `self`
   * @apiUse Timestamps
   */
 
@@ -80,7 +80,7 @@ module.exports = {
   *
   * @apiSuccess {String}   name                   Package name
   * @apiSuccess {String}   latest_version_id      Last version (more recent) of this package
-  * @apiSuccess {String}   url                    Url to `self`
+  * @apiSuccess {String}   uri                    Url to `self`
   * @apiUse Timestamps
   */
 

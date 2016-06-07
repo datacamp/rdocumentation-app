@@ -61,8 +61,8 @@ module.exports = {
   * @apiParam {String} version Version of the package
   *
   * @apiUse Timestamps
-  * @apiSuccess {String}   url              Url to this package version
-  * @apiSuccess {String}   package_url      Url to the package of this version
+  * @apiSuccess {String}   uri              Url to this package version
+  * @apiSuccess {String}   package_uri      Url to the package of this version
   * @apiSuccess {String}   id               Id of this version
   * @apiSuccess {String}   package_name     Name of the package of this version
   * @apiSuccess {String}   version          String describing the version of the package
