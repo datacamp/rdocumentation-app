@@ -60,4 +60,7 @@ module.exports.routes = {
   'get /api/topics/:id': 'Topic.findById',
   'get /api/packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
   'post /api/packages/:name/versions/:version/topics': 'Topic.postRdFile',
+
+  //Link
+  'get /link/:alias': 'Topic.findByAlias'
 };

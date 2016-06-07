@@ -182,6 +182,43 @@ module.exports = {
     }).then(function(topic) {
       if(topic === null) return res.notFound();
       else return res.json(topic);
+  /**
+  * @api {get} /link/:alias?[package=][version=] Redirect to a topic
+  * @apiName Redirect to topic
+  * @apiGroup Topic
+  *
+  * @apiParam {String} alias Alias to search for
+  * @apiParam {String} package Package name from which we refer to this topic
+  * @apiParam {String} version Package version (string) from which we refer to this topic
+  */
+  findByAlias: function(req, res) {
+    var packageName = req.param('package');
+    var packageVersion = req.param('version');
+    var alias = req.param('alias');
+
+    var packageCriteria = {};
+    if (packageName) packageCriteria.package_name = packageName;
+    if (packageVersion) packageCriteria.version = packageVersion;
+
+    Topic.findOne({
+      include: [{
+        model: Alias,
+        as: 'aliases',
+        attributes: ['name'],
+        where: {
+          name: alias
+        }
+      },
+      {
+        model: PackageVersion,
+        as: 'package_version',
+        where: packageCriteria
+      }]
+    }).then(function(topic) {
+      if(topic === null) return res.notFound();
+      else {
+        return res.redirect(topic.uri);
+      }
     }).catch(function(err) {
       return res.negotiate(err);
     });
