@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%=typeof title == 'undefined' ? 'New Sails App' : title%></title>
+    <title><%=typeof title == 'undefined' ? 'RDocumentation' : title%></title>
 
     <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -31,9 +31,12 @@
     <!--STYLES-->
     <link rel="stylesheet" href="/styles/application.css">
     <!--STYLES END-->
+    <script src="https://use.typekit.net/pjc4zfc.js"></script>
+    <script>try{Typekit.load();}catch(e){}</script>
   </head>
 
   <body>
+    <%- partial ('./shared/_navbar.ejs') %>
     <%- body %>
 
 
