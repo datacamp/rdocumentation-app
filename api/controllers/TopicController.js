@@ -181,7 +181,17 @@ module.exports = {
       }]
     }).then(function(topic) {
       if(topic === null) return res.notFound();
-      else return res.json(topic);
+      else {
+        return TopicService.computeLinks('/link/', topic)
+          .then(function(topic) {
+            return res.json(topic);
+          });
+      }
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
+  },
+
   /**
   * @api {get} /link/:alias?[package=][version=] Redirect to a topic
   * @apiName Redirect to topic

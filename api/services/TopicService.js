@@ -1,30 +1,38 @@
-// PackageService.js - in api/services
+// TopicService.js - in api/services
+var _ = require('lodash'),
+  cheerio = require('cheerio'),
+  url = require('url');
+
 module.exports = {
 
-  /**
 
-  {
-    "Package": "ACA",
-    "Type": "Package",
-    "Title": "Abrupt Change-Point or Aberration Detection in Point Series",
-    "Version": "1.0",
-    "Date": "2016-03-08",
-    "Author": "Daniel Amorese",
-    "Maintainer": "Daniel Amorese  <amorese@ipgp.fr>",
-    "Depends": "R (>= 3.2.2)",
-    "Imports": "graphics, grDevices, stats, utils",
-    "Description": "Offers an interactive function for the detection of breakpoints in series.",
-    "License": "GPL",
-    "LazyLoad": "yes",
-    "NeedsCompilation": "no",
-    "Packaged": "2016-03-10 07:32:56 UTC; daniel",
-    "Repository": "CRAN",
-    "Date/Publication": "2016-03-10 17:55:15"
-  }
+  computeLinks: function(basePath, topicInstance) {
+    var toSearch = _.pick(topicInstance, ['description',
+      'usage',
+      'details',
+      'value',
+      'references',
+      'note',
+      'author',
+      'seealso',
+      'examples']
+    );
+    return Promise.resolve(topicInstance.package_version || topicInstance.getPackage_version()).then(function(packageVersion) {
+      var replaced = _.mapValues(toSearch, function(section) {
+        if (!section) return section;
+        var $ = cheerio.load(section, {decodeEntities: false});
+        $('a').each(function(i, elem) {
+          var current = $(elem).attr('href');
+          $(elem).attr('href', url.resolve(basePath, current) +
+            '?package=' + packageVersion.package_name +
+            '\&version=' + packageVersion.version);
+        });
+        console.log($);
+        return $.html();
+      });
+      return _.assign(topicInstance, replaced);
+    });
 
-  */
-  mapRdFileToTopic: function(RdJSON) {
-    return RdJSON;
   }
 
 
