@@ -13,19 +13,25 @@
  *   https://github.com/gruntjs/grunt-contrib-less
  *
  */
+
+var nodeSassGlobbing = require('node-sass-globbing');
+
 module.exports = function(grunt) {
 
-  grunt.config.set('less', {
+  grunt.config.set('sass', {
     dev: {
       files: [{
         expand: true,
         cwd: 'assets/styles/',
-        src: ['importer.less'],
+        src: ['application.scss'],
         dest: '.tmp/public/styles/',
         ext: '.css'
-      }]
+      }],
+      options: {
+        importer: nodeSassGlobbing
+      }
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-sass');
 };
