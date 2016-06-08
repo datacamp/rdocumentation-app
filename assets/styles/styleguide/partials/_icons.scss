@@ -1,0 +1,14 @@
+@mixin arrow {
+  transition: all 150ms ease;
+  transform-origin: 50% 25%;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid $primary;
+  content: "";
+  display: block;
+  height: 0;
+  position: absolute;
+  right: 0;
+  top: 11px;
+  width: 0;
+}

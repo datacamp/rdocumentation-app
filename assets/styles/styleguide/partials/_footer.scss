@@ -1,0 +1,123 @@
+.footer {
+  .container {
+    padding-top: 2rem;
+  }
+	fieldset {
+		width:100%;
+	}
+	textarea {
+		resize: none;
+	}
+
+	h5 a {
+		font-size: $default-font-size;
+		font-weight: normal;
+	}
+
+	margin-top: 2rem;
+
+	hr {
+		margin-top: 0;
+	}
+
+	ul li {
+		line-height: 2.2;
+		&.header {
+			font-weight: 600;
+		}
+		a {
+			text-decoration: none;
+			border-bottom: 1px solid $primary;
+			display: inline-block;
+			line-height: 1;
+		}
+	}
+}
+
+// .contact-information is also used in _about_nav.html.erb
+
+.contact-information {
+	.icon {
+		text-align: center;
+
+		.fa {
+			line-height: 1.5;
+			font-size: $h5-size;
+			color: $text-tertiary;
+		}
+	}
+
+	.info {
+		padding-left: 0;
+	}
+
+	.location {
+		margin-top: 1rem;
+		p {
+			margin: 0;
+			font-weight: bold;
+		}
+		span {
+			color:$text-tertiary;
+			display: inline-block;
+			line-height: 1.1;
+		}
+	}
+}
+
+// Todo: add icons (need PSD)
+
+
+.bottom-navigation {
+	padding: $header-margin 0;
+	margin-top: $default-space;
+	border-top: 1px solid $primary-extra-light;
+
+	ul.inline {
+		float: left;
+		margin-left: 2rem;
+		line-height: 42px;
+	}
+
+	ul li a {
+		color: $text-tertiary;
+		border-bottom: none;
+	}
+	ul li:after {
+		color: $text-tertiary;
+	}
+
+	.navbar--title {
+		@extend .no-link-style;
+
+		float:left;
+
+		.logo {
+			background: image-url("logos/logo_dark.svg") no-repeat center center;
+			background-size: contain;
+		}
+		.logo-title {
+			color: $text-secondary !important;
+		}
+
+		.small-link {
+			color: $primary;
+
+			&:hover, &:focus {
+				color: $primary-dark;
+			}
+		}
+	}
+
+	.social-icons {
+		float: right;
+		color: $text;
+		line-height: 42px;
+
+		a {
+			color: inherit;
+			@extend .no-link-style;
+			margin-left: 1rem;
+		}
+	}
+}

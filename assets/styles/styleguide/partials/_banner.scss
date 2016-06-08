@@ -1,0 +1,61 @@
+.banner {
+  background: $primary-lighter;
+  color: $text;
+  .message {
+    float: left;
+  }
+  .btn {
+    margin: 0 1rem;
+    background: $primary-dark;
+    &:hover {
+      background: $primary-dark;
+      opacity: 0.90;
+    }
+  }
+  .alert {
+    overflow: hidden;
+    margin-bottom: 0;
+		padding: 0.8rem;
+		position: relative;
+		h4 {
+			color: $primary;
+      margin-top: 0;
+		}
+		p {
+			margin: 0.5rem 0;
+		}
+		.close {
+			position: absolute;
+			right: 0;
+    	top: 15px;
+			padding: 0.5rem;
+			cursor: pointer;
+			background: transparent;
+			border: 0;
+			margin-top: -2px;
+			-webkit-appearance: none;
+			float: right;
+			font-size: 1.5rem;
+			font-weight: bold;
+			line-height: 1;
+			color: #000000;
+			text-shadow: 0 1px 0 #ffffff;
+			opacity: 0.2;
+			filter: alpha(opacity=20);
+		}
+  }
+  .icon-time {
+    float: left;
+    padding: 8px 15px;
+    margin-left: 20px;
+    &:before {
+      content: '';
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 10px;
+      background: image-url("home_logged_in/growth/icon_time_white.svg") no-repeat center center;
+    }
+  }
+}
