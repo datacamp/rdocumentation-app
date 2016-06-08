@@ -54,20 +54,6 @@ a:focus {
     text-decoration: none;
 }
 
-.no-link-style {
-    border-bottom: none;
-
-    &:hover {
-        //color: $link-color;
-        //color: inherit;
-    }
-
-    &:focus {
-        border-bottom: none;
-        //color: inherit;
-    }
-}
-
 .subhead {
   text-transform: uppercase;
   color: $primary-light;

@@ -88,8 +88,6 @@
 	}
 
 	.navbar--title {
-		@extend .no-link-style;
-
 		float:left;
 
 		.logo {
@@ -106,18 +104,6 @@
 			&:hover, &:focus {
 				color: $primary-dark;
 			}
-		}
-	}
-
-	.social-icons {
-		float: right;
-		color: $text;
-		line-height: 42px;
-
-		a {
-			color: inherit;
-			@extend .no-link-style;
-			margin-left: 1rem;
 		}
 	}
 }
