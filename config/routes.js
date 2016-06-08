@@ -36,6 +36,8 @@ module.exports.routes = {
     view: 'homepage'
   },
 
+
+
   /***************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *
@@ -57,9 +59,12 @@ module.exports.routes = {
 
 
   //Topic
-  'get /api/topics/:id': 'Topic.findById',
-  'get /api/packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
-  'post /api/packages/:name/versions/:version/topics': 'Topic.postRdFile',
+    //API
+    'get /api/topics/:id': 'Topic.findById',
+    'get /api/packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
+    'post /api/packages/:name/versions/:version/topics': 'Topic.postRdFile',
+    //HTML
+    'get /packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
 
   //Link
   'get /link/:alias': 'Topic.findByAlias'

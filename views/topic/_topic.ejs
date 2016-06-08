@@ -1,0 +1,95 @@
+<div>
+  <section class='documentation functions'>
+
+    <header>
+      <h1><span itemprop="name"><%= @topic.name %></span></h1>
+      <h2 class="add_line" itemprop="description"><%= @topic.title %></h2>
+    </header>
+
+    <% if @topic.description %>
+    <section>
+      <h3>Description</h3>
+      <div itemprop="description"><%= @topic.description.html_safe %></div>
+    </section>
+    <% end %>
+
+    <% if @topic.package.message %>
+      <div class="promo-message" itemprop="description">
+        <p><%= @topic.package.message.html_safe %></p>
+      </div>
+    <% end %>
+
+    <% if @topic.usage %>
+    <section>
+      <h3>Usage</h3>
+      <div data-datacamp-exercise data-lang="r">
+        <code data-type="sample-code">library("<%= @topic.package.name %>")<%= @topic.usage %></code>
+      </div>
+    </section>
+    <% end %>
+
+    <% if @topic.arguments != [] %>
+    <section class="arguments">
+      <h3>Arguments</h3>
+      <dl>
+
+      </dl>
+    </section>
+    <% end %>
+
+    <% if @topic.value %>
+    <section>
+      <h3>Value</h3>
+      <%= @topic.value.html_safe %>
+    </section>
+    <% end %>
+
+    <% if @topic.seealso %>
+    <section>
+      <h3>See also</h3>
+      <%= @topic.seealso.html_safe %>
+    </section>
+    <% end %>
+
+    <% if @topic.details %>
+    <section>
+      <h3>Details</h3>
+      <%= @topic.details.html_safe %>
+    </section>
+    <% end %>
+
+    <% if @topic.sections != [] %>
+
+    <% end %>
+
+    <% if @topic.examples %>
+    <section>
+      <h3>Examples</h3>
+      <div data-datacamp-exercise data-lang="r">
+        <code data-type="sample-code">library("<%= @topic.package.name %>")<%= @topic.examples %></code>
+      </div>
+    </section>
+    <% end %>
+
+    <% if @topic.authors %>
+    <section>
+      <h3>Author(s)</h3>
+      <span itemprop="author"><%= @topic.authors.html_safe %></span>
+    </section>
+    <% end %>
+
+    <% if @topic.references %>
+    <section>
+      <h3>References</h3>
+      <%= @topic.references.html_safe %>
+    </section>
+    <% end %>
+
+    <small>
+      <i> Documentation reproduced from package <span itemprop="name"><%= @topic.package.name %></span>, version <span itemprop="version"><%= @topic.package.version %></span>,
+      License: <%= @topic.package.license %>
+      </i>
+    </small>
+  </section>
+</div>
+
