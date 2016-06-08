@@ -118,7 +118,7 @@ module.exports = {
       }]
     }).then(function(topic) {
       if(topic === null) return res.notFound();
-      else return res.ok(topic, 'topic/topic.ejs');
+      else return res.ok(topic.toJSON(), 'topic/topic.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });
