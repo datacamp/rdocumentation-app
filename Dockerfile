@@ -2,7 +2,7 @@ FROM node:slim
 
 MAINTAINER Ludovic Vannoorenberghe <ludo@datacamp.com>
 
-RUN npm install -g sails grunt bower pm2 npm-check-updates
+RUN npm install -g sails grunt bower npm-check-updates
 RUN mkdir /server
 
 # Define mountable directories.
