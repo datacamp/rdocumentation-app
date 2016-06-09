@@ -135,10 +135,14 @@ mark::selection {
     color: white
 }
 
-dd {
-    margin-bottom: 1.2em;
-    margin-left: 0
-}
-dt {
-    font-weight: 700;
+dl {
+    @include clearfix;
+    dt {
+        font-weight: bold;
+        float: left;
+    }
+    dd {
+        margin-left: 130px;
+        margin-bottom: 1rem;
+    }
 }

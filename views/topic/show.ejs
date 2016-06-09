@@ -1,51 +1,83 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <% var topic = data; %>
-<div>
-  <section class='documentation functions'>
-
+<section class="package">
+  <div class="container">
     <header>
-      <h1><span itemprop="name"><%- topic.name %></span></h1>
-      <h2 class="add_line" itemprop="description"><%= topic.title %></h2>
+      <h1><%- topic.name %></h1>
+
+      <a href="" class="btn btn-primary pull-right">Review Package</a>
     </header>
 
     <section>
-      <h3>Description</h3>
-      <div itemprop="description"><%= topic.description %></div>
+      <h4><%= topic.title %></h4>
+      <p><%- topic.description %></p>
     </section>
 
-
-
-    <section>
-      <h3>Value</h3>
-      <%- topic.value %>
+    <section class="topic--arguments">
+      <h5 class="topic--title">Arguments</h5>
+      <dl>
+        <% for(var i = 0; i < topic.arguments.length; i++) { %>
+          <dt><%- topic.arguments[i].name %></dt>
+          <dd><%- topic.arguments[i].description %></dd>
+        <% } %>
+      </dl>
     </section>
 
-    <section>
-      <h3>See also</h3>
-      <%-topic.seealso %>
-    </section>
+    <!-- Other info -->
+    <% if(topic.usage) { %>
+      <section>
+        <h5 class="topic--title">usage</h5>
+        <pre><%- topic.usage %></pre>
+      </section>
+    <% } %>
 
-    <section>
-      <h3>Details</h3>
-      <%- topic.details %>
-    </section>
+    <% if(topic.details) { %>
+      <section>
+        <h5 class="topic--title">details</h5>
+        <p><%- topic.details %></p>
+      </section>
+    <% } %>
 
+    <% if(topic.value) { %>
+      <section>
+        <h5 class="topic--title">value</h5>
+        <p><%- topic.value %></p>
+      </section>
+    <% } %>
 
-    <section>
-      <h3>Author(s)</h3>
-      <span itemprop="author"><%- topic.author %></span>
-    </section>
+    <% if(topic.references) { %>
+      <section>
+        <h5 class="topic--title">references</h5>
+        <p><%- topic.references %></p>
+      </section>
+    <% } %>
 
-    <section>
-      <h3>References</h3>
-      <%- topic.references %>
-    </section>
+    <% if(topic.note) { %>
+      <section>
+        <h5 class="topic--title">note</h5>
+        <p><%- topic.note %></p>
+      </section>
+    <% } %>
+
+    <% if(topic.seealso) { %>
+      <section>
+        <h5 class="topic--title">seealso</h5>
+        <p><%- topic.seealso %></p>
+      </section>
+    <% } %>
+
+    <% if(topic.examples) { %>
+      <section>
+        <h5 class="topic--title">examples</h5>
+        <pre><%- topic.examples %></pre>
+      </section>
+    <% } %>
 
     <small>
       <i> Documentation reproduced from package <span itemprop="name"><%- topic.package_version.package_name %></span>, version <span itemprop="version"><%- topic.package_version.version %></span>,
       License: <%= topic.package_version.license %>
       </i>
     </small>
-  </section>
-</div>
+  </div>
+</section>
 <%- partial ('../shared/_footer.ejs') %>
