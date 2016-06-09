@@ -32,3 +32,10 @@ then populate the files in
   - `./migrations/{time}{migration_name}.js`
   - `./migrations/sqls/{time}{migration_name}.sql`
   - `./migrations/sqls/{time}{migration_name}.sql`
+
+
+#Running migrations
+
+```
+docker-compose run server node node_modules/db-migrate/bin/db-migrate up
+```
