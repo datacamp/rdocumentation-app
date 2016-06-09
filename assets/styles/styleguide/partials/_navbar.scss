@@ -23,8 +23,10 @@
     }
 }
 
+$navbar-search-width: 300px;
+$navbar-search-results-width: 400px;
 .navbar--search {
-    width: 300px;
+    width: $navbar-search-width;
     position: absolute;
     left: 50%;
     top: 12px;
@@ -32,5 +34,10 @@
 
     input {
         padding: 0.5rem 1rem;
+    }
+
+    .search .results {
+        width: $navbar-search-results-width;
+        left: ($navbar-search-width - $navbar-search-results-width) / 2.0;
     }
 }
