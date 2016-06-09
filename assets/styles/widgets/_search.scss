@@ -2,8 +2,6 @@
     position: relative;
 }
 
-.search input:focus + .results { display: block }
-
 .search .results {
     display: none;
     position: absolute;
