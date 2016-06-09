@@ -98,6 +98,17 @@ module.exports = {
           return sails.getUrlFor({ target: 'Topic.findByName' })
             .replace(':name', this.package_version.package_name)
             .replace(':version', this.package_version.version)
+            .replace(':topic', this.name)
+            .replace('/api/', '/');
+        } else return sails.getUrlFor({ target: 'Topic.findById' })
+          .replace(':id', this.id)
+          .replace('/api/', '/');
+      },
+      api_uri: function()  {
+        if (this.package_version) {
+          return sails.getUrlFor({ target: 'Topic.findByName' })
+            .replace(':name', this.package_version.package_name)
+            .replace(':version', this.package_version.version)
             .replace(':topic', this.name);
         } else return sails.getUrlFor({ target: 'Topic.findById' })
           .replace(':id', this.id);

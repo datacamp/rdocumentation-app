@@ -1,0 +1,43 @@
+<%- partial ('../shared/_navbar.ejs') %>
+<% var package = data; %>
+<section class="package">
+
+  <header>
+    <h1><span itemprop="name"><%- package.name %></span></h1>
+    <h2 class="add_line" itemprop="description"><%= package.title %></h2>
+  </header>
+
+  <section>
+    <h3>Description</h3>
+    <div itemprop="description"><%= package.description %></div>
+  </section>
+
+
+
+  <section>
+    <h3>Value</h3>
+    <%- package.value %>
+  </section>
+
+  <section>
+    <h3>See also</h3>
+    <%-package.seealso %>
+  </section>
+
+  <section>
+    <h3>Details</h3>
+    <%- package.details %>
+  </section>
+
+
+  <section>
+    <h3>Author(s)</h3>
+    <span itemprop="author"><%- package.author %></span>
+  </section>
+
+  <section>
+    <h3>References</h3>
+    <%- package.references %>
+  </section>
+</section>
+<%- partial ('../shared/_footer.ejs') %>

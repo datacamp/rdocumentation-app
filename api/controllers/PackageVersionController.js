@@ -99,7 +99,7 @@ module.exports = {
       ]
     }).then(function(version) {
       if(version === null) return res.notFound();
-      else return res.json(version);
+      else return res.ok(version.toJSON(), 'package_version/show.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });

@@ -96,6 +96,12 @@ module.exports = {
       uri: function()  {
         return sails.getUrlFor({ target: 'PackageVersion.findByNameVersion' })
           .replace(':name', this.getDataValue('package_name'))
+          .replace(':version', this.getDataValue('version'))
+          .replace('/api/', '/');
+      },
+      api_uri: function()  {
+        return sails.getUrlFor({ target: 'PackageVersion.findByNameVersion' })
+          .replace(':name', this.getDataValue('package_name'))
           .replace(':version', this.getDataValue('version'));
       },
       package_uri: function() {

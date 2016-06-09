@@ -44,8 +44,13 @@ module.exports = {
         { model: PackageVersion, as: 'versions', limit: populateLimit },
       ]
     }).then(function(package) {
-      if(package === null) return res.notFound();
-      else return res.ok(package.toJSON(), 'package/package.ejs');
+      if(package === null) {
+        return res.notFound();
+      } else if(req.wantsJSON) {
+        return res.json(package);
+      } else {
+        return res.redirect(package.versions[0].uri)
+      }
     }).catch(function(err) {
       return res.negotiate(err);
     });

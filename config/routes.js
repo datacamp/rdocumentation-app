@@ -37,6 +37,7 @@ module.exports.routes = {
     'get /api/packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
     'post /api/versions': 'PackageVersion.postDescription',
     // HTML
+    'get /packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
   //***** /PackageVersion *****
 
   //***** Topic *****
