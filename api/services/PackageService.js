@@ -90,7 +90,7 @@ module.exports = {
         copyright: descriptionJSON.Copyright
       },
       authors: authorArray.map(extractPersonInfo),
-      maintainer:  extractPersonInfo(descriptionJSON.Maintainer),
+      maintainer: descriptionJSON.Maintainer ? extractPersonInfo(descriptionJSON.Maintainer) : null,
       dependencies: dependencies
     };
 

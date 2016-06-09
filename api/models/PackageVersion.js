@@ -116,11 +116,11 @@ module.exports = {
             transaction: t
           });
 
-          var maintainer = Collaborator.findOrCreate({
+          var maintainer = packageVersion.maintainer !== null ? Collaborator.findOrCreate({
             where: {email: packageVersion.maintainer.email},
             transaction: t,
             defaults: packageVersion.maintainer
-          });
+          }) : null;
 
           var authors = Promise.map(packageVersion.authors, function(author) {
             return Collaborator.findOrCreate({
@@ -154,7 +154,7 @@ module.exports = {
               }).spread(function(packageVersionInstance, initialized) {
                 packageVersionInstance.set(packageVersion.fields);
                 packageVersionInstance.setPackage(packageInstance[0], {save: false});
-                packageVersionInstance.setMaintainer(maintainerInstance[0], {save: false});
+                if (maintainerInstance !== null) packageVersionInstance.setMaintainer(maintainerInstance[0], {save: false});
                 return packageVersionInstance.save({transaction: t});
               }).then(function(packageVersionInstance) {
                 var dependencies = packageVersion.dependencies.map(function(dependency) {
@@ -165,7 +165,7 @@ module.exports = {
                   ignoreDuplicates: true,
                   transaction: t
                 });
-                var auth = packageVersionInstance.setAuthors(authorInstances, {transaction: t});
+                var auth = packageVersionInstance.setCollaborators(authorInstances, {transaction: t});
                 return Promise.join(dep, auth,
                   function(dependencies, authors) {
                     return packageVersionInstance;
