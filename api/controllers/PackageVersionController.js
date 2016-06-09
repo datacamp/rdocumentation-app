@@ -45,7 +45,7 @@ module.exports = {
     }).catch(Sequelize.ValidationError, function (err) {
       return res.send(400, err);
     }).catch(function(err){
-        return res.negotiate(err);
+      return res.negotiate(err);
     });
   },
 

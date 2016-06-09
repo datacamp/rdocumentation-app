@@ -49,6 +49,9 @@ module.exports.routes = {
     'get /packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
   //***** /Topic *****
 
-  //Link
-  'get /link/:alias': 'Topic.findByAlias'
+  // Link
+  'get /link/:alias': 'Topic.findByAlias',
+
+  // Quick Search
+  'post /api/quick_search': 'SearchController.quickSearch'
 };

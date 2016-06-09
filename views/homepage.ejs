@@ -11,15 +11,17 @@
     <div class="home--search">
       <form class="search" action="">
         <input type="text" placeholder="Search for packages, functions, authors, etc" autofocus>
-        <ul class="results">
-          <li class="header">Packages</li>
-          <li><a href="/packages/dplyr">dplyr</a></li>
-
-          <li class="header">Functions</li>
-          <li><a href="#">hist<span>{base}</span></a></li>
-          <li><a href="#">rnorm<span>{base}</span></a></li>
-          <li><a href="#">abs<span>{base}</span></a></li>
-        </ul>
+        <div class="results">
+          <ul class="packages">
+            <li class="header">Packages</li>
+          </ul>
+          <ul class="topics">
+            <li class="header">Topics</li>
+            <li><a href="#">hist<span>{base}</span></a></li>
+            <li><a href="#">rnorm<span>{base}</span></a></li>
+            <li><a href="#">abs<span>{base}</span></a></li>
+          </ul>
+        </div>
       </form>
     </div>
   </div>

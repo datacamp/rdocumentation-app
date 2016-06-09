@@ -10,11 +10,14 @@
     right: 0;
     z-index: $z-max;
     padding: 1rem;
-    margin: 0;
     border-radius: $border-radius;
     background-color: $primary-ultra-light;
     border: 1px solid #c4c7d7;
 
+    ul {
+        margin: 0;
+        padding: 0;
+    }
     li { display: block }
     li:last-child a {
         border-bottom-left-radius: $border-radius;

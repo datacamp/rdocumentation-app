@@ -22,10 +22,33 @@ function debounce(func, wait, immediate) {
 $(document).ready(function() {
   var searchContainer = $('.search'),
   searchInput = $('.search input'),
-  searchResultsPane = $('.search .results');
+  searchResultsPane = $('.search .results'),
+  packagesContainer = $('.search .packages'),
+  functionsContainer = $('.search .functions');
+
+  function search(token){
+    $.post('/api/quick_search', {token: token}, function(data){
+      appendResults(data);
+    });
+  }
+
+  function appendResults(results){
+    // First remove old results
+    $('.search .packages').find(':not(.header)').remove();
+    $('.search .topics').find(':not(.header)').remove();
+
+    results.packages.forEach(function(package){
+      packagesContainer.append("<li><a href=" + package.uri + ">" + package.name + "</a></li>");
+    });
+
+    results.topics.forEach(function(topic){
+      functionsContainer.append("<li><a href=" + topic.uri + ">" + topic.name + "</a></li>");
+    });
+  }
+
 
   searchInput.keyup(debounce(function(){
-    console.log(searchInput.val());
+    search(searchInput.val());
     searchResultsPane.show();
   }, 300));
 
