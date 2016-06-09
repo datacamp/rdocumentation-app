@@ -165,7 +165,7 @@ module.exports = {
                   ignoreDuplicates: true,
                   transaction: t
                 });
-                var auth = packageVersionInstance.setAuthors(authorInstances, {transaction: t});
+                var auth = packageVersionInstance.setCollaborators(authorInstances, {transaction: t});
                 return Promise.join(dep, auth,
                   function(dependencies, authors) {
                     return packageVersionInstance;
