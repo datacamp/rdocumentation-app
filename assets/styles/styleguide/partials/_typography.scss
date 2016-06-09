@@ -101,7 +101,6 @@ blockquote {
 }
 
 code,
-pre,
 mark {
     background-color: $primary-extra-light;
     border-radius: $border-radius;
@@ -118,10 +117,9 @@ code {
     padding: 0.2em 0.4em 0.35em 0.4em;
     color: $text;
 }
-pre {
-    overflow-x: auto;
-    padding: 1.5em;
-    transition: max-width 0.25s, margin 0.25s
+
+pre code.hljs {
+    padding: 1rem;
 }
 mark {
     color: $primary-dark;
