@@ -94,7 +94,10 @@ module.exports = {
       },
       include: [
         { model: Collaborator, as: 'maintainer', attributes: ['name', 'email'] },
-        { model: Collaborator, as: 'authors', attributes: ['name', 'email'] },
+        { model: Collaborator, as: 'collaborators', attributes: ['name', 'email'] },
+        { model: Package, as: 'package', include: [
+          { model: PackageVersion, as: 'versions', limit: populateLimit },
+        ]},
         { model: Topic, as: 'topics', limit: populateLimit }
       ]
     }).then(function(version) {

@@ -77,11 +77,9 @@ module.exports = {
           as: 'maintainer'
         }
       });
-    PackageVersion.belongsToMany(Collaborator, {as: 'authors', through: 'Collaborations', foreignKey: 'authored_version_id', timestamps: false});
+    PackageVersion.belongsToMany(Collaborator, {as: 'collaborators', through: 'Collaborations', foreignKey: 'authored_version_id', timestamps: false});
 
     PackageVersion.hasMany(Topic, {as: 'topics', foreignKey: 'package_version_id'});
-
-
   },
 
   options: {
@@ -103,10 +101,6 @@ module.exports = {
         return sails.getUrlFor({ target: 'PackageVersion.findByNameVersion' })
           .replace(':name', this.getDataValue('package_name'))
           .replace(':version', this.getDataValue('version'));
-      },
-      package_uri: function() {
-        return '/api/packages/:name'
-          .replace(':name', this.getDataValue('package_name'));
       }
     },
 

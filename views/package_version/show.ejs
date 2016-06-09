@@ -1,44 +1,31 @@
 <%- partial ('../shared/_navbar.ejs') %>
-<% var package = data; %>
+<% var pkgVersion = data; %>
 <section class="package">
   <div class="container">
     <header>
-      <h1><span itemprop="name"><%- package.name %></span></h1>
-      <h2 class="add_line" itemprop="description"><%= package.title %></h2>
+      <h1><span itemprop="name"><%- pkgVersion.title %></span></h1>
+      <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
+        <a href="<%= pkgVersion.package.versions[i].uri %>"><%= pkgVersion.package.versions[i].version %></a>
+      <% } %>
     </header>
 
     <section>
       <h3>Description</h3>
-      <div itemprop="description"><%- package.description %></div>
-    </section>
-
-
-
-    <section>
-      <h3>Value</h3>
-      <%- package.value %>
+      <div itemprop="description"><%- pkgVersion.description %></div>
     </section>
 
     <section>
-      <h3>See also</h3>
-      <%- package.seealso %>
+      <h3>Maintainer</h3>
+      <span itemprop="maintainer"><%= pkgVersion.maintainer.name %></span>
     </section>
 
     <section>
-      <h3>Details</h3>
-      <%- package.details %>
+      <h3>Collaborators</h3>
+      <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
+        <span itemprop="maintainer"><%= pkgVersion.collaborators[i].name %></span>
+      <% } %>
     </section>
 
-
-    <section>
-      <h3>Author(s)</h3>
-      <span itemprop="author"><%- package.author %></span>
-    </section>
-
-    <section>
-      <h3>References</h3>
-      <%- package.references %>
-    </section>
   </div>
 </section>
 
