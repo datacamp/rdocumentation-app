@@ -27,8 +27,7 @@ module.exports = {
     var extractPersonInfo = function(infos) {
       var delimiters = [
         {begin: '<email>', end: '</email>'},
-        {begin: '<', end: '>'},
-        {begin: '\\(', end: '\\)'}
+        {begin: '<', end: '>'}
       ];
       var authorObject = {};
       for (var i in delimiters) {
