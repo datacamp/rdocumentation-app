@@ -219,7 +219,7 @@ select {
     box-shadow: none;
     color: $primary-light;
     cursor: pointer;
-    padding: 0.625em 0.9375em 0.625em;
+    padding: 0.625em;
     -webkit-appearance: none;
     -moz-appearance:none;
     transition: background $default-duration ease, border-color $default-duration ease, color $default-duration ease;
@@ -233,37 +233,6 @@ select:hover {
     border-color: $primary-lighter;
     color: $primary
 }
-
-// The down arrow
-.select {
-    position: relative
-}
-.select:before,
-.select:after {
-    display: block;
-    content: "";
-    background: $primary-light;
-    border-radius: 4px;
-    width: 4px;
-    height: 15px;
-    position: absolute;
-    transition: background $default-duration ease
-}
-.select:before {
-    @include rotate(45deg);
-    right: 20px;
-    top: 16px
-}
-.select:after {
-    @include rotate(-45deg);
-    right: 29px;
-    top: 16px
-}
-.select:hover:before,
-.select:hover:after {
-    background-color: $primary
-}
-// end down arrow
 
 // Tabs
 .tabs input[type=radio]+label {

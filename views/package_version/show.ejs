@@ -5,17 +5,15 @@
     <header>
       <h1><%- pkgVersion.package_name %></span></h1>
 
-      <div class="select">
-        <select id="packageVersionSelect">
-          <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
-            <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
-              value="<%= pkgVersion.package.versions[i].version %>"
-              <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %> >
-              <%= pkgVersion.package.versions[i].version %>
-            </option>
-          <% } %>
-        </select>
-      </div>
+      <select id="packageVersionSelect">
+        <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
+          <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
+            value="<%= pkgVersion.package.versions[i].version %>"
+            <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %> >
+            <%= pkgVersion.package.versions[i].version %>
+          </option>
+        <% } %>
+      </select>
       <div class="rating">
         <i class="fa fa-star" aria-hidden="true"></i>
         <i class="fa fa-star" aria-hidden="true"></i>
