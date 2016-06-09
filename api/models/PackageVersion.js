@@ -21,8 +21,7 @@ module.exports = {
     },
 
     title: {
-      type: Sequelize.STRING,
-      allowNull: false
+      type: Sequelize.STRING
     },
 
     description: {
@@ -32,6 +31,7 @@ module.exports = {
 
     release_date: {
       type: Sequelize.DATE,
+      allowNull: true
     },
 
     license: {

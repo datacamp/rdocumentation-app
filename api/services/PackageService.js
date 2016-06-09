@@ -83,7 +83,7 @@ module.exports = {
       fields: {
         version: descriptionJSON.Version,
         title: descriptionJSON.Title,
-        release_date: new Date(descriptionJSON.Date),
+        release_date: descriptionJSON.Date ? new Date(descriptionJSON.Date) : null,
         description: descriptionJSON.Description,
         license: descriptionJSON.License,
         url: descriptionJSON.URL,

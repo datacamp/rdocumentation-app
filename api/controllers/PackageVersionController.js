@@ -43,7 +43,7 @@ module.exports = {
     }).catch(Sequelize.UniqueConstraintError, function (err) {
       return res.send(409, err);
     }).catch(Sequelize.ValidationError, function (err) {
-      return res.send(400, err);
+      return res.send(400, err.errors);
     }).catch(function(err){
       return res.negotiate(err);
     });
