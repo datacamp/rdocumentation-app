@@ -101,6 +101,14 @@ hr {
     display: flex;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
 .toggle-visible {
   display: none;
 }

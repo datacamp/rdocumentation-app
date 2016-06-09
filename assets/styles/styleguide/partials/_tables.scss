@@ -3,6 +3,10 @@ table {
     text-align: left;
     width: 100%
 }
+
+thead {
+  font-weight: bold;
+}
 tr {
     border-bottom: $table-border-width solid $primary-extra-light;
 }

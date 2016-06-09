@@ -1,39 +1,23 @@
-.bottom-navigation {
+.footer {
 	padding: $header-margin 0;
 	margin-top: $default-space;
 	border-top: 1px solid $primary-extra-light;
 
-	ul.inline {
-		float: left;
-		margin-left: 2rem;
-		line-height: 42px;
-	}
-
-	ul li a {
-		color: $text-tertiary;
-		border-bottom: none;
-	}
-	ul li:after {
-		color: $text-tertiary;
-	}
+	@include clearfix;
 
 	.navbar--title {
 		float:left;
+		margin-left: $default-space;
 
 		.logo {
-			background: image-url("logos/logo_dark.svg") no-repeat center center;
+			background: url("../images/logo-dark.png") no-repeat center center;
 			background-size: contain;
+			width: 20px;
+			height: 20px;
 		}
 		.logo-title {
-			color: $text-secondary !important;
-		}
-
-		.small-link {
-			color: $primary;
-
-			&:hover, &:focus {
-				color: $primary-dark;
-			}
+			font-size: 1rem;
+			color: $text-tertiary !important;
 		}
 	}
 }

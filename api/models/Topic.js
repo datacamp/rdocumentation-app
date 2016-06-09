@@ -95,7 +95,7 @@ module.exports = {
     getterMethods: {
       uri: function()  {
         if (this.package_version) {
-          return sails.getUrlFor({ target: 'Topic.findByName' })
+          return '/api/packages/:name/versions/:version/topics/:topic'
             .replace(':name', this.package_version.package_name)
             .replace(':version', this.package_version.version)
             .replace(':topic', this.name)
@@ -106,7 +106,7 @@ module.exports = {
       },
       api_uri: function()  {
         if (this.package_version) {
-          return sails.getUrlFor({ target: 'Topic.findByName' })
+          return '/api/packages/:name/versions/:version/topics/:topic'
             .replace(':name', this.package_version.package_name)
             .replace(':version', this.package_version.version)
             .replace(':topic', this.name);

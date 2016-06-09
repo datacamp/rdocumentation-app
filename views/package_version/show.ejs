@@ -3,27 +3,77 @@
 <section class="package">
   <div class="container">
     <header>
-      <h1><span itemprop="name"><%- pkgVersion.title %></span></h1>
-      <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
-        <a href="<%= pkgVersion.package.versions[i].uri %>"><%= pkgVersion.package.versions[i].version %></a>
-      <% } %>
+      <h1><%- pkgVersion.package_name %></span></h1>
+
+      <div class="select">
+        <select id="packageVersionSelect">
+          <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
+            <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
+              value="<%= pkgVersion.package.versions[i].version %>"
+              <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %> >
+              <%= pkgVersion.package.versions[i].version %>
+            </option>
+          <% } %>
+        </select>
+      </div>
+      <div class="rating">
+        <i class="fa fa-star" aria-hidden="true"></i>
+        <i class="fa fa-star" aria-hidden="true"></i>
+        <i class="fa fa-star" aria-hidden="true"></i>
+        <i class="fa fa-star" aria-hidden="true"></i>
+        <i class="fa fa-star-o" aria-hidden="true"></i>
+        <span>(293810 votes)</span>
+      </div>
+      <a href="" class="btn btn-primary pull-right">Review Package</a>
     </header>
 
-    <section>
-      <h3>Description</h3>
-      <div itemprop="description"><%- pkgVersion.description %></div>
+    <section class="package--stats">
+      <dl>
+        <dt>Maintainer:</dt>
+        <dd><a href="<%= pkgVersion.maintainer.uri %>"><%= pkgVersion.maintainer.name %></a></dd>
+        <dt>Contributors:</dt>
+        <dd>
+        <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
+          <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
+        <% } %>
+        </dd>
+      </dl>
+
     </section>
 
-    <section>
-      <h3>Maintainer</h3>
-      <span itemprop="maintainer"><%= pkgVersion.maintainer.name %></span>
+    <section class="package--info">
+      <h4><%- pkgVersion.title %></h4>
+      <p><%- pkgVersion.description %></p>
     </section>
 
-    <section>
-      <h3>Collaborators</h3>
-      <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
-        <span itemprop="maintainer"><%= pkgVersion.collaborators[i].name %></span>
-      <% } %>
+    <section class="package--topics">
+      <table>
+        <thead>
+          <tr>
+            <td>Name</td>
+            <td>Description</td>
+            <td>Rating</td>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i = 0; i < pkgVersion.topics.length; i++) { %>
+            <tr>
+              <td><a href="<%= pkgVersion.topics[i].uri %>"><%= pkgVersion.topics[i].name %></a></td>
+              <td><%- pkgVersion.topics[i].title %></td>
+              <td>
+                <div class="rating">
+                  <i class="fa fa-star-o" aria-hidden="true"></i>
+                  <i class="fa fa-star-o" aria-hidden="true"></i>
+                  <i class="fa fa-star-o" aria-hidden="true"></i>
+                  <i class="fa fa-star-o" aria-hidden="true"></i>
+                  <i class="fa fa-star-o" aria-hidden="true"></i>
+                </div>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+
     </section>
 
   </div>

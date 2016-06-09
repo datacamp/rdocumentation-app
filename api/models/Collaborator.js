@@ -26,6 +26,16 @@ module.exports = {
   },
 
   options: {
+    getterMethods: {
+      api_uri: function()  {
+        return '/api/collaborators/:id'
+          .replace(':id', this.id);
+      },
+      uri: function()  {
+        return '/collaborators/:id'
+          .replace(':id', this.id);
+      }
+    },
     underscored: true
   }
 

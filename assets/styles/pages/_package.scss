@@ -1,0 +1,35 @@
+.package {
+  .container {
+    margin-top: $default-space;
+  }
+
+  header {
+    @include clearfix;
+
+    h1 {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .select {
+      margin-left: 1rem;
+      display: inline-block;
+    }
+
+    .rating {
+      margin-left: 1rem;
+    }
+  }
+
+}
+
+.package--stats {
+}
+
+.package--info {
+  margin-top: $default-space;
+}
+
+.rating {
+  display: inline-block;
+}

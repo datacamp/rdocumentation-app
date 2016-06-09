@@ -93,12 +93,14 @@ module.exports = {
         version: packageVersion
       },
       include: [
-        { model: Collaborator, as: 'maintainer', attributes: ['name', 'email'] },
-        { model: Collaborator, as: 'collaborators', attributes: ['name', 'email'] },
+        { model: Collaborator, as: 'maintainer' },
+        { model: Collaborator, as: 'collaborators' },
         { model: Package, as: 'package', include: [
           { model: PackageVersion, as: 'versions', limit: populateLimit },
         ]},
-        { model: Topic, as: 'topics', limit: populateLimit }
+        { model: Topic, as: 'topics', limit: populateLimit, include: [
+          { model: PackageVersion, as: 'package_version' },
+        ]}
       ]
     }).then(function(version) {
       if(version === null) return res.notFound();
