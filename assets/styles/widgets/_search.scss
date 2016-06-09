@@ -1,5 +1,9 @@
 .search {
     position: relative;
+
+    input {
+        background-color: white;
+    }
 }
 
 .search .results {
@@ -24,7 +28,6 @@
         border-bottom: none;
         border-bottom-right-radius: $border-radius;
     }
-
 
     li.header {
         color: $text-secondary;

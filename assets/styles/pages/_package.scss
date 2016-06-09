@@ -1,4 +1,5 @@
 .package {
+  min-height: 82%;
   .container {
     margin-top: $default-space;
   }
@@ -28,6 +29,14 @@
 
 .package--info {
   margin-top: $default-space;
+}
+
+.package--topics {
+  input {
+    width: 300px;
+    padding: 0.375em 0.75em;
+    margin: $default-space  auto $default-space / 2.0 auto;
+  }
 }
 
 .rating {

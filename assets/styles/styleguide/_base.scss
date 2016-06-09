@@ -1,5 +1,6 @@
 html {
   box-sizing: border-box;
+  height: 100%;
 }
 *, *:before, *:after {
   box-sizing: inherit;
@@ -7,6 +8,7 @@ html {
 
 body {
   -webkit-overflow-scrolling: touch;
+  height: 100%;
 }
 
 .p0 { padding: 0 !important; }
@@ -125,8 +127,3 @@ hr {
 }
 .ajax-success {color: $primary;}
 .ajax-fail { color: $error;}
-
-// While Typekit is loading
-.wf-loading {
-  display: none;
-}

@@ -47,15 +47,16 @@
     </section>
 
     <section class="package--topics">
+      <input id="filterTopics" type="text" placeholder="Filter list">
       <table>
         <thead>
           <tr>
             <td>Name</td>
             <td>Description</td>
-            <td>Rating</td>
+            <td width="115">Rating</td>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="topics">
           <% for(var i = 0; i < pkgVersion.topics.length; i++) { %>
             <tr>
               <td><a href="<%= pkgVersion.topics[i].uri %>"><%= pkgVersion.topics[i].name %></a></td>
@@ -71,6 +72,7 @@
               </td>
             </tr>
           <% } %>
+          <tr class="no-results"><td colspan="3">No Results!</td></tr>
         </tbody>
       </table>
 

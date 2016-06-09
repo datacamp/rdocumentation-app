@@ -24,3 +24,12 @@ th {
 td {
     color: $text-secondary;
 }
+
+tr.no-results {
+    border-bottom: none;
+    text-align: center;
+    display: none;
+    td {
+        padding: $default-space 0;
+    }
+}
