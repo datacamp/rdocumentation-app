@@ -130,6 +130,10 @@ module.exports = {
             }).spread(function(instance, created) {
               return instance;
             });
+          }).then(function(authors) {
+            return _.uniqBy(authors, function(author) {
+              return author.email;
+            });
           });
 
           var dependencies = Package.bulkCreate(packageVersion.dependencies.map(function(dependency) {
