@@ -45,7 +45,7 @@ module.exports = {
       ]
     }).then(function(package) {
       if(package === null) return res.notFound();
-      else return res.json(package);
+      else return res.ok(package.toJSON(), 'package/package.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });

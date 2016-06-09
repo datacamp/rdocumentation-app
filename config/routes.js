@@ -21,50 +21,32 @@
  */
 
 module.exports.routes = {
-
-  /***************************************************************************
-  *                                                                          *
-  * Make the view located at `views/homepage.ejs` (or `views/homepage.jade`, *
-  * etc. depending on your default view engine) your home page.              *
-  *                                                                          *
-  * (Alternatively, remove this and add an `index.html` file in your         *
-  * `assets` directory)                                                      *
-  *                                                                          *
-  ***************************************************************************/
-
   '/': {
     view: 'homepage'
   },
 
+  //***** Package *****
+    // API
+    'get /api/packages/:name': 'PackageController.findByName',
+    // HTML
+    'get /packages/:name': 'PackageController.findByName',
+  //***** /Package *****
 
+  //***** PackageVersion *****
+    // API
+    'get /api/packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
+    'post /api/versions': 'PackageVersion.postDescription',
+    // HTML
+  //***** /PackageVersion *****
 
-  /***************************************************************************
-  *                                                                          *
-  * Custom routes here...                                                    *
-  *                                                                          *
-  * If a request to a URL doesn't match any of the custom routes above, it   *
-  * is matched against Sails route blueprints. See `config/blueprints.js`    *
-  * for configuration options and examples.                                  *
-  *                                                                          *
-  ***************************************************************************/
-
-  //Package
-  'get /api/packages/:name': 'Package.findByName',
-
-
-  //PackageVersion
-  'get /api/packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
-
-  'post /api/versions': 'PackageVersion.postDescription',
-
-
-  //Topic
+  //***** Topic *****
     //API
     'get /api/topics/:id': 'Topic.findById',
     'get /api/packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
     'post /api/packages/:name/versions/:version/topics': 'Topic.postRdFile',
     //HTML
     'get /packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
+  //***** /Topic *****
 
   //Link
   'get /link/:alias': 'Topic.findByAlias'
