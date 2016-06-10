@@ -173,9 +173,14 @@ module.exports = {
             topic.value = reduceArrayToHTMLString(valueArray);
           }
           var customSections = _.omit(rdJSON, attributes.concat(['alias', 'arguments', 'keyword', 'author', 'docType', 'Rdversion']));
-          topic.author = rdJSON.author ? rdJSON.author.map(function(author){
-            return author.name + ' ' +author.email;
-          }).join(', ') : rdJSON.author;
+
+          if (rdJSON.author instanceof Array) {
+            topic.author = rdJSON.author.map(function(author){
+              return author.name + ' ' +author.email;
+            }).join(', ');
+          } else {
+            topic.author = rdJSON.author;
+          }
 
           customSections = _.mapValues(customSections, function(section) {
             if (section instanceof Array) {
