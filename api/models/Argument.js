@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
 
     description: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
     },
 
     name: {
