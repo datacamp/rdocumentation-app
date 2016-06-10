@@ -78,7 +78,7 @@ module.exports = {
 
     return {
       package: {
-        name: descriptionJSON.Package,
+        name: name,
       },
       fields: {
         version: descriptionJSON.Version,
