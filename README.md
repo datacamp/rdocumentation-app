@@ -26,7 +26,7 @@ docker-compose up
 #Creating a new db migration:
 Run
 ```
-node node_modules/db-migrate/bin/db-migrate create migration_name
+docker-compose run server node node_modules/db-migrate/bin/db-migrate create migration_name
 ```
 then populate the files in
   - `./migrations/{time}{migration_name}.js`
