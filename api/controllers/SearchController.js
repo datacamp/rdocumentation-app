@@ -29,7 +29,7 @@ module.exports = {
       //   limit: 5
       // }),
       function(packages, topics) {
-        return res.json({packages: packages, topics: topics});
+        return res.json({packages: packages, topics: []});
       }
     ).catch(function(err) {
       return res.negotiate(err);
