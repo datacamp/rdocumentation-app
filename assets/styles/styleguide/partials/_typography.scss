@@ -109,6 +109,7 @@ code,
 pre {
     font-family: monospace;
     font-size: $small-font-size;
+    background-color: #eaeef3;
 }
 code {
     display: inline-block;
@@ -120,6 +121,7 @@ code {
 
 pre code.hljs {
     padding: 1rem;
+    line-height: $default-line-height;
 }
 mark {
     color: $primary-dark;

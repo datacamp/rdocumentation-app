@@ -1,12 +1,21 @@
 {
   "defaultEnv": {"ENV": "NODE_ENV"},
 
-  "dev": {
+  "docker": {
     "driver": "mysql",
     "host": "db",
     "user": "root",
     "password": "password",
     "database": "rdoc",
+    "multipleStatements": true
+  },
+
+  "development": {
+    "driver": "mysql",
+    "host": "127.0.0.1",
+    "user": "root",
+    "password": "",
+    "database": "rdocsv2",
     "multipleStatements": true
   },
 

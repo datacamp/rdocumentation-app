@@ -16,7 +16,7 @@ server:
   ports:
     - "1337:1337"
   environment:
-    NODE_ENV: dev
+    NODE_ENV: docker
   #For a future version
   #environment:
   #  - VIRTUAL_HOST=sails
