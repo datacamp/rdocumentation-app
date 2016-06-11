@@ -95,6 +95,7 @@ module.exports = {
       include: [
         { model: Collaborator, as: 'maintainer' },
         { model: Collaborator, as: 'collaborators' },
+        { model: Package, as: 'dependencies' },
         { model: Package, as: 'package', include: [
           { model: PackageVersion, as: 'versions', limit: populateLimit },
         ]},

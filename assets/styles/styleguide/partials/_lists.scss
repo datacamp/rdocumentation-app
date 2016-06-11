@@ -13,20 +13,10 @@ ol.inline {
 	padding: 0;
 	li {
 		float: left;
-		margin: 0 10px;
-
-		&:after {
-			content: '|';
-			position: relative;
-			right: -10px;
-		}
+		margin-right:10px;
 	}
 
-	li:first-child {
-		margin-left: 0;
-	}
-
-	li:last-child:after {
-		display: none;
+	li:last-child {
+		margin-right: 0;
 	}
 }

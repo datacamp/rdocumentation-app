@@ -36,7 +36,6 @@
         <% } %>
         </dd>
       </dl>
-
     </section>
 
     <section class="package--info">
@@ -73,7 +72,15 @@
           <tr class="no-results"><td colspan="3">No Results!</td></tr>
         </tbody>
       </table>
+    </section>
 
+    <section class="package--dependencies">
+      <h4>Dependencies</h4>
+      <ul class="inline">
+        <% for(var i = 0; i < pkgVersion.dependencies.length; i++) { %>
+          <li><a href="<%= pkgVersion.dependencies[i].uri %>"><%= pkgVersion.dependencies[i].name %></a></li>
+        <% } %>
+      </ul>
     </section>
 
   </div>
