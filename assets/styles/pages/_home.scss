@@ -10,9 +10,9 @@
   left: 0;
   right: 0;
   transform: translateY(-50%);
+  text-align: center;
 
   h1 {
-    text-align: center;
     font-size: $h2-size;
   }
 }
@@ -21,6 +21,7 @@
   width: 30%;
   margin: 2rem auto;
   min-width: 300px;
+  text-align: left;
 }
 
 .home--title {

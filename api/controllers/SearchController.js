@@ -32,6 +32,7 @@ module.exports = {
         return res.json({packages: packages, topics: topics});
       }
     ).catch(function(err) {
+      return res.negotiate(err);
     });
 
   }

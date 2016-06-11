@@ -50,7 +50,7 @@ $(document).ready(function() {
   searchInput.keyup(debounce(function(){
     search(searchInput.val());
     searchResultsPane.show();
-  }, 300));
+  }, 100));
 
   $(document).click(function(event) {
       if(!$(event.target).closest(searchContainer).length &&

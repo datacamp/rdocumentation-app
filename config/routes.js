@@ -21,9 +21,8 @@
  */
 
 module.exports.routes = {
-  '/': {
-    view: 'homepage'
-  },
+  // Homepage
+  'get /': 'HomeController.index',
 
   //***** Package *****
     // API
