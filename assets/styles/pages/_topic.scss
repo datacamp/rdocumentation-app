@@ -1,3 +1,26 @@
+.topic {
+  min-height: 82%;
+  .container {
+    margin-top: $default-space;
+  }
+
+  header {
+    @include clearfix;
+
+    h1 {
+      display: inline-block;
+      vertical-align: middle;
+
+      span {
+        font-size: $default-font-size;
+        font-weight: 300;
+        margin-left: 1rem;
+      }
+    }
+  }
+
+}
+
 .topic--title {
   margin-top: $default-space;
 }

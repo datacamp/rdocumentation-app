@@ -23,7 +23,6 @@ h4 { font-size: $h4-size; }
 h5 { font-size: $h5-size; }
 
 .text-small { font-size: $small-font-size; }
-
 .text-left { text-align: left; }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
@@ -32,10 +31,6 @@ h5 { font-size: $h5-size; }
 .text-secondary { color: $text-secondary;}
 .text-tertiary { color: $text-tertiary;}
 .text-invert-secondary { color: $text-invert-secondary;}
-
-small {
-    color: $primary-lighter;
-}
 
 a {
     transition: color $default-duration ease-out;
@@ -52,52 +47,6 @@ a:focus {
     border-bottom: 1px solid $primary;
     outline: none;
     text-decoration: none;
-}
-
-.subhead {
-  text-transform: uppercase;
-  color: $primary-light;
-  font-weight: 300;
-  margin-top: 1rem;
-  letter-spacing: 5px;
-}
-
-blockquote {
-	background-color: $primary-extra-light;
-	border-left: 2px solid $primary;
-	margin: 0;
-	padding: $default-space;
-    margin-bottom: $default-space;
-
-    &.text-center {
-        border-left: none;
-    }
-
-	p {
-		font-size: $h4-size;
-		margin: 0 0 0.25em;
-		font-style: italic;
-		color: $primary;
-	}
-
-	cite {
-		color: $primary-light;
-		font-size: $default-font-size;
-		font-style: normal;
-		text-transform: uppercase;
-		&:before {
-			display: inline-block;
-			content: "â€“";
-			margin-right: 5px;
-		}
-	}
-}
-
-.callout {
-    color: $primary;
-    font-style: italic;
-    font-size: $h3-size;
-    margin: 1.5em 0 1em;
 }
 
 code,
