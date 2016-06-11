@@ -1,0 +1,33 @@
+<%- partial ('../shared/_navbar.ejs') %>
+<% var collaborator = data; %>
+<section class="collaborator">
+  <div class="container">
+    <header>
+      <h1><%- collaborator.name %></h1>
+      <img src="<%- collaborator.gravatar_url %>" alt="<%- collaborator.name %>" width="80" height="80">
+      <p><%- collaborator.email %></p>
+    </header>
+
+    <section class="collaborator--maintainer">
+      <h4>Maintainer of</h4>
+      <ul class="inline">
+        <% for(var i = 0; i < collaborator.maintained_packages.length; i++) { %>
+          <li><a href="<%= collaborator.maintained_packages[i].uri %>"><%= collaborator.maintained_packages[i].package_name %> v<%= collaborator.maintained_packages[i].version %></a></li>
+        <% } %>
+      </ul>
+    </section>
+
+
+    <section class="collaborator--author">
+      <h4>Author of</h4>
+      <ul class="inline">
+        <% for(var i = 0; i < collaborator.authored_packages.length; i++) { %>
+          <li><a href="<%= collaborator.authored_packages[i].uri %>"><%= collaborator.authored_packages[i].package_name %> v<%= collaborator.authored_packages[i].version %></a></li>
+        <% } %>
+      </ul>
+    </section>
+
+  </div>
+</section>
+
+<%- partial ('../shared/_footer.ejs') %>

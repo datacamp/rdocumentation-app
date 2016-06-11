@@ -49,6 +49,13 @@ module.exports.routes = {
     'get /packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
   //***** /Topic *****
 
+  //***** Collaborator *****
+    // API
+    'get /api/collaborators/:id': 'CollaboratorController.findById',
+    // HTML
+    'get /collaborators/:id': 'CollaboratorController.findById',
+  //***** /Package *****
+
   // Link
   'get /link/:alias': 'Topic.findByAlias',
 

@@ -24,6 +24,7 @@
     "grunt-sync": "0.2.4",
     "include-all": "~0.1.6",
     "lodash": "^4.13.1",
+    "md5": "^2.1.0",
     "newrelic": "^1.28.0",
     "node-sass": "^3.7.0",
     "node-sass-globbing": "0.0.23",

@@ -1,0 +1,12 @@
+.collaborator {
+  min-height: 82%;
+  .container {
+    margin-top: $default-space;
+  }
+}
+
+.collaborator--maintainer,
+.collaborator--author {
+  @include clearfix;
+  margin-top: $default-space;
+}

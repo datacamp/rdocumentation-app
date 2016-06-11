@@ -5,6 +5,8 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
 
  */
+var _ = require('lodash');
+var md5 = require('md5');
 
 module.exports = {
 
@@ -34,6 +36,9 @@ module.exports = {
       uri: function()  {
         return '/collaborators/:id'
           .replace(':id', this.id);
+      },
+      gravatar_url: function(){
+        return 'https://www.gravatar.com/avatar/' + md5(_.trim(this.email).toLowerCase());
       }
     },
     underscored: true
