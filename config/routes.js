@@ -24,6 +24,13 @@ module.exports.routes = {
   // Homepage
   'get /': 'HomeController.index',
 
+  // Authentication
+  'get /login': 'AuthController.login',
+  'get /logout': 'AuthController.logout',
+
+  // User
+  'get /create': 'UserController.create',
+
   //***** Package *****
     // API
     'get /api/packages/:name': 'PackageController.findByName',
