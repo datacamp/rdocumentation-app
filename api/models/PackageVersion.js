@@ -108,12 +108,19 @@ module.exports = {
 
       createWithDescriptionFile: function(opts) {
         var description = opts.input;
+        var type = description.repoType || 'cran';
         var packageVersion = PackageService.mapDescriptionToPackageVersion(description);
 
         return sequelize.transaction(function (t) {
-          var package = Package.findOrCreate({
-            where: packageVersion.package,
+          var package = Repository.findOrCreate({
+            where: {name: type},
             transaction: t
+          }).spread(function(repoInstance, created){
+            return Package.findOrCreate({
+              where: packageVersion.package,
+              transaction: t,
+              defaults: {name: packageVersion.package.name, type_id: repoInstance.id }
+            });
           });
 
           var maintainer = packageVersion.maintainer !== null ? Collaborator.findOrCreate({

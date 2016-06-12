@@ -34,6 +34,15 @@ module.exports = {
       },
       constraints: false }
     );
+
+    Package.belongsTo(Repository, {
+      as: 'repository',
+      foreignKey: {
+        name:'type_id',
+        as: 'repository'
+      }
+    });
+
     Package.belongsToMany(PackageVersion, { as: 'reverse_dependencies', foreignKey: 'dependency_name', through: Dependency, constraints: false});
   },
 
