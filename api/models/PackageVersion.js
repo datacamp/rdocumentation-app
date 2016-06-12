@@ -45,6 +45,11 @@ module.exports = {
 
     copyright: {
       type: Sequelize.STRING
+    },
+
+    sourceJSON: {
+      type: Sequelize.TEXT,
+      allowNull: true
     }
 
 
@@ -110,6 +115,7 @@ module.exports = {
         var description = opts.input;
         var type = description.repoType || 'cran';
         var packageVersion = PackageService.mapDescriptionToPackageVersion(description);
+        packageVersion.fields.sourceJSON = JSON.stringify(description);
 
         return sequelize.transaction(function (t) {
           var package = Repository.findOrCreate({
@@ -159,7 +165,7 @@ module.exports = {
                 {
                   where: {
                     package_name: packageVersion.package.name,
-                    version: packageVersion.fields. version
+                    version: packageVersion.fields.version
                   },
                   transaction: t
               }).spread(function(packageVersionInstance, initialized) {

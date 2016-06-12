@@ -1,0 +1,3 @@
+ALTER TABLE `PackageVersions` ADD COLUMN `sourceJSON` TEXT DEFAULT NULL;
+
+ALTER TABLE `Packages` MODIFY `type_id` int(11) DEFAULT NULL;

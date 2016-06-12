@@ -57,6 +57,10 @@ module.exports = {
       type: Sequelize.TEXT,
     },
 
+    sourceJSON: {
+      type: Sequelize.TEXT,
+      allowNull: true
+    }
 
 
   },
@@ -193,6 +197,8 @@ module.exports = {
               return reduceArrayToHTMLString(section);
             } else return section;
           });
+
+          topic.sourceJSON = JSON.stringify(rdJSON);
 
           return PackageVersion.findOne({
             where: {package_name: opts.packageName, version: opts.packageVersion },

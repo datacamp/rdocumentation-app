@@ -39,6 +39,7 @@ module.exports = {
       as: 'repository',
       foreignKey: {
         name:'type_id',
+        allowNull: true,
         as: 'repository'
       }
     });
