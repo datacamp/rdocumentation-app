@@ -1,7 +1,7 @@
 module.exports = {
 
   me: function(req, res) {
-    return res.json(req.user;
+    return res.json(req.user);
   }
 
 };
