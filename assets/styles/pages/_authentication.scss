@@ -1,0 +1,16 @@
+.authentication {
+  min-height: 82%;
+  .container {
+    margin-top: $default-space;
+  }
+}
+
+.authentication--form {
+  fieldset {
+    width: 100%;
+  }
+
+  fieldset .btn {
+    width: auto;
+  }
+}

@@ -1,5 +1,23 @@
-<form action="/login" method="post">
-  <div><input name="username" type="text"></div>
-  <div><input name="password" type="password"></div>
-  <div><input type="submit"></div>
-</form>
+<%- partial ('../shared/_navbar.ejs') %>
+<section class="authentication">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6 col-sm-offset-3">
+        <form class="authentication--form" action="/login" method="post">
+          <fieldset>
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text">
+          </fieldset>
+          <fieldset>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password">
+          </fieldset>
+          <fieldset>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+<%- partial ('../shared/_footer.ejs') %>
