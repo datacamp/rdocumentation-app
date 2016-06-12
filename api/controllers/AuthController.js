@@ -9,20 +9,9 @@ module.exports = {
     res.view();
   },
   process: function(req, res){
-    passport.authenticate('local', function(err, user, info) {
-      if ((err) || (!user)) {
-        return res.send({
-        message: 'login failed'
-        });
-        res.send(err);
-      }
-      req.logIn(user, function(err) {
-        if (err) res.send(err);
-        return res.send({
-          message: 'login successful'
-        });
-      });
-    })(req, res);
+    passport.authenticate('local', { successRedirect: '/',
+                                     failureRedirect: '/login',
+                                     failureFlash: true })(req, res);
   },
   logout: function (req,res){
     req.logout();
@@ -52,15 +41,15 @@ module.exports.blueprints = {
   // Expose a route for every method,
   // e.g.
   // `/auth/foo` =&gt; `foo: function (req, res) {}`
-  actions: true,
+  actions: false,
 
   // Expose a RESTful API, e.g.
   // `post /auth` =&gt; `create: function (req, res) {}`
-  rest: true,
+  rest: false,
 
   // Expose simple CRUD shortcuts, e.g.
   // `/auth/create` =&gt; `create: function (req, res) {}`
   // (useful for prototyping)
-  shortcuts: true
+  shortcuts: false
 
 };

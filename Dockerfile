@@ -2,7 +2,9 @@ FROM node:slim
 
 MAINTAINER Ludovic Vannoorenberghe <ludo@datacamp.com>
 
-RUN npm install -g sails grunt bower npm-check-updates
+RUN apt-get update && apt-get install -y python build-essential
+
+RUN npm install -g node-gyp sails grunt bower npm-check-updates
 RUN mkdir /server
 
 # Define mountable directories.

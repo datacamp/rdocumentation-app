@@ -1,30 +1,7 @@
 var passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy,
   bcrypt = require('bcrypt');
-//helper functions
-function findById(id, fn) {
-  User.findOne(id).done(function (err, user) {
-    if (err) {
-      return fn(null, null);
-    } else {
-      return fn(null, user);
-    }
-  });
-}
 
-function findByUsername(u, fn) {
-  User.findOne({
-    username: u
-  }).done(function (err, user) {
-    // Error handling
-    if (err) {
-      return fn(null, null);
-      // The User was found successfully!
-    } else {
-      return fn(null, user);
-    }
-  });
-}
 
 // Passport session setup.
 // To support persistent login sessions, Passport needs to be able to
@@ -36,8 +13,10 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(function (id, done) {
-  findById(id, function (err, user) {
-    done(err, user);
+  User.findById(id).then(function (user) {
+    done(null, user);
+  }).catch(function(err){
+    done(err);
   });
 });
 
@@ -53,29 +32,29 @@ passport.use(new LocalStrategy(
       // username, or the password is not correct, set the user to `false` to
       // indicate failure and set a flash message. Otherwise, return the
       // authenticated `user`.
-      findByUsername(username, function (err, user) {
-        if (err)
-          return done(null, err);
-        if (!user) {
-          return done(null, false, {
-            message: 'Unknown user ' + username
+
+      return User.findByUsername(username)
+      .then(function(user) {
+        if (!user) return { user: false, body: { message: 'Unknown user ' + username } };
+        else return Promise.promisify(bcrypt.compare)(password, user.password)
+          .then(function(res) {
+            if (!res) return { user: false, body: { message: 'Invalid Password' } };
+            var returnUser = {
+              username: user.username,
+              createdAt: user.created_at,
+              id: user.id
+            };
+            return { user: returnUser, body: { message: 'Logged In Successfully' } };
           });
-        }
-        bcrypt.compare(password, user.password, function (err, res) {
-          if (!res)
-            return done(null, false, {
-              message: 'Invalid Password'
-            });
-          var returnUser = {
-            username: user.username,
-            createdAt: user.createdAt,
-            id: user.id
-          };
-          return done(null, returnUser, {
-            message: 'Logged In Successfully'
-          });
-        });
       })
+      .then(function(response){
+        return done(null, response.user, response.body);
+      })
+      .catch(function(err) {
+        return done(err);
+      });
     });
   }
 ));
+
+module.exports = passport;
