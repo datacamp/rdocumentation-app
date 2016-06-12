@@ -39,3 +39,8 @@ then populate the files in
 ```
 docker-compose run server node node_modules/db-migrate/bin/db-migrate up
 ```
+Or when running locally
+
+```
+NODE_ENV=development node node_modules/db-migrate/bin/db-migrate up
+```
