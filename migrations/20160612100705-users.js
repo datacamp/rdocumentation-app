@@ -18,7 +18,9 @@ exports.up = function(db, cb) {
   db.createTable('Users', {
     id: { type: 'int', primaryKey: true, autoIncrement: true },
     username: { type: 'string', unique: true, notNull: true},
-    password: { type: 'string', notNull: true }
+    password: { type: 'string', notNull: true },
+    created_at: { type: 'datetime', notNull: true},
+    updated_at: { type: 'datetime', notNull: true}
   }, cb);
 };
 

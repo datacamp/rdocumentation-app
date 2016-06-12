@@ -36,23 +36,28 @@ passport.use(new LocalStrategy(
       return User.findByUsername(username)
       .then(function(user) {
         if (!user) return { user: false, body: { message: 'Unknown user ' + username } };
-        else return Promise.promisify(bcrypt.compare)(password, user.password)
-          .then(function(res) {
-            if (!res) return { user: false, body: { message: 'Invalid Password' } };
-            var returnUser = {
-              username: user.username,
-              createdAt: user.created_at,
-              id: user.id
-            };
-            return { user: returnUser, body: { message: 'Logged In Successfully' } };
-          });
-      })
-      .then(function(response){
-        return done(null, response.user, response.body);
-      })
-      .catch(function(err) {
-        return done(err);
+        bcrypt.compare(password, user.password, function(err, res) {
+          if(!res) done(null, false);
+          else done(err, user);
+        });
+        // else return Promise.promisify(bcrypt.compare)(password, user.password)
+        //   .then(function(res) {
+
+        //     if (!res) return { user: false, body: { message: 'Invalid Password' } };
+        //     var returnUser = {
+        //       username: user.username,
+        //       createdAt: user.created_at,
+        //       id: user.id
+        //     };
+        //     return { user: returnUser, body: { message: 'Logged In Successfully' } };
+        //   });
       });
+      // .then(function(response){
+      //   return done(null, response.user, response.body);
+      // })
+      // .catch(function(err) {
+      //   return done(err);
+      // });
     });
   }
 ));
