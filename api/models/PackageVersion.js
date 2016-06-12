@@ -122,10 +122,11 @@ module.exports = {
             where: {name: type},
             transaction: t
           }).spread(function(repoInstance, created){
-            return Package.findOrCreate({
-              where: packageVersion.package,
-              transaction: t,
-              defaults: {name: packageVersion.package.name, type_id: repoInstance.id }
+            return Package.upsert({
+              name: packageVersion.package.name,
+              type_id: repoInstance.id
+            }, {
+              transaction: t
             });
           });
 
@@ -170,7 +171,7 @@ module.exports = {
                   transaction: t
               }).spread(function(packageVersionInstance, initialized) {
                 packageVersionInstance.set(packageVersion.fields);
-                packageVersionInstance.setPackage(packageInstance[0], {save: false});
+                packageVersionInstance.setPackage(packageVersion.package.name, {save: false});
                 if (maintainerInstance !== null) packageVersionInstance.setMaintainer(maintainerInstance[0], {save: false});
                 return packageVersionInstance.save({transaction: t});
               }).then(function(packageVersionInstance) {
