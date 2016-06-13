@@ -6,10 +6,7 @@
     </a>
   </div>
 
-  <ul class="navbar--navigation">
-    <li><a href="/register" class="btn btn-primary">Create account</a></li>
-    <li><a href="/login" class="btn btn-secondary">Sign in</a></li>
-  </ul>
+  <%- partial ('shared/_navigation.ejs') %>
 
   <div class="home--cta">
     <h1>Search all <%= data.nbPackages %> CRAN and BiOC packages.</h1>

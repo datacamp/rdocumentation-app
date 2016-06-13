@@ -16,13 +16,21 @@ module.exports = {
       required: true,
       unique: true,
       validate: {
-        max: 40,
-        min: 3
+        len: {
+          args: [3,30],
+          msg: 'Username must be between 3 and 30 characaters.'
+        }
       }
     },
     password: {
       type: Sequelize.STRING,
-      required: true
+      required: true,
+      validate: {
+        len: {
+          args: [6,30],
+          msg: 'Password must be between 6 and 30 characaters.'
+        }
+      }
     }
   },
 

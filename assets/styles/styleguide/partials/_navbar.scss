@@ -49,6 +49,15 @@ $navbar-search-results-width: 400px;
     display: inline-block;
     float: right;
 
+    .link {
+        color: white;
+        border-bottom-color: white;
+        &:focus,
+        &:hover {
+            color: inherit;
+        }
+    }
+
     .btn {
         margin: 0;
         line-height: 1.3;

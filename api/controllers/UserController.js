@@ -5,19 +5,25 @@ module.exports = {
   },
 
   create: function(req, res) {
+    // Check if password and confirm_password are the same
+    if(req.body.password !== req.body.confirm_password){
+      FlashService.error(req, 'Passwords must match.');
+      return res.redirect('/register');
+    }
     var result = User.create(req.body);
     result.then(function(value) {
-      passport.authenticate('local', { successRedirect: '/users/me',
-                                       failureRedirect: '/login',
+      passport.authenticate('local', { successRedirect: '/',
+                                       failureRedirect: '/register',
                                        failureFlash: true })(req, res);
-      res.location('/users/me');
     }).catch(Sequelize.UniqueConstraintError, function (err) {
-      return res.send(409, err);
+      FlashService.error(req, 'Username "' + req.body.username + '" has been taken.');
+      return res.redirect('/register');
     }).catch(Sequelize.ValidationError, function (err) {
-      return res.send(400, err.errors);
-    }).catch(function(err){
-      return res.negotiate(err);
-    });
+      err.errors.forEach(function(error){
+        FlashService.error(req, error.message);
+      })
+      return res.redirect('/register');
+    })
   }
 
 };

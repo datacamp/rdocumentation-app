@@ -12,12 +12,12 @@ module.exports = {
     res.view();
   },
   process: function(req, res){
-    passport.authenticate('local', { successRedirect: '/users/me',
+    passport.authenticate('local', { successRedirect: '/',
                                      failureRedirect: '/login',
                                      failureFlash: true })(req, res);
   },
   logout: function (req,res){
     req.logout();
-    res.send('logout successful');
+    res.redirect('/')
   }
 };
