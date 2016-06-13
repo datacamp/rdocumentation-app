@@ -24,8 +24,12 @@
     </div>
 
     <ul class="navbar--navigation">
-      <li><a href="/register" class="btn btn-primary">Create account</a></li>
-      <li><a href="/login" class="btn btn-secondary">Sign in</a></li>
+      <% if(typeof(user) === 'undefined') { %>
+        <li><a href="/register" class="btn btn-primary">Create account</a></li>
+        <li><a href="/login" class="btn btn-secondary">Sign in</a></li>
+      <% } else { %>
+        <li><a href="/users/me"><%= user.username %></a></li>
+      <% } %>
     </ul>
   </nav>
 </section>
