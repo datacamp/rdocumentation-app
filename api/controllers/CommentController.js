@@ -156,17 +156,21 @@ module.exports = {
       where: {
         package_name: packageName,
         version: packageVersion
-      },
-      attributes: ['id']
+      }
     }).then(function(packageVersionInstance) {
       return Comment.create({
         description: comment,
         user_id: user.id,
         commentable: scope.commentable,
         commentable_id: packageVersionInstance.id
+      }).then(function(instance) {
+        if(req.wantsJSON) {
+          return res.created(instance.toJSON());
+        } else {
+          console.log(packageVersionInstance);
+          return res.redirect(packageVersionInstance.uri);
+        }
       });
-    }).then(function(instance) {
-      res.send(instance.toJSON());
     }).catch(function(err) {
       return res.negotiate(err);
     });

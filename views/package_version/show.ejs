@@ -22,7 +22,22 @@
         <i class="fa fa-star-o" aria-hidden="true"></i>
         <span>(293810 votes)</span>
       </div>
-      <a href="" class="btn btn-primary pull-right">Review Package</a>
+      <div class="package--review pull-right" >
+        <a id="packageVersionReview" class="btn btn-primary pull-right">Review Package</a>
+          <div class='popover hidden'>
+            <% if(user) { %>
+              <h5>Post a review</h5>
+              <form action="/api/packages/<%= pkgVersion.package_name %>/versions/<%= pkgVersion.version %>/comments" method="post">
+                <textarea name='comment' rows="4" cols="20"></textarea>
+                <button class="btn btn-primary pull-right" type="submit">Send your review</button>
+              </form>
+            <% } else { %>
+              <div class='label'>You are not logged in, please log-in to post reviews</div>
+            <% } %>
+          </div>
+
+
+      </div>
     </header>
 
     <section class="package--stats">

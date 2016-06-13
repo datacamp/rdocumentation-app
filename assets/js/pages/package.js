@@ -33,4 +33,10 @@ $(document).ready(function() {
       filteredRows.show();
     }
   });
+
+  $('#packageVersionReview').click(function() {
+    $('.package--review .popover').toggleClass('hidden');
+    $('.package--review .popover textarea').focus();
+  });
+
 });
