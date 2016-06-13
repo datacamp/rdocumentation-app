@@ -92,6 +92,16 @@
       License: <%= topic.package_version.license %>
       </i>
     </small>
+
+     <section class="topic--reviews">
+      <h3 class="topic--title">Reviews</h3>
+      <dl>
+        <% for(var i = 0; i < topic.comments.length; i++) { %>
+          <dt><%- topic.comments[i].user.username %></dt>
+          <dd><%- topic.comments[i].description %></dd>
+        <% } %>
+      </dl>
+    </section>
   </div>
 </section>
 <%- partial ('../shared/_footer.ejs') %>

@@ -142,7 +142,10 @@ module.exports = {
             {model: Argument, as: 'arguments', attributes: ['name', 'description']},
             {model: Section, as: 'sections', attributes: ['name', 'description']},
             {model: Tag, as: 'keywords', attributes: ['name']},
-            {model: Alias, as: 'aliases', attributes: ['name']}
+            {model: Alias, as: 'aliases', attributes: ['name']},
+            {model: Comment, as: 'comments', attributes: ['description'],
+              include: [{model: User, as: 'user', attributes: ['username']}]
+            }
           ]
         }, opts, customizer);
 
