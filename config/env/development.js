@@ -31,15 +31,6 @@ module.exports = {
           idle: 10000
         }
       }
-    },
-
-    db_migrate: {
-      adapter: "sails-mysql",
-      host: '127.0.0.1',
-      user: 'root',
-      password: '',
-      database: 'rdoc',
-      port: 3306
     }
   },
 

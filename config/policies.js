@@ -51,6 +51,10 @@ module.exports.policies = {
 
   '*': [true, 'flash'],
 
+  CommentController: {
+    '*': 'sessionAuth'
+  },
+
   UserController: {
     'me': 'sessionAuth'
   }

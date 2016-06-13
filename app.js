@@ -23,6 +23,7 @@
 process.chdir(__dirname);
 // Ensure a "sails" can be located:
 var newrelic = require('newrelic');
+require('dotenv').config({silent: true});
 
 (function() {
   var sails;

@@ -85,6 +85,15 @@ module.exports = {
     PackageVersion.belongsToMany(Collaborator, {as: 'collaborators', through: 'Collaborations', foreignKey: 'authored_version_id', timestamps: false});
 
     PackageVersion.hasMany(Topic, {as: 'topics', foreignKey: 'package_version_id'});
+
+    PackageVersion.hasMany(Comment, {
+      as: 'comments',
+      foreignKey: 'commentable_id',
+      constraints: false,
+      scope: {
+        commentable: 'version'
+      }
+    });
   },
 
   options: {
