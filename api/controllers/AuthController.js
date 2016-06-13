@@ -14,7 +14,7 @@ module.exports = {
   process: function(req, res){
     passport.authenticate('local', { successRedirect: '/',
                                      failureRedirect: '/login',
-                                     failureFlash: true })(req, res);
+                                     failureFlash: 'Invalid Username or password.' })(req, res);
   },
   logout: function (req,res){
     req.logout();

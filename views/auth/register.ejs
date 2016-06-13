@@ -7,7 +7,7 @@
         <form class="authentication--form" action="/api/users" method="post">
           <fieldset>
             <label for="username">Username</label>
-            <input id="username" name="username" type="text" value="<% if(locals.data && locals.data.fields) {%><%- data.fields.username %> <%}%>">
+            <input id="username" name="username" type="text">
           </fieldset>
           <fieldset>
             <label for="password">Password</label>
