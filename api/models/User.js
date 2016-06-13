@@ -14,7 +14,11 @@ module.exports = {
     username: {
       type: Sequelize.STRING,
       required: true,
-      unique: true
+      unique: true,
+      validate: {
+        max: 40,
+        min: 3
+      }
     },
     password: {
       type: Sequelize.STRING,

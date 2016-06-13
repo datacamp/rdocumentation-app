@@ -50,6 +50,6 @@ module.exports.policies = {
 	// }
 
   UserController: {
-    '*': 'sessionAuth'
+    'me': 'sessionAuth'
   }
 };
