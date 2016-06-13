@@ -8,6 +8,9 @@ module.exports = {
   login: function (req, res) {
     res.view();
   },
+  register: function (req, res) {
+    res.view();
+  },
   process: function(req, res){
     passport.authenticate('local', { successRedirect: '/users/me',
                                      failureRedirect: '/login',
