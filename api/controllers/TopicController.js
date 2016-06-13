@@ -184,7 +184,7 @@ module.exports = {
       else {
         return TopicService.computeLinks('/link/', topic)
           .then(function(topic) {
-            return res.json(topic);
+            return res.ok(topic.toJSON(), 'topic/show.ejs');
           });
       }
     }).catch(function(err) {

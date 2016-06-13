@@ -45,7 +45,14 @@ module.exports = {
       commentable: scope.commentable,
       commentable_id: topicId
     }).then(function(instance) {
-      res.send(instance.toJSON());
+      if(req.wantsJSON) {
+        return res.created(instance.toJSON());
+      } else {
+        return res.redirect(sails.getUrlFor({ target: 'Topic.findById' })
+          .replace(':id', topicId)
+          .replace('/api/', '/')
+        );
+      }
     }).catch(function(err) {
       return res.negotiate(err);
     });
@@ -167,7 +174,6 @@ module.exports = {
         if(req.wantsJSON) {
           return res.created(instance.toJSON());
         } else {
-          console.log(packageVersionInstance);
           return res.redirect(packageVersionInstance.uri);
         }
       });
