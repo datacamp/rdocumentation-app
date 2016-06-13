@@ -36,7 +36,7 @@ module.exports.http = {
       'session',
       'passportInit',
       'passportSession',
-      'myRequestLogger',
+      'userInjector',
       'bodyParser',
       'handleBodyParserError',
       'compress',
@@ -56,10 +56,10 @@ module.exports.http = {
   *                                                                           *
   ****************************************************************************/
 
-    // myRequestLogger: function (req, res, next) {
-    //     console.log("Requested :: ", req.method, req.url);
-    //     return next();
-    // }
+  userInjector: function (req, res, next) {
+    res.locals.user = req.user;
+    return next();
+  },
 
 
   /***************************************************************************
