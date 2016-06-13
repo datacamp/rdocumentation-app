@@ -31,7 +31,7 @@ module.exports = {
     Comment.belongsTo(PackageVersion, {
       foreignKey: 'commentable_id',
       constraints: false,
-      as: 'version'
+      as: 'package_version'
     });
 
     Comment.belongsTo(Topic, {

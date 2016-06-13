@@ -67,8 +67,11 @@ module.exports.routes = {
 
   //***** Comments *****
     // API
+    'get /api/topics/:topicId/comments': 'CommentController.findByTopic',
+    'get /api/packages/:name/versions/:version/comments': 'CommentController.findByVersion',
     'post /api/topics/:topicId/comments': 'CommentController.postCommentToTopic',
     'post /api/packages/:name/versions/:version/comments': 'CommentController.postCommentToVersion',
+
   //***** /Collaborator *****
 
 
