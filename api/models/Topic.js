@@ -83,6 +83,15 @@ module.exports = {
 
     Topic.hasMany(Alias, {as: 'aliases', foreignKey: 'topic_id'});
 
+    Topic.hasMany(Comment, {
+      as: 'comments',
+      foreignKey: 'commentable_id',
+      constraints: false,
+      scope: {
+        commentable: 'topic'
+      }
+    });
+
     Topic.belongsToMany(Tag, {as: 'keywords', through: 'TopicTags', foreignKey: 'topic_id', timestamps: false});
   },
 

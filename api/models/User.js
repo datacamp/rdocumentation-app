@@ -22,6 +22,11 @@ module.exports = {
     }
   },
 
+  associations: function() {
+    User.hasMany(Comment, { foreignKey: 'user_id', as: 'comments' });
+  },
+
+
   options: {
     underscored: true,
 
