@@ -23,11 +23,15 @@ module.exports = function sendOK (data, options) {
   // Set status code
   res.status(200);
 
-  // If appropriate, serve data as JSON(P)
-  // If views are disabled, revert to json
-  if (req.wantsJSON || sails.config.hooks.views === false) {
+  if(req.path.startsWith('/api/')) {
     return res.jsonx(data);
   }
+
+  // If appropriate, serve data as JSON(P)
+  // If views are disabled, revert to json
+  // if (req.wantsJSON || sails.config.hooks.views === false) {
+  //   return res.jsonx(data);
+  // }
 
   // If second argument is a string, we take that to mean it refers to a view.
   // If it was omitted, use an empty object (`{}`)
