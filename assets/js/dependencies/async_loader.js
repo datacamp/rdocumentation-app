@@ -1,4 +1,14 @@
 $(function() {
+  $.urlParam = function(name){
+      var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+      if (results==null){
+         return null;
+      }
+      else{
+         return results[1] || 0;
+      }
+  }
+
   if($.urlParam('viewer_pane') === '1'){
     console.log('*********************** AJAX MODE ***********************');
     var $pageBody = $('body');
