@@ -5,19 +5,7 @@
     <header>
       <h1><%- topic.name %><span>From <a href="<%- topic.package_version.uri %>"><%- topic.package_version.package_name %> v<%- topic.package_version.version %></a></span></h1>
       <div class="package--review pull-right" >
-        <a id="packageVersionReview" class="btn btn-primary pull-right">Review Function</a>
-          <div class='popover hidden'>
-            <% if(user) { %>
-              <h5>Post a review</h5>
-              <form action="/api/topics/<%= topic.id %>/comments" method="post">
-                <textarea name='comment' rows="4" cols="20"></textarea>
-                <button class="btn btn-primary pull-right" type="submit">Send your review</button>
-              </form>
-            <% } else { %>
-              <div class=''>You are not logged in, please log-in to post reviews</div>
-            <% } %>
-          </div>
-
+        <a id="packageVersionReview" href='#postReview' class="btn btn-primary pull-right">Review Function</a>
 
       </div>
     </header>
