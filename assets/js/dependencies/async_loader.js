@@ -1,5 +1,6 @@
 $(function() {
   if($.urlParam('viewer_pane') === '1'){
+    console.log('*********************** AJAX MODE ***********************');
     var $pageBody = $('body');
 
     // Helper function to grab new HTML
@@ -12,8 +13,10 @@ $(function() {
         dataType: 'html'
       })
       .done( function(html) {
-        $pageBody.html(html);
-        bindGlobalClickHandler()
+        var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
+        console.log(body)
+        $pageBody.html(body);
+        bindGlobalClickHandler();
       });
     };
 
