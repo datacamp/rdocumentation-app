@@ -47,5 +47,8 @@
     "url": "git://github.com/ludov/rdocumentation-app.git"
   },
   "author": "ludov",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "grunt-rename": "^0.1.4"
+  }
 }
