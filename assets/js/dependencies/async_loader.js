@@ -17,7 +17,10 @@ $(function() {
         type: 'GET',
         url: 'https://rdocs-v2.herokuapp.com' + url,
         cache: false,
-        dataType: 'html'
+        dataType: 'html',
+        xhrFields: {
+          withCredentials: true
+        }
       })
       .done(rerenderBody);
     };
@@ -40,7 +43,10 @@ $(function() {
             type: $(this).attr('method'),
             dataType: 'html',
             cache: false,
-            data: $(this).serialize()
+            data: $(this).serialize(),
+            xhrFields: {
+              withCredentials: true
+            }
         }).done(rerenderBody);
         return false;
       });
