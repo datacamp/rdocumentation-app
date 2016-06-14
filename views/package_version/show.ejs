@@ -27,8 +27,8 @@
           <div class='popover hidden'>
             <% if(user) { %>
               <h5>Post a review</h5>
-              <form action="/api/packages/<%= pkgVersion.package_name %>/versions/<%= pkgVersion.version %>/comments" method="post">
-                <textarea name='comment' rows="4" cols="20"></textarea>
+              <form action="/api/packages/<%= pkgVersion.package_name %>/versions/<%= pkgVersion.version %>/reviews" method="post">
+                <textarea name='text' rows="4" cols="20"></textarea>
                 <button class="btn btn-primary pull-right" type="submit">Send your review</button>
               </form>
             <% } else { %>
@@ -102,14 +102,14 @@
     </section>
 
 
-    <% if (pkgVersion.comments.length > 0) { %>
+    <% if (pkgVersion.reviews.length > 0) { %>
     <section class="package--reviews">
       <h3>Reviews</h3>
       <dl>
 
-        <% for(var i = 0; i < pkgVersion.comments.length; i++) { %>
-          <dt><%- pkgVersion.comments[i].user.username %></dt>
-          <dd><%- pkgVersion.comments[i].description %></dd>
+        <% for(var i = 0; i < pkgVersion.reviews.length; i++) { %>
+          <dt><%- pkgVersion.reviews[i].user.username %></dt>
+          <dd><%- pkgVersion.reviews[i].text %></dd>
         <% } %>
       </dl>
     </section>

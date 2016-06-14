@@ -1,5 +1,5 @@
 /**
- * Comment.js
+ * Review.js
  *
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
@@ -9,14 +9,25 @@ module.exports = {
 
   attributes: {
 
-    description: {
-      type: Sequelize.TEXT,
-      allowNull: false
+    rating: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      validate: { min: 1, max: 5 }
     },
 
-    commentable: Sequelize.STRING,
+    title: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
 
-    commentable_id: {
+    text: {
+      type: Sequelize.TEXT,
+      allowNull: true
+    },
+
+    reviewable: Sequelize.STRING,
+
+    reviewable_id: {
       type: Sequelize.INTEGER,
       allowNull: false
     },
@@ -28,19 +39,19 @@ module.exports = {
   },
 
   associations: function() {
-    Comment.belongsTo(PackageVersion, {
-      foreignKey: 'commentable_id',
+    Review.belongsTo(PackageVersion, {
+      foreignKey: 'reviewable_id',
       constraints: false,
       as: 'package_version'
     });
 
-    Comment.belongsTo(Topic, {
-      foreignKey: 'commentable_id',
+    Review.belongsTo(Topic, {
+      foreignKey: 'reviewable_id',
       constraints: false,
       as: 'topic'
     });
 
-    Comment.belongsTo(User, {
+    Review.belongsTo(User, {
       foreignKey: 'user_id',
       as: 'user'
     });

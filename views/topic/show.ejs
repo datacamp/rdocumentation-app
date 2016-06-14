@@ -96,9 +96,9 @@
      <section class="topic--reviews">
       <h3 class="topic--title">Reviews</h3>
       <dl>
-        <% for(var i = 0; i < topic.comments.length; i++) { %>
-          <dt><%- topic.comments[i].user.username %></dt>
-          <dd><%- topic.comments[i].description %></dd>
+        <% for(var i = 0; i < topic.reviews.length; i++) { %>
+          <dt><%- topic.reviews[i].user.username %></dt>
+          <dd><%- topic.reviews[i].description %></dd>
         <% } %>
       </dl>
     </section>

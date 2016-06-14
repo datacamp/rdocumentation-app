@@ -66,12 +66,12 @@ module.exports.routes = {
     'get /collaborators/:id': 'CollaboratorController.findById',
   //***** /Collaborator *****
 
-  //***** Comments *****
+  //***** Review *****
     // API
-    'get /api/topics/:topicId/comments': 'CommentController.findByTopic',
-    'get /api/packages/:name/versions/:version/comments': 'CommentController.findByVersion',
-    'post /api/topics/:topicId/comments': 'CommentController.postCommentToTopic',
-    'post /api/packages/:name/versions/:version/comments': 'CommentController.postCommentToVersion',
+    'get /api/topics/:topicId/reviews': 'ReviewController.findByTopic',
+    'get /api/packages/:name/versions/:version/reviews': 'ReviewController.findByVersion',
+    'post /api/topics/:topicId/reviews': 'ReviewController.postReviewToTopic',
+    'post /api/packages/:name/versions/:version/reviews': 'ReviewController.postReviewToVersion',
 
   //***** /Collaborator *****
 

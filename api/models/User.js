@@ -35,7 +35,7 @@ module.exports = {
   },
 
   associations: function() {
-    User.hasMany(Comment, { foreignKey: 'user_id', as: 'comments' });
+    User.hasMany(Review, { foreignKey: 'user_id', as: 'reviews' });
   },
 
 

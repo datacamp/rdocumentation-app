@@ -83,12 +83,12 @@ module.exports = {
 
     Topic.hasMany(Alias, {as: 'aliases', foreignKey: 'topic_id'});
 
-    Topic.hasMany(Comment, {
-      as: 'comments',
-      foreignKey: 'commentable_id',
+    Topic.hasMany(Review, {
+      as: 'review',
+      foreignKey: 'reviewable_id',
       constraints: false,
       scope: {
-        commentable: 'topic'
+        reviewable: 'topic'
       }
     });
 
@@ -143,7 +143,7 @@ module.exports = {
             {model: Section, as: 'sections', attributes: ['name', 'description']},
             {model: Tag, as: 'keywords', attributes: ['name']},
             {model: Alias, as: 'aliases', attributes: ['name']},
-            {model: Comment, as: 'comments', attributes: ['description'],
+            {model: Review, as: 'review',
               include: [{model: User, as: 'user', attributes: ['username']}]
             }
           ]

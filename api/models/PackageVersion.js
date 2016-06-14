@@ -86,12 +86,12 @@ module.exports = {
 
     PackageVersion.hasMany(Topic, {as: 'topics', foreignKey: 'package_version_id'});
 
-    PackageVersion.hasMany(Comment, {
-      as: 'comments',
-      foreignKey: 'commentable_id',
+    PackageVersion.hasMany(Review, {
+      as: 'reviews',
+      foreignKey: 'reviewable_id',
       constraints: false,
       scope: {
-        commentable: 'version'
+        reviewable: 'version'
       }
     });
   },

@@ -1,49 +1,53 @@
 /**
- * CommentController
+ * ReviewController
  *
- * @description :: Server-side logic for managing comments
+ * @description :: Server-side logic for managing reviews
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
 module.exports = {
 
   /**
-  * @api {get} /comments/:id Get a comment by it's id
-  * @apiName Get a comment
-  * @apiGroup Comment
+  * @api {get} /reviews/:id Get a review by it's id
+  * @apiName Get a review
+  * @apiGroup Review
   *
-  * @apiDescription Get a comment by it's id.
+  * @apiDescription Get a review by it's id.
   * Note: require to be authenticated
   *
   *
-  * @apiParam {Int} id Id of the comment to get
+  * @apiParam {Int} id Id of the review to get
   */
   //findById (blueprint)
 
   /**
-  * @api {post} /topics/:topicId/comments/ Post a comment to a topic
-  * @apiName Post comment to topic
-  * @apiGroup Comment
+  * @api {post} /topics/:topicId/reviews/ Post a review to a topic
+  * @apiName Post review to topic
+  * @apiGroup Review
 
-  * @apiDescription Create a new comment in the specified topic.
+  * @apiDescription Create a new review in the specified topic.
   * Note: require to be authenticated
   *
   *
-  * @apiParam {Int} topicId Id of the topic to post to comment
-  * @apiParam {String} comment Comment to push.
+  * @apiParam {Int} topicId Id of the topic to post to review
+  * @apiParam {String} review Review to push.
   */
-  postCommentToTopic: function(req, res) {
+  postReviewToTopic: function(req, res) {
     var topicId = req.param('topicId');
-    var comment = req.param('comment');
+    var rating = req.param('rating');
+    var reviewTitle = req.param('title');
+    var reviewText = req.param('text');
     var user = req.user;
 
-    var scope = sails.models.topic.associations.comments.scope;
+    var scope = sails.models.topic.associations.reviews.scope;
 
-    return Comment.create({
-      description: comment,
+    return Review.create({
+      rating: rating,
+      title:reviewTitle,
+      text: reviewText,
       user_id: user.id,
-      commentable: scope.commentable,
-      commentable_id: topicId
+      reviewable: scope.reviewable,
+      reviewable_id: topicId
     }).then(function(instance) {
       if(req.wantsJSON) {
         return res.created(instance.toJSON());
@@ -64,13 +68,13 @@ module.exports = {
 
 
    /**
-  * @api {get} /topics/:topicId/comments/ Get list of topic's comment
-  * @apiName Comment by topic
-  * @apiGroup Comment
+  * @api {get} /topics/:topicId/reviews/ Get list of topic's review
+  * @apiName Review by topic
+  * @apiGroup Review
   *
-  * @apiDescription Get list of topic's comment
+  * @apiDescription Get list of topic's review
   *
-  * @apiParam {Int} topicId Id the topic for which we get the comments
+  * @apiParam {Int} topicId Id the topic for which we get the reviews
   */
   findByTopic: function(req, res) {
     var topicId = req.param('topicId');
@@ -79,12 +83,12 @@ module.exports = {
       sort = Utils.parseSort(req) || 'created_at DESC';
     var user = req.user;
 
-    var scope = sails.models.topic.associations.comments.scope;
+    var scope = sails.models.topic.associations.reviews.scope;
 
-    return Comment.findAll({
+    return Review.findAll({
       where: {
-        commentable_id: topicId,
-        commentable: scope.commentable
+        reviewable_id: topicId,
+        reviewable: scope.reviewable
       },
       order: sort,
       limit: limit,
@@ -99,14 +103,14 @@ module.exports = {
 
 
   /**
-  * @api {get} /package/:name/versions/:version/comments/ Get list of version's comment
-  * @apiName Comment by version
-  * @apiGroup Comment
+  * @api {get} /package/:name/versions/:version/reviews/ Get list of version's review
+  * @apiName Review by version
+  * @apiGroup Review
   *
-  * @apiDescription Get list of version's comment
+  * @apiDescription Get list of version's review
   *
-  * @apiParam {String} name Name of the package to comment
-  * @apiParam {String} version Version of the package to comment
+  * @apiParam {String} name Name of the package to review
+  * @apiParam {String} version Version of the package to review
   */
   findByVersion: function(req, res) {
     var packageName = req.param('name');
@@ -116,11 +120,11 @@ module.exports = {
       sort = Utils.parseSort(req) || 'created_at DESC';
     var user = req.user;
 
-    var scope = sails.models.packageversion.associations.comments.scope;
+    var scope = sails.models.packageversion.associations.reviews.scope;
 
-    return Comment.findAll({
+    return Review.findAll({
       where: {
-        commentable: scope.commentable
+        reviewable: scope.reviewable
       },
       attributes: { exclude: ['package_version'] },
       include: [{ model: PackageVersion, as: 'package_version', where: {
@@ -140,25 +144,27 @@ module.exports = {
 
 
   /**
-  * @api {post} /package/:name/versions/:version/comments/ Post a comment to a topic
-  * @apiName Post comment to a package version
-  * @apiGroup Comment
+  * @api {post} /package/:name/versions/:version/reviews/ Post a review to a topic
+  * @apiName Post review to a package version
+  * @apiGroup Review
 
-  * @apiDescription Create a new comment in the specified package version.
+  * @apiDescription Create a new review in the specified package version.
   * Note: require to be authenticated
   *
   *
-  * @apiParam {String} name Name of the package to comment
-  * @apiParam {String} version Version of the package to comment
-  * @apiParam {String} comment Comment to push.
+  * @apiParam {String} name Name of the package to review
+  * @apiParam {String} version Version of the package to review
+  * @apiParam {String} review Review to push.
   */
-  postCommentToVersion: function(req, res) {
+  postReviewToVersion: function(req, res) {
     var packageName = req.param('name');
     var packageVersion = req.param('version');
-    var comment = req.param('comment');
+    var rating = req.param('rating');
+    var reviewTitle = req.param('title');
+    var reviewText = req.param('text');
     var user = req.user;
 
-    var scope = sails.models.packageversion.associations.comments.scope;
+    var scope = sails.models.packageversion.associations.reviews.scope;
 
     return PackageVersion.findOne({
       where: {
@@ -166,11 +172,13 @@ module.exports = {
         version: packageVersion
       }
     }).then(function(packageVersionInstance) {
-      return Comment.create({
-        description: comment,
+      return Review.create({
+        rating: rating,
+        title:reviewTitle,
+        text: reviewText,
         user_id: user.id,
-        commentable: scope.commentable,
-        commentable_id: packageVersionInstance.id
+        reviewable: scope.reviewable,
+        reviewable_id: packageVersionInstance.id
       }).then(function(instance) {
         if(req.wantsJSON) {
           return res.created(instance.toJSON());

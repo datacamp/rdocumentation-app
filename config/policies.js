@@ -51,7 +51,7 @@ module.exports.policies = {
 
   '*': [true, 'flash'],
 
-  CommentController: {
+  ReviewController: {
     '*': 'sessionAuth'
   },
 
