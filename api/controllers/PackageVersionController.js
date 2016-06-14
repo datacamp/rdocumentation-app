@@ -41,7 +41,7 @@ module.exports = {
       res.location('/api/packages/' + value.package_name + '/versions/' + value.version);
       res.json(value);
     }).catch(Sequelize.UniqueConstraintError, function (err) {
-      return res.send(409, err);
+      return res.send(409, err.errors);
     }).catch(Sequelize.ValidationError, function (err) {
       return res.send(400, err.errors);
     }).catch(function(err){
@@ -115,7 +115,7 @@ module.exports = {
         },
         group: ['reviewable_id']
       }).then(function(ratingInstance) {
-        console.log(ratingInstance.getDataValue('rating'));
+        if (ratingInstance === null) return versionInstance.toJSON();
         var version = versionInstance.toJSON();
         version.rating = ratingInstance.getDataValue('rating');
         return version;

@@ -41,7 +41,38 @@ module.exports = {
         return 'https://www.gravatar.com/avatar/' + md5(_.trim(this.email).toLowerCase());
       }
     },
-    underscored: true
+    underscored: true,
+
+
+
+    classMethods: {
+
+      /**
+      * author is an object with attributes name and optionnally email
+      *
+      */
+      insertAuthor: function(author, options) {
+        var where = {};
+        if (author.email) {
+          where.$or =  [{name: author.name}, {email: author.email}];
+        } else where = author;
+
+        var params = _.defaults({
+          where: where,
+          defaults: author,
+          order: [['email', 'DESC']]
+        }, options);
+
+        return Collaborator.findOrCreate(params)
+        .spread(function(instance, created) {
+          if (instance.email === null && author.email) {
+            return instance.update({email: author.email}, options);
+          } else return instance;
+        });
+      }
+
+    }
+
   }
 
 };

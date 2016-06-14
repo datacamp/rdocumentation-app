@@ -139,24 +139,12 @@ module.exports = {
             });
           });
 
-          var maintainer = packageVersion.maintainer !== null ? Collaborator.findOrCreate({
-            where: {email: packageVersion.maintainer.email},
-            transaction: t,
-            defaults: packageVersion.maintainer
-          }) : null;
+          var maintainer = packageVersion.maintainer !== null ?
+            Collaborator.insertAuthor(packageVersion.maintainer, {transaction: t}) : null;
+
 
           var authors = Promise.map(packageVersion.authors, function(author) {
-            return Collaborator.findOrCreate({
-              where: {email: author.email},
-              transaction: t,
-              defaults: author
-            }).spread(function(instance, created) {
-              return instance;
-            });
-          }).then(function(authors) {
-            return _.uniqBy(authors, function(author) {
-              return author.email;
-            });
+            return Collaborator.insertAuthor(author, {transaction: t});
           });
 
           var dependencies = Package.bulkCreate(packageVersion.dependencies.map(function(dependency) {
@@ -192,7 +180,7 @@ module.exports = {
                   ignoreDuplicates: true,
                   transaction: t
                 });
-                var auth = packageVersionInstance.setCollaborators(authorInstances, {transaction: t});
+                var auth = packageVersionInstance.setCollaborators(authorInstances, {transaction: t, ignoreDuplicates: true});
                 return Promise.join(dep, auth,
                   function(dependencies, authors) {
                     return packageVersionInstance;
