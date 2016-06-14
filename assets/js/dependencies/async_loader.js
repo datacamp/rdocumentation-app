@@ -8,22 +8,12 @@ $(function() {
     function replacePage(url) {
       $.ajax({
         type: 'GET',
-        xhr: function() {
-          var xhr = jQuery.ajaxSettings.xhr();
-          var setRequestHeader = xhr.setRequestHeader;
-          xhr.setRequestHeader = function(name, value) {
-            if (name == 'X-Requested-With') return;
-            setRequestHeader.call(this, name, value);
-          }
-          return xhr;
-        },
         url: 'https://rdocs-v2.herokuapp.com' + url,
         cache: false,
         dataType: 'html'
       })
       .done( function(html) {
         var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
-        console.log(body)
         $pageBody.html(body);
         bindGlobalClickHandler();
       });
