@@ -6,7 +6,8 @@
   "hooks": {
     "orm": false,
     "blueprints": false,
-    "pubsub": false
+    "pubsub": false,
+    "sockets":false
   }
 
 }
