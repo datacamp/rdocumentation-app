@@ -105,9 +105,25 @@ module.exports = {
           include: [{model: User, as: 'user', attributes: ['username', 'id']}]
         }
       ]
-    }).then(function(version) {
+    })
+    .then(function(versionInstance) {
+      return Review.findOne({
+        attributes: [[sequelize.fn('AVG', sequelize.col('rating')), 'rating']],
+        where: {
+          reviewable_id: versionInstance.id,
+          reviewable: 'version'
+        },
+        group: ['reviewable_id']
+      }).then(function(ratingInstance) {
+        console.log(ratingInstance.getDataValue('rating'));
+        var version = versionInstance.toJSON();
+        version.rating = ratingInstance.getDataValue('rating');
+        return version;
+      });
+    })
+    .then(function(version) {
       if(version === null) return res.notFound();
-      else return res.ok(version.toJSON(), 'package_version/show.ejs');
+      else return res.ok(version, 'package_version/show.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });

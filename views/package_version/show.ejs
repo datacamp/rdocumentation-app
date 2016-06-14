@@ -14,14 +14,21 @@
           </option>
         <% } %>
       </select>
-      <div class="rating">
-        <i class="fa fa-star" aria-hidden="true"></i>
-        <i class="fa fa-star" aria-hidden="true"></i>
-        <i class="fa fa-star" aria-hidden="true"></i>
-        <i class="fa fa-star" aria-hidden="true"></i>
-        <i class="fa fa-star-o" aria-hidden="true"></i>
-        <span>(293810 votes)</span>
+
+
+      <div class="rating" title=<%= pkgVersion.rating %>>
+
+         <% for(var i=1; i <= 5; i++) { %>
+            <i class="fa fa-star<%=
+            pkgVersion.rating < i ?
+              pkgVersion.rating <= i - 0.5 ? "-o" : "-half-o"
+              : ""
+            %>" aria-hidden="true"></i>
+          <% } %>
+          <span>(<%= pkgVersion.reviews.length %> votes)</span>
       </div>
+
+
       <div class="package--review pull-right" >
         <a id="packageVersionReview" href='#postReview' class="btn btn-primary pull-right">Review Package</a>
       </div>
