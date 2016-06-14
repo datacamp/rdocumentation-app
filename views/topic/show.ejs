@@ -81,15 +81,8 @@
       </i>
     </small>
 
-     <section class="topic--reviews">
-      <h3 class="topic--title">Reviews</h3>
-      <dl>
-        <% for(var i = 0; i < topic.reviews.length; i++) { %>
-          <dt><%- topic.reviews[i].user.username %></dt>
-          <dd><%- topic.reviews[i].description %></dd>
-        <% } %>
-      </dl>
-    </section>
+
+    <%- partial ('../shared/_review.ejs') %>
   </div>
 </section>
 <%- partial ('../shared/_footer.ejs') %>

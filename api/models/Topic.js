@@ -84,7 +84,7 @@ module.exports = {
     Topic.hasMany(Alias, {as: 'aliases', foreignKey: 'topic_id'});
 
     Topic.hasMany(Review, {
-      as: 'review',
+      as: 'reviews',
       foreignKey: 'reviewable_id',
       constraints: false,
       scope: {
@@ -143,7 +143,7 @@ module.exports = {
             {model: Section, as: 'sections', attributes: ['name', 'description']},
             {model: Tag, as: 'keywords', attributes: ['name']},
             {model: Alias, as: 'aliases', attributes: ['name']},
-            {model: Review, as: 'review',
+            {model: Review, as: 'reviews',
               include: [{model: User, as: 'user', attributes: ['username']}]
             }
           ]
