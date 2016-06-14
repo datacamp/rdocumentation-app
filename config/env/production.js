@@ -12,27 +12,28 @@
 
 module.exports = {
 
-  /***************************************************************************
-   * Set the default database connection for models in the production        *
-   * environment (see config/connections.js and config/models.js )           *
-   ***************************************************************************/
+  connections: {
+    sequelize_mysql: {
+      database: process.env.DATABASE_NAME,
+      user: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
+      options: {
+        dialect: 'mysql',
+        host   : process.env.DATABASE_HOST,
+        port   : process.env.DATABASE_PORT,
+        pool: {
+          max: 5,
+          min: 2,
+          idle: 10000
+        }
+      }
+    },
 
-  // models: {
-  //   connection: 'someMysqlServer'
-  // },
+  },
 
-  /***************************************************************************
-   * Set the port in the production environment to 80                        *
-   ***************************************************************************/
+  models: {
+    migrate: 'safe'
+  }
 
-  // port: 80,
-
-  /***************************************************************************
-   * Set the log level in production environment to "silent"                 *
-   ***************************************************************************/
-
-  // log: {
-  //   level: "silent"
-  // }
 
 };
