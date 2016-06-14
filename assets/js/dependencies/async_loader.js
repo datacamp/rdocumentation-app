@@ -3,6 +3,13 @@ $(function() {
     console.log('*********************** AJAX MODE ***********************');
     var $pageBody = $('body');
 
+    function rerenderBody(html){
+      var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
+      $pageBody.html(body);
+      bindGlobalClickHandler();
+      bindGlobalFormHandler();
+    }
+
     // Helper function to grab new HTML
     // and replace the content
     function replacePage(url) {
@@ -12,11 +19,7 @@ $(function() {
         cache: false,
         dataType: 'html'
       })
-      .done( function(html) {
-        var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
-        $pageBody.html(body);
-        bindGlobalClickHandler();
-      });
+      .done(rerenderBody);
     };
 
     // Intercept all link clicks
@@ -29,6 +32,23 @@ $(function() {
       });
     }
 
+    function bindGlobalFormHandler(){
+      // Intercept form submissions
+      $('form').on('submit', function() {
+        $.ajax({
+            url: $(this).attr('action'),
+            type: $(this).attr('method'),
+            dataType: 'html',
+            cache: false,
+            data: $(this).serialize()
+        }).done(rerenderBody);
+        return false;
+      });
+    }
+
     bindGlobalClickHandler();
+    bindGlobalFormHandler();
   }
+
+
 });
