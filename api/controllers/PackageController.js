@@ -49,7 +49,7 @@ module.exports = {
       } else if(req.wantsJSON) {
         return res.json(package);
       } else {
-        return res.redirect(package.versions[package.versions.length - 1].uri)
+        return res.redirect(package.versions[package.versions.length - 1].uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);

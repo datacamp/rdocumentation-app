@@ -48,6 +48,7 @@ module.exports = {
       if(req.wantsJSON) {
         return res.created(instance.toJSON());
       } else {
+        FlashService.success(req, 'Review successfully added.');
         return res.redirect(sails.getUrlFor({ target: 'Topic.findById' })
           .replace(':id', topicId)
           .replace('/api/', '/')
@@ -174,6 +175,7 @@ module.exports = {
         if(req.wantsJSON) {
           return res.created(instance.toJSON());
         } else {
+          FlashService.success(req, 'Review successfully added.');
           return res.redirect(packageVersionInstance.uri);
         }
       });

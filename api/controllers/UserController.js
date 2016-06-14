@@ -21,9 +21,9 @@ module.exports = {
     }).catch(Sequelize.ValidationError, function (err) {
       err.errors.forEach(function(error){
         FlashService.error(req, error.message);
-      })
+      });
       return res.redirect('/register');
-    })
+    });
   }
 
 };

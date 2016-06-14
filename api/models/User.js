@@ -57,6 +57,17 @@ module.exports = {
 
     },
 
+    getterMethods: {
+      uri: function()  {
+        return '/users/:id'
+          .replace(':id', this.id);
+      },
+      api_uri: function()  {
+        return '/api/users/:id'
+          .replace(':id', this.id);
+      }
+    },
+
     classMethods: {
       findById: function(id) {
         return User.findOne({

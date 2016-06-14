@@ -9,4 +9,4 @@ module.exports = {
   error: function(req, message) {
     req.session.messages['error'].push(message);
   }
-}
+};

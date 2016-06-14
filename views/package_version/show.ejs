@@ -42,8 +42,11 @@
 
     <section class="package--stats">
       <dl>
+        <% if (pkgVersion.maintainer) { %>
         <dt>Maintainer:</dt>
-        <dd><a href="<%= pkgVersion.maintainer.uri %>"><%= pkgVersion.maintainer.name %></a></dd>
+        <dd><a href="<%= pkgVersion.maintainer.uri %>">
+          <%= pkgVersion.maintainer.name %></a></dd>
+        <% } %>
         <dt>Contributors:</dt>
         <dd>
         <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
@@ -97,6 +100,20 @@
         <% } %>
       </ul>
     </section>
+
+
+    <% if (pkgVersion.comments.length > 0) { %>
+    <section class="package--reviews">
+      <h3>Reviews</h3>
+      <dl>
+
+        <% for(var i = 0; i < pkgVersion.comments.length; i++) { %>
+          <dt><%- pkgVersion.comments[i].user.username %></dt>
+          <dd><%- pkgVersion.comments[i].description %></dd>
+        <% } %>
+      </dl>
+    </section>
+    <% } %>
 
   </div>
 </section>
