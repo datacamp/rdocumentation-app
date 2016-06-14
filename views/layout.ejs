@@ -6,6 +6,7 @@
     <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+    <base href="<%= process.env.BASE_URL ? process.env.BASE_URL : '/' %>">
     <!--
         Stylesheets and Preprocessors
         ==============================
@@ -92,7 +93,6 @@
     <script src="https://use.fontawesome.com/56aec574ed.js"></script>
 
     <!--SCRIPTS-->
-    <script src="/js/dependencies/sails.io.js"></script>
     <script src="/js/dependencies/highlight.pack.js"></script>
     <script src="/js/pages/package.js"></script>
     <script src="/js/search.js"></script>
