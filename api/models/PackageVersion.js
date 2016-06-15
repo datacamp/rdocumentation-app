@@ -169,7 +169,7 @@ module.exports = {
               }).spread(function(packageVersionInstance, initialized) {
                 packageVersionInstance.set(packageVersion.fields);
                 packageVersionInstance.setPackage(packageVersion.package.name, {save: false});
-                if (maintainerInstance !== null) packageVersionInstance.setMaintainer(maintainerInstance[0], {save: false});
+                if (maintainerInstance !== null) packageVersionInstance.setMaintainer(maintainerInstance, {save: false});
                 return packageVersionInstance.save({transaction: t});
               }).then(function(packageVersionInstance) {
                 var dependencies = packageVersion.dependencies.map(function(dependency) {
