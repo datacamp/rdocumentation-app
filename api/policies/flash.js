@@ -9,9 +9,15 @@ module.exports = function(req, res, next) {
     return next();
   }
 
-  res.locals.messages = _.clone(_.merge(req.session.messages, req.session.flash));
+  if(req.session.flash) {
+    res.locals.messages = _.clone(_.merge(req.session.messages, req.session.flash));
+    req.session.flash = {}
+  } else {
+    res.locals.messages = _.clone(req.session.messages);
+  }
 
   // Clear flash
   req.session.messages = { success: [], error: [], warning: [] };
+
   return next();
 };
