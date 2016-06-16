@@ -44,6 +44,7 @@ module.exports.http = {
       'poweredBy',
       '$custom',
       'router',
+      'flash', // Connect-flash for passport.js
       'www',
       'favicon',
       '404',

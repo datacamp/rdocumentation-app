@@ -8,7 +8,8 @@ module.exports = function(req, res, next) {
     req.session.messages = { success: [], error: [], warning: [] };
     return next();
   }
-  res.locals.messages = _.clone(req.session.messages);
+
+  res.locals.messages = _.clone(_.merge(req.session.messages, req.session.flash));
 
   // Clear flash
   req.session.messages = { success: [], error: [], warning: [] };
