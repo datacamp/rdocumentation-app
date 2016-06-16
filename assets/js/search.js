@@ -24,7 +24,7 @@ $(document).ready(function() {
   searchInput = $('.search input'),
   searchResultsPane = $('.search .results'),
   packagesContainer = $('.search .packages'),
-  functionsContainer = $('.search .functions');
+  topicsContainer = $('.search .topics');
 
   function search(token){
     $.post('/api/quick_search', {token: token}, function(data){
@@ -42,7 +42,7 @@ $(document).ready(function() {
     });
 
     results.topics.forEach(function(topic){
-      functionsContainer.append("<li><a href=" + topic.uri + ">" + topic.name + "</a></li>");
+      topicsContainer.append("<li><a href=" + topic.uri + ">" + topic.name + "</a></li>");
     });
   }
 
@@ -59,5 +59,5 @@ $(document).ready(function() {
             searchResultsPane.hide();
           }
       }
-  })
+  });
 });
