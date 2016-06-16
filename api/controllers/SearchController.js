@@ -5,33 +5,58 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
  var Promise = require('bluebird');
+ var _ = require('lodash');
 
 module.exports = {
 
   quickSearch: function(req, res) {
     var token = req.body.token;
 
-    Promise.join(
-      Package.findAll({
-        where: {
-          name: {
-            $like: '%' + token + '%'
-          }
+    es.msearch({
+      body: [
+        { index: 'rdoc_v2', type: 'package_version' },
+        { query: {
+            prefix : {
+              package_name: token,
+            }
+          },
+          size: 5,
+          fields: ['package_name', 'version']
         },
-        limit: 5
-      }),
-      // Topic.findAll({
-      //   where: {
-      //     name: {
-      //       $like: '%' + token + '%'
-      //     }
-      //   },
-      //   limit: 5
-      // }),
-      function(packages, topics) {
-        return res.json({packages: packages, topics: []});
-      }
-    ).catch(function(err) {
+
+        { index: 'rdoc_v2', type: 'topic' },
+        { query: {
+            prefix : {
+              name: token,
+            }
+          },
+          size: 5,
+          fields: ['name']
+        },
+
+    ]}).then(function(response) {
+      var packageResult = response.responses[0];
+      var topicResult = response.responses[1];
+      var packages = _.map(packageResult.hits.hits, function(hit) {
+        var name = hit.fields.package_name[0];
+        var version = hit.fields.version[0];
+        var uri = sails.getUrlFor({ target: 'PackageVersion.findByNameVersion' })
+          .replace(':name', name)
+          .replace(':version', version)
+          .replace('/api/', '/');
+        return { uri: uri,  name: name };
+      });
+
+      var topics = _.map(topicResult.hits.hits, function(hit) {
+        var name = hit.fields.name[0];
+        var id = hit._id;
+        var uri =  sails.getUrlFor({ target: 'Topic.findById' })
+          .replace(':id', id)
+          .replace('/api/', '/');
+        return { uri: uri,  name: name };
+      });
+      return res.json({packages: packages, topics: topics});
+    }).catch(function(err) {
       return res.negotiate(err);
     });
 
