@@ -5,6 +5,9 @@
 <div class='reviews'>
   <h3>Reviews</h3>
   <div class="review-content">
+    <% if(reviews.length === 0) { %>
+      <h5 class="review-placeholder"><i>Looks like there are no reviews yet.</i></h5>
+    <% } %>
     <% for(var i=0; i < reviews.length; i++) { %>
 
       <div class="review-body">
@@ -56,7 +59,7 @@
         <button class="btn btn-primary pull-right" type="submit">Send your review</button>
       </form>
       <% } else { %>
-      <div class=''>You are not logged in, please log-in to post reviews</div>
+      <p>You are not logged in, please <a href="/login">Sign in</a> or <a href="/register">Create an account</a> to post reviews.</p>
     <% } %>
   </div>
 <div>
