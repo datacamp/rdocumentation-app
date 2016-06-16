@@ -10,6 +10,7 @@
     "db-migrate": "^0.10.0-beta.12",
     "db-migrate-mysql": "^1.1.7",
     "ejs": "2.3.4",
+    "elasticsearch": "^11.0.1",
     "grunt": "0.4.5",
     "grunt-apidoc": "^0.11.0",
     "grunt-contrib-clean": "0.6.0",
