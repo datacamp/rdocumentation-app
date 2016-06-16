@@ -4,7 +4,6 @@ module.exports = function es_init(sails) {
   return {
 
     initialize: function(next) {
-
       var config = sails.config[this.configKey];
       var host = config.host;
       if (host === null) {
