@@ -17,14 +17,23 @@ module.exports = {
         { index: 'rdoc', type: 'package_version' },
         { query: {
             bool: {
-              must: [{
-                "match_phrase_prefix" : {
-                    "package_name" : {
-                        "query" : token,
-                        "max_expansions" : 20
-                    }
+              should: [
+                {
+                  term: {
+                    "package_name" : token,
+                    "boost": 2.0
+                  }
+                },
+                {
+                  match_phrase_prefix : {
+                      "package_name" : {
+                          "query" : token,
+                          "max_expansions" : 20
+                      }
+                  }
                 }
-              }],
+              ],
+              "minimum_number_should_match": 1,
               filter: {
                 term: { latest_version: 1 }
               }
@@ -38,11 +47,20 @@ module.exports = {
         { query: {
 
             bool: {
-              must: [{
-                prefix : {
-                  name: token,
+              should: [
+                {
+                  term: {
+                    "package_name" : token,
+                    "boost": 2.0
+                  }
+                },
+                {
+                  prefix : {
+                    name: token,
+                  }
                 }
-              }],
+              ],
+              "minimum_number_should_match": 1,
               filter: {
                 has_parent : {
                   parent_type : "package_version",
