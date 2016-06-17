@@ -37,6 +37,7 @@ module.exports.http = {
       'passportInit',
       'passportSession',
       'userInjector',
+      'paramsInjector',
       'bodyParser',
       'handleBodyParserError',
       'compress',
@@ -59,6 +60,12 @@ module.exports.http = {
 
   userInjector: function (req, res, next) {
     res.locals.user = req.user;
+    return next();
+  },
+
+  paramsInjector: function (req, res, next) {
+    res.locals.inViewerPane = (req.param('viewer_pane') === '1') ? true : false;
+    res.locals.path = req.path;
     return next();
   },
 

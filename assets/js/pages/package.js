@@ -34,9 +34,4 @@ $(document).ready(function() {
     }
   });
 
-  $('#packageVersionReview').click(function() {
-    $('.package--review .popover').toggleClass('hidden');
-    $('.package--review .popover textarea').focus();
-  });
-
 });

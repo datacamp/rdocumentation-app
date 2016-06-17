@@ -17,7 +17,7 @@ $(function() {
       var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
       $pageBody.html(body);
       bindGlobalClickHandler();
-      bindGlobalFormHandler();
+      // bindGlobalFormHandler();
     }
 
     // Helper function to grab new HTML
@@ -25,7 +25,7 @@ $(function() {
     function replacePage(url) {
       $.ajax({
         type: 'GET',
-        url: 'https://rdocs-v2.herokuapp.com' + url,
+        url: 'https://rdocs-v2.herokuapp.com' + url + '?viewer_pane=1',
         cache: false,
         dataType: 'html',
         xhrFields: {
@@ -37,7 +37,7 @@ $(function() {
 
     // Intercept all link clicks
     function bindGlobalClickHandler(){
-      $('a').click(function(e) {
+      $('a:not(.js-external)').click(function(e) {
         e.preventDefault();
         // Grab the url from the anchor tag
         var url = $(this).attr('href');
@@ -45,25 +45,25 @@ $(function() {
       });
     }
 
-    function bindGlobalFormHandler(){
-      // Intercept form submissions
-      $('form').on('submit', function() {
-        $.ajax({
-            url: $(this).attr('action'),
-            type: $(this).attr('method'),
-            dataType: 'html',
-            cache: false,
-            data: $(this).serialize(),
-            xhrFields: {
-              withCredentials: true
-            }
-        }).done(rerenderBody);
-        return false;
-      });
-    }
+    // function bindGlobalFormHandler(){
+    //   // Intercept form submissions
+    //   $('form').on('submit', function() {
+    //     $.ajax({
+    //         url: $(this).attr('action'),
+    //         type: $(this).attr('method'),
+    //         dataType: 'html',
+    //         cache: false,
+    //         data: $(this).serialize(),
+    //         xhrFields: {
+    //           withCredentials: true
+    //         }
+    //     }).done(rerenderBody);
+    //     return false;
+    //   });
+    // }
 
     bindGlobalClickHandler();
-    bindGlobalFormHandler();
+    // bindGlobalFormHandler();
   }
 
 

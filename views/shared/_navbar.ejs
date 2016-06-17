@@ -15,14 +15,13 @@
           </ul>
           <ul class="topics">
             <li class="header">Topics</li>
-            <li><a href="#">hist<span>{base}</span></a></li>
-            <li><a href="#">rnorm<span>{base}</span></a></li>
-            <li><a href="#">abs<span>{base}</span></a></li>
           </ul>
         </div>
       </form>
     </div>
 
-    <%- partial ('_navigation.ejs') %>
+    <% if(!inViewerPane) { %>
+      <%- partial ('_navigation.ejs') %>
+    <% } %>
   </nav>
 </section>

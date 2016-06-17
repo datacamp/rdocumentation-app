@@ -27,20 +27,6 @@
 .package--stats {
 }
 
-.package--review {
-  position: relative;
-  .popover {
-    position: absolute;
-    top: 50px;
-    left: -200px;
-    padding: 15px;
-    box-shadow: 0px 0px 15px 5px #eeeeee;
-    border-radius: 5px;
-    margin: 15px;
-    background-color: #fefefe;
-  }
-}
-
 .package--info {
   margin-top: $default-space;
 }

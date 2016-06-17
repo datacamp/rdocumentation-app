@@ -32,7 +32,11 @@
 
 
       <div class="package--review pull-right" >
-        <a id="packageVersionReview" href='#postReview' class="btn btn-primary pull-right">Review Package</a>
+        <% if(!inViewerPane) { %>
+          <a href="#postReview" class="btn btn-primary">Review Package</a>
+        <% } else { %>
+          <a href="<%= path + '#postReview' %>" class="btn btn-primary js-external">Review Package</a>
+        <% } %>
       </div>
     </header>
 
