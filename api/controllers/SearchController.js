@@ -14,17 +14,24 @@ module.exports = {
 
     es.msearch({
       body: [
-        { index: 'rdoc_v2', type: 'package_version' },
+        { index: 'rdoc', type: 'package_version' },
         { query: {
-            prefix : {
-              package_name: token,
+            bool: {
+              must: [{
+                prefix : {
+                  package_name: token,
+                }
+              }],
+              filter: {
+                term: { latest_version: 1 }
+              }
             }
           },
           size: 5,
           fields: ['package_name', 'version']
         },
 
-        { index: 'rdoc_v2', type: 'topic' },
+        { index: 'rdoc', type: 'topic' },
         { query: {
             prefix : {
               name: token,
