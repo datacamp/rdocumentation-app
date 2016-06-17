@@ -1,23 +1,26 @@
 <%- partial ('../shared/_navbar.ejs') %>
+
 <div class='search-result'>
   <div class="container">
     <div class='row'>
       <h1>
        </h1>
 
+      <% for(var i = 0; i < data.hits.length; i++) { %>
+        <% var hit = data.hits[i] %>
+        <section class='col-xs-12 search-result-item'>
+          <a><h4><%- hit.fields.package_name[0] %></h4> <i><%- hit.fields.version[0] %></i></a>
+          <% for(highlight in hit.highlight) { %>
+            <h5><%= highlight %></h5>
+            <p class='context'>
+             <%- hit.highlight[highlight] %>
+            </p>
+          <% } %>
+        </section>
+      <% } %>
 
-      <section class='col-xs-12 search-result-item'>
-        <a><h4>Package name</h4> <i>version</i></a>
-        <p class='context'>
-         &hellip; some description with <mark>some highlighted text</mark> &hellip;
-        </p>
-        <p class='context'>
-         &hellip; some description with <mark>some highlighted text</mark> &hellip;
-        </p>
-      </section>
 
     </div>
-    <p><%- JSON.stringify(data, null, 2) %></p>
   </div>
 </div>
 

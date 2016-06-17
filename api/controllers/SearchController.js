@@ -190,7 +190,8 @@ module.exports = {
         }
 
     ]}).then(function(response) {
-      return res.json(response);
+      var packageResult = response.responses[0].hits;
+      return res.ok(packageResult, 'search/result.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });
