@@ -137,7 +137,7 @@ module.exports = {
             post_tags : ["</mark>"],
             "fields" : {
               "title" : {},
-              'description': {}
+              "description": {},
             }
           },
           size: 5,
@@ -156,24 +156,34 @@ module.exports = {
                     'name^6',
                     'title^3', 'description^3', 'keywords^3', 'aliases^3',
                     'arguments.name^2', 'arguments.description^2',
-                    'usage^2', 'details^2', 'value^2',
+                    'details^2', 'value^2',
                     'note', 'author',
                     'references', 'license', 'url', 'copyright']
                 }
-              }],
-              should: {
-                has_parent : {
-                  parent_type : "package_version",
-                  query : {
-                    term : {
-                        latest_version : 1
-                    }
-                  },
-                  inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
-                }
-              }
+              }]
             }
 
+          },
+          highlight : {
+            pre_tags : ["<mark>"],
+            post_tags : ["</mark>"],
+            "fields" : {
+              "name": {},
+              "title": {},
+              "description": {},
+              "keywords": {},
+              "aliases": {},
+              "arguments.name": {},
+              "arguments.description": {},
+              "details": {},
+              "value": {},
+              "note": {},
+              "author": {},
+              "references": {},
+              "license": {},
+              "url": {},
+              "copyright": {}
+            }
           },
           size: 5,
           fields: ['name']
