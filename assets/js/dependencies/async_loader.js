@@ -23,6 +23,7 @@ $(function() {
       bindGlobalClickHandler();
       window.quickSearchHandler(jQuery);
       window.packageVersionToggleHandler(jQuery);
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub])
     }
 
     // Helper function to grab new HTML
