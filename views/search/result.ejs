@@ -1,0 +1,24 @@
+<%- partial ('../shared/_navbar.ejs') %>
+<div class='search-result'>
+  <div class="container">
+    <div class='row'>
+      <h1>
+       </h1>
+
+
+      <section class='col-xs-12 search-result-item'>
+        <a><h4>Package name</h4> <i>version</i></a>
+        <p class='context'>
+         &hellip; some description with <mark>some highlighted text</mark> &hellip;
+        </p>
+        <p class='context'>
+         &hellip; some description with <mark>some highlighted text</mark> &hellip;
+        </p>
+      </section>
+
+    </div>
+    <p><%- JSON.stringify(data, null, 2) %></p>
+  </div>
+</div>
+
+<%- partial ('../shared/_footer.ejs') %>

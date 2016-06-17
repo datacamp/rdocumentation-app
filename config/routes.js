@@ -79,6 +79,8 @@ module.exports.routes = {
   // Link
   'get /link/:alias': 'Topic.findByAlias',
 
-  // Quick Search
-  'post /api/quick_search': 'SearchController.quickSearch'
+  // Search
+  'post /api/quick_search': 'SearchController.quickSearch',
+  'get /search': 'SearchController.fullSearch'
+
 };

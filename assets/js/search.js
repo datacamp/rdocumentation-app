@@ -53,7 +53,7 @@ window.quickSearchHandler = function() {
     packagesContainer.find('a').bind('click', window.asyncClickHandler);
 
     results.topics.forEach(function(topic){
-      topicsContainer.append("<li><a href=" + topic.uri + ">" + topic.name + "</a></li>");
+      topicsContainer.append("<li><a href=" + topic.uri + ">" + topic.name + "<em> ("+ topic.package_name + " - " + topic.package_version + ") </em>" + "</a></li>");
     });
     topicsContainer.find('a').bind('click', window.asyncClickHandler);
   }
