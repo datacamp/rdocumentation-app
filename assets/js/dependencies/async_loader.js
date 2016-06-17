@@ -31,6 +31,7 @@ $(function() {
       var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
       $pageBody.html(body);
       bindGlobalClickHandler();
+      window.quickSearchHandler(jQuery);
     }
 
     // Helper function to grab new HTML

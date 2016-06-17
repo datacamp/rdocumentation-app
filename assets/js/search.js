@@ -19,7 +19,7 @@ function debounce(func, wait, immediate) {
 };
 
 
-$(document).ready(function() {
+window.quickSearchHandler = function() {
   var searchContainer = $('.search'),
   searchInput = $('.search input'),
   searchResultsPane = $('.search .results'),
@@ -48,7 +48,6 @@ $(document).ready(function() {
     topicsContainer.find('a').bind('click', window.asyncClickHandler);
   }
 
-
   searchInput.keyup(debounce(function(){
     search(searchInput.val());
     searchResultsPane.show();
@@ -62,4 +61,6 @@ $(document).ready(function() {
         }
     }
   });
-});
+}
+
+$(document).ready(window.quickSearchHandler);
