@@ -1,8 +1,14 @@
-$(document).ready(function() {
+window.packageVersionToggleHandler = function() {
   $('#packageVersionSelect').change(function(){
-    window.location.href = $(this).find('option:selected').data('uri');
+    var url = $(this).find('option:selected').data('uri');
+    if(urlParam('viewer_pane') === '1'){
+      window.replacePage(url);
+    } else {
+      window.location.href = url;
+    }
   });
 
+  // Make :eq case insensitive
   jQuery.expr[':'].containsRaw = function(a, i, m) {
     return jQuery(a).text().toUpperCase()
         .indexOf(m[3].toUpperCase()) >= 0;
@@ -34,4 +40,6 @@ $(document).ready(function() {
     }
   });
 
-});
+}
+
+$(document).ready(window.packageVersionToggleHandler);
