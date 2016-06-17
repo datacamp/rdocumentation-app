@@ -40,10 +40,12 @@ $(document).ready(function() {
     results.packages.forEach(function(package){
       packagesContainer.append("<li><a href=" + package.uri + ">" + package.name + "</a></li>");
     });
+    packagesContainer.find('a').bind('click', window.asyncClickHandler);
 
     results.topics.forEach(function(topic){
       topicsContainer.append("<li><a href=" + topic.uri + ">" + topic.name + "</a></li>");
     });
+    topicsContainer.find('a').bind('click', window.asyncClickHandler);
   }
 
 
@@ -53,11 +55,11 @@ $(document).ready(function() {
   }, 100));
 
   $(document).click(function(event) {
-      if(!$(event.target).closest(searchContainer).length &&
-         !$(event.target).is(searchContainer)) {
-          if(searchResultsPane.is(":visible")) {
-            searchResultsPane.hide();
-          }
-      }
+    if(!$(event.target).closest(searchContainer).length &&
+       !$(event.target).is(searchContainer)) {
+        if(searchResultsPane.is(":visible")) {
+          searchResultsPane.hide();
+        }
+    }
   });
 });

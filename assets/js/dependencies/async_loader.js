@@ -13,11 +13,24 @@ $(function() {
     console.log('*********************** AJAX MODE ***********************');
     var $pageBody = $('body');
 
+    // Intercept all link clicks
+    window.asyncClickHandler = function(e) {
+      console.log('handler called')
+      e.preventDefault();
+      // Grab the url from the anchor tag
+      var url = $(this).attr('href');
+      replacePage(url);
+    }
+
+    var bindGlobalClickHandler = function(){
+      $('a:not(.js-external)').unbind('click', window.asyncClickHandler);
+      $('a:not(.js-external)').bind('click', window.asyncClickHandler);
+    }
+
     function rerenderBody(html){
       var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
       $pageBody.html(body);
       bindGlobalClickHandler();
-      // bindGlobalFormHandler();
     }
 
     // Helper function to grab new HTML
@@ -35,15 +48,7 @@ $(function() {
       .done(rerenderBody);
     };
 
-    // Intercept all link clicks
-    function bindGlobalClickHandler(){
-      $('a:not(.js-external)').click(function(e) {
-        e.preventDefault();
-        // Grab the url from the anchor tag
-        var url = $(this).attr('href');
-        replacePage(url);
-      });
-    }
+
 
     // function bindGlobalFormHandler(){
     //   // Intercept form submissions
@@ -63,7 +68,6 @@ $(function() {
     // }
 
     bindGlobalClickHandler();
-    // bindGlobalFormHandler();
   }
 
 
