@@ -113,6 +113,19 @@ module.exports = {
 
   fullSearch: function(req, res) {
     var query = req.param('q');
+    var searchTopicQuery = {
+      multi_match: {
+        query: query,
+        type: "best_fields",
+        fields: [
+          'name^6',
+          'title^3', 'description^3', 'keywords^3', 'aliases^3',
+          'arguments.name^2', 'arguments.description^2',
+          'details^2', 'value^2',
+          'note', 'author',
+          'references', 'license', 'url', 'copyright']
+      }
+    };
 
     es.msearch({
       body: [
@@ -146,43 +159,40 @@ module.exports = {
 
         { index: 'rdoc', type: 'topic' },
         { query: {
-
             bool: {
-              must: [{
-                multi_match: {
-                  query: query,
-                  type: "best_fields",
-                  fields: [
-                    'name^6',
-                    'title^3', 'description^3', 'keywords^3', 'aliases^3',
-                    'arguments.name^2', 'arguments.description^2',
-                    'details^2', 'value^2',
-                    'note', 'author',
-                    'references', 'license', 'url', 'copyright']
+              must: [searchTopicQuery],
+              should: [{
+                has_parent : {
+                  parent_type : "package_version",
+                  query : {
+                    term : {
+                        latest_version : 1
+                    }
+                  },
+                  inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
                 }
               }]
             }
-
           },
           highlight : {
             pre_tags : ["<mark>"],
             post_tags : ["</mark>"],
             "fields" : {
-              "name": {},
-              "title": {},
-              "description": {},
-              "keywords": {},
-              "aliases": {},
-              "arguments.name": {},
-              "arguments.description": {},
-              "details": {},
-              "value": {},
-              "note": {},
-              "author": {},
-              "references": {},
-              "license": {},
-              "url": {},
-              "copyright": {}
+              "name": {highlight_query: searchTopicQuery},
+              "title": {highlight_query: searchTopicQuery},
+              "description": {highlight_query: searchTopicQuery},
+              "keywords": {highlight_query: searchTopicQuery},
+              "aliases": {highlight_query: searchTopicQuery},
+              "arguments.name": {highlight_query: searchTopicQuery},
+              "arguments.description": {highlight_query: searchTopicQuery},
+              "details": {highlight_query: searchTopicQuery},
+              "value": {highlight_query: searchTopicQuery},
+              "note": {highlight_query: searchTopicQuery},
+              "author": {highlight_query: searchTopicQuery},
+              "references": {highlight_query: searchTopicQuery},
+              "license": {highlight_query: searchTopicQuery},
+              "url": {highlight_query: searchTopicQuery},
+              "copyright": {highlight_query: searchTopicQuery}
             }
           },
           size: 5,
