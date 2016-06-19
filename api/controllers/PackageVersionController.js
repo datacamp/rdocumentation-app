@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing packageversions
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+ var http = require('http');
 
 module.exports = {
 
@@ -128,6 +129,29 @@ module.exports = {
       return res.negotiate(err);
     });
 
+  },
+
+  getDownloadStatistics: function(req, res) {
+    var packageName = req.param('name');
+    console.log(packageName)
+    var options = {
+      host: 'cranlogs.r-pkg.org',
+      path: '/downloads/total/last-month/' + packageName
+    };
+
+    var request = http.get(options, function(response) {
+      var bodyChunks = [];
+      response.on('data', function(chunk) {
+        bodyChunks.push(chunk);
+      }).on('end', function() {
+        var body = Buffer.concat(bodyChunks);
+        return res.json(JSON.parse(body.toString()));
+      })
+    });
+
+    request.on('error', function(e) {
+      console.log('ERROR: ' + e.message);
+    });
   }
 
 };

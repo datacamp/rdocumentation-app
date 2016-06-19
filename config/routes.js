@@ -43,6 +43,7 @@ module.exports.routes = {
 
   //***** PackageVersion *****
     // API
+    'get /api/packages/:name/versions/:version/downloads' : 'PackageVersion.getDownloadStatistics',
     'get /api/packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
     'post /api/versions': 'PackageVersion.postDescription',
     // HTML
