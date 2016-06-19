@@ -32,9 +32,10 @@ function urlParam(name){
 window.quickSearchHandler = function() {
   var searchContainer = $('.search'),
   searchInput = $('.search input'),
-  searchResultsPane = $('.search .results'),
-  packagesContainer = $('.search .packages'),
-  topicsContainer = $('.search .topics');
+  searchResultsPane = $('.search--results'),
+  packagesContainer = $('.search--results .packages'),
+  topicsContainer = $('.search--results .topics'),
+  HORIZONTAL_OFFSET = 40;
 
   function search(token){
     $.post('/api/quick_search', {token: token}, function(data){
@@ -42,10 +43,25 @@ window.quickSearchHandler = function() {
     });
   }
 
+  function showSearchResults(){
+    if(!searchResultsPane.is(":visible")) {
+      searchResultsPane.show();
+      $('body').append(searchResultsPane.detach());
+      var eOffset = searchContainer.offset();
+      // make sure to place it where it would normally go (this could be improved)
+      searchResultsPane.css({
+          'display': 'block',
+              'top': eOffset.top + searchContainer.outerHeight() + 10,
+              'left': eOffset.left - HORIZONTAL_OFFSET,
+              'width': searchContainer.width() + 2 * HORIZONTAL_OFFSET
+      });
+    }
+  }
+
   function appendResults(results){
     // First remove old results
-    $('.search .packages').find(':not(.header)').remove();
-    $('.search .topics').find(':not(.header)').remove();
+    packagesContainer.find(':not(.header)').remove();
+    topicsContainer.find(':not(.header)').remove();
 
     results.packages.forEach(function(package){
       packagesContainer.append("<li><a href=" + package.uri + ">" + package.name + "</a></li>");
@@ -60,7 +76,7 @@ window.quickSearchHandler = function() {
 
   searchInput.keyup(debounce(function(){
     search(searchInput.val());
-    searchResultsPane.show();
+    showSearchResults();
   }, 100));
 
   $(document).click(function(event) {

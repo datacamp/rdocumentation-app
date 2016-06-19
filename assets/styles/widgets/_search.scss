@@ -6,7 +6,7 @@
     }
 }
 
-.search .results {
+.search--results {
     display: none;
     position: absolute;
     top: 60px;
@@ -60,7 +60,7 @@
 }
 
 // The small arrow
-.search .results li:first-child:before, .search .results li:first-child:after {
+.search--results li:first-child:before, .search--results li:first-child:after {
     display: block;
     content: '';
     width: 0;
@@ -71,12 +71,12 @@
     border: 5px outset transparent;
 }
 
-.search .results li:first-child:before {
+.search--results li:first-child:before {
     border-bottom: 5px solid #c4c7d7;
     top: -11px;
 }
 
-.search .results li:first-child:after {
+.search--results li:first-child:after {
     border-bottom: 5px solid #fdfdfd;
     top: -10px;
 }
