@@ -127,81 +127,119 @@ module.exports = {
       }
     };
 
-    es.msearch({
-      body: [
-        { index: 'rdoc', type: 'package_version' },
-        { query: {
-            bool: {
-              must: [{
-                multi_match: {
-                  query: query,
-                  type: "best_fields",
-                  fields: ['package_name^4', 'title^3', 'description^2', 'license', 'url', 'copyright']
-                }
-              }],
-              should: {
-                term: { latest_version: 1 }
-              }
-            }
-
-          },
-          highlight : {
-            pre_tags : ["<mark>"],
-            post_tags : ["</mark>"],
-            "fields" : {
-              "title" : {},
-              "description": {},
-            }
-          },
-          size: 5,
-          fields: ['package_name', 'version']
-        },
-
-        { index: 'rdoc', type: 'topic' },
-        { query: {
-            bool: {
-              must: [searchTopicQuery],
-              should: [{
-                has_parent : {
-                  parent_type : "package_version",
-                  query : {
-                    term : {
-                        latest_version : 1
+    es.search({
+      index: 'rdoc',
+      body: {
+        query: {
+          bool : {
+            should : [
+              {
+                bool: {
+                  filter:[
+                    {
+                      type : {
+                        value : "package_version"
+                      }
                     }
-                  },
-                  inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
+                  ],
+                  should:[
+                    {
+                      multi_match: {
+                        query: query,
+                        type: "best_fields",
+                        fields: ['package_name^4', 'title^3', 'description^2', 'license', 'url', 'copyright']
+                      },
+                    },
+                    { term: { latest_version: 1, boost:2.0 } }
+                  ],
+                  minimum_should_match : 1,
                 }
-              }]
-            }
-          },
-          highlight : {
-            pre_tags : ["<mark>"],
-            post_tags : ["</mark>"],
-            "fields" : {
-              "name": {highlight_query: searchTopicQuery},
-              "title": {highlight_query: searchTopicQuery},
-              "description": {highlight_query: searchTopicQuery},
-              "keywords": {highlight_query: searchTopicQuery},
-              "aliases": {highlight_query: searchTopicQuery},
-              "arguments.name": {highlight_query: searchTopicQuery},
-              "arguments.description": {highlight_query: searchTopicQuery},
-              "details": {highlight_query: searchTopicQuery},
-              "value": {highlight_query: searchTopicQuery},
-              "note": {highlight_query: searchTopicQuery},
-              "author": {highlight_query: searchTopicQuery},
-              "references": {highlight_query: searchTopicQuery},
-              "license": {highlight_query: searchTopicQuery},
-              "url": {highlight_query: searchTopicQuery},
-              "copyright": {highlight_query: searchTopicQuery}
-            }
-          },
-          size: 5,
-          fields: ['name']
+              },
+              {
+                bool: {
+                  filter:[
+                    {
+                      type : {
+                        value : "topic"
+                      }
+                    }
+                  ],
+                  should: [
+                    searchTopicQuery,
+                    {
+                      has_parent : {
+                        parent_type : "package_version",
+                        query : {
+                          term : {
+                            latest_version : 1
+                          }
+                        },
+                        inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
+                      }
+                    }
+                  ],
+                  minimum_should_match : 2,
+                }
+              }
+            ],
+            minimum_should_match : 1,
+          }
+        },
+        highlight : {
+          pre_tags : ["<mark>"],
+          post_tags : ["</mark>"],
+          "fields" : {
+            "title" : {highlight_query: {
+               match : {
+                  title : query
+              }
+            }},
+            "description": {highlight_query: {
+               match : {
+                  description : query
+              }
+            }},
+            "name": {highlight_query: searchTopicQuery},
+            "keywords": {highlight_query: searchTopicQuery},
+            "aliases": {highlight_query: searchTopicQuery},
+            "arguments.name": {highlight_query: searchTopicQuery},
+            "arguments.description": {highlight_query: searchTopicQuery},
+            "details": {highlight_query: searchTopicQuery},
+            "value": {highlight_query: searchTopicQuery},
+            "note": {highlight_query: searchTopicQuery},
+            "author": {highlight_query: searchTopicQuery},
+            "references": {highlight_query: searchTopicQuery},
+            "license": {highlight_query: searchTopicQuery},
+            "url": {highlight_query: searchTopicQuery},
+            "copyright": {highlight_query: searchTopicQuery}
+          }
+        },
+        from: 0,
+        size: 30,
+        fields: ['package_name', 'version', 'name']
+      }
+    }).then(function(response) {
+      //return res.json(response);
+      var hits = response.hits.hits.map(function(hit) {
+        var fields = {};
+        if (hit._type === 'package_version') {
+          fields.package_name = hit.fields.package_name[0];
+          fields.version = hit.fields.version[0];
+        } else if (hit._type === 'topic') {
+          console.log(hit.inner_hits);
+          var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
+          fields.package_name = inner_hits_fields.package_name[0];
+          fields.version = inner_hits_fields.version[0];
+          fields.name = hit.fields.name[0];
         }
-
-    ]}).then(function(response) {
-      var packageResult = response.responses[0].hits;
-      return res.ok(packageResult, 'search/result.ejs');
+        return {
+          fields: fields,
+          type: hit._type,
+          score: hit._score,
+          highlight: hit.highlight
+        };
+      });
+      return res.ok({hits: hits}, 'search/result.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });

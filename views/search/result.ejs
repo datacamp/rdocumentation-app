@@ -1,5 +1,5 @@
 <%- partial ('../shared/_navbar.ejs') %>
-
+<% var c = 0; %>
 <div class='search-result'>
   <div class="container">
     <div class='row'>
@@ -9,12 +9,26 @@
       <% for(var i = 0; i < data.hits.length; i++) { %>
         <% var hit = data.hits[i] %>
         <section class='col-xs-12 search-result-item'>
-          <a><h4><%- hit.fields.package_name[0] %></h4> <i><%- hit.fields.version[0] %></i></a>
+          <% if (hit.type === 'topic') { %>
+          <a href='/packages/<%- hit.fields.package_name %>/versions/<%- hit.fields.version %>/topics/<%- hit.fields.name %>'>
+            <h4><%- hit.fields.name %></h4>
+            <i>from</i>
+            <strong><%- hit.fields.package_name %> - <%- hit.fields.version %></strong>
+          </a>
+          <% } else if (hit.type === 'package_version') { %>
+          <a href='/packages/<%- hit.fields.package_name %>/versions/<%- hit.fields.version %>'>
+            <h4><%- hit.fields.package_name %></h4>
+            <i><%- hit.fields.version %></i>
+          </a>
+          <% } %>
           <% for(highlight in hit.highlight) { %>
             <h5><%= highlight %></h5>
-            <p class='context'>
-             <%- hit.highlight[highlight] %>
+            <% var id = 'content-' + c++; %>
+            <p id=<%= id %> class='context'>
             </p>
+            <script>
+              $('#<%= id %>').html('<%- hit.highlight[highlight].toString().replace(/\r?\n|\r/g, "</br>").replace(/'/g, "\\'") %>');
+            </script>
           <% } %>
         </section>
       <% } %>
