@@ -3,8 +3,7 @@
 <div class='search-result'>
   <div class="container">
     <div class='row'>
-      <h1>
-       </h1>
+
 
       <% for(var i = 0; i < data.hits.length; i++) { %>
         <% var hit = data.hits[i] %>
@@ -22,7 +21,7 @@
           </a>
           <% } %>
           <% for(highlight in hit.highlight) { %>
-            <h5><%= highlight %></h5>
+            <h5 class='highlight-title'><%= highlight %></h5>
             <% var id = 'content-' + c++; %>
             <p id=<%= id %> class='context'>
             </p>
@@ -34,6 +33,11 @@
       <% } %>
 
 
+    </div>
+    <div class='row'>
+      <div class='col-xs-4 navigation'>
+        <ul></ul>
+      </div>
     </div>
   </div>
 </div>

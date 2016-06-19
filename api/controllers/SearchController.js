@@ -215,7 +215,7 @@ module.exports = {
           }
         },
         from: 0,
-        size: 30,
+        size: 10,
         fields: ['package_name', 'version', 'name']
       }
     }).then(function(response) {
