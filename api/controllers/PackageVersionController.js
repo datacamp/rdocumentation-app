@@ -4,7 +4,9 @@
  * @description :: Server-side logic for managing packageversions
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
- var http = require('http');
+var axios = require('axios');
+var _ = require('lodash');
+var numeral = require('numeral');
 
 module.exports = {
 
@@ -133,25 +135,30 @@ module.exports = {
 
   getDownloadStatistics: function(req, res) {
     var packageName = req.param('name');
-    console.log(packageName)
-    var options = {
-      host: 'cranlogs.r-pkg.org',
-      path: '/downloads/total/last-month/' + packageName
-    };
 
-    var request = http.get(options, function(response) {
-      var bodyChunks = [];
-      response.on('data', function(chunk) {
-        bodyChunks.push(chunk);
-      }).on('end', function() {
-        var body = Buffer.concat(bodyChunks);
-        return res.json(JSON.parse(body.toString()));
+    sequelize.query("SELECT DISTINCT package_name FROM Dependencies INNER JOIN PackageVersions on PackageVersions.id = Dependencies.dependant_version_id WHERE dependency_name = ? and type = 'depends'", { replacements: [packageName], type: sequelize.QueryTypes.SELECT})
+      .then(function(data) {
+        var packageNames = _.map(data, 'package_name');
+        return packageNames.join(',');
       })
-    });
+      .then(function(queryString) {
+        function getTotalDownloads() {
+          return axios.get('http://cranlogs.r-pkg.org/downloads/total/last-month/' + packageName);
+        }
 
-    request.on('error', function(e) {
-      console.log('ERROR: ' + e.message);
-    });
+        function getRevDepsDownloads() {
+          return axios.get('http://cranlogs.r-pkg.org/downloads/total/last-month/' + queryString);
+        }
+
+        axios.all([getTotalDownloads(), getRevDepsDownloads()]).then(axios.spread(function (total, revDeps) {
+          var totalJSON = total.data[0],
+          revDepsJSON = revDeps.data;
+          var total = totalJSON.downloads;
+          var revDeps = _.sumBy(revDepsJSON, function(o) { return o.downloads; });
+
+          return res.json({total: total, revDeps: revDeps, totalStr: numeral(total).format('0,0'), revDepsStr: numeral(revDeps).format('0,0') });
+        }));
+      })
   }
 
 };

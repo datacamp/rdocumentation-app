@@ -41,19 +41,30 @@
     </header>
 
     <section class="package--stats">
-      <dl>
-        <% if (pkgVersion.maintainer) { %>
-        <dt>Maintainer:</dt>
-        <dd><a href="<%= pkgVersion.maintainer.uri %>">
-          <%= pkgVersion.maintainer.name %></a></dd>
-        <% } %>
-        <dt>Contributors:</dt>
-        <dd>
-        <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
-          <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
-        <% } %>
-        </dd>
-      </dl>
+      <div class="row">
+        <div class="col-sm-8">
+          <dl>
+            <% if (pkgVersion.maintainer) { %>
+            <dt>Maintainer:</dt>
+            <dd><a href="<%= pkgVersion.maintainer.uri %>">
+              <%= pkgVersion.maintainer.name %></a></dd>
+            <% } %>
+            <dt>Contributors:</dt>
+            <dd>
+            <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
+              <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
+            <% } %>
+            </dd>
+          </dl>
+        </div>
+        <div class="col-sm-4">
+          <div class="package--downloads">
+            <span class="package--downloads-nr"><span id="totalDownloads" data-url="/api<%= path %>/downloads"></span><span>Downloaded this month</span></span>
+            <span class="package--downloads-ind">Packages depending on this package were downloaded <span id="indDownloads"></span> times this month.</span>
+            <span class="package--downloads-credits">Download stats provided by <a href="http://cranlogs.r-pkg.org/" target="_blank">MetaCran</a></span>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="package--info">

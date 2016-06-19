@@ -46,3 +46,24 @@
 .rating {
   display: inline-block;
 }
+
+.package--downloads {
+  visibility: hidden;
+}
+
+.package--downloads-nr {
+  display: flex;
+  align-items: center;
+  span:first-child {
+    font-size: $h1-size;
+  }
+}
+.package--downloads-ind {
+  display: block;
+  span {
+    font-weight: bold;
+  }
+}
+.package--downloads-credits {
+  font-size: 0.6rem;
+}

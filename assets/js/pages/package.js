@@ -40,6 +40,13 @@ window.packageVersionToggleHandler = function() {
     }
   });
 
+  var downloadStatsUrl = $('#totalDownloads').data('url');
+  $.get(downloadStatsUrl, function(data){
+    $('#totalDownloads').text(data.totalStr);
+    $('#indDownloads').text(data.revDepsStr);
+    $('.package--downloads').css({'visibility': 'visible'});
+  });
+
 }
 
 $(document).ready(window.packageVersionToggleHandler);
