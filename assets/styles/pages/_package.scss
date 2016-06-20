@@ -25,6 +25,12 @@
 }
 
 .package--stats {
+  dd a {
+    margin-right: $default-space / 3.0;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }
 
 .package--info {
