@@ -101,7 +101,7 @@ module.exports = {
         { model: Package, as: 'package', include: [
           { model: PackageVersion, as: 'versions', limit: populateLimit },
         ]},
-        { model: Topic, as: 'topics', attributes: ['title', 'name']},
+        { model: Topic, as: 'topics', attributes: ['id', 'title', 'name']},
         { model: Review, as: 'reviews',
           include: [{model: User, as: 'user', attributes: ['username', 'id']}]
         }
