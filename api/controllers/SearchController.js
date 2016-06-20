@@ -4,8 +4,10 @@
  * @description :: Server-side logic for searching
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
- var Promise = require('bluebird');
- var _ = require('lodash');
+var Promise = require('bluebird');
+var _ = require('lodash');
+var striptags = require('striptags');
+var numeral = require('numeral');
 
 module.exports = {
 
@@ -223,7 +225,7 @@ module.exports = {
         fields: ['package_name', 'version', 'name']
       }
     }).then(function(response) {
-      //return res.json(response);
+      // return res.json(response);
       var hits = response.hits.hits.map(function(hit) {
         var fields = {};
         if (hit._type === 'package_version') {
@@ -242,7 +244,7 @@ module.exports = {
           highlight: hit.highlight
         };
       });
-      return res.ok({hits: hits, perPage: perPage, currentPage: page, query: query}, 'search/result.ejs');
+      return res.ok({total: numeral(response.hits.total).format('0,0'), hits: hits, perPage: perPage, currentPage: page, query: query, striptags: striptags}, 'search/result.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });

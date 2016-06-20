@@ -40,6 +40,7 @@ window.searchHandler = function() {
   function search(token){
     $.post('/api/quick_search', {token: token}, function(data){
       appendResults(data);
+      showSearchResults();
     });
   }
 
@@ -76,7 +77,6 @@ window.searchHandler = function() {
 
   searchInput.keyup(debounce(function(){
     search(searchInput.val());
-    showSearchResults();
   }, 100));
 
   $(document).click(function(event) {

@@ -1,47 +1,42 @@
 <%- partial ('../shared/_navbar.ejs') %>
-<% var c = 0; %>
 <div class='search-result'>
   <div class="container">
-    <div class='row'>
-
-
+    <h3><%= data.total %> Search Results:</h3>
+    <hr>
+    <div class="results">
       <% for(var i = 0; i < data.hits.length; i++) { %>
         <% var hit = data.hits[i] %>
-        <section class='col-xs-12 search-result-item'>
+        <section class='search-result--item'>
           <% if (hit.type === 'topic') { %>
-          <a href='/packages/<%- hit.fields.package_name %>/versions/<%- hit.fields.version %>/topics/<%- hit.fields.name %>'>
-            <h4><%- hit.fields.name %></h4>
-            <i>from</i>
-            <strong><%- hit.fields.package_name %> - <%- hit.fields.version %></strong>
-          </a>
+            <h5 class="search-result--item-header">
+              Function <a href='/packages/<%- hit.fields.package_name %>/versions/<%- hit.fields.version %>/topics/<%- hit.fields.name %>'><%- hit.fields.name %></a>
+              <span>[<%- hit.fields.package_name %>v<%- hit.fields.version %>]</span>
+            </h5>
           <% } else if (hit.type === 'package_version') { %>
-          <a href='/packages/<%- hit.fields.package_name %>/versions/<%- hit.fields.version %>'>
-            <h4><%- hit.fields.package_name %></h4>
-            <i><%- hit.fields.version %></i>
-          </a>
+            <h5 class="search-result--item-header">
+              Package <a href='/packages/<%- hit.fields.package_name %>/versions/<%- hit.fields.version %>'><%- hit.fields.package_name %>&nbsp;v<%- hit.fields.version %></a>
+            </h5>
           <% } %>
-          <% for(highlight in hit.highlight) { %>
-            <h5 class='highlight-title'><%= highlight %></h5>
-            <% var id = 'content-' + c++; %>
-            <p id=<%= id %> class='context'>
-            </p>
-            <script>
-              $('#<%= id %>').html('<%- hit.highlight[highlight].toString().replace(/\r?\n|\r/g, "</br>").replace(/'/g, "\\'") %>');
-            </script>
-          <% } %>
+
+          <dl>
+            <% for(highlight in hit.highlight) { %>
+              <dt><%= highlight %></dt>
+              <dd><%- data.striptags(hit.highlight[highlight].toString(), '<mark>') %></dd>
+            <% } %>
+          </dl>
+
         </section>
       <% } %>
-
-
     </div>
+
     <div class='row'>
       <div class='col-xs-6'>
         <% if (data.currentPage >= 2) { %>
-        <a href='/search?q=<%= data.query %>&page=<%= data.currentPage - 1 %>&perPage=<%= data.perPage %>' class='btn btn-primary'>Prec</a>
+        <a href='/search?q=<%= data.query %>&page=<%= data.currentPage - 1 %>&perPage=<%= data.perPage %>' class='btn btn-primary m0'>Previous Results</a>
         <% } %>
       </div>
       <div class='col-xs-6 '>
-        <a  href='/search?q=<%= data.query %>&page=<%= data.currentPage + 1 %>&perPage=<%= data.perPage %>' class='btn btn-primary pull-right'>Next</a>
+        <a  href='/search?q=<%= data.query %>&page=<%= data.currentPage + 1 %>&perPage=<%= data.perPage %>' class='btn btn-primary m0 pull-right'>Next Results</a>
       </div>
     </div>
   </div>

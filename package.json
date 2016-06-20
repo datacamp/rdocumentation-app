@@ -39,7 +39,8 @@
     "rc": "1.0.1",
     "sails": "~0.12.3",
     "sails-hook-sequelize": "^1.0.1",
-    "sails-hook-sequelize-blueprints": "^0.3.0"
+    "sails-hook-sequelize-blueprints": "^0.3.0",
+    "striptags": "^2.1.1"
   },
   "scripts": {
     "debug": "node debug app.js",

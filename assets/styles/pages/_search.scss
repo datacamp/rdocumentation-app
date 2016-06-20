@@ -2,15 +2,28 @@
   .container {
     margin-top: $default-space;
   }
-  .search-result-item {
-    margin-top: 30px;
-    border-top: 1px solid #cdcdcd;
-    padding-top: 30px;
+}
 
-    .highlight-title {
-      text-transform: capitalize;
-      margin-top: 2em;
+.search-result--item {
+  border-bottom: 1px solid $primary-extra-light;
+  margin-bottom: 1.5 * $default-space;
+
+  dl {
+    margin-top: $default-space / 2.0;
+    dd {
+      margin-left: 200px;
     }
   }
 
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.search-result--item-header {
+  font-size: 1.25rem;
+  span {
+    color: $text-tertiary;
+    font-size: $default-font-size * 0.9;
+  }
 }
