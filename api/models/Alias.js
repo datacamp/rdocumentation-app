@@ -16,6 +16,10 @@ module.exports = {
 
   },
 
+  associations: function() {
+    Alias.belongsTo(Topic, { as: 'topic', foreignKey: 'topic_id'});
+  },
+
   options: {
     underscored: true,
     timestamps: false,
@@ -24,7 +28,34 @@ module.exports = {
       name: 'name_index',
       method: 'BTREE',
       fields: ['name']
-    }]
+    }],
+
+    classMethods: {
+      findByNameInLatestVersions: function(name) {
+        console.log('hey');
+        return Alias.findAll({
+          include: [
+            {
+              model: Topic,
+              as: 'topic',
+              attributes: ['id', 'name'],
+              include: [{
+                model: PackageVersion,
+                as: 'package_version',
+                attributes: ['package_name', 'version'],
+                include: [{
+                  model: Package,
+                  as: 'package_latest',
+                  required: true,
+                  attributes: [],
+                }]
+              }]
+            }
+          ],
+          where: { name: name }
+        });
+      }
+    }
   }
 };
 

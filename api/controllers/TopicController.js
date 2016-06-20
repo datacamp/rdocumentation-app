@@ -118,7 +118,10 @@ module.exports = {
       }]
     }).then(function(topic) {
       if(topic === null) return res.notFound();
-      else return res.ok(topic.toJSON(), 'topic/show.ejs');
+      else return TopicService.computeLinks('/link/', topic)
+        .then(function(topic) {
+          return res.ok(topic, 'topic/show.ejs');
+        });
     }).catch(function(err) {
       return res.negotiate(err);
     });
@@ -184,7 +187,7 @@ module.exports = {
       else {
         return TopicService.computeLinks('/link/', topic)
           .then(function(topic) {
-            return res.ok(topic.toJSON(), 'topic/show.ejs');
+            return res.ok(topic, 'topic/show.ejs');
           });
       }
     }).catch(function(err) {
@@ -202,13 +205,12 @@ module.exports = {
   * @apiParam {String} version Package version (string) from which we refer to this topic
   */
   findByAlias: function(req, res) {
-    var packageName = req.param('package');
-    var packageVersion = req.param('version');
+    var fromPackageName = req.param('package');
+    var fromPackageVersion = req.param('version');
     var alias = req.param('alias');
-
-    var packageCriteria = {};
-    if (packageName) packageCriteria.package_name = packageName;
-    if (packageVersion) packageCriteria.version = packageVersion;
+    var toPackage = req.param('to');
+    var fromPackage = { package_name: fromPackageName, version: fromPackageVersion };
+    var packageCriteria = toPackage ? {package_name: toPackage} : fromPackage;
 
     Topic.findOne({
       include: [{
@@ -225,13 +227,53 @@ module.exports = {
         where: packageCriteria
       }]
     }).then(function(topic) {
-      if(topic === null) return res.notFound();
+      if(topic !== null) return res.redirect(topic.uri);
       else {
-        return res.redirect(topic.uri);
+        Alias.findByNameInLatestVersions(alias).then(function(aliases) {
+          console.log(aliases.length);
+          if (aliases.length === 0) return res.notFound(); //no match found anywhere, 404
+          if (aliases.length === 1) { //if there is only 1 match, redirect to this one
+            return res.redirect(aliases[0].topic.uri);
+          } else {
+            var searchInDependencies = function(packages) {
+              var depsPromises = _.map(packages, function(package) {
+                return PackageVersion.findDependencies(fromPackage).then(function(deps) {
+                  var depsNameArray = _.map(deps, 'name');
+                  var alias = _.find(aliases, function(alias) {
+                    return _.includes(depsNameArray, aliases);
+                  });
+                  if (alias) {
+                    return alias.topic.uri;
+                  } else throw {dependencies: deps};
+                });
+              });
+
+              return Promise.any(depsPromises).catch(Promise.AggregateError, function(errors) {
+                //not found in this level of dependency, search in next level
+                var deps = _.reduce(errors, function(acc, val) { // collect thrown dependencies
+                  return acc.concat(val.dependencies);
+                }, []);
+                return searchInDependencies(deps); // recurse to next level
+              });
+
+
+            };
+            searchInDependencies([fromPackage]).then(function(uri) {
+              return res.redirect(uri);
+            }).catch(function(err) {
+              return res.redirect(aliases[0].topic.uri); // no match in dependencies, just redirect to first one
+            });
+
+          }
+          return res.json(aliases);
+        });
       }
     }).catch(function(err) {
       return res.negotiate(err);
     });
+
+
+
   }
 
 };

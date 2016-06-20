@@ -65,6 +65,9 @@ module.exports = {
         },
         onDelete: 'CASCADE'
       });
+
+    PackageVersion.hasOne(Package, {as: 'package_latest', foreignKey : 'latest_version_id'});
+
     PackageVersion.belongsToMany(Package,
       { as: 'dependencies',
         through: Dependency,
@@ -119,6 +122,17 @@ module.exports = {
     },
 
     classMethods: {
+
+      findDependencies: function(criteria) {
+        return PackageVersion.findOne({
+          where: criteria,
+          include: [{
+            model: Package,
+            as: 'dependencies',
+            attributes: ['name']
+          }]
+        });
+      },
 
       createWithDescriptionFile: function(opts) {
         var description = opts.input;
