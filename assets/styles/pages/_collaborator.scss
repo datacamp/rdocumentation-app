@@ -3,6 +3,12 @@
   .container {
     margin-top: $default-space;
   }
+
+  header img,
+  header h1 {
+    display: inline-block;
+    vertical-align: middle;
+  }
 }
 
 .collaborator--maintainer,

@@ -3,9 +3,8 @@
 <section class="collaborator">
   <div class="container">
     <header>
+      <img src="<%- collaborator.gravatar_url + '?d=' + encodeURIComponent(process.env.BASE_URL + '/images/placeholder.png') %>" alt="<%- collaborator.name %>" width="80" height="80">
       <h1><%- collaborator.name %></h1>
-      <img src="<%- collaborator.gravatar_url %>" alt="<%- collaborator.name %>" width="80" height="80">
-      <p><%- collaborator.email %></p>
     </header>
 
     <section class="collaborator--maintainer">
