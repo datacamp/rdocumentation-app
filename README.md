@@ -14,7 +14,7 @@ The web application running rdocumentation.org.
 - Run `npm install`
 - Create an empty database `rdocsv2`
 - Execute the migrations: `NODE_ENV=development node node_modules/db-migrate/bin/db-migrate up`
-- node app.js (or if you have nodemon installed: `nodemon app.js`)
+- `node app.js` (or if you have nodemon installed: `nodemon app.js`)
 
 ##Creating a new database migration:
 ###Using docker
@@ -30,3 +30,8 @@ then populate the files in
   - `./migrations/{time}{migration_name}.js`
   - `./migrations/sqls/{time}{migration_name}.sql`
   - `./migrations/sqls/{time}{migration_name}.sql`
+
+
+## License
+
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
