@@ -4,6 +4,9 @@
  * @description :: Server-side logic for managing topics
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+var Promise = require('bluebird');
+var _ = require('lodash');
+
 
 module.exports = {
   /**
@@ -230,21 +233,22 @@ module.exports = {
       if(topic !== null) return res.redirect(topic.uri);
       else {
         Alias.findByNameInLatestVersions(alias).then(function(aliases) {
-          console.log(aliases.length);
           if (aliases.length === 0) return res.notFound(); //no match found anywhere, 404
           if (aliases.length === 1) { //if there is only 1 match, redirect to this one
             return res.redirect(aliases[0].topic.uri);
           } else {
-            var searchInDependencies = function(packages) {
-              var depsPromises = _.map(packages, function(package) {
-                return PackageVersion.findDependencies(fromPackage).then(function(deps) {
-                  var depsNameArray = _.map(deps, 'name');
+            var searchInDependencies = function(packages, level) {
+              if (level >= 3) return Promise.reject('too deep');
+              var depsPromises = _.map(packages, function(package_name) {
+                return Dependency.findByDependant(package_name).then(function(deps) {
+                  var depsNameArray = _.map(deps, 'dependency_name');
                   var alias = _.find(aliases, function(alias) {
-                    return _.includes(depsNameArray, aliases);
+                    return _.includes(depsNameArray, alias.topic.package_version.package_name);
                   });
                   if (alias) {
+                    console.info("link found in " + alias.topic.package_version.package_name);
                     return alias.topic.uri;
-                  } else throw {dependencies: deps};
+                  } else throw {dependencies: depsNameArray};
                 });
               });
 
@@ -253,19 +257,20 @@ module.exports = {
                 var deps = _.reduce(errors, function(acc, val) { // collect thrown dependencies
                   return acc.concat(val.dependencies);
                 }, []);
-                return searchInDependencies(deps); // recurse to next level
+                return searchInDependencies(deps, level + 1); // recurse to next level of dependency
               });
 
 
             };
-            searchInDependencies([fromPackage]).then(function(uri) {
+            searchInDependencies([fromPackage.package_name], 0).then(function(uri) {
               return res.redirect(uri);
             }).catch(function(err) {
+              console.info(err);
+              console.info("link not found, go to: " + aliases[0].topic.uri);
               return res.redirect(aliases[0].topic.uri); // no match in dependencies, just redirect to first one
             });
 
           }
-          return res.json(aliases);
         });
       }
     }).catch(function(err) {

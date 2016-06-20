@@ -123,17 +123,6 @@ module.exports = {
 
     classMethods: {
 
-      findDependencies: function(criteria) {
-        return PackageVersion.findOne({
-          where: criteria,
-          include: [{
-            model: Package,
-            as: 'dependencies',
-            attributes: ['name']
-          }]
-        });
-      },
-
       createWithDescriptionFile: function(opts) {
         var description = opts.input;
         var type = description.repoType || 'cran';

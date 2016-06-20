@@ -30,7 +30,16 @@ module.exports = {
 
   options: {
     underscored: true,
-    timestamps: false
+    timestamps: false,
+
+    classMethods: {
+      findByDependant: function(dependant_package_name) {
+        return sequelize.query("SELECT DISTINCT d.dependency_name from Dependencies d INNER JOIN PackageVersions p on d.dependant_version_id = p.id WHERE p.package_name = ?;",{ replacements: [dependant_package_name], type: sequelize.QueryTypes.SELECT}).then(function(data){
+
+          return data;
+        });
+      }
+    }
   }
 
 };
