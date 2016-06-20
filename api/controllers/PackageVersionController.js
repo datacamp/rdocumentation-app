@@ -80,7 +80,7 @@ module.exports = {
   * @apiSuccess {Object[]} authors          List of the authors of this package version
   * @apiSuccess {String}   authors.name     Name of this author of the package version
   * @apiSuccess {String}   authors.email    Email of this author of the package version
-  * @apiSuccess {Object[]} topics           List of topics and their attributes (limited to 30)
+  * @apiSuccess {Object[]} topics           List of topics (only name and title) (limited to 30)
 
 
   */
@@ -101,9 +101,7 @@ module.exports = {
         { model: Package, as: 'package', include: [
           { model: PackageVersion, as: 'versions', limit: populateLimit },
         ]},
-        { model: Topic, as: 'topics', limit: populateLimit, include: [
-          { model: PackageVersion, as: 'package_version' },
-        ]},
+        { model: Topic, as: 'topics', attributes: ['title', 'name']},
         { model: Review, as: 'reviews',
           include: [{model: User, as: 'user', attributes: ['username', 'id']}]
         }
