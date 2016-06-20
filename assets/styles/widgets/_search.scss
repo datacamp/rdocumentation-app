@@ -29,10 +29,11 @@
         border-bottom-right-radius: $border-radius;
     }
 
-    li.header {
+    .header {
         color: $text-secondary;
         padding: 6px 40px 6px 10px;
         margin-top: 1rem;
+        margin-bottom: 0;
         font-weight: bold;
         border-bottom: 1px solid $primary-extra-light;
         &:first-child { margin-top: 0; }
@@ -56,6 +57,11 @@
             text-decoration: none;
             background-color: $primary-extra-light;
         }
+    }
+
+    .placeholder {
+        text-align: center;
+        margin: 0;
     }
 }
 

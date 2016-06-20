@@ -33,8 +33,6 @@ window.searchHandler = function() {
   var searchContainer = $('.search'),
   searchInput = $('.search input'),
   searchResultsPane = $('.search--results'),
-  packagesContainer = $('.search--results .packages'),
-  topicsContainer = $('.search--results .topics'),
   HORIZONTAL_OFFSET = 40;
 
   function search(token){
@@ -59,20 +57,30 @@ window.searchHandler = function() {
     }
   }
 
-  function appendResults(results){
-    // First remove old results
-    packagesContainer.find(':not(.header)').remove();
-    topicsContainer.find(':not(.header)').remove();
+  function appendResults(results) {
+    var object = '';
+    if(results.packages.length === 0 && results.topics.length === 0){
+      return searchResultsPane.html('<p class="placeholder">No results found. Press [enter] for full-text search.</p>')
+    }
+    if(results.packages.length > 0){
+      object += '<p class="header">Packages</p>';
+      object += '<ul class="packages">';
+      results.packages.forEach(function(package){
+        object += "<li><a href=" + package.uri + ">" + package.name + "</a></li>";
+      });
+      object += '</ul>';
+    }
 
-    results.packages.forEach(function(package){
-      packagesContainer.append("<li><a href=" + package.uri + ">" + package.name + "</a></li>");
-    });
-    packagesContainer.find('a').bind('click', window.asyncClickHandler);
+    if(results.topics.length > 0){
+      object += '<p class="header">Topics</p>';
+      object += '<ul class="topics">';
+      results.topics.forEach(function(topic){
+        object += "<li><a href=" + topic.uri + ">" + topic.name + "<em> ("+ topic.package_name + " - " + topic.package_version + ") </em>" + "</a></li>";
+      });
+      object += '</ul>';
+    }
+    searchResultsPane.html(object);
 
-    results.topics.forEach(function(topic){
-      topicsContainer.append("<li><a href=" + topic.uri + ">" + topic.name + "<em> ("+ topic.package_name + " - " + topic.package_version + ") </em>" + "</a></li>");
-    });
-    topicsContainer.find('a').bind('click', window.asyncClickHandler);
   }
 
   searchInput.keyup(debounce(function(){
@@ -89,9 +97,16 @@ window.searchHandler = function() {
   });
 
   searchInput.bind('keypress', function(e) {
-    if(e.keyCode==13){
+    if(e.keyCode == 13){
       e.preventDefault();
       document.location.href = '/search?q='+ encodeURIComponent(searchInput.val());
+    }
+  });
+
+  searchInput.bind('keydown', function(e) {
+    // DOWN array (only works with keydown and not keypress)
+    if(e.keyCode == 40){
+
     }
   });
 };
