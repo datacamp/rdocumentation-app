@@ -113,6 +113,10 @@ module.exports = {
 
   fullSearch: function(req, res) {
     var query = req.param('q');
+    var page = parseInt(req.param('page')) || 1;
+    var perPage = parseInt(req.param('perPage')) || 10;
+    var offset = (page - 1) * perPage;
+
     var searchTopicQuery = {
       multi_match: {
         query: query,
@@ -214,8 +218,8 @@ module.exports = {
             "copyright": {highlight_query: searchTopicQuery}
           }
         },
-        from: 0,
-        size: 10,
+        from: offset,
+        size: perPage,
         fields: ['package_name', 'version', 'name']
       }
     }).then(function(response) {
@@ -226,7 +230,6 @@ module.exports = {
           fields.package_name = hit.fields.package_name[0];
           fields.version = hit.fields.version[0];
         } else if (hit._type === 'topic') {
-          console.log(hit.inner_hits);
           var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
           fields.package_name = inner_hits_fields.package_name[0];
           fields.version = inner_hits_fields.version[0];
@@ -239,7 +242,7 @@ module.exports = {
           highlight: hit.highlight
         };
       });
-      return res.ok({hits: hits}, 'search/result.ejs');
+      return res.ok({hits: hits, perPage: perPage, currentPage: page, query: query}, 'search/result.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });

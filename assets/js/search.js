@@ -29,7 +29,7 @@ function urlParam(name){
 }
 
 
-window.quickSearchHandler = function() {
+window.searchHandler = function() {
   var searchContainer = $('.search'),
   searchInput = $('.search input'),
   searchResultsPane = $('.search--results'),
@@ -87,6 +87,15 @@ window.quickSearchHandler = function() {
         }
     }
   });
-}
 
-$(document).ready(window.quickSearchHandler);
+  searchInput.bind('keypress', function(e) {
+    if(e.keyCode==13){
+      e.preventDefault();
+      document.location.href = '/search?q='+ encodeURIComponent(searchInput.val());
+    }
+  });
+};
+
+
+
+$(document).ready(window.searchHandler);

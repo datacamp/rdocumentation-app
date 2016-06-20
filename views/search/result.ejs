@@ -35,8 +35,13 @@
 
     </div>
     <div class='row'>
-      <div class='col-xs-4 navigation'>
-        <ul></ul>
+      <div class='col-xs-6'>
+        <% if (data.currentPage >= 2) { %>
+        <a href='/search?q=<%= data.query %>&page=<%= data.currentPage - 1 %>&perPage=<%= data.perPage %>' class='btn btn-primary'>Prec</a>
+        <% } %>
+      </div>
+      <div class='col-xs-6 '>
+        <a  href='/search?q=<%= data.query %>&page=<%= data.currentPage + 1 %>&perPage=<%= data.perPage %>' class='btn btn-primary pull-right'>Next</a>
       </div>
     </div>
   </div>
