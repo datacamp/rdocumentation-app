@@ -7,7 +7,8 @@ module.exports = {
 
 
   computeLinks: function(basePath, topicInstance) {
-    var toSearch = _.pick(topicInstance, ['description',
+    var topic = topicInstance.toJSON();
+    var toSearch = _.pick(topic, ['description',
       'usage',
       'details',
       'value',
@@ -15,25 +16,52 @@ module.exports = {
       'note',
       'author',
       'seealso',
-      'examples']
+      'examples',
+      'arguments']
     );
     return Promise.resolve(topicInstance.package_version || topicInstance.getPackage_version()).then(function(packageVersion) {
       var replaced = _.mapValues(toSearch, function(section) {
+        var replaceLinks = function (str) {
+          var $ = cheerio.load(str, {decodeEntities: false});
+          $('a').each(function(i, elem) {
+            var current = $(elem).attr('href');
+            var rdOptions = $(elem).attr('rd-options');
+            if (rdOptions === '') {
+              $(elem).attr('href', url.resolve(basePath, current) +
+                '?package=' + packageVersion.package_name +
+                '\&version=' + packageVersion.version);
+            } else {
+              if (rdOptions.split(':') > 1) {
+                $(elem).attr('href', url.resolve(basePath, rdOptions[1]) +
+                  '?package=' + packageVersion.package_name +
+                  '\&version=' + packageVersion.version +
+                  '\&to=' + rdOptions[0]);
+              } else {
+                $(elem).attr('href', url.resolve(basePath, current) +
+                  '?package=' + packageVersion.package_name +
+                  '\&version=' + packageVersion.version +
+                  '\&to=' + rdOptions);
+              }
+            }
+
+          });
+          return $.html();
+        };
         if (!section) return section;
-        var $ = cheerio.load(section, {decodeEntities: false});
-        $('a').each(function(i, elem) {
-          var current = $(elem).attr('href');
-          $(elem).attr('href', url.resolve(basePath, current) +
-            '?package=' + packageVersion.package_name +
-            '\&version=' + packageVersion.version);
-        });
-        console.log($);
-        return $.html();
+        if (section instanceof Array) {
+          var x = section.map(function(val) {
+            return _.mapValues(val, replaceLinks);
+          });
+          return x;
+        }
+        else return replaceLinks(section);
       });
-      return _.assign(topicInstance, replaced);
+      return _.assign(topic, replaced);
     });
 
   }
+
+
 
 
 };
