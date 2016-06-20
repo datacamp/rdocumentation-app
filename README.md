@@ -1,9 +1,9 @@
 # rdocumentation.org
-The web application running rdocumentation.org.
+The web application running [rdocumentation.org](http://www.rdocumentation.org).
 
 ##Installation
 ###Using docker
-- Install docker-machine and docker-engine
+- Install the docker toolbox
 - `docker-compose build` to build your local docker image
 - Execute `docker-compose run server npm install --no-bin-links` to install npm dependencies.
 - Run the database migrations by doing `docker-compose run server node node_modules/db-migrate/bin/db-migrate up`.
@@ -19,14 +19,14 @@ The web application running rdocumentation.org.
 ##Creating a new database migration:
 ###Using docker
 Run `docker-compose run server node node_modules/db-migrate/bin/db-migrate create migration_name`
-then populate the files in
+then add your code to
   - `./migrations/{time}{migration_name}.js`
   - `./migrations/sqls/{time}{migration_name}.sql`
   - `./migrations/sqls/{time}{migration_name}.sql`
 
 ###Without docker
 Run `NODE_ENV=development node node_modules/db-migrate/bin/db-migrate create migration_name`
-then populate the files in
+then add your code to
   - `./migrations/{time}{migration_name}.js`
   - `./migrations/sqls/{time}{migration_name}.sql`
   - `./migrations/sqls/{time}{migration_name}.sql`
