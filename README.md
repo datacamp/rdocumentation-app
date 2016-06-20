@@ -1,46 +1,32 @@
-# rdocumentation-app-2.0
+# rdocumentation.org
+The web application running rdocumentation.org.
 
-Sails app serving rdocumentation.org
+##Installation
+###Using docker
+- Install docker-machine and docker-engine
+- `docker-compose build` to build your local docker image
+- Execute `docker-compose run server npm install --no-bin-links` to install npm dependencies.
+- Run the database migrations by doing `docker-compose run server node node_modules/db-migrate/bin/db-migrate up`.
+- `docker-compose up`
 
-#Installation
+###Without docker
+- Install MySQL and Node.js on your system
+- Run `npm install`
+- Create an empty database `rdocsv2`
+- Execute the migrations: `NODE_ENV=development node node_modules/db-migrate/bin/db-migrate up`
+- node app.js (or if you have nodemon installed: `nodemon app.js`)
 
-Run
-```
-docker-compose build
-```
-to build your local docker image
-
-
-Then
-```
-docker-compose run server npm install --no-bin-links
-```
-to install npm dependencies
-
-#Running the server
-
-```
-docker-compose up
-```
-
-#Creating a new db migration:
-Run
-```
-docker-compose run server node node_modules/db-migrate/bin/db-migrate create migration_name
-```
+##Creating a new database migration:
+###Using docker
+Run `docker-compose run server node node_modules/db-migrate/bin/db-migrate create migration_name`
 then populate the files in
   - `./migrations/{time}{migration_name}.js`
   - `./migrations/sqls/{time}{migration_name}.sql`
   - `./migrations/sqls/{time}{migration_name}.sql`
 
-
-#Running migrations
-
-```
-docker-compose run server node node_modules/db-migrate/bin/db-migrate up
-```
-Or when running locally
-
-```
-NODE_ENV=development node node_modules/db-migrate/bin/db-migrate up
-```
+###Without docker
+Run `NODE_ENV=development node node_modules/db-migrate/bin/db-migrate create migration_name`
+then populate the files in
+  - `./migrations/{time}{migration_name}.js`
+  - `./migrations/sqls/{time}{migration_name}.sql`
+  - `./migrations/sqls/{time}{migration_name}.sql`
