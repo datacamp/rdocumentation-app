@@ -10,6 +10,9 @@
 
   dl {
     margin-top: $default-space / 2.0;
+    dt {
+      text-transform: capitalize;
+    }
     dd {
       margin-left: 200px;
     }
