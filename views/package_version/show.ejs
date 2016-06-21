@@ -85,7 +85,7 @@
         <tbody id="topics">
           <% for(var i = 0; i < pkgVersion.topics.length; i++) { %>
             <tr>
-              <td><a href="<%= pkgVersion.topics[i].uri %>"><%= pkgVersion.topics[i].name %></a></td>
+              <td><a href="<%= path + '/topics/' + pkgVersion.topics[i].name %>"><%= pkgVersion.topics[i].name %></a></td>
               <td><%- pkgVersion.topics[i].title %></td>
               <td>
                 <div class="rating">
