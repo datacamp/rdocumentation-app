@@ -53,6 +53,11 @@ module.exports = {
       */
       insertAuthor: function(author, options) {
         var where = author;
+        if(author.email) {
+          where = {
+            email: email
+          };
+        }
 
         var params = _.defaults({
           where: where,
