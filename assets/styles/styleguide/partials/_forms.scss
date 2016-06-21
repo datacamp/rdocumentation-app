@@ -6,7 +6,7 @@ fieldset {
 }
 @media screen and (min-width: 480px) {
     fieldset {
-        width: 20em
+        width: 40em
     }
 }
 .card fieldset {
@@ -67,80 +67,80 @@ button[type=submit].btn-secondary {
 }
 
 // Checkboxes and radio buttons
-input[type=checkbox],
-input[type=radio] {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    appearance: none;
-    background-color: transparent;
-    border: none;
-    left: -99999px;
-    margin: 0;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: auto;
-    transition: color $default-duration ease-out
-}
-input[type=checkbox]+label,
-input[type=radio]+label {
-    transition: color $default-duration ease-out;
-    display: inline-block;
-    color: $primary-light;
-    cursor: pointer;
-    padding: 0 0 0 1.5em;
-    position: relative
-}
-input[type=checkbox]+label:before,
-input[type=radio]+label:before {
-    background: $primary-lighter;
-    border-radius: $form-radio-radius;
-    border: $form-radio-border-width solid $primary-lighter;
-    box-sizing: border-box;
-    content: "";
-    height: 16px;
-    left: 0;
-    margin-top: 4px;
-    position: absolute;
-    width: 16px;
-    transition: background-color $default-duration ease-out, border-color $default-duration ease-out
-}
-input[type=checkbox]+label:hover:before,
-input[type=radio]+label:hover:before {
-    background-color: $primary-light;
-    border-color: $primary-light
-}
-input[type=checkbox]:checked+label,
-input[type=radio]:checked+label {
-    color: $primary
-}
-input[type=checkbox]:checked+label:before,
-input[type=radio]:checked+label:before {
-    border: $form-radio-border-width solid $primary;
-    background-color: $primary;
-    background-image: linear-gradient(180deg, #fff $form-radio-border-width, transparent $form-radio-border-width), linear-gradient(-90deg, #fff $form-radio-border-width, transparent $form-radio-border-width), linear-gradient(90deg, #fff $form-radio-border-width, transparent $form-radio-border-width), linear-gradient(0deg, #fff $form-radio-border-width, transparent $form-radio-border-width)
-}
-input[type=checkbox]:disabled+label,
-input[type=radio]:disabled+label {
-    color: $primary-lighter;
-    cursor: default
-}
-input[type=checkbox]:disabled+label:before,
-input[type=radio]:disabled+label:before {
-    border-color: $primary-extra-light;
-    background-color: $primary-extra-light
-}
-input[type=checkbox]:disabled+label:hover:before,
-input[type=radio]:disabled+label:hover:before {
-    background-color: $primary-extra-light;
-    border-color: $primary-extra-light
-}
-input[type=radio]+label:before {
-    border-radius: 50%
-}
-input[type=radio]:checked+label:before {
-  background-image: radial-gradient(rgba(0, 0, 0, 0) 4px, #ffffff 4px);
-}
+// input[type=checkbox],
+// input[type=radio] {
+//     -moz-appearance: none;
+//     -webkit-appearance: none;
+//     appearance: none;
+//     background-color: transparent;
+//     border: none;
+//     left: -99999px;
+//     margin: 0;
+//     overflow: hidden;
+//     padding: 0;
+//     position: absolute;
+//     width: auto;
+//     transition: color $default-duration ease-out
+// }
+// input[type=checkbox]+label,
+// input[type=radio]+label {
+//     transition: color $default-duration ease-out;
+//     display: inline-block;
+//     color: $primary-light;
+//     cursor: pointer;
+//     padding: 0 0 0 1.5em;
+//     position: relative
+// }
+// input[type=checkbox]+label:before,
+// input[type=radio]+label:before {
+//     background: $primary-lighter;
+//     border-radius: $form-radio-radius;
+//     border: $form-radio-border-width solid $primary-lighter;
+//     box-sizing: border-box;
+//     content: "";
+//     height: 16px;
+//     left: 0;
+//     margin-top: 4px;
+//     position: absolute;
+//     width: 16px;
+//     transition: background-color $default-duration ease-out, border-color $default-duration ease-out
+// }
+// input[type=checkbox]+label:hover:before,
+// input[type=radio]+label:hover:before {
+//     background-color: $primary-light;
+//     border-color: $primary-light
+// }
+// input[type=checkbox]:checked+label,
+// input[type=radio]:checked+label {
+//     color: $primary
+// }
+// input[type=checkbox]:checked+label:before,
+// input[type=radio]:checked+label:before {
+//     border: $form-radio-border-width solid $primary;
+//     background-color: $primary;
+//     background-image: linear-gradient(180deg, #fff $form-radio-border-width, transparent $form-radio-border-width), linear-gradient(-90deg, #fff $form-radio-border-width, transparent $form-radio-border-width), linear-gradient(90deg, #fff $form-radio-border-width, transparent $form-radio-border-width), linear-gradient(0deg, #fff $form-radio-border-width, transparent $form-radio-border-width)
+// }
+// input[type=checkbox]:disabled+label,
+// input[type=radio]:disabled+label {
+//     color: $primary-lighter;
+//     cursor: default
+// }
+// input[type=checkbox]:disabled+label:before,
+// input[type=radio]:disabled+label:before {
+//     border-color: $primary-extra-light;
+//     background-color: $primary-extra-light
+// }
+// input[type=checkbox]:disabled+label:hover:before,
+// input[type=radio]:disabled+label:hover:before {
+//     background-color: $primary-extra-light;
+//     border-color: $primary-extra-light
+// }
+// input[type=radio]+label:before {
+//     border-radius: 50%
+// }
+// input[type=radio]:checked+label:before {
+//   background-image: radial-gradient(rgba(0, 0, 0, 0) 4px, #ffffff 4px);
+// }
 
 
 // Toggle switch

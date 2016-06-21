@@ -11,7 +11,7 @@
       <h3>My Reviews</h3>
       <div class="user--reviews-content">
         <% if(reviews.length === 0) { %>
-          <h5 class="review--placeholder"><i>Looks like there are no reviews yet.</i></h5>
+          <div class="review--placeholder">Looks like there are no reviews yet.</div>
         <% } %>
         <% for(var i=0; i < reviews.length; i++) { %>
           <% var reviewUser = null; %>

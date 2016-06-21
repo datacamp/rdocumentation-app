@@ -4,9 +4,49 @@
     margin-bottom: $default-space / 2.0;
   }
 }
+// ********************
+// One review
+// ********************
+.review {
+  margin-bottom: 1rem;
+  border: 1px solid $primary-extra-light;
+  border-radius: 4px;
+}
 
-.review-form {
+.review--title {
+  display: flex;
+  padding: 1rem;
+  background-color: $primary-ultra-light;
+  border-bottom: 1px solid $primary-extra-light;
+  .rating {
+    margin: 0 1rem;
+  }
+}
+
+.review--body {
+  padding: 1rem;
+  p { margin: 0; }
+}
+
+// ********************
+// Placeholder if there are no reviews
+// ********************
+.review--placeholder {
+  border: 1px solid $primary-extra-light;
+  border-radius: 4px;
+  padding: 1rem;
+  background-color: $primary-ultra-light;
+  margin-bottom: 1rem;
+}
+
+// ********************
+// Form to create a review
+// ********************
+.review--form {
   margin-top: $default-space;
+  border: 1px solid $primary-extra-light;
+  border-radius: 4px;
+
   .rating {
     overflow: hidden;
     display: inline-block;
@@ -41,28 +81,15 @@
   }
 }
 
-.review {
-  margin-bottom: 1rem;
-  border: 1px solid $primary-extra-light;
-  border-radius: 4px;
-}
-
-.review--title {
-  display: flex;
+.review--form-title {
   padding: 1rem;
   background-color: $primary-ultra-light;
   border-bottom: 1px solid $primary-extra-light;
-  .rating {
-    margin: 0 1rem;
-  }
 }
 
-.review--body {
+.review--form-body {
   padding: 1rem;
-  p { margin: 0; }
-}
-
-.review--placeholder {
-  font-weight: 400;
-  text-align: center;
+  .btn {
+    width: 200px;
+  }
 }
