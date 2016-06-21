@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing packages
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+var _ = require('lodash');
 
 module.exports = {
 
@@ -39,9 +40,16 @@ module.exports = {
       where: {name: name},
       defaults: task,
     }).spread(function(instance, created) {
-      console.log(created);
-      return instance.setPackages(packages).then(function(packagesInstance) {
-        return instance;
+      var filtered = _.uniq(packages);
+      return Package.bulkCreate(filtered.map(function(packageName) {
+        return {name: packageName};
+      }), {
+        fields: ['name'],
+        ignoreDuplicates: true
+      }).then(function(created) {
+        return instance.setPackages(filtered).then(function(packagesInstance) {
+          return instance;
+        });
       });
     }).then(function(value) {
       res.location('/api/taskviews/' + value.name);
