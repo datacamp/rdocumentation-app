@@ -5,7 +5,7 @@ module.exports = {
 
   aggregateAuthors: function() {
     var getDuplicatesAuthors = function () {
-      return sequelize.query("SELECT name FROM (select name, email, count(*) as sum from Collaborators group by name, email order by sum desc) s where s.sum > 1;", { type: sequelize.QueryTypes.SELECT});
+      return sequelize.query("SELECT name FROM Collaborators where name in (SELECT name FROM (select name, count(*) as sum from Collaborators group by name order by sum desc) s where s.sum > 1) AND email is null order by name;", { type: sequelize.QueryTypes.SELECT});
     };
 
     return getDuplicatesAuthors().then(function(names) {
