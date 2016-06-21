@@ -44,6 +44,13 @@ module.exports = {
       }
     });
 
+    Package.belongsToMany(TaskView, {
+      as: 'inViews',
+      foreignKey: 'package_name',
+      through: 'TaskViewPackages',
+      timestamps: false
+    });
+
     Package.belongsToMany(PackageVersion, { as: 'reverse_dependencies', foreignKey: 'dependency_name', through: Dependency, constraints: false});
   },
 

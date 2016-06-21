@@ -75,7 +75,9 @@ module.exports.routes = {
     'post /api/topics/:topicId/reviews': 'ReviewController.postReviewToTopic',
     'post /api/packages/:name/versions/:version/reviews': 'ReviewController.postReviewToVersion',
 
-  //***** /Collaborator *****
+  //***** TaskViews *****
+    // API
+    'post /api/taskviews': 'TaskViewController.postView',
 
 
   // Link
