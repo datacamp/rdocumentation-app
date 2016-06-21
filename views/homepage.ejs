@@ -6,8 +6,9 @@
     </a>
   </div>
 
-  <%- partial ('shared/_navigation.ejs') %>
-
+  <% if(!inViewerPane) { %>
+    <%- partial ('shared/_navigation.ejs') %>
+  <% } %>
   <div class="home--cta">
     <h1>Search all <%= data.nbPackages %> CRAN and BiOC packages.</h1>
     <p><b><%= data.nbPackages %></b> packages, <b><%= data.nbPackageVersions %></b> package versions, <b><%= data.nbCollaborators %></b> collaborators</p>
