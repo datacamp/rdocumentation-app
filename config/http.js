@@ -43,7 +43,6 @@ module.exports.http = {
       'handleBodyParserError',
       'compress',
       'methodOverride',
-      'poweredBy',
       '$custom',
       'router',
       'flash', // Connect-flash for passport.js
@@ -71,6 +70,7 @@ module.exports.http = {
     return next();
   },
 
+  poweredBy: false,
 
   /***************************************************************************
   *                                                                          *
