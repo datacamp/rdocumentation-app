@@ -1,7 +1,20 @@
 module.exports = {
 
   me: function(req, res) {
-    return res.json(req.user);
+    var populateLimit = req._sails.config.blueprints.populateLimit;
+    User.findOne({
+      where: {
+        id: req.user.id,
+      },
+      include: [
+        { model: Review, as: 'reviews', limit: populateLimit },
+      ]
+    }).then(function(user) {
+      if(user === null) return res.notFound();
+      else return res.ok(user, 'user/show.ejs');
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
   },
 
   create: function(req, res) {

@@ -1,0 +1,52 @@
+<% var reviewable = data; %>
+<% var reviews = reviewable.reviews; %>
+
+
+<div class='reviews'>
+  <h3>Reviews</h3>
+  <div class="review-content">
+    <% if(reviews.length === 0) { %>
+      <h5 class="review--placeholder"><i>Looks like there are no reviews yet.</i></h5>
+    <% } %>
+    <% for(var i=0; i < reviews.length; i++) { %>
+      <% var reviewUser = reviews[i].user %>
+      <%- include _review.ejs %>
+    <% } %>
+  </div>
+  <% if(!inViewerPane) { %>
+    <div id="postReview" class="review-form">
+      <% if(user) { %>
+        <h5>Post a new review</h5>
+        <form  method="post" action='<%= reviewable.api_uri %>/reviews'>
+          <span class="rating">
+            <input type="radio" class="rating-input"
+                id="rating-5" name="rating" value="5">
+            <label for="rating-5" class="rating-star"></label>
+            <input type="radio" class="rating-input"
+                id="rating-4" name="rating" value="4">
+            <label for="rating-4" class="rating-star"></label>
+            <input type="radio" class="rating-input"
+                id="rating-3" name="rating" value="3">
+            <label for="rating-3" class="rating-star"></label>
+            <input type="radio" class="rating-input"
+                id="rating-2" name="rating" value="2">
+            <label for="rating-2" class="rating-star"></label>
+            <input type="radio" class="rating-input"
+                id="rating-1" name="rating" value="1">
+            <label for="rating-1" class="rating-star"></label>
+          </span>
+        </div>
+          <label for="title">Title</label>
+          <input name='title'></input>
+          <label for="text">Review</label>
+          <textarea name='text' rows="4" cols="20"></textarea>
+          <button class="btn btn-primary pull-right" type="submit">Send your review</button>
+        </form>
+        <% } else { %>
+            <p>You are not logged in, please <a href="/login">Sign in</a> or <a href="/register">Create an account</a> to post reviews.</p>
+        <% } %>
+    <% } else { %>
+      <a href="<%= path + '#postReview' %>" class="btn btn-primary js-external">Review Package</a>
+    <% } %>
+  </div>
+<div>

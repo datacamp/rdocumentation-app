@@ -31,8 +31,9 @@ module.exports.routes = {
   'get /logout': 'AuthController.logout',
 
 
-  //Users
+  //***** User *****
   'get /users/me' : 'UserController.me',
+  //***** /User *****
 
   //***** Package *****
     // API

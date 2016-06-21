@@ -1,0 +1,26 @@
+<%- partial ('../shared/_navbar.ejs') %>
+<% var user = data; %>
+<% var reviews = user.reviews; %>
+<section class="user">
+  <div class="container">
+    <header>
+      <h1><%- user.username %></h1>
+    </header>
+
+    <section class="user--reviews">
+      <h3>My Reviews</h3>
+      <div class="user--reviews-content">
+        <% if(reviews.length === 0) { %>
+          <h5 class="review--placeholder"><i>Looks like there are no reviews yet.</i></h5>
+        <% } %>
+        <% for(var i=0; i < reviews.length; i++) { %>
+          <% var reviewUser = user %>
+          <%- include ../shared/_review.ejs %>
+        <% } %>
+      </div>
+    </section>
+
+  </div>
+</section>
+
+<%- partial ('../shared/_footer.ejs') %>

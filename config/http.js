@@ -8,6 +8,7 @@
  * For more information on configuration, check out:
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.http.html
  */
+var dateFormat = require('dateformat');
 
 module.exports.http = {
 
@@ -66,6 +67,7 @@ module.exports.http = {
   paramsInjector: function (req, res, next) {
     res.locals.inViewerPane = (req.param('viewer_pane') === '1') ? true : false;
     res.locals.path = req.path;
+    res.locals.dateformat = dateFormat;
     return next();
   },
 

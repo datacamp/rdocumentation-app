@@ -56,6 +56,6 @@ module.exports.policies = {
   },
 
   UserController: {
-    'me': 'sessionAuth'
+    'me': ['sessionAuth', 'flash']
   }
 };

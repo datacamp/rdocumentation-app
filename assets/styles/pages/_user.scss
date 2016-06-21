@@ -1,0 +1,16 @@
+.user {
+  min-height: 82%;
+  .container {
+    margin-top: $default-space;
+  }
+
+  header {
+    margin-bottom: $default-space;
+  }
+}
+
+.user--reviews {
+  h3 {
+    margin-bottom: $default-space / 2.0;
+  }
+}

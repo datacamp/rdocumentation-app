@@ -1,56 +1,68 @@
 .reviews {
   margin-top: $default-space;
-  .review-form {
-    margin-top: $default-space;
-    border-top: 1px solid $primary-extra-light;
-    .rating {
-      overflow: hidden;
-      display: inline-block;
-      font-size: 0;
-      position: relative;
-    }
-    .rating-input {
-        float: right;
-        width: 16px;
-        height: 16px;
-        padding: 0;
-        margin: 0 0 0 -16px;
-        opacity: 0;
-    }
-    .rating:hover .rating-star:hover,
-    .rating:hover .rating-star:hover ~ .rating-star,
-    .rating-input:checked ~ .rating-star {
-        background-position: 0 0;
-    }
-    .rating-star,
-    .rating:hover .rating-star {
-        position: relative;
-        float: right;
-        content: none;
-        display: block;
-        width: 16px;
-        height: 16px;
-        background: url('http://kubyshkin.ru/samples/star-rating/star.png') 0 -16px;
-    }
-    .rating-star:before {
-      content: none;
-    }
-  }
-
-  .review-body {
-    margin: 1em;
-    padding-bottom: 1em;
-    border-bottom: 1px solid #ababab;
-
-    .review-title {
-      display: inline;
-      margin-right: 1em;
-    }
+  h3 {
+    margin-bottom: $default-space / 2.0;
   }
 }
 
+.review-form {
+  margin-top: $default-space;
+  .rating {
+    overflow: hidden;
+    display: inline-block;
+    font-size: 0;
+    position: relative;
+  }
+  .rating-input {
+      float: right;
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      margin: 0 0 0 -16px;
+      opacity: 0;
+  }
+  .rating:hover .rating-star:hover,
+  .rating:hover .rating-star:hover ~ .rating-star,
+  .rating-input:checked ~ .rating-star {
+      background-position: 0 0;
+  }
+  .rating-star,
+  .rating:hover .rating-star {
+      position: relative;
+      float: right;
+      content: none;
+      display: block;
+      width: 16px;
+      height: 16px;
+      background: url('http://kubyshkin.ru/samples/star-rating/star.png') 0 -16px;
+  }
+  .rating-star:before {
+    content: none;
+  }
+}
 
-.review-placeholder {
+.review {
+  margin-bottom: 1rem;
+  border: 1px solid $primary-extra-light;
+  border-radius: 4px;
+}
+
+.review--title {
+  display: flex;
+  padding: 1rem;
+  background-color: $primary-ultra-light;
+  border-bottom: 1px solid $primary-extra-light;
+  .rating {
+    margin: 0 1rem;
+  }
+}
+
+.review--body {
+  padding: 1rem;
+  p { margin: 0; }
+}
+
+.review--placeholder {
   font-weight: 400;
   text-align: center;
 }
