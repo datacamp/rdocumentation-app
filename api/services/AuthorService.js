@@ -41,6 +41,73 @@ module.exports = {
       });
     });
 
+  },
+
+  recoverMaintainer: function() {
+    var getSourceJSON = function() {
+      return sequelize.query("SELECT id, sourceJSON FROM PackageVersions where sourceJSON IS not null order by id;", { type: sequelize.QueryTypes.SELECT});
+    };
+
+    return getSourceJSON().then(function(packageVersions) {
+      return Promise.map(packageVersions, function(packageVersion) {
+        var id = packageVersion.id;
+        var sourceJSON = packageVersion.sourceJSON;
+        var source = JSON.parse(sourceJSON);
+
+        var maintainer = source.Maintainer;
+        if (!maintainer) return { id: id, result: 'success'}; //nothing to do;
+        var sanitized = AuthorService.extractPersonInfo(maintainer);
+
+        return Collaborator.insertAuthor(sanitized).then(function(maintainerInstance) {
+          return PackageVersion.update({maintainer_id: maintainerInstance.id}, {
+            where: {id: id},
+            fields: ['maintainer_id']
+          }).then(function(affecteds) {
+            console.log("done: " + id);
+            return { id: id, result: 'success'};
+          });
+        });
+
+
+      }, {concurrency: 5});
+    });
+  },
+
+
+
+  extractPersonInfo: function(person) {
+    var match = person.match(Utils.emailRegex);
+    if(match) {
+      var personName = person
+        .replace(Utils.emailRegex, '')
+        .replace(/\s*\[.*?\]\s*/g, '') //remove '['cre', 'aut', ...]'
+        .replace(/[^\w\s]/gi, '') // remove all special characters
+        .replace(/(?: (aut|com|ctb|cph|cre|ctr|dtc|ths|trl)$)|(?:^(aut|com|ctb|cph|cre|ctr|dtc|ths|trl)(?= ))|(?: (aut|com|ctb|cph|cre|ctr|dtc|ths|trl)(?= ))/g, '')
+        .trim(); // trim it
+      return {
+        name: personName,
+        email: match[0].trim()
+      };
+    } else {
+      return { name: person.replace(/[^\w\s]/gi, '').trim() };
+    }
+  },
+
+  authorsSanitizer: function(authorString) {
+    // var authorString = "Jean Marc and Ally Son, RIP R. & Hello World!"
+    var sanitized = authorString.replace('<email>', '')
+                                .replace('</email>', '')
+                                .replace(/\s+/g, ' ')
+                                .trim();
+
+    var separated = sanitized.split(/,|and|&|;/);
+
+    var trimmed = separated.map(function(item) {return item.trim();});
+
+    var mapped = trimmed.map(extractPersonInfo);
+
+    return mapped;
+
   }
 
 };

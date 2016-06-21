@@ -52,10 +52,7 @@ module.exports = {
       *
       */
       insertAuthor: function(author, options) {
-        var where = {};
-        if (author.email) {
-          where.$or =  [{name: author.name}, {email: author.email}];
-        } else where = author;
+        var where = author;
 
         var params = _.defaults({
           where: where,

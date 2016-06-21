@@ -1,39 +1,6 @@
 // PackageService.js - in api/services
 
 
-var extractPersonInfo = function(person) {
-  var match = person.match(Utils.emailRegex);
-  if(match) {
-    var personName = person
-      .replace(Utils.emailRegex, '')
-      .replace(/\s*\[.*?\]\s*/g, '') //remove '['cre', 'aut', ...]'
-      .replace(/[^\w\s]/gi, '') // remove all special characters
-      .trim(); // trim it
-    return {
-      name: personName,
-      email: match[0].trim()
-    };
-  } else {
-    return { name: person.replace(/[^\w\s]/gi, '').trim() };
-  }
-};
-
-var authorsSanitizer = function(authorString) {
-  // var authorString = "Jean Marc and Ally Son, RIP R. & Hello World!"
-  var sanitized = authorString.replace('<email>', '')
-                              .replace('</email>', '')
-                              .replace(/\s+/g, ' ')
-                              .trim();
-
-  var separated = sanitized.split(/,|and|&|;/);
-
-  var trimmed = separated.map(function(item) {return item.trim();});
-
-  var mapped = trimmed.map(extractPersonInfo);
-
-  return mapped;
-
-};
 
 module.exports = {
 
@@ -88,7 +55,7 @@ module.exports = {
       .concat(dependencyArrayToRecords('Imports'))
       .concat(dependencyArrayToRecords('Suggests'))
       .concat(dependencyArrayToRecords('Enhances'));
-    var authorArray = descriptionJSON.Author ? authorsSanitizer(descriptionJSON.Author) : [];
+    var authorArray = descriptionJSON.Author ? AuthorService.authorsSanitizer(descriptionJSON.Author) : [];
     var name = descriptionJSON.Package || descriptionJSON.Bundle || 'Undefined';
 
     return {
@@ -105,7 +72,7 @@ module.exports = {
         copyright: descriptionJSON.Copyright
       },
       authors: authorArray,
-      maintainer: descriptionJSON.Maintainer ? extractPersonInfo(descriptionJSON.Maintainer) : null,
+      maintainer: descriptionJSON.Maintainer ? AuthorService.extractPersonInfo(descriptionJSON.Maintainer) : null,
       dependencies: dependencies
     };
 

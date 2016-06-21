@@ -12,6 +12,17 @@ module.exports = function(grunt) {
         }
       ]
     },
+
+    maintainerRecover: {
+      functions: [
+        function (callback) {
+          AuthorService.recoverMaintainer().then(function(result) {
+            console.log("Finished recover maitainers");
+            callback();
+          });
+        }
+      ]
+    },
   });
 
 
