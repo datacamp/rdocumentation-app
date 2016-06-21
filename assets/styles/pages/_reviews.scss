@@ -46,38 +46,45 @@
   margin-top: $default-space;
   border: 1px solid $primary-extra-light;
   border-radius: 4px;
+}
 
-  .rating {
-    overflow: hidden;
+$filled-star-color: black;
+$empty-star-color: black;
+$star-size: 17px;
+.review--form-rating {
+  direction: rtl;
+  font-size: $star-size;
+  unicode-bidi: bidi-override;
+  position: relative;
+  .star {
     display: inline-block;
-    font-size: 0;
-    position: relative;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    &:hover {
+      cursor: pointer;
+    }
+    &:before {
+      color: $empty-star-color;
+      content: "\f006";
+    }
+    &:hover:before,
+    &:hover ~ .star:before {
+      color: $filled-star-color;
+      content: "\f005";
+    }
   }
+
   .rating-input {
-      float: right;
-      width: 16px;
-      height: 16px;
-      padding: 0;
-      margin: 0 0 0 -16px;
-      opacity: 0;
+    padding: 0;
+    left: -1000px;
+    position: fixed;
+    opacity: 0;
   }
-  .rating:hover .rating-star:hover,
-  .rating:hover .rating-star:hover ~ .rating-star,
-  .rating-input:checked ~ .rating-star {
-      background-position: 0 0;
-  }
-  .rating-star,
-  .rating:hover .rating-star {
-      position: relative;
-      float: right;
-      content: none;
-      display: block;
-      width: 16px;
-      height: 16px;
-      background: url('http://kubyshkin.ru/samples/star-rating/star.png') 0 -16px;
-  }
-  .rating-star:before {
-    content: none;
+
+  .rating-input:checked ~ .star:before {
+    color: $filled-star-color;
+    content: "\f005";
   }
 }
 

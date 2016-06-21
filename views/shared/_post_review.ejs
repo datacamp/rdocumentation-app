@@ -19,25 +19,26 @@
         <div class="review--form-title">Post a new review</div>
         <div class="review--form-body">
           <form method="post" action='<%= reviewPostAction %>'>
-            <span class="rating">
+            <label>Score</label>
+            <span class="review--form-rating">
               <input type="radio" class="rating-input" id="rating-5" name="rating" value="5">
-              <label for="rating-5" class="rating-star"></label>
+              <label for="rating-5" class="star"></label>
               <input type="radio" class="rating-input" id="rating-4" name="rating" value="4">
-              <label for="rating-4" class="rating-star"></label>
-              <input type="radio" class="rating-input" id="rating-3" name="rating" value="3">
-              <label for="rating-3" class="rating-star"></label>
-              <input type="radio" class="rating-input" id="rating-2" name="rating" value="2">
-              <label for="rating-2" class="rating-star"></label>
+              <label for="rating-4" class="star"></label>
+              <input type="radio" class="rating-input" id="rating-3" name="rating" value="3" checked>
+              <label for="rating-3" class="star"></label>
+              <input type="radio" class="rating-input" id="rating-2" name="rating" value="2" >
+              <label for="rating-2" class="star"></label>
               <input type="radio" class="rating-input" id="rating-1" name="rating" value="1">
-              <label for="rating-1" class="rating-star"></label>
+              <label for="rating-1" class="star"></label>
             </span>
             <fieldset>
               <label for="title">Title</label>
-              <input name='title' id="title"></input>
+              <input name='title' id="title" placeholder="(optional)"></input>
             </fieldset>
             <fieldset>
               <label for="text">Review</label>
-              <textarea name='text' rows="4" cols="20" id="text"></textarea>
+              <textarea name='text' rows="4" cols="20" id="text" placeholder="(optional)"></textarea>
             </fieldset>
             <fieldset>
               <button class="btn btn-primary" type="submit">Send your review</button>
