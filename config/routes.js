@@ -78,7 +78,9 @@ module.exports.routes = {
   //***** TaskViews *****
     // API
     'post /api/taskviews': 'TaskViewController.postView',
-
+    'get /api/taskviews': 'TaskViewController.findAll',
+    // HTML
+    'get /taskviews': 'TaskViewController.findAll',
 
   // Link
   'get /link/:alias': 'Topic.findByAlias',

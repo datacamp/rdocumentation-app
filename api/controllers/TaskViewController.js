@@ -63,6 +63,35 @@ module.exports = {
     });
   },
 
+  /**
+  * @api {get} /taskviews Get all taskViews
+  * @apiName Get Views
+  * @apiGroup View
+  * @apiDescription Return all the cran task view along with their packages
+  *
+  * @apiSuccess {String}    name             View name
+  * @apiSuccess {String}    url              View url
+  * @apiSuccess {String[]}  packages         List of Packages object
+  * @apiUse Timestamps
+  */
+
+  findAll: function(req, res) {
+    TaskView.findAll({
+      include: [{
+        model: Package,
+        as: 'packages',
+        through: {
+          attributes: []
+        }
+      }],
+      order: [['name', 'ASC']]
+    }).then(function(views) {
+      return res.ok(views, 'view/showAll.ejs');
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
+  },
+
 
 };
 
