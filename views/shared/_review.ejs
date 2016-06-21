@@ -11,7 +11,11 @@
         by <strong><%= reviewUser.username %></strong>
       <% } %>
       <% if(reviewTarget !== null) { %>
-        on <a href="<%= reviewTarget.uri %>"><%= reviewTarget.package_name %></a>
+        <% if(reviewTarget.package_name) { %>
+          on <a href="<%= reviewTarget.uri %>"><%= reviewTarget.package_name %>&nbsp;v<%= reviewTarget.version %></a>
+        <% } else { %>
+          on <a href="<%= reviewTarget.uri %>"><%= reviewTarget.name %></a>
+        <% } %>
       <% } %>
       at <%= dateformat(reviews[i].created_at, "mediumDate") %>
     </span>
