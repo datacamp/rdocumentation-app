@@ -12,8 +12,9 @@
     <h1>Search all <%= data.nbPackages %> CRAN and BiOC packages.</h1>
     <p><b><%= data.nbPackages %></b> packages, <b><%= data.nbPackageVersions %></b> package versions, <b><%= data.nbCollaborators %></b> collaborators</p>
     <div class="home--search">
-      <form class="search" action="">
-        <input type="text" placeholder="Search for packages, functions, etc" autofocus>
+      <form class="search" action="/search">
+        <input name="q" type="text" placeholder="Search for packages, functions, etc" autofocus>
+        <button class="btn btn-primary" type="submit">Search</button>
         <div class="search--results"></div>
       </form>
     </div>

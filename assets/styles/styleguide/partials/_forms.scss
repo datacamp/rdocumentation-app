@@ -53,19 +53,6 @@ textarea {
     }
 }
 
-// Buttons
-button[type=submit] {
-    width: 100%;
-    margin: 0;
-}
-
-button[type=submit].btn-secondary {
-    float: right;
-    width: auto;
-    margin: 0;
-    font-size: $small-font-size;
-}
-
 // Checkboxes and radio buttons
 // input[type=checkbox],
 // input[type=radio] {

@@ -96,13 +96,6 @@ window.searchHandler = function() {
     }
   });
 
-  searchInput.bind('keypress', function(e) {
-    if(e.keyCode == 13){
-      e.preventDefault();
-      document.location.href = '/search?q='+ encodeURIComponent(searchInput.val());
-    }
-  });
-
   searchInput.bind('keydown', function(e) {
     // DOWN array (only works with keydown and not keypress)
     if(e.keyCode == 40){

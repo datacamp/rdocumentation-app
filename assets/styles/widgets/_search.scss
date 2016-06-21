@@ -1,8 +1,12 @@
 .search {
     position: relative;
-
+    display: flex;
     input {
         background-color: white;
+    }
+
+    button {
+        margin-left: $default-space / 4.0;
     }
 }
 
