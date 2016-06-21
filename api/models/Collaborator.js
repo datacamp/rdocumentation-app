@@ -55,7 +55,7 @@ module.exports = {
         var where = author;
         if(author.email) {
           where = {
-            email: email
+            email: author.email
           };
         }
 
