@@ -45,7 +45,7 @@ module.exports = {
 
   recoverMaintainer: function() {
     var getSourceJSON = function() {
-      return sequelize.query("SELECT id, sourceJSON FROM PackageVersions where sourceJSON IS not null order by id;", { type: sequelize.QueryTypes.SELECT});
+      return sequelize.query("SELECT id, sourceJSON FROM PackageVersions where sourceJSON IS not null AND maintainer_id is null;", { type: sequelize.QueryTypes.SELECT});
     };
 
     return getSourceJSON().then(function(packageVersions) {
@@ -67,11 +67,12 @@ module.exports = {
             return { id: id, result: 'success'};
           });
         }).catch(function(err) {
+          console.log("fail: " + id);
           return { id: id, result: 'error', message: err.toString()};
         });
 
 
-      }, {concurrency: 5});
+      }, {concurrency: 10});
     });
   },
 
