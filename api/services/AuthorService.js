@@ -21,7 +21,6 @@ module.exports = {
           }]
         }).then(function(collaborators) {
           var stays = collaborators[0];
-          console.log(stays.toJSON());
           var others = collaborators.slice(1);
           var authored = _.reduce(others, function(acc, collaborator) {
             return acc.concat(collaborator.authored_packages);
@@ -34,6 +33,7 @@ module.exports = {
           });
 
           return Promise.join(associate, remove, function(result, removeResult) {
+            console.info("done: "+ name);
             return {name: name, result: 'success'};
           });
         });
