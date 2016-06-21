@@ -66,6 +66,8 @@ module.exports = {
             console.log("done: " + id);
             return { id: id, result: 'success'};
           });
+        }).catch(function(err) {
+          return { id: id, result: 'error', message: err.toString()};
         });
 
 
