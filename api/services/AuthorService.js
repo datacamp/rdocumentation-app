@@ -56,7 +56,7 @@ module.exports = {
 
         var maintainer = source.Maintainer;
         if (!maintainer) return { id: id, result: 'success'}; //nothing to do;
-        var sanitized = AuthorService.extractPersonInfo(maintainer);
+        var sanitized = AuthorService.authorsSanitizer(maintainer)[0];
 
         return Collaborator.insertAuthor(sanitized).then(function(maintainerInstance) {
           return PackageVersion.update({maintainer_id: maintainerInstance.id}, {
@@ -83,7 +83,6 @@ module.exports = {
     if(match) {
       var personName = person
         .replace(Utils.emailRegex, '')
-        .replace(/\s*\[.*?\]\s*/g, '') //remove '['cre', 'aut', ...]'
         .replace(/[^\w\s]/gi, '') // remove all special characters
         .replace(/(?: (aut|com|ctb|cph|cre|ctr|dtc|ths|trl)$)|(?:^(aut|com|ctb|cph|cre|ctr|dtc|ths|trl)(?= ))|(?: (aut|com|ctb|cph|cre|ctr|dtc|ths|trl)(?= ))/g, '')
         .trim(); // trim it
