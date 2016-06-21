@@ -36,6 +36,10 @@ module.exports = {
 
   models: {
     migrate: 'safe'
+  },
+
+  session: {
+    secret: '652c68f88144e6a99b9522ea1193a645'
   }
 
 };
