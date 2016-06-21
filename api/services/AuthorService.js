@@ -106,7 +106,7 @@ module.exports = {
 
     var trimmed = separated.map(function(item) {return item.trim();});
 
-    var mapped = trimmed.map(extractPersonInfo);
+    var mapped = trimmed.map(AuthorService.extractPersonInfo);
 
     return mapped;
 
