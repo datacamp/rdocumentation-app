@@ -26,16 +26,15 @@ module.exports = {
             return acc.concat(collaborator.authored_packages);
           }, []);
 
-          var associate = stays.addAuthored_packages(authored);
-
-          var remove = Promise.map(others, function(other) {
-            return other.destroy();
+          return stays.addAuthored_packages(authored).then(function(associations) {
+            return Promise.map(others, function(other) {
+              return other.destroy();
+            }).then(function() {
+              console.info("done: "+ name);
+              return {name: name, result: 'success'};
+            });
           });
 
-          return Promise.join(associate, remove, function(result, removeResult) {
-            console.info("done: "+ name);
-            return {name: name, result: 'success'};
-          });
         });
 
       });
