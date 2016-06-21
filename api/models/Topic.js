@@ -107,6 +107,7 @@ module.exports = {
 
     getterMethods: {
       uri: function()  {
+        console.log(this.package_version)
         if (this.package_version) {
           return '/api/packages/:name/versions/:version/topics/:topic'
             .replace(':name', this.package_version.package_name)

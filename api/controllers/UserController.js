@@ -7,7 +7,10 @@ module.exports = {
         id: req.user.id,
       },
       include: [
-        { model: Review, as: 'reviews', limit: populateLimit },
+        { model: Review, as: 'reviews', limit: populateLimit, include: [
+          { model: PackageVersion, as: 'package_version'},
+          { model: Topic, as: 'topic'}
+        ]},
       ]
     }).then(function(user) {
       if(user === null) return res.notFound();

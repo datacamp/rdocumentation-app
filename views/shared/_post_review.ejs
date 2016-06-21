@@ -1,7 +1,6 @@
 <% var reviewable = data; %>
 <% var reviews = reviewable.reviews; %>
 
-
 <div class='reviews'>
   <h3>Reviews</h3>
   <div class="review-content">
@@ -9,7 +8,8 @@
       <h5 class="review--placeholder"><i>Looks like there are no reviews yet.</i></h5>
     <% } %>
     <% for(var i=0; i < reviews.length; i++) { %>
-      <% var reviewUser = reviews[i].user %>
+      <% var reviewUser = reviews[i].user; %>
+      <% var reviewTarget = null; %>
       <%- include _review.ejs %>
     <% } %>
   </div>
@@ -17,7 +17,7 @@
     <div id="postReview" class="review-form">
       <% if(user) { %>
         <h5>Post a new review</h5>
-        <form  method="post" action='<%= reviewable.api_uri %>/reviews'>
+        <form  method="post" action='<%= reviewPostAction %>'>
           <span class="rating">
             <input type="radio" class="rating-input"
                 id="rating-5" name="rating" value="5">

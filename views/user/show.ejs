@@ -14,7 +14,8 @@
           <h5 class="review--placeholder"><i>Looks like there are no reviews yet.</i></h5>
         <% } %>
         <% for(var i=0; i < reviews.length; i++) { %>
-          <% var reviewUser = user %>
+          <% var reviewUser = null; %>
+          <% var reviewTarget = (reviews[i].package_version || reviews[i].topic); %>
           <%- include ../shared/_review.ejs %>
         <% } %>
       </div>

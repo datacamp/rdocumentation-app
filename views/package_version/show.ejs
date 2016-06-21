@@ -112,8 +112,8 @@
       </ul>
     </section>
 
-
-    <%- partial ('../shared/_post_review.ejs') %>
+    <% var reviewPostAction = data.api_uri + '/reviews' %>
+    <%- include ../shared/_post_review.ejs %>
 
 
   </div>

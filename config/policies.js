@@ -52,7 +52,7 @@ module.exports.policies = {
   '*': [true, 'flash'],
 
   ReviewController: {
-    '*': 'sessionAuth'
+    '*': ['sessionAuth', 'flash']
   },
 
   UserController: {

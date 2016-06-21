@@ -6,7 +6,15 @@
         <i class="fa fa-star<%= reviews[i].rating <= j ? "-o" : "" %>" aria-hidden="true"></i>
       <% } %>
     </div>
-    <span>by <strong><%= reviewUser.username %></strong> on <%= dateformat(reviews[i].created_at) %></span>
+    <span>
+      <% if(reviewUser !== null) { %>
+        by <strong><%= reviewUser.username %></strong>
+      <% } %>
+      <% if(reviewTarget !== null) { %>
+        on <a href="<%= reviewTarget.uri %>"><%= reviewTarget.package_name %></a>
+      <% } %>
+      at <%= dateformat(reviews[i].created_at, "mediumDate") %>
+    </span>
   </div>
   <div class='review--body'>
     <p><%= reviews[i].text %></p>
