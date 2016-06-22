@@ -1,15 +1,11 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <% var view = data; %>
-<section class="view">
+<section class="task-views">
   <div class="container">
-    <header>
-      <h1><%- view.name %></h1>
-
     <div class="row">
-
-
       <div class="col-md-8">
-        <span><a href='<%= view.url %>' target='_blank'>CRAN <i class="fa fa-external-link" aria-hidden="true"></i></a></span>
+        <h1><%- view.name %></h1>
+        <a href='<%= view.url %>' target='_blank'>CRAN <i class="fa fa-external-link" aria-hidden="true"></i></a>
       </div>
       <div class="col-md-4">
         <section class="stats">

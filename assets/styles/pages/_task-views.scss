@@ -1,10 +1,6 @@
 .task-views {
   .container {
     margin-top: $default-space;
-    h1 {
-      font-size: $h3-size;
-      margin-bottom: $default-space;
-    }
   }
 
   .view-item {
@@ -17,4 +13,9 @@
       word-break: normal;
     }
   }
+}
+
+.task-views--header {
+  font-size: $h3-size;
+  margin-bottom: $default-space;
 }
