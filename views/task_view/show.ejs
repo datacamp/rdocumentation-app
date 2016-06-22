@@ -11,7 +11,7 @@
         <section class="stats">
           <div class="downloads download-task" data-url="/api/taskviews/<%= view.name %>/statistics">
             <span class="downloads-nr">
-              <span class='total'></span>
+              <span class='total'>0</span>
               <span>Downloaded this month</span>
             </span>
             <span class="downloads-credits">Download stats provided by <a href="http://cranlogs.r-pkg.org/" target="_blank">MetaCran</a></span>
@@ -41,7 +41,7 @@
               <td> <%= package.latest_version ? package.latest_version.title : package.name %> </td>
               <td>
                 <span class="download-task" data-url="/api/packages/<%= package.name %>/downloads">
-                  <span class='total'></span>
+                  <span class='total'>0</span>
                 </span>
               </td>
               <td>

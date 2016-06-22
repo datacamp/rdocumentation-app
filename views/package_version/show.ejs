@@ -57,14 +57,14 @@
             </dd>
             <dt>Release date:</dt>
             <dd>
-              <%=: pkgVersion.release_date | formatDate %>
+              <%= dateformat(pkgVersion.release_date, "mediumDate") %>
             </dd>
           </dl>
         </div>
         <div class="col-md-4">
           <div class="downloads download-task" data-url="/api<%= path %>/downloads">
             <span class="downloads-nr " >
-              <span class='total'></span>
+              <span class='total'>0</span>
               <span>Downloaded this month</span>
             </span>
             <span class="downloads-ind">Packages depending on this package were downloaded
