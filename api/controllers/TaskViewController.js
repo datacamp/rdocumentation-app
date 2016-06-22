@@ -151,7 +151,7 @@ module.exports = {
   getDownloadStatistics: function(req, res) {
     var view = req.param('view'),
     key = 'rdocs_view_' + view;
-    RedisService.getAsync(key).then(function(response){
+    RedisClient.getAsync(key).then(function(response){
       if(response) {
         return res.json(JSON.parse(response));
       } else {
@@ -172,8 +172,8 @@ module.exports = {
               return o.downloads;
             });
             var json = {total: sum, totalStr: numeral(sum).format('0,0')};
-            RedisService.set(key, JSON.stringify(json));
-            RedisService.expire(key, 86400);
+            RedisClient.set(key, JSON.stringify(json));
+            RedisClient.expire(key, 86400);
             return res.json(json);
           });
         }).catch(function(err){
