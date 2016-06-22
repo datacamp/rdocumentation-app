@@ -8,18 +8,29 @@
         <% for(var i = 0; i < data.length; i++) { %>
           <% var view = data[i] %>
             <section class='view-item'>
-            <a href="/taskviews/<%- view.name %>">
-              <h4 class='view-title'>
-                <%= view.name %>
-              </h4>
-            </a>
-            <a href="#" data-toggle data-target="#<%= 'taskview_' + i %>" data-toggled-text="Hide packages">Show packages</a>
-            <p id='<%= 'taskview_' + i %>' data-toggle-hidden="true">
-            <% var packages = view.packages.map(function(package) {
-              return '<a href="' + package.uri + '">' + package.name + '</a>';
-            }) -%>
-            <%- packages.join(', ') %>
-            </p>
+
+              <div class="view-item--header">
+                <div class="pull-left">
+                  <a href="/taskviews/<%- view.name %>"><h4 class='view-title'><%= view.name %></h4></a>
+                  <a href="#" data-toggle data-target="#<%= 'taskview_' + i %>" data-toggled-text="Hide packages">
+                  Show packages</a>
+                </div>
+                <div class="downloads download-task" data-url="/api/taskviews/<%= view.name %>/statistics">
+                  <span class="downloads-nr">
+                    <span class='total'></span>
+                    <span>Downloaded this month</span>
+                  </span>
+                  <span class="downloads-credits">Download stats provided by <a href="http://cranlogs.r-pkg.org/" target="_blank">MetaCran</a></span>
+                </div>
+              </div>
+
+              <div class="view-item--packages" id='<%= 'taskview_' + i %>' data-toggle-hidden="true">
+                <% var packages = view.packages.map(function(package) {
+                  return '<a href="' + package.uri + '">' + package.name + '</a>';
+                }) -%>
+                <%- packages.join(', ') %>
+              </div>
+
             </section>
         <% } %>
       </div>

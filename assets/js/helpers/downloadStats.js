@@ -4,7 +4,6 @@ $(document).ready(function() {
     var $self = $(this);
     var url = $self.data('url');
     $.get(url, function(data){
-      console.log(data);
       $self.find(".total").text(data.totalStr);
       $self.find(".deps").text(data.revDepsStr);
       $('.downloads').css({'visibility': 'visible'});

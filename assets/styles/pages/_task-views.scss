@@ -19,3 +19,23 @@
   font-size: $h3-size;
   margin-bottom: $default-space;
 }
+
+.view-item .downloads {
+  float: right;
+}
+.view-item .downloads-nr {
+  display: inherit;
+  span {
+    display: block;
+  }
+  span:first-child {
+    font-size: 1.2rem;
+  }
+}
+
+.view-item--header {
+  @include clearfix;
+}
+.view-item--packages {
+  margin-top: 1rem;
+}
