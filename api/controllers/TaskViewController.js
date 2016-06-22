@@ -174,6 +174,11 @@ module.exports = {
       return res.negotiate(err.errors);
     });
 
+  },
+
+  redirect: function(req, res) {
+    var view = req.param('view');
+    return res.redirect('/taskviews/' + view);
   }
 
 

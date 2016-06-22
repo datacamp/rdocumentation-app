@@ -84,6 +84,8 @@ module.exports.routes = {
     // HTML
     'get /taskviews': 'TaskViewController.findAll',
     'get /taskviews/:view': 'TaskViewController.find',
+    // Backwards compatibility
+    'get /domains/:view': 'TaskViewController.redirect',
 
   // Link
   'get /link/:alias': 'Topic.findByAlias',
