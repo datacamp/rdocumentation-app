@@ -174,8 +174,6 @@ module.exports = {
             var json = {total: sum, totalStr: numeral(sum).format('0,0')};
             RedisService.set(key, JSON.stringify(json));
             RedisService.expire(key, 86400);
-            console.log("SET THE FOLLOWING VALUE")
-
             return res.json(json);
           });
         }).catch(function(err){
