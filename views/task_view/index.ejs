@@ -13,8 +13,8 @@
                 <%= view.name %>
               </h4>
             </a>
-            <a href="#" class='js-display-list'>Show packages</a>
-            <p class='js-view-package-list' style='display: none;'>
+            <a href="#" data-toggle data-target="#<%= 'taskview_' + i %>" data-toggled-text="Hide packages">Show packages</a>
+            <p id='<%= 'taskview_' + i %>' data-toggle-hidden="true">
             <% var packages = view.packages.map(function(package) {
               return '<a href="' + package.uri + '">' + package.name + '</a>';
             }) -%>

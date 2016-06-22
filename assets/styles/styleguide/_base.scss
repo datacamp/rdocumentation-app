@@ -127,3 +127,8 @@ hr {
 }
 .ajax-success {color: $primary;}
 .ajax-fail { color: $error;}
+
+
+[data-toggle-hidden='true'] {
+  display: none;
+}
