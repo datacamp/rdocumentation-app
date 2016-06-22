@@ -80,7 +80,7 @@ module.exports = {
       {
         as: 'maintainer',
         foreignKey: {
-          allowNull: false,
+          allowNull: true,
           name: 'maintainer_id',
           as: 'maintainer'
         }

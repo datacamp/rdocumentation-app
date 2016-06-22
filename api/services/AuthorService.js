@@ -16,28 +16,42 @@ module.exports = {
           order: [['email', 'DESC']],
           include: [{
             model: PackageVersion,
-            as: 'authored_packages',
-            attributes: ['id']
-          }]
+            as: 'authored_packages'
+          },
+          {
+            model: PackageVersion,
+            as: 'maintained_packages',
+            separate: true
+          }],
         }).then(function(collaborators) {
           var stays = collaborators[0];
           var others = collaborators.slice(1);
-          var authored = _.reduce(others, function(acc, collaborator) {
-            return acc.concat(collaborator.authored_packages);
-          }, []);
+          var authored = _.uniq(_.reduce(others, function(acc, collaborator) {
+            return acc.concat(collaborator.authored_packages.map(function(p) {return p.id;}));
+          }, []));
+          var maintained = _.uniq(_.reduce(others, function(acc, collaborator) {
+            return acc.concat(collaborator.maintained_packages.map(function(p) {return p.id;}));
+          }, []));
 
           return stays.addAuthored_packages(authored).then(function(associations) {
-            return Promise.map(others, function(other) {
-              return other.destroy();
-            }).then(function() {
-              console.info("done: "+ name);
-              return {name: name, result: 'success'};
+            return PackageVersion.update({
+              maintainer_id: stays.id
+            }, {
+              where: { id: { $in: maintained } }
+            }).then(function(updated) {
+              return Collaborator.destroy({
+                where: {id: {$in: others.map(function(o) {return o.id;})}}
+              }).then(function() {
+                console.info("done: "+ name);
+                return {name: name, result: 'success'};
+              });
             });
+
           });
 
         });
 
-      });
+      }, {concurrency:5});
     });
 
   },
