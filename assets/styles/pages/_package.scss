@@ -37,39 +37,10 @@
   margin-top: $default-space;
 }
 
-.package--topics {
-  input {
-    width: 300px;
-    padding: 0.375em 0.75em;
-    margin: $default-space  auto $default-space / 2.0 auto;
-  }
-}
-
 .package--dependencies {
   margin-top: $default-space;
 }
 
 .rating {
   display: inline-block;
-}
-
-.package--downloads {
-  visibility: hidden;
-}
-
-.package--downloads-nr {
-  display: flex;
-  align-items: center;
-  span:first-child {
-    font-size: $h1-size;
-  }
-}
-.package--downloads-ind {
-  display: block;
-  span {
-    font-weight: bold;
-  }
-}
-.package--downloads-credits {
-  font-size: 0.6rem;
 }

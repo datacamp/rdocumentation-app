@@ -40,7 +40,7 @@
       </div>
     </header>
 
-    <section class="package--stats">
+    <section class="stats">
       <div class="row">
         <div class="col-md-8">
           <dl>
@@ -58,10 +58,14 @@
           </dl>
         </div>
         <div class="col-md-4">
-          <div class="package--downloads">
-            <span class="package--downloads-nr"><span id="totalDownloads" data-url="/api<%= path %>/downloads"></span><span>Downloaded this month</span></span>
-            <span class="package--downloads-ind">Packages depending on this package were downloaded <span id="indDownloads"></span> times this month.</span>
-            <span class="package--downloads-credits">Download stats provided by <a href="http://cranlogs.r-pkg.org/" target="_blank">MetaCran</a></span>
+          <div class="downloads download-task" data-url="/api<%= path %>/downloads">
+            <span class="downloads-nr " >
+              <span class='total'></span>
+              <span>Downloaded this month</span>
+            </span>
+            <span class="downloads-ind">Packages depending on this package were downloaded
+            <span class='deps'></span> times this month.</span>
+            <span class="downloads-credits">Download stats provided by <a href="http://cranlogs.r-pkg.org/" target="_blank">MetaCran</a></span>
           </div>
         </div>
       </div>
@@ -72,7 +76,7 @@
       <p><%- pkgVersion.description %></p>
     </section>
 
-    <section class="package--topics">
+    <section class="table-list">
       <input id="filterTopics" type="text" placeholder="Filter list">
       <table>
         <thead>

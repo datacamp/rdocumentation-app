@@ -45,6 +45,7 @@ module.exports.routes = {
   //***** PackageVersion *****
     // API
     'get /api/packages/:name/versions/:version/downloads' : 'PackageVersion.getDownloadStatistics',
+    'get /api/packages/:name/downloads' : 'PackageVersion.getDownloadStatistics',
     'get /api/packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
     'post /api/versions': 'PackageVersion.postDescription',
     // HTML
@@ -82,6 +83,7 @@ module.exports.routes = {
     'get /api/taskviews/:view/statistics': 'TaskViewController.getDownloadStatistics',
     // HTML
     'get /taskviews': 'TaskViewController.findAll',
+    'get /taskviews/:view': 'TaskViewController.find',
 
   // Link
   'get /link/:alias': 'Topic.findByAlias',

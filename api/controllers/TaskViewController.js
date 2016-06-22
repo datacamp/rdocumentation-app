@@ -6,6 +6,8 @@
  */
 var _ = require('lodash');
 var axios = require('axios');
+var numeral = require('numeral');
+
 
 module.exports = {
 
@@ -93,6 +95,36 @@ module.exports = {
     });
   },
 
+  /**
+  * @api {get} /taskviews Get One Task Views
+  * @apiName Get View
+  * @apiGroup View
+  * @apiDescription Return one view along with it's packages
+  *
+  * @apiSuccess {String}    name             View name
+  * @apiSuccess {String}    url              View url
+  * @apiSuccess {String[]}  packages         List of Packages object
+  * @apiUse Timestamps
+  */
+
+  find: function(req, res) {
+    var view = req.param('view');
+    TaskView.findOne({
+      where: {name: view },
+      include: [{
+        model: Package,
+        as: 'packages',
+        through: {
+          attributes: []
+        }
+      }]
+    }).then(function(view) {
+      return res.ok(view, 'task_view/show.ejs');
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
+  },
+
 
   getDownloadStatistics: function(req, res) {
     var view = req.param('view');
@@ -113,7 +145,7 @@ module.exports = {
         var sum = _.sumBy(total.data, function(o) {
           return o.downloads;
         });
-        return res.json({total: sum});
+        return res.json({total: sum, totalStr: numeral(sum).format('0,0')});
       });
     }).catch(function(err){
       return res.negotiate(err.errors);

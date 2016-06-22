@@ -1,0 +1,38 @@
+
+.stats {
+  dd a {
+    margin-right: $default-space / 3.0;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.downloads {
+  visibility: hidden;
+}
+
+.downloads-nr {
+  display: flex;
+  align-items: center;
+  span:first-child {
+    font-size: $h1-size;
+  }
+}
+.downloads-ind {
+  display: block;
+  span {
+    font-weight: bold;
+  }
+}
+.downloads-credits {
+  font-size: 0.6rem;
+}
+
+.table-list {
+  input {
+    width: 300px;
+    padding: 0.375em 0.75em;
+    margin: $default-space  auto $default-space / 2.0 auto;
+  }
+}
