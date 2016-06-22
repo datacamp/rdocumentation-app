@@ -55,6 +55,10 @@
               <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
             <% } %>
             </dd>
+            <dt>Release date:</dt>
+            <dd>
+              <%=: pkgVersion.release_date | formatDate %>
+            </dd>
           </dl>
         </div>
         <div class="col-md-4">

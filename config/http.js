@@ -95,6 +95,14 @@ module.exports.http = {
 
   },
 
+  locals: {
+    filters: {
+      formatDate: function(date) {
+        return dateFormat(date);
+      }
+    }
+  }
+
   /***************************************************************************
   *                                                                          *
   * The number of seconds to cache flat files on disk being served by        *

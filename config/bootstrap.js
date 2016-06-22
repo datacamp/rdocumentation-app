@@ -9,9 +9,11 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.bootstrap.html
  */
 
+var _ = require('lodash');
 module.exports.bootstrap = function(cb) {
 
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
+  _.extend(sails.hooks.http.app.locals, sails.config.http.locals);
   cb();
 };
