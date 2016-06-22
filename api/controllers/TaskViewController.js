@@ -8,7 +8,6 @@ var _ = require('lodash');
 var axios = require('axios');
 var numeral = require('numeral');
 
-
 module.exports = {
 
 
@@ -150,28 +149,39 @@ module.exports = {
 
 
   getDownloadStatistics: function(req, res) {
-    var view = req.param('view');
+    var view = req.param('view'),
+    key = 'rdocs_view_' + view;
+    RedisService.getAsync(key).then(function(response){
+      if(response) {
+        return res.json(JSON.parse(response));
+      } else {
+        TaskView.findOne({
+          where: {name: view},
+          include: [{
+            model: Package,
+            as: 'packages',
+            through: {
+              attributes: []
+            }
+          }]
+        }).then(function(task_view) {
+          var packagesString = _.map(task_view.packages, 'name').join(',');
+          return axios.get('http://cranlogs.r-pkg.org/downloads/total/last-month/' + packagesString)
+          .then(function(total) {
+            var sum = _.sumBy(total.data, function(o) {
+              return o.downloads;
+            });
+            var json = {total: sum, totalStr: numeral(sum).format('0,0')};
+            RedisService.set(key, JSON.stringify(json));
+            RedisService.expire(key, 86400);
+            console.log("SET THE FOLLOWING VALUE")
 
-    TaskView.findOne({
-      where: {name: view},
-      include: [{
-        model: Package,
-        as: 'packages',
-        through: {
-          attributes: []
-        }
-      }]
-    }).then(function(task_view) {
-      var packagesString = _.map(task_view.packages, 'name').join(',');
-      return axios.get('http://cranlogs.r-pkg.org/downloads/total/last-month/' + packagesString)
-      .then(function(total) {
-        var sum = _.sumBy(total.data, function(o) {
-          return o.downloads;
+            return res.json(json);
+          });
+        }).catch(function(err){
+          return res.negotiate(err.errors);
         });
-        return res.json({total: sum, totalStr: numeral(sum).format('0,0')});
-      });
-    }).catch(function(err){
-      return res.negotiate(err.errors);
+      }
     });
 
   },
