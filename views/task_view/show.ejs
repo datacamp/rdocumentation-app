@@ -5,11 +5,14 @@
     <header>
       <h1><%- view.name %></h1>
 
-    <section class="stats">
-      <div class="row">
-        <div class="col-md-8">
-        </div>
-        <div class="col-md-4">
+    <div class="row">
+
+
+      <div class="col-md-8">
+        <span><a href='<%= view.url %>' target='_blank'>CRAN <i class="fa fa-external-link" aria-hidden="true"></i></a></span>
+      </div>
+      <div class="col-md-4">
+        <section class="stats">
           <div class="downloads download-task" data-url="/api/taskviews/<%= view.name %>/statistics">
             <span class="downloads-nr">
               <span class='total'></span>
@@ -17,9 +20,10 @@
             </span>
             <span class="downloads-credits">Download stats provided by <a href="http://cranlogs.r-pkg.org/" target="_blank">MetaCran</a></span>
           </div>
-        </div>
+        </section>
       </div>
-    </section>
+
+    </div>
 
 
     <section class="table-list">
@@ -38,19 +42,22 @@
             <% var package = view.packages[i]; %>
             <tr>
               <td><a href="<%= package.uri %>"><%= package.name %></a></td>
-              <td> latest version title </td>
+              <td> <%= package.latest_version ? package.latest_version.title : package.name %> </td>
               <td>
                 <span class="download-task" data-url="/api/packages/<%= package.name %>/downloads">
                   <span class='total'></span>
                 </span>
               </td>
               <td>
+
                 <div class="rating">
-                  <i class="fa fa-star-o" aria-hidden="true"></i>
-                  <i class="fa fa-star-o" aria-hidden="true"></i>
-                  <i class="fa fa-star-o" aria-hidden="true"></i>
-                  <i class="fa fa-star-o" aria-hidden="true"></i>
-                  <i class="fa fa-star-o" aria-hidden="true"></i>
+                  <% for(var j=1; j <= 5; j++) { %>
+                    <i class="fa fa-star<%=
+                    package.rating < j ?
+                      package.rating <= j - 0.5 ? "-o" : "-half-o"
+                      : ""
+                    %>" aria-hidden="true"></i>
+                  <% } %>
                 </div>
               </td>
             </tr>

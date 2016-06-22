@@ -116,10 +116,33 @@ module.exports = {
         as: 'packages',
         through: {
           attributes: []
-        }
+        },
+        include: [{
+          model: PackageVersion,
+          as: 'latest_version',
+          include: [{
+            model: Review,
+            as: 'reviews'
+          }],
+          attributes: ['id', 'title', 'description']
+        }]
       }]
     }).then(function(view) {
-      return res.ok(view, 'task_view/show.ejs');
+      var jsonViews = view.toJSON();
+      var packages = _.map(jsonViews.packages, function(package) {
+        var rating;
+        if(!package.latest_version || package.latest_version.reviews.length === 0) {
+          rating = 0;
+        } else {
+          rating = _.meanBy(package.latest_version.reviews, function(r) {
+            return r.rating;
+          });
+        }
+        package.rating = rating;
+        return package;
+      });
+      jsonViews.packages = packages;
+      return res.ok(jsonViews, 'task_view/show.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });
