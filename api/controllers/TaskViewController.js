@@ -87,7 +87,7 @@ module.exports = {
       }],
       order: [['name', 'ASC']]
     }).then(function(views) {
-      return res.ok(views, 'view/showAll.ejs');
+      return res.ok(views, 'task_view/index.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });

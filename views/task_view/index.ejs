@@ -1,0 +1,30 @@
+<%- partial ('../shared/_navbar.ejs') %>
+
+<section class="task-views">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2">
+        <h1>Task Views</h1>
+        <% for(var i = 0; i < data.length; i++) { %>
+          <% var view = data[i] %>
+            <section class='view-item'>
+            <a href="/taskviews/<%- view.name %>">
+              <h4 class='view-title'>
+                <%= view.name %>
+              </h4>
+            </a>
+            <a href="#" class='js-display-list'>Show packages</a>
+            <p class='js-view-package-list' style='display: none;'>
+            <% var packages = view.packages.map(function(package) {
+              return '<a href="' + package.uri + '">' + package.name + '</a>';
+            }) -%>
+            <%- packages.join(', ') %>
+            </p>
+            </section>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- partial ('../shared/_footer.ejs') %>

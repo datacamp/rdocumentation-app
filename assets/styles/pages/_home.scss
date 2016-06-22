@@ -24,6 +24,12 @@
     text-align: left;
 }
 
+.home--taskviews {
+    display: block;
+    margin-bottom: 0;
+    margin-top: 0.5rem;
+}
+
 .home--title {
     @extend .navbar--title;
     .logo-title {

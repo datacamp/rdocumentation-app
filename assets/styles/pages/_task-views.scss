@@ -1,0 +1,23 @@
+.task-views {
+  .container {
+    margin-top: $default-space;
+    h1 {
+      font-size: $h3-size;
+      margin-bottom: $default-space;
+    }
+  }
+
+  .view-item {
+    margin-bottom: $default-space;
+    border: 1px solid #ebf4f7;
+    border-radius: 4px;
+    padding: 1rem;
+    background-color: #fafeff;
+    p {
+      word-break: normal;
+    }
+  }
+
+
+
+}
