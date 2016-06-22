@@ -5,6 +5,7 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 var _ = require('lodash');
+var axios = require('axios');
 
 module.exports = {
 
@@ -91,6 +92,34 @@ module.exports = {
       return res.negotiate(err);
     });
   },
+
+
+  getDownloadStatistics: function(req, res) {
+    var view = req.param('view');
+
+    TaskView.findOne({
+      where: {name: view},
+      include: [{
+        model: Package,
+        as: 'packages',
+        through: {
+          attributes: []
+        }
+      }]
+    }).then(function(task_view) {
+      var packagesString = _.map(task_view.packages, 'name').join(',');
+      return axios.get('http://cranlogs.r-pkg.org/downloads/total/last-month/' + packagesString)
+      .then(function(total) {
+        var sum = _.sumBy(total.data, function(o) {
+          return o.downloads;
+        });
+        return res.json({total: sum});
+      });
+    }).catch(function(err){
+      return res.negotiate(err.errors);
+    });
+
+  }
 
 
 };
