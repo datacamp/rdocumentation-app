@@ -32,7 +32,6 @@ module.exports = {
 
     classMethods: {
       findByNameInLatestVersions: function(name) {
-        console.log('hey');
         return Alias.findAll({
           include: [
             {
