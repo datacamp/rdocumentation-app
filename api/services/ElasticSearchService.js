@@ -2,6 +2,7 @@
 var _ = require('lodash');
 module.exports = {
 
+  DAILY: 86400,
 
   lastMonthPercentiles: function() {
     var body = {
@@ -64,6 +65,12 @@ module.exports = {
       return response.aggregations.download_percentiles.values;
     });
 
+  },
+
+  cachedLastMonthPercentiles: function( ) {
+    return RedisService.getJSONFromCache('percentiles', RedisService.DAILY, function() {
+      return ElasticSearchService.lastMonthPercentiles();
+    });
   }
 
 };

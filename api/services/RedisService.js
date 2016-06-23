@@ -7,6 +7,8 @@
 
 module.exports = {
 
+  DAILY: 86400,
+
   // missFn must be a function that return either a json or a Promise resolving to a json
   // it will be executed if nothing is found in cache
   getJSONFromCache: function(key, expire, missFn) {
