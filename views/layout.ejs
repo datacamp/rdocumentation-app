@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <% if(typeof data.pageTitle == 'undefined') { %>
+    <% if( (typeof data == 'undefined') || (typeof data.pageTitle == 'undefined') ) { %>
       <title>RDocumentation</title>
     <% } else { %>
       <title><%= data.pageTitle %> | RDocumentation</title>
@@ -77,7 +77,7 @@
     -->
 
     <!--TEMPLATES-->
-    
+
     <!--TEMPLATES END-->
 
 
