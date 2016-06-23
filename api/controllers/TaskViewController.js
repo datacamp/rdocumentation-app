@@ -177,6 +177,7 @@ module.exports = {
     RedisClient.getAsync(key).then(function(response){
       if(response) {
         res.set('X-Cache', 'hit');
+        res.set('Cache-Control', 'max-age=' + 86400);
         return res.json(JSON.parse(response));
       } else {
         TaskView.findOne({
@@ -199,6 +200,7 @@ module.exports = {
             RedisClient.set(key, JSON.stringify(json));
             RedisClient.expire(key, 86400);
             res.set('X-Cache', 'miss');
+            res.set('Cache-Control', 'max-age=' + 86400);
             return res.json(json);
           });
         }).catch(function(err){

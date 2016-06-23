@@ -140,6 +140,7 @@ module.exports = {
     RedisClient.getAsync(key).then(function(response){
       if(response) {
         res.set('X-Cache', 'hit');
+        res.set('Cache-Control', 'max-age=' + 86400);
         return res.json(JSON.parse(response));
       } else {
         sequelize.query("SELECT DISTINCT package_name FROM Dependencies INNER JOIN PackageVersions on PackageVersions.id = Dependencies.dependant_version_id WHERE dependency_name = ? and type = 'depends'", { replacements: [packageName], type: sequelize.QueryTypes.SELECT})
@@ -166,6 +167,7 @@ module.exports = {
               RedisClient.set(key, JSON.stringify(json));
               RedisClient.expire(key, 86400);
               res.set('X-Cache', 'miss');
+              res.set('Cache-Control', 'max-age=' + 86400);
               return res.json(json);
             }));
           });
