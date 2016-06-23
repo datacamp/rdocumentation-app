@@ -13,7 +13,7 @@ var Promise = require('bluebird');
 _getDownloadStatistics = function (packageName) {
   key = 'rdocs_download_stats_' + packageName;
 
-  return RedisService.getJSONFromCache(key, function() {
+  return RedisService.getJSONFromCache(key, 86400, function() {
     return sequelize.query("SELECT DISTINCT package_name FROM Dependencies INNER JOIN PackageVersions on PackageVersions.id = Dependencies.dependant_version_id WHERE dependency_name = ? and type = 'depends'", { replacements: [packageName], type: sequelize.QueryTypes.SELECT})
       .then(function(data) {
         var packageNames = _.map(data, 'package_name');
@@ -37,8 +37,7 @@ _getDownloadStatistics = function (packageName) {
             revDeps = _.sumBy(revDepsJSON, function(o) { return o.downloads; });
 
             var json = {total: total, revDeps: revDeps, totalStr: numeral(total).format('0,0'), revDepsStr: numeral(revDeps).format('0,0') };
-            RedisClient.set(key, JSON.stringify(json));
-            RedisClient.expire(key, 86400);
+
             resolve(json);
           }));
 
