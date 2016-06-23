@@ -1,3 +1,10 @@
+@import url('//use.fontawesome.com/releases/v4.6.3/css/font-awesome-css.min.css');
+@font-face{font-family:'FontAwesome';src:url('//use.fontawesome.com/releases/v4.6.3/fonts/fontawesome-webfont.eot');src:url('//use.fontawesome.com/releases/v4.6.3/fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype'),
+url('//use.fontawesome.com/releases/v4.6.3/fonts/fontawesome-webfont.woff2') format('woff2'),
+url('//use.fontawesome.com/releases/v4.6.3/fonts/fontawesome-webfont.woff') format('woff'),
+url('//use.fontawesome.com/releases/v4.6.3/fonts/fontawesome-webfont.ttf') format('truetype'),
+url('//use.fontawesome.com/releases/v4.6.3/fonts/fontawesome-webfont.svg#fontawesomeregular') format('svg');font-weight:normal;font-style:normal;}
+
 html {
     font-size: 16px;
 }
