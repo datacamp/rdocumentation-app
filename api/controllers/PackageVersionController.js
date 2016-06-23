@@ -196,9 +196,10 @@ module.exports = {
 
     var lastMonthDownload = _getDownloadStatistics(packageName);
 
-    Promise.join(lastMonthPercentiles, lastMonthDownload, function(percentiles, downloads) {
+    Promise.join(lastMonthPercentiles, lastMonthDownload, function(percentilesResponse, downloads) {
       var total = downloads.total;
 
+      var percentiles = _.omit(percentilesResponse, 'fromCache');
       var percentile = _.findLastKey(percentiles, function(p) {
         return total >= p;
       });
