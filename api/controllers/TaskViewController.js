@@ -36,8 +36,6 @@ module.exports = {
       name: name
     };
 
-    console.log(name);
-    console.log(task);
     TaskView.findOrCreate({
       where: {name: name},
       defaults: task,
