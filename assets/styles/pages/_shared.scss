@@ -22,6 +22,10 @@
   span:first-child {
     font-size: $h1-size;
   }
+
+  &.small span:first-child {
+    font-size: $h3-size;
+  }
 }
 .downloads-ind {
   display: block;
