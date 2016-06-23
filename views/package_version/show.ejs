@@ -57,6 +57,7 @@
             <% if (pkgVersion.release_date) { %>
             <dt>Release date:</dt>
             <dd><%= dateformat(pkgVersion.release_date, "mediumDate") %></dd>
+            <% } %>
             <% if(pkgVersion.license) { %>
               <dt>License</dt>
               <dd><%= pkgVersion.license %></dd>
