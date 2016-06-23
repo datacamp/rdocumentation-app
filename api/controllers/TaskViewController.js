@@ -79,6 +79,7 @@ module.exports = {
     var key = 'rdocs_view_index';
     RedisClient.getAsync(key).then(function(response){
       if(response) {
+        res.set('X-Cache', 'hit');
         return res.ok(JSON.parse(response), 'task_view/index.ejs');
       } else {
         TaskView.findAll({
@@ -94,6 +95,7 @@ module.exports = {
           views.pageTitle = 'TaskViews'
           RedisClient.set(key, JSON.stringify(views));
           RedisClient.expire(key, 86400);
+          res.set('X-Cache', 'miss');
           return res.ok(views, 'task_view/index.ejs');
         }).catch(function(err) {
           return res.negotiate(err);
@@ -120,6 +122,7 @@ module.exports = {
 
     RedisClient.getAsync(key).then(function(response){
       if(response) {
+        res.set('X-Cache', 'hit');
         return res.ok(JSON.parse(response), 'task_view/show.ejs');
       } else {
         TaskView.findOne({
@@ -158,6 +161,7 @@ module.exports = {
           jsonViews.pageTitle = view.name;
           RedisClient.set(key, JSON.stringify(jsonViews));
           RedisClient.expire(key, 86400);
+          res.set('X-Cache', 'miss');
           return res.ok(jsonViews, 'task_view/show.ejs');
         }).catch(function(err) {
           return res.negotiate(err);
@@ -172,6 +176,7 @@ module.exports = {
     key = 'rdocs_view_download_stats_' + view;
     RedisClient.getAsync(key).then(function(response){
       if(response) {
+        res.set('X-Cache', 'hit');
         return res.json(JSON.parse(response));
       } else {
         TaskView.findOne({
@@ -193,6 +198,7 @@ module.exports = {
             var json = {total: sum, totalStr: numeral(sum).format('0,0')};
             RedisClient.set(key, JSON.stringify(json));
             RedisClient.expire(key, 86400);
+            res.set('X-Cache', 'miss');
             return res.json(json);
           });
         }).catch(function(err){
