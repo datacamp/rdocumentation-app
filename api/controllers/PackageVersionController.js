@@ -126,49 +126,57 @@ module.exports = {
 
   */
   findByNameVersion: function(req, res) {
-    var packageName = req.param('name');
-    var packageVersion = req.param('version');
+    var packageName = req.param('name'),
+        packageVersion = req.param('version'),
+        key = 'view_package_version_' + packageName + '_' + packageVersion;
 
-    PackageVersion.findOne({
-      where: {
-        package_name: packageName,
-        version: packageVersion
-      },
-      include: [
-        { model: Collaborator, as: 'maintainer' },
-        { model: Collaborator, as: 'collaborators' },
-        { model: Package, as: 'dependencies' },
-        { model: Package, as: 'package', include: [
-          { model: PackageVersion, as: 'versions'},
-        ]},
-        { model: Topic, as: 'topics', separate: true},
-        { model: Review, as: 'reviews', separate: true,
-          include: [{model: User, as: 'user', attributes: ['username', 'id']}]
-        }
-      ]
-    })
-    .then(function(versionInstance) {
-      return Review.findOne({
-        attributes: [[sequelize.fn('AVG', sequelize.col('rating')), 'rating']],
+    RedisService.getJSONFromCache(key, RedisService.DAILY, function() {
+      return PackageVersion.findOne({
         where: {
-          reviewable_id: versionInstance.id,
-          reviewable: 'version'
+          package_name: packageName,
+          version: packageVersion
         },
-        group: ['reviewable_id']
-      }).then(function(ratingInstance) {
-        if (ratingInstance === null) return versionInstance.toJSON();
-        var version = versionInstance.toJSON();
-        version.rating = ratingInstance.getDataValue('rating');
-        return version;
-      });
+        include: [
+          { model: Collaborator, as: 'maintainer' },
+          { model: Collaborator, as: 'collaborators' },
+          { model: Package, as: 'dependencies' },
+          { model: Package, as: 'package', include: [
+            { model: PackageVersion, as: 'versions'},
+          ]},
+          { model: Topic, as: 'topics', separate: true},
+          { model: Review, as: 'reviews', separate: true,
+            include: [{model: User, as: 'user', attributes: ['username', 'id']}]
+          }
+        ]
+      })
+      .then(function(versionInstance) {
+        return Review.findOne({
+          attributes: [[sequelize.fn('AVG', sequelize.col('rating')), 'rating']],
+          where: {
+            reviewable_id: versionInstance.id,
+            reviewable: 'version'
+          },
+          group: ['reviewable_id']
+        }).then(function(ratingInstance) {
+          if (ratingInstance === null) return versionInstance.toJSON();
+          var version = versionInstance.toJSON();
+          version.rating = ratingInstance.getDataValue('rating');
+          return version;
+        });
+      })
+
     })
-    .then(function(version) {
+    // The method above will be cached
+    .then(function(version){
       if(version === null) return res.notFound();
       else {
+        version.fromCache ? res.set('X-Cache', 'hit') : res.set('X-Cache', 'miss');
+        res.set('Cache-Control', 'max-age=' + 86400);
         version.pageTitle = version.package_name + ' v' + version.version;
         return res.ok(version, 'package_version/show.ejs');
       }
-    }).catch(function(err) {
+    })
+    .catch(function(err) {
       return res.negotiate(err);
     });
 
@@ -178,13 +186,8 @@ module.exports = {
     var packageName = req.param('name');
 
     _getDownloadStatistics(packageName).then(function(json) {
-      if(json.fromCache) {
-        res.set('X-Cache', 'hit');
-        res.set('Cache-Control', 'max-age=' + 86400);
-      } else {
-        res.set('X-Cache', 'miss');
-        res.set('Cache-Control', 'max-age=' + 86400);
-      }
+      json.fromCache ? res.set('X-Cache', 'hit') : res.set('X-Cache', 'miss');
+      res.set('Cache-Control', 'max-age=' + 86400);
       return res.json(json);
     });
   },
