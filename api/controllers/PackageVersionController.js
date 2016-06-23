@@ -7,6 +7,54 @@
 var axios = require('axios');
 var _ = require('lodash');
 var numeral = require('numeral');
+var Promise = require('bluebird');
+
+
+_getDownloadStatistics = function (packageName) {
+  key = 'rdocs_download_stats_' + packageName;
+
+  return RedisClient.getAsync(key).then(function(response){
+    if(response) {
+      var json = JSON.parse(response);
+      json.fromCache = true;
+      return json;
+    } else {
+      sequelize.query("SELECT DISTINCT package_name FROM Dependencies INNER JOIN PackageVersions on PackageVersions.id = Dependencies.dependant_version_id WHERE dependency_name = ? and type = 'depends'", { replacements: [packageName], type: sequelize.QueryTypes.SELECT})
+        .then(function(data) {
+          var packageNames = _.map(data, 'package_name');
+          return packageNames.join(',');
+        })
+        .then(function(queryString) {
+          function getTotalDownloads() {
+            return axios.get('http://cranlogs.r-pkg.org/downloads/total/last-month/' + packageName);
+          }
+
+          function getRevDepsDownloads() {
+            return axios.get('http://cranlogs.r-pkg.org/downloads/total/last-month/' + queryString);
+          }
+
+          return new Promise(function(resolve) {
+
+            axios.all([getTotalDownloads(), getRevDepsDownloads()]).then(axios.spread(function (total, revDeps) {
+              var totalJSON = total.data[0],
+              revDepsJSON = revDeps.data;
+              total = totalJSON.downloads;
+              revDeps = _.sumBy(revDepsJSON, function(o) { return o.downloads; });
+
+              var json = {total: total, revDeps: revDeps, totalStr: numeral(total).format('0,0'), revDepsStr: numeral(revDeps).format('0,0') };
+              RedisClient.set(key, JSON.stringify(json));
+              RedisClient.expire(key, 86400);
+              resolve(json);
+            }));
+
+          });
+
+        });
+    }
+  });
+
+};
+
 
 module.exports = {
 
@@ -87,6 +135,7 @@ module.exports = {
   findByNameVersion: function(req, res) {
     var packageName = req.param('name');
     var packageVersion = req.param('version');
+    var populateLimit = req._sails.config.blueprints.populateLimit;
 
     PackageVersion.findOne({
       where: {
@@ -98,7 +147,7 @@ module.exports = {
         { model: Collaborator, as: 'collaborators' },
         { model: Package, as: 'dependencies' },
         { model: Package, as: 'package', include: [
-          { model: PackageVersion, as: 'versions'},
+          { model: PackageVersion, as: 'versions', limit: populateLimit },
         ]},
         { model: Topic, as: 'topics', separate: true},
         { model: Review, as: 'reviews', separate: true,
@@ -135,43 +184,34 @@ module.exports = {
 
   getDownloadStatistics: function(req, res) {
     var packageName = req.param('name');
-    key = 'rdocs_download_stats_' + packageName;
 
-    RedisClient.getAsync(key).then(function(response){
-      if(response) {
+    _getDownloadStatistics(packageName).then(function(json) {
+      if(json.fromCache) {
         res.set('X-Cache', 'hit');
         res.set('Cache-Control', 'max-age=' + 86400);
-        return res.json(JSON.parse(response));
       } else {
-        sequelize.query("SELECT DISTINCT package_name FROM Dependencies INNER JOIN PackageVersions on PackageVersions.id = Dependencies.dependant_version_id WHERE dependency_name = ? and type = 'depends'", { replacements: [packageName], type: sequelize.QueryTypes.SELECT})
-          .then(function(data) {
-            var packageNames = _.map(data, 'package_name');
-            return packageNames.join(',');
-          })
-          .then(function(queryString) {
-            function getTotalDownloads() {
-              return axios.get('http://cranlogs.r-pkg.org/downloads/total/last-month/' + packageName);
-            }
-
-            function getRevDepsDownloads() {
-              return axios.get('http://cranlogs.r-pkg.org/downloads/total/last-month/' + queryString);
-            }
-
-            axios.all([getTotalDownloads(), getRevDepsDownloads()]).then(axios.spread(function (total, revDeps) {
-              var totalJSON = total.data[0],
-              revDepsJSON = revDeps.data;
-              var total = totalJSON.downloads;
-              var revDeps = _.sumBy(revDepsJSON, function(o) { return o.downloads; });
-
-              var json = {total: total, revDeps: revDeps, totalStr: numeral(total).format('0,0'), revDepsStr: numeral(revDeps).format('0,0') };
-              RedisClient.set(key, JSON.stringify(json));
-              RedisClient.expire(key, 86400);
-              res.set('X-Cache', 'miss');
-              res.set('Cache-Control', 'max-age=' + 86400);
-              return res.json(json);
-            }));
-          });
+        res.set('X-Cache', 'miss');
+        res.set('Cache-Control', 'max-age=' + 86400);
       }
+      return res.json(json);
+    });
+  },
+
+  getPercentile: function(req, res) {
+    var packageName = req.param('name');
+
+    var lastMonthPercentiles = ElasticSearchService.lastMonthPercentiles();
+
+    var lastMonthDownload = _getDownloadStatistics(packageName);
+
+    Promise.join(lastMonthPercentiles, lastMonthDownload, function(percentiles, downloads) {
+      var total = downloads.total;
+
+      var percentile = _.findLastKey(percentiles, function(p) {
+        return total >= p;
+      });
+
+      return res.json({total: total, percentile: Math.round(percentile * 100) / 100 });
     });
   }
 

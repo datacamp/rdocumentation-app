@@ -46,6 +46,8 @@ module.exports.routes = {
     // API
     'get /api/packages/:name/versions/:version/downloads' : 'PackageVersion.getDownloadStatistics',
     'get /api/packages/:name/downloads' : 'PackageVersion.getDownloadStatistics',
+    'get /api/packages/:name/versions/:version/percentile' : 'PackageVersion.getPercentile',
+    'get /api/packages/:name/percentile' : 'PackageVersion.getPercentile',
     'get /api/packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
     'post /api/versions': 'PackageVersion.postDescription',
     // HTML
