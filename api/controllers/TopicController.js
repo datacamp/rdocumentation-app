@@ -280,7 +280,7 @@ module.exports = {
       });
 
     }).then(function(json) {
-      if(json !== null) {
+      if(json === null) {
         return res.notFound();
       } else {
         return res.redirect(json.uri);
