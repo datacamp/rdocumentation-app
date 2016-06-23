@@ -163,7 +163,7 @@ module.exports = {
           version.rating = ratingInstance.getDataValue('rating');
           return version;
         });
-      })
+      });
 
     })
     // The method above will be cached
@@ -171,7 +171,7 @@ module.exports = {
       if(version === null) return res.notFound();
       else {
         version.fromCache ? res.set('X-Cache', 'hit') : res.set('X-Cache', 'miss');
-        res.set('Cache-Control', 'max-age=' + 86400);
+        res.set('Cache-Control', 'max-age=' + RedisService.DAILY);
         version.pageTitle = version.package_name + ' v' + version.version;
         return res.ok(version, 'package_version/show.ejs');
       }
@@ -187,7 +187,7 @@ module.exports = {
 
     _getDownloadStatistics(packageName).then(function(json) {
       json.fromCache ? res.set('X-Cache', 'hit') : res.set('X-Cache', 'miss');
-      res.set('Cache-Control', 'max-age=' + 86400);
+      res.set('Cache-Control', 'max-age=' + RedisService.DAILY);
       return res.json(json);
     });
   },
