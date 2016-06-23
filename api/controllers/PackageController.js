@@ -34,14 +34,13 @@ module.exports = {
 
   findByName: function(req, res) {
     var packageName = req.param('name');
-    var populateLimit = req._sails.config.blueprints.populateLimit;
 
     Package.findOne({
       where: {
         name: packageName,
       },
       include: [
-        { model: PackageVersion, as: 'versions', limit: populateLimit },
+        { model: PackageVersion, as: 'versions' },
       ]
     }).then(function(package) {
       if(package === null) {

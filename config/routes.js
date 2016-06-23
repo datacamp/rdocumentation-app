@@ -60,6 +60,8 @@ module.exports.routes = {
     //HTML
     'get /topics/:id': 'Topic.findById',
     'get /packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
+    // Backwards compatibility
+    'get /packages/:name/functions/:function': 'Topic.redirect',
   //***** /Topic *****
 
   //***** Collaborator *****

@@ -278,9 +278,28 @@ module.exports = {
     }).catch(function(err) {
       return res.negotiate(err);
     });
+  },
 
+  redirect: function(req,res) {
+    var packageName = req.param('name'),
+        functionName = req.param('function');
 
-
+    Package.findOne({
+      where: {
+        name: packageName,
+      },
+      include: [
+        { model: PackageVersion, as: 'latest_version' },
+      ]
+    }).then(function(package) {
+      if(package === null) {
+        return res.notFound();
+      } else {
+        return res.redirect(package.latest_version.uri + '/topics/' + functionName);
+      }
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
   }
 
 };

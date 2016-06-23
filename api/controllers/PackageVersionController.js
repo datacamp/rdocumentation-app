@@ -87,7 +87,6 @@ module.exports = {
   findByNameVersion: function(req, res) {
     var packageName = req.param('name');
     var packageVersion = req.param('version');
-    var populateLimit = req._sails.config.blueprints.populateLimit;
 
     PackageVersion.findOne({
       where: {
