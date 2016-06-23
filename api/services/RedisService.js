@@ -9,6 +9,8 @@ module.exports = {
 
   DAILY: 86400,
 
+  WEEKLY: 604800,
+
   // missFn must be a function that return either a json or a Promise resolving to a json
   // it will be executed if nothing is found in cache
   getJSONFromCache: function(key, expire, missFn) {
@@ -20,7 +22,7 @@ module.exports = {
         return json;
       } else {
         return Promise.resolve(missFn()).then(function(value) {
-          RedisClient.set(key, JSON.stringify(value));
+          if (value) RedisClient.set(key, JSON.stringify(value));
           RedisClient.expire(key, expire);
           return value;
         });

@@ -217,63 +217,73 @@ module.exports = {
     var fromPackage = { package_name: fromPackageName, version: fromPackageVersion };
     var packageCriteria = toPackage ? {package_name: toPackage} : fromPackage;
 
-    Topic.findOne({
-      include: [{
-        model: Alias,
-        as: 'aliases',
-        attributes: ['name'],
-        where: {
-          name: alias
-        }
-      },
-      {
-        model: PackageVersion,
-        as: 'package_version',
-        where: packageCriteria
-      }]
-    }).then(function(topic) {
-      if(topic !== null) return res.redirect(topic.uri);
-      else {
-        Alias.findByNameInLatestVersions(alias).then(function(aliases) {
-          if (aliases.length === 0) return res.notFound(); //no match found anywhere, 404
-          if (aliases.length === 1) { //if there is only 1 match, redirect to this one
-            return res.redirect(aliases[0].topic.uri);
-          } else {
-            var searchInDependencies = function(packages, level) {
-              if (level >= 3) return Promise.reject('too deep');
-              var depsPromises = _.map(packages, function(package_name) {
-                return Dependency.findByDependant(package_name).then(function(deps) {
-                  var depsNameArray = _.map(deps, 'dependency_name');
-                  var alias = _.find(aliases, function(alias) {
-                    return _.includes(depsNameArray, alias.topic.package_version.package_name);
-                  });
-                  if (alias) {
-                    console.info("link found in " + alias.topic.package_version.package_name);
-                    return alias.topic.uri;
-                  } else throw {dependencies: depsNameArray};
-                });
-              });
+    RedisService.getJSONFromCache(req.url, RedisService.WEEKLY, function() {
 
-              return Promise.any(depsPromises).catch(Promise.AggregateError, function(errors) {
-                //not found in this level of dependency, search in next level
-                var deps = _.reduce(errors, function(acc, val) { // collect thrown dependencies
-                  return acc.concat(val.dependencies);
-                }, []);
-                return searchInDependencies(deps, level + 1); // recurse to next level of dependency
-              });
-
-
-            };
-            searchInDependencies([fromPackage.package_name], 0).then(function(uri) {
-              return res.redirect(uri);
-            }).catch(function(err) {
-              console.info(err);
-              console.info("link not found, go to: " + aliases[0].topic.uri);
-              return res.redirect(aliases[0].topic.uri); // no match in dependencies, just redirect to first one
-            });
-
+      return Topic.findOne({
+        include: [{
+          model: Alias,
+          as: 'aliases',
+          attributes: ['name'],
+          where: {
+            name: alias
           }
-        });
+        },
+        {
+          model: PackageVersion,
+          as: 'package_version',
+          where: packageCriteria
+        }]
+      }).then(function(topic) {
+        if(topic !== null) return {uri: topic.uri};
+        else {
+          Alias.findByNameInLatestVersions(alias).then(function(aliases) {
+            if (aliases.length === 0) return null; //no match found anywhere, 404
+            if (aliases.length === 1) { //if there is only 1 match, redirect to this one
+              return {uri: aliases[0].topic.uri};
+            } else {
+              var searchInDependencies = function(packages, level) {
+                if (level >= 3) return Promise.reject('too deep');
+                var depsPromises = _.map(packages, function(package_name) {
+                  return Dependency.findByDependant(package_name).then(function(deps) {
+                    var depsNameArray = _.map(deps, 'dependency_name');
+                    var alias = _.find(aliases, function(alias) {
+                      return _.includes(depsNameArray, alias.topic.package_version.package_name);
+                    });
+                    if (alias) {
+                      console.info("link found in " + alias.topic.package_version.package_name);
+                      return alias.topic.uri;
+                    } else throw {dependencies: depsNameArray};
+                  });
+                });
+
+                return Promise.any(depsPromises).catch(Promise.AggregateError, function(errors) {
+                  //not found in this level of dependency, search in next level
+                  var deps = _.reduce(errors, function(acc, val) { // collect thrown dependencies
+                    return acc.concat(val.dependencies);
+                  }, []);
+                  return searchInDependencies(deps, level + 1); // recurse to next level of dependency
+                });
+
+
+              };
+              searchInDependencies([fromPackage.package_name], 0).then(function(uri) {
+                return {uri: uri};
+              }).catch(function(err) {
+                console.info(err);
+                console.info("link not found, go to: " + aliases[0].topic.uri);
+                return { uri: aliases[0].topic.uri }; // no match in dependencies, just redirect to first one
+              });
+
+            }
+          });
+        }
+      });
+
+    }).then(function(json) {
+      if(json !== null) {
+        return res.notFound();
+      } else {
+        return res.redirect(json.uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);
