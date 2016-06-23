@@ -40,6 +40,14 @@ module.exports = {
 
   session: {
     secret: '652c68f88144e6a99b9522ea1193a645'
+  },
+
+  redis: {
+
+    logging: true,
+
+    url: 'redis://localhost:6379'
+
   }
 
 };

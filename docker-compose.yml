@@ -5,6 +5,10 @@ db:
   environment:
     - MYSQL_ROOT_PASSWORD=password
     - MYSQL_DATABASE=rdoc
+redis:
+  image: redis
+  ports:
+    - "6379:6379"
 server:
   #Docker-sails supports several different tags:
   #0.10.32/33/34 (node 0.10.32), stable (latest node 0.10.x), latest (latest node 0.11.x)
@@ -23,3 +27,4 @@ server:
   #  - VIRTUAL_PORT=1337
   links:
     - db
+    - redis
