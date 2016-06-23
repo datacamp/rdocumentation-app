@@ -76,20 +76,29 @@ module.exports = {
   */
 
   findAll: function(req, res) {
-    TaskView.findAll({
-      include: [{
-        model: Package,
-        as: 'packages',
-        through: {
-          attributes: []
-        }
-      }],
-      order: [['name', 'ASC']]
-    }).then(function(views) {
-      views.pageTitle = 'TaskViews'
-      return res.ok(views, 'task_view/index.ejs');
-    }).catch(function(err) {
-      return res.negotiate(err);
+    var key = 'rdocs_view_index';
+    RedisClient.getAsync(key).then(function(response){
+      if(response) {
+        return res.ok(JSON.parse(response), 'task_view/index.ejs');
+      } else {
+        TaskView.findAll({
+          include: [{
+            model: Package,
+            as: 'packages',
+            through: {
+              attributes: []
+            }
+          }],
+          order: [['name', 'ASC']]
+        }).then(function(views) {
+          views.pageTitle = 'TaskViews'
+          RedisClient.set(key, JSON.stringify(views));
+          RedisClient.expire(key, 86400);
+          return res.ok(views, 'task_view/index.ejs');
+        }).catch(function(err) {
+          return res.negotiate(err);
+        });
+      }
     });
   },
 
@@ -106,51 +115,61 @@ module.exports = {
   */
 
   find: function(req, res) {
-    var view = req.param('view');
-    TaskView.findOne({
-      where: {name: view },
-      include: [{
-        model: Package,
-        as: 'packages',
-        through: {
-          attributes: []
-        },
-        include: [{
-          model: PackageVersion,
-          as: 'latest_version',
+    var view = req.param('view'),
+        key = 'rdocs_view_show_' + view;
+
+    RedisClient.getAsync(key).then(function(response){
+      if(response) {
+        return res.ok(JSON.parse(response), 'task_view/show.ejs');
+      } else {
+        TaskView.findOne({
+          where: {name: view },
           include: [{
-            model: Review,
-            as: 'reviews'
-          }],
-          attributes: ['id', 'title', 'description']
-        }]
-      }]
-    }).then(function(view) {
-      var jsonViews = view.toJSON();
-      var packages = _.map(jsonViews.packages, function(package) {
-        var rating;
-        if(!package.latest_version || package.latest_version.reviews.length === 0) {
-          rating = 0;
-        } else {
-          rating = _.meanBy(package.latest_version.reviews, function(r) {
-            return r.rating;
+            model: Package,
+            as: 'packages',
+            through: {
+              attributes: []
+            },
+            include: [{
+              model: PackageVersion,
+              as: 'latest_version',
+              include: [{
+                model: Review,
+                as: 'reviews'
+              }],
+              attributes: ['id', 'title', 'description']
+            }]
+          }]
+        }).then(function(view) {
+          var jsonViews = view.toJSON();
+          var packages = _.map(jsonViews.packages, function(package) {
+            var rating;
+            if(!package.latest_version || package.latest_version.reviews.length === 0) {
+              rating = 0;
+            } else {
+              rating = _.meanBy(package.latest_version.reviews, function(r) {
+                return r.rating;
+              });
+            }
+            package.rating = rating;
+            return package;
           });
-        }
-        package.rating = rating;
-        return package;
-      });
-      jsonViews.packages = packages;
-      jsonViews.pageTitle = view.name;
-      return res.ok(jsonViews, 'task_view/show.ejs');
-    }).catch(function(err) {
-      return res.negotiate(err);
+          jsonViews.packages = packages;
+          jsonViews.pageTitle = view.name;
+          RedisClient.set(key, JSON.stringify(jsonViews));
+          RedisClient.expire(key, 86400);
+          return res.ok(jsonViews, 'task_view/show.ejs');
+        }).catch(function(err) {
+          return res.negotiate(err);
+        });
+      }
     });
   },
 
 
   getDownloadStatistics: function(req, res) {
     var view = req.param('view'),
-    key = 'rdocs_view_' + view;
+    key = 'rdocs_view_download_stats_' + view;
     RedisClient.getAsync(key).then(function(response){
       if(response) {
         return res.json(JSON.parse(response));
