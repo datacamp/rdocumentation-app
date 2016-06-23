@@ -135,7 +135,6 @@ module.exports = {
   findByNameVersion: function(req, res) {
     var packageName = req.param('name');
     var packageVersion = req.param('version');
-    var populateLimit = req._sails.config.blueprints.populateLimit;
 
     PackageVersion.findOne({
       where: {
@@ -147,7 +146,7 @@ module.exports = {
         { model: Collaborator, as: 'collaborators' },
         { model: Package, as: 'dependencies' },
         { model: Package, as: 'package', include: [
-          { model: PackageVersion, as: 'versions', limit: populateLimit },
+          { model: PackageVersion, as: 'versions'},
         ]},
         { model: Topic, as: 'topics', separate: true},
         { model: Review, as: 'reviews', separate: true,
