@@ -4,7 +4,6 @@
   <div class="container">
     <header>
       <h1><%- pkgVersion.package_name %></h1>
-
       <select id="packageVersionSelect">
         <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
           <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
@@ -57,15 +56,18 @@
             </dd>
             <% if (pkgVersion.release_date) { %>
             <dt>Release date:</dt>
-            <dd>
-              <%= dateformat(pkgVersion.release_date, "mediumDate") %>
-            </dd>
+            <dd><%= dateformat(pkgVersion.release_date, "mediumDate") %></dd>
+            <% if(pkgVersion.license) { %>
+              <dt>License</dt>
+              <dd><%= pkgVersion.license %></dd>
             <% } %>
-            <% if (pkgVersion.url) { %>
-            <dt>Url:</dt>
-            <dd>
-              <a href='<%= pkgVersion.url %>'><%= pkgVersion.url %></a>
-            </dd>
+            <% if(pkgVersion.copyright) { %>
+              <dt>Copyright</dt>
+              <dd><%= pkgVersion.copyright %></dd>
+            <% } %>
+            <% if(pkgVersion.url) { %>
+              <dt>Package url</dt>
+              <dd><a href="<%= pkgVersion.url %>" target="_blank"><%= pkgVersion.url %></a></dd>
             <% } %>
           </dl>
         </div>
