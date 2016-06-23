@@ -245,7 +245,7 @@ module.exports = {
           highlight: hit.highlight
         };
       });
-      return res.ok({total: numeral(response.hits.total).format('0,0'), hits: hits, perPage: perPage, currentPage: page, query: query, striptags: striptags}, 'search/result.ejs');
+      return res.ok({total: numeral(response.hits.total).format('0,0'), hits: hits, perPage: perPage, currentPage: page, query: query, striptags: striptags, pageTitle: 'Search Results'}, 'search/result.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });

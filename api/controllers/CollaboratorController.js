@@ -21,7 +21,10 @@ module.exports = {
       ]
     }).then(function(collaborator) {
       if(collaborator === null) return res.notFound();
-      else return res.ok(collaborator.toJSON(), 'collaborator/show.ejs');
+      else {
+        collaborator.pageTitle = collaborator.name;
+        return res.ok(collaborator, 'collaborator/show.ejs');
+      }
     }).catch(function(err) {
       return res.negotiate(err);
     });

@@ -86,6 +86,7 @@ module.exports = {
       }],
       order: [['name', 'ASC']]
     }).then(function(views) {
+      views.pageTitle = 'TaskViews'
       return res.ok(views, 'task_view/index.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
@@ -139,6 +140,7 @@ module.exports = {
         return package;
       });
       jsonViews.packages = packages;
+      jsonViews.pageTitle = view.name;
       return res.ok(jsonViews, 'task_view/show.ejs');
     }).catch(function(err) {
       return res.negotiate(err);

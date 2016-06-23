@@ -124,7 +124,10 @@ module.exports = {
     })
     .then(function(version) {
       if(version === null) return res.notFound();
-      else return res.ok(version, 'package_version/show.ejs');
+      else {
+        version.pageTitle = version.package_name + ' v' + version.version;
+        return res.ok(version, 'package_version/show.ejs');
+      }
     }).catch(function(err) {
       return res.negotiate(err);
     });

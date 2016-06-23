@@ -123,6 +123,7 @@ module.exports = {
       if(topic === null) return res.notFound();
       else return TopicService.computeLinks('/link/', topic)
         .then(function(topic) {
+          topic.pageTitle = topic.name;
           return res.ok(topic, 'topic/show.ejs');
         });
     }).catch(function(err) {
@@ -190,6 +191,7 @@ module.exports = {
       else {
         return TopicService.computeLinks('/link/', topic)
           .then(function(topic) {
+            topic.pageTitle = topic.name;
             return res.ok(topic, 'topic/show.ejs');
           });
       }
