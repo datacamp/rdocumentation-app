@@ -72,7 +72,7 @@
               <dt>Package url</dt>
               <dd><a href="<%= pkgVersion.url %>" target="_blank"><%= pkgVersion.url %></a></dd>
             <% } %>
-            <% if(pkgVersion.package.inViews) { %>
+            <% if(pkgVersion.package.inViews && pkgVersion.package.inViews.length > 0) { %>
               <dt>In Views:</dt>
               <% var views = pkgVersion.package.inViews.map(function(view) {
                   return '<a href="/taskviews/' + view.name + '">' + view.name + '</a>';

@@ -18,6 +18,16 @@
       <p><%- topic.description %></p>
     </section>
 
+    <section class="topic--keywords">
+      <dl>
+        <dt>Keywords</dt>
+        <% var keywords = topic.keywords.map(function(keyword) {
+          return '<a href="/search/keywords/' + keyword.name + '">' + keyword.name + '</a>';
+        }) -%>
+        <dd><%- keywords.join(', ') %></dd>
+      </dl>
+    </section>
+
     <section class="topic--arguments">
       <h5 class="topic--title">Arguments</h5>
       <dl>
