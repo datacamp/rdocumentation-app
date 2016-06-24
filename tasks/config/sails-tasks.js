@@ -23,6 +23,17 @@ module.exports = function(grunt) {
         }
       ]
     },
+
+    indexStats: {
+      functions: [
+        function (callback) {
+          CronService.indexAggregatedDownloadStats().then(function(result) {
+            console.log("Finished indexing stats");
+            callback();
+          });
+        }
+      ]
+    },
   });
 
 
