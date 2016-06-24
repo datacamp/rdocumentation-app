@@ -4,7 +4,8 @@
 * All async tasks
 */
 
- _ = require('lodash');
+var _ = require('lodash');
+var Promise = require('bluebird');
 
 
 module.exports = {
@@ -13,19 +14,33 @@ module.exports = {
   indexAggregatedDownloadStats: function() {
     console.log('Started index aggregate stats job');
     //Get aggregated data
-    ElasticSearchService.lastMonthDownloadCount().then(function (buckets) {
-      console.log('got data');
-      var body = _.flatMap(buckets, function(bucket) {
-        return [
-          { update: {_index: 'rdoc', _type: 'package', _id: bucket.key }},
-          { doc : { last_month_downloads : bucket.download_count.value }, doc_as_upsert : true }
-        ];
+    return ElasticSearchService.lastMonthDownloadCount().then(function (buckets) {
+
+      var stats = _.reduce(buckets, function(acc, bucket) {
+        acc[bucket.key] = bucket.download_count.value;
+        return acc;
+      }, {});
+
+
+      return Package.findAll({
+        attributes: ['name']
+      }).then(function(packages) {
+        var records = _.map(packages, function(package) {
+          return {
+            package_name: package.name,
+            last_month_downloads: stats[package.name] || 0
+          };
+        });
+
+        var groups = _.chunk(records, 500);
+
+        return Promise.map(groups, function(group) {
+          return DownloadStatistic.bulkCreate(group, {
+            updateOnDuplicate:true,
+          });
+        }, {concurrency: 1});
       });
 
-      //bulk upsert document to elasticsearch
-      return es.bulk({
-        body: body
-      });
 
     });
 
