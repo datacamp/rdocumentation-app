@@ -135,7 +135,7 @@ module.exports = {
     };
 
     es.search({
-      index: 'rdoc',
+      index: 'rdoc_v3',
       body: {
         query: {
           bool : {
@@ -157,7 +157,23 @@ module.exports = {
                         fields: ['package_name^4', 'title^3', 'description^2', 'license', 'url', 'copyright']
                       },
                     },
-                    { term: { latest_version: 1, boost:2.0 } }
+                    { term: { latest_version: 1, boost: 2.0 } },
+                    {
+                      "has_parent" : {
+                        "query" : {
+                          "function_score" : {
+                            "field_value_factor": {
+                              "field":    "last_month_downloads",
+                              "modifier": "log1p"
+                            },
+                            "boost_mode": "replace"
+                          }
+                        },
+
+                        "parent_type" : "package",
+                        "score_type" : "multiply"
+                      }
+                    }
                   ],
                   minimum_should_match : 1,
                 }
@@ -177,9 +193,30 @@ module.exports = {
                       has_parent : {
                         parent_type : "package_version",
                         query : {
-                          term : {
-                            latest_version : 1
+                          bool: {
+                            must: {
+                              "has_parent" : {
+                                "query" : {
+                                  "function_score" : {
+                                    "field_value_factor": {
+                                      "field":    "last_month_downloads",
+                                      "modifier": "log1p"
+                                    },
+                                    "boost_mode": "replace"
+                                  }
+                                },
+
+                                "parent_type" : "package",
+                                "score_type" : "multiply"
+                              }
+                            },
+                            should: {
+                              term : {
+                                latest_version : 1
+                              }
+                            }
                           }
+
                         },
                         inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
                       }
@@ -226,7 +263,7 @@ module.exports = {
         fields: ['package_name', 'version', 'name']
       }
     }).then(function(response) {
-      // return res.json(response);
+       //return res.json(response);
       var hits = response.hits.hits.map(function(hit) {
         var fields = {};
         if (hit._type === 'package_version') {
