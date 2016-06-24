@@ -65,7 +65,7 @@ module.exports = {
     };
 
     return es.search({
-      index: 'rdoc',
+      index: 'stats',
       requestCache: true, //cache the result
       body: body
     }).then(function(response) {
@@ -84,7 +84,7 @@ module.exports = {
     };
 
     return es.search({
-      index: 'rdoc',
+      index: 'stats',
       requestCache: true, //cache the result
       body: body
     }).then(function(response) {
