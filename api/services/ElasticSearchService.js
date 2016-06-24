@@ -41,13 +41,13 @@ module.exports = {
         "bool": {
           "filter": [
             {
-                "term": { "_type": "stats" } //filter for only get stats documents
+                "term": { "_type": "stats" }
             },
             {
               "range": {
                   "datetime":  {
-                      "gte" : "now-3y/d",
-                      "lt" :  "now-3y+1M/d" //should be change to last month
+                      "gte" : "now-1M/d",
+                      "lt" :  "now/d"
                   }
               }
             }
