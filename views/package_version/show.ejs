@@ -48,15 +48,17 @@
             <dd><a href="<%= pkgVersion.maintainer.uri %>">
               <%= pkgVersion.maintainer.name %></a></dd>
             <% } %>
-            <dt>Contributors:</dt>
-            <dd>
-            <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
-              <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
+            <% if(pkgVersion.collaborators.length > 0) { %>
+              <dt>Contributors:</dt>
+              <dd>
+              <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
+                <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
+              <% } %>
+              </dd>
             <% } %>
-            </dd>
             <% if (pkgVersion.release_date) { %>
-            <dt>Release date:</dt>
-            <dd><%= dateformat(pkgVersion.release_date, "mediumDate") %></dd>
+              <dt>Release date:</dt>
+              <dd><%= dateformat(pkgVersion.release_date, "mediumDate") %></dd>
             <% } %>
             <% if(pkgVersion.license) { %>
               <dt>License</dt>
@@ -69,6 +71,13 @@
             <% if(pkgVersion.url) { %>
               <dt>Package url</dt>
               <dd><a href="<%= pkgVersion.url %>" target="_blank"><%= pkgVersion.url %></a></dd>
+            <% } %>
+            <% if(pkgVersion.package.inViews) { %>
+              <dt>In Views:</dt>
+              <% var views = pkgVersion.package.inViews.map(function(view) {
+                  return '<a href="/taskviews/' + view.name + '">' + view.name + '</a>';
+                }) -%>
+              <dd><%- views.join(', ') %></dd>
             <% } %>
           </dl>
         </div>

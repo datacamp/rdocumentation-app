@@ -142,6 +142,7 @@ module.exports = {
           { model: Package, as: 'dependencies' },
           { model: Package, as: 'package', include: [
             { model: PackageVersion, as: 'versions'},
+            { model: TaskView, as: 'inViews', attributes:['name'] }
           ]},
           { model: Topic, as: 'topics', separate: true},
           { model: Review, as: 'reviews', separate: true,
