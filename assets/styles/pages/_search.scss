@@ -25,9 +25,10 @@
 
 .search-result--item-header {
   font-size: 1.25rem;
-  span {
+  span a {
     color: $text-tertiary;
     font-size: $default-font-size * 0.9;
+    border-bottom: none;
   }
 }
 

@@ -11,7 +11,7 @@
           <% if (hit.type === 'topic') { %>
             <h5 class="search-result--item-header">
               Function <a href='/packages/<%- hit.fields.package_name %>/versions/<%- hit.fields.version %>/topics/<%- hit.fields.name %>'><%- hit.fields.name %></a>
-              <span>[<%- hit.fields.package_name %>&nbsp;v<%- hit.fields.version %>]</span>
+              <span><a href='/packages/<%- hit.fields.package_name %>/versions/<%- hit.fields.version %>'>[<%- hit.fields.package_name %>&nbsp;v<%- hit.fields.version %>]</a></span>
             </h5>
           <% } else if (hit.type === 'package_version') { %>
             <h5 class="search-result--item-header">
@@ -32,9 +32,9 @@
 
     <div class="search-result--pagination">
       <% if (data.currentPage >= 2) { %>
-        <a href='/search?q=<%= data.query %>&page=<%= data.currentPage - 1 %>&perPage=<%= data.perPage %>' class='btn btn-primary m0'>Previous <%= data.perPage %> Results <i class="fa fa-chevron-left"></i></a>
+        <a href='<%= data.prevPageUrl %>' class='btn btn-primary m0'><i class="fa fa-chevron-left"></i>Previous <%= data.perPage %> Results </a>
       <% } %>
-      <a  href='/search?q=<%= data.query %>&page=<%= data.currentPage + 1 %>&perPage=<%= data.perPage %>' class='btn btn-primary m0 pull-right'>Next <%= data.perPage %> Results <i class="fa fa-chevron-right"></i></a>
+      <a  href='<%= data.nextPageUrl %>' class='btn btn-primary m0 pull-right'>Next <%= data.perPage %> Results <i class="fa fa-chevron-right"></i></a>
     </div>
   </div>
 </div>
