@@ -7,6 +7,7 @@
 var Promise = require('bluebird');
 var _ = require('lodash');
 var striptags = require('striptags');
+var querystring = require('querystring');
 var numeral = require('numeral');
 
 module.exports = {
@@ -112,12 +113,116 @@ module.exports = {
 
   },
 
+  keywordSearch: function(req, res) {
+    var keyword = req.param('keyword');
+    var page = parseInt(req.param('page')) || 1;
+    var perPage = parseInt(req.param('perPage')) || 10;
+    var offset = (page - 1) * perPage;
+    var nextPageQuery = _.clone(req.query);
+    nextPageQuery.page = page + 1;
+
+    var prevPageQuery = _.clone(req.query);
+    prevPageQuery.page = page - 1;
+
+
+    es.search({
+      index: 'rdoc',
+      body:{
+        query: {
+          bool: {
+            filter: {
+              type : {
+                value : "topic"
+              }
+            },
+            must: [
+              {
+                term: {
+                  keywords:  keyword
+                }
+              },
+              {
+                has_parent : {
+                  parent_type : "package_version",
+                  query : {
+                    term : {
+                        latest_version : 1
+                    }
+                  },
+                  inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
+                }
+              }
+            ]
+          }
+        },
+        highlight : {
+          pre_tags : ["<mark>"],
+          post_tags : ["</mark>"],
+          "fields" : {
+            "keywords": {
+              highlight_query: {
+                term: {
+                  keywords:  keyword
+                }
+              }
+            },
+
+          }
+        },
+        from: offset,
+        size: perPage,
+        fields: ['title', 'name', 'description', 'keywords']
+      }
+
+    }).then(function(response) {
+      //return res.json(response);
+      var hits = response.hits.hits.map(function(hit) {
+        var fields = {};
+        var highlight = hit.highlight;
+        var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
+
+        fields.package_name = inner_hits_fields.package_name[0];
+        fields.version = inner_hits_fields.version[0];
+        fields.name = hit.fields.name[0];
+
+        highlight.title = hit.fields.title[0];
+        highlight.description = hit.fields.description[0];
+
+        return {
+          fields: fields,
+          type: hit._type,
+          score: hit._score,
+          highlight: hit.highlight
+        };
+      });
+      return res.ok({
+        total: numeral(response.hits.total).format('0,0'),
+        hits: hits,
+        perPage: perPage,
+        currentPage: page,
+        prevPageUrl: req.path + '?' + querystring.stringify(prevPageQuery),
+        nextPageUrl: req.path + '?' + querystring.stringify(nextPageQuery),
+        striptags: striptags,
+        pageTitle: 'Search Results'
+      }, 'search/result.ejs');
+    });
+
+  },
+
 
   fullSearch: function(req, res) {
     var query = req.param('q');
     var page = parseInt(req.param('page')) || 1;
     var perPage = parseInt(req.param('perPage')) || 10;
     var offset = (page - 1) * perPage;
+
+    var nextPageQuery = _.clone(req.query);
+    nextPageQuery.page = page + 1;
+
+    var prevPageQuery = _.clone(req.query);
+    prevPageQuery.page = page - 1;
+
+
 
     var searchTopicQuery = {
       multi_match: {
@@ -135,7 +240,7 @@ module.exports = {
     };
 
     es.search({
-      index: 'rdoc_v4',
+      index: 'rdoc',
       body: {
         query: {
           bool : {
@@ -278,7 +383,16 @@ module.exports = {
           highlight: hit.highlight
         };
       });
-      return res.ok({total: numeral(response.hits.total).format('0,0'), hits: hits, perPage: perPage, currentPage: page, query: query, striptags: striptags, pageTitle: 'Search Results'}, 'search/result.ejs');
+      return res.ok({
+        total: numeral(response.hits.total).format('0,0'),
+        hits: hits,
+        perPage: perPage,
+        currentPage: page,
+        prevPageUrl: req.path + '?' + querystring.stringify(prevPageQuery),
+        nextPageUrl: req.path + '?' + querystring.stringify(nextPageQuery),
+        striptags: striptags,
+        pageTitle: 'Search Results'
+      }, 'search/result.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });

@@ -96,6 +96,7 @@ module.exports.routes = {
 
   // Search
   'post /api/quick_search': 'SearchController.quickSearch',
+  'get /search/keywords/:keyword': 'SearchController.keywordSearch',
   'get /search': 'SearchController.fullSearch'
 
 };
