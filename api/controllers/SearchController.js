@@ -135,7 +135,7 @@ module.exports = {
     };
 
     es.search({
-      index: 'rdoc_v3',
+      index: 'rdoc_v4',
       body: {
         query: {
           bool : {
@@ -147,7 +147,8 @@ module.exports = {
                       type : {
                         value : "package_version"
                       }
-                    }
+                    },
+                    { term: { latest_version: 1 } }
                   ],
                   should:[
                     {
@@ -157,7 +158,6 @@ module.exports = {
                         fields: ['package_name^4', 'title^3', 'description^2', 'license', 'url', 'copyright']
                       },
                     },
-                    { term: { latest_version: 1, boost: 2.0 } },
                     {
                       "has_parent" : {
                         "query" : {
@@ -185,6 +185,12 @@ module.exports = {
                       type : {
                         value : "topic"
                       }
+                    },
+                    {
+                      has_parent : {
+                        parent_type : "package_version",
+                        query : {  term : { latest_version : 1 } }
+                      }
                     }
                   ],
                   should: [
@@ -193,30 +199,20 @@ module.exports = {
                       has_parent : {
                         parent_type : "package_version",
                         query : {
-                          bool: {
-                            must: {
-                              "has_parent" : {
-                                "query" : {
-                                  "function_score" : {
-                                    "field_value_factor": {
-                                      "field":    "last_month_downloads",
-                                      "modifier": "log1p"
-                                    },
-                                    "boost_mode": "replace"
-                                  }
+                          "has_parent" : {
+                            "query" : {
+                              "function_score" : {
+                                "field_value_factor": {
+                                  "field":    "last_month_downloads",
+                                  "modifier": "log1p"
                                 },
-
-                                "parent_type" : "package",
-                                "score_type" : "multiply"
+                                "boost_mode": "replace"
                               }
                             },
-                            should: {
-                              term : {
-                                latest_version : 1
-                              }
-                            }
-                          }
 
+                            "parent_type" : "package",
+                            "score_type" : "multiply"
+                          }
                         },
                         inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
                       }
