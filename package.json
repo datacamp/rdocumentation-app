@@ -49,7 +49,7 @@
   },
   "scripts": {
     "debug": "nf start debug",
-    "prestart": "node -r dotenv/config node_modules/db-migrate/bin/db-migrate up",
+    "prestart": "node node_modules/db-migrate/bin/db-migrate up",
     "start": "nf start web"
   },
   "main": "app.js",
