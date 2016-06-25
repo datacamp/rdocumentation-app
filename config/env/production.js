@@ -33,6 +33,12 @@ module.exports = {
 
   models: {
     migrate: 'safe'
+  },
+
+  session: {
+    host: process.env.REDIS_URL,
+    port: 6379,
+    prefix: 'sess:',
   }
 
 

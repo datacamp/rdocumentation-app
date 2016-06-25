@@ -33,8 +33,11 @@ module.exports = {
 
   models: {
     migrate: 'safe'
+  },
+
+  session: {
+    host: 'redis://192.168.99.100',
+    prefix: 'sess:',
   }
-
-
 
 };
