@@ -11,7 +11,7 @@ module.exports = function(req, res, next) {
 
   if(req.session.flash) {
     res.locals.messages = _.clone(_.merge(req.session.messages, req.session.flash));
-    req.session.flash = {}
+    req.session.flash = {};
   } else {
     res.locals.messages = _.clone(req.session.messages);
   }
