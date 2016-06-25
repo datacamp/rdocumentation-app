@@ -64,6 +64,7 @@ module.exports.routes = {
     'get /packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
     // Backwards compatibility
     'get /packages/:name/functions/:function': 'Topic.redirect',
+    'get /goto/:name/:function': 'Topic.redirect',
   //***** /Topic *****
 
   //***** Collaborator *****
