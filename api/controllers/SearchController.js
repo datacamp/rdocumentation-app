@@ -34,6 +34,22 @@ module.exports = {
                           "max_expansions" : 20
                       }
                   }
+                },
+                {
+                  "has_parent" : {
+                    "query" : {
+                      "function_score" : {
+                        "field_value_factor": {
+                          "field":    "last_month_downloads",
+                          "modifier": "ln1p"
+                        },
+                        "boost_mode": "replace"
+                      }
+                    },
+
+                    "parent_type" : "package",
+                    "score_mode" : "score"
+                  }
                 }
               ],
               "minimum_number_should_match": 1,
@@ -60,6 +76,28 @@ module.exports = {
                 {
                   prefix : {
                     name: token,
+                  }
+                },
+                {
+                  has_parent : {
+                    "parent_type" : "package_version",
+                    "score_mode": "score",
+                    query : {
+                      "has_parent" : {
+                        "query" : {
+                          "function_score" : {
+                            "field_value_factor": {
+                              "field":    "last_month_downloads",
+                              "modifier": "ln1p"
+                            },
+                            "boost_mode": "replace"
+                          }
+                        },
+
+                        "parent_type" : "package",
+                        "score_mode" : "score"
+                      }
+                    }
                   }
                 }
               ],
@@ -276,7 +314,7 @@ module.exports = {
                         },
 
                         "parent_type" : "package",
-                        "score_type" : "multiply"
+                        "score_mode" : "score"
                       }
                     }
                   ],
@@ -303,20 +341,22 @@ module.exports = {
                     {
                       has_parent : {
                         parent_type : "package_version",
+                        score_mode: "score",
                         query : {
                           "has_parent" : {
                             "query" : {
                               "function_score" : {
                                 "field_value_factor": {
                                   "field":    "last_month_downloads",
-                                  "modifier": "log1p"
+                                  "factor": 1.5,
+                                  "modifier": "ln1p"
                                 },
                                 "boost_mode": "replace"
                               }
                             },
 
                             "parent_type" : "package",
-                            "score_type" : "multiply"
+                            "score_mode" : "score"
                           }
                         },
                         inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
