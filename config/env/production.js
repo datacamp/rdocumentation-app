@@ -36,8 +36,7 @@ module.exports = {
   },
 
   session: {
-    host: process.env.REDIS_URL,
-    port: 6379,
+    url: process.env.REDIS_URL,
     prefix: 'sess:',
   }
 

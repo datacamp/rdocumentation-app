@@ -36,8 +36,9 @@ module.exports = {
   },
 
   session: {
-    host: 'redis://192.168.99.100',
+    url: process.env.REDIS_URL,
     prefix: 'sess:',
+    secret: process.env.SESSION_SECRET
   }
 
 };
