@@ -1,7 +1,7 @@
 <% var reviewable = data; %>
 <% var reviews = reviewable.reviews; %>
 
-<div class='reviews'>
+<div class='reviews' id="postReview">
   <h3>Reviews</h3>
   <div class="review-content">
     <% if(reviews.length === 0) { %>
@@ -15,7 +15,7 @@
   </div>
   <% if(!inViewerPane) { %>
     <% if(user) { %>
-      <div id="postReview" class="review--form">
+      <div class="review--form">
         <div class="review--form-title">Post a new review</div>
         <div class="review--form-body">
           <form method="post" action='<%= reviewPostAction %>'>
@@ -47,7 +47,7 @@
         </div>
       </div>
     <% } else { %>
-        <p>You are not logged in, please <a href="/login">Sign in</a> or <a href="/register">Create an account</a> to post reviews.</p>
+        <p>You are not logged in, please <a href="/login?rdr=<%= encodeURIComponent(path)%>">Sign in</a> or <a href="/register?rdr=<%= encodeURIComponent(path)%>">Create an account</a> to post reviews.</p>
     <% } %>
   <% } else { %>
     <a href="<%= path + '#postReview' %>" class="btn btn-primary js-external">Review Package</a>

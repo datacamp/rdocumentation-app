@@ -43,7 +43,7 @@ module.exports = {
         }
         var result = User.create(req.body);
         result.then(function(value) {
-          passport.authenticate('local', { successRedirect: '/',
+          passport.authenticate('local', { successRedirect: req.session['rdr'] || '/',
                                            failureRedirect: '/register',
                                            failureFlash: true })(req, res);
         }).catch(Sequelize.UniqueConstraintError, function (err) {
