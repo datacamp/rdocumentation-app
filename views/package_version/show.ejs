@@ -4,17 +4,18 @@
   <div class="container">
     <header>
       <h1><%- pkgVersion.package_name %></h1>
-      <select id="packageVersionSelect">
-        <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
-          <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
-            value="<%= pkgVersion.package.versions[i].version %>"
-            <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %> >
-            <%= pkgVersion.package.versions[i].version %>
-          </option>
-        <% } %>
-      </select>
 
-
+      <div class="select">
+        <select id="packageVersionSelect">
+          <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
+            <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
+              value="<%= pkgVersion.package.versions[i].version %>"
+              <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %> >
+              <%= pkgVersion.package.versions[i].version %>
+            </option>
+          <% } %>
+        </select>
+      </div>
       <div class="rating" title=<%= pkgVersion.rating %>>
 
         <% if (pkgVersion.rating) { %>

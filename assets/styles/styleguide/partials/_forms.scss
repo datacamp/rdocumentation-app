@@ -221,6 +221,37 @@ select:hover {
     color: $primary
 }
 
+// The down arrow
+.select {
+    position: relative
+}
+.select:before,
+.select:after {
+    display: block;
+    content: "";
+    background: $primary-light;
+    border-radius: 4px;
+    width: 4px;
+    height: 15px;
+    position: absolute;
+    transition: background $default-duration ease
+}
+.select:before {
+    @include rotate(45deg);
+    right: 20px;
+    top: 16px
+}
+.select:after {
+    @include rotate(-45deg);
+    right: 29px;
+    top: 16px
+}
+.select:hover:before,
+.select:hover:after {
+    background-color: $primary
+}
+// end down arrow
+
 // Tabs
 .tabs input[type=radio]+label {
     transition: background-color $default-duration ease-out, color $default-duration ease-out;
