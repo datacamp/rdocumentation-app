@@ -57,6 +57,7 @@ module.exports.routes = {
   //***** Topic *****
     //API
     'get /api/topics/:id': 'Topic.findById',
+    'get /api/topics/:id/rating': 'Topic.rating',
     'get /api/packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
     'post /api/packages/:name/versions/:version/topics': 'Topic.postRdFile',
     //HTML

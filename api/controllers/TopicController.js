@@ -290,6 +290,31 @@ module.exports = {
     });
   },
 
+  rating: function(req, res) {
+    var topicId = req.param('id'),
+        key = 'topic_rating_' + topicId;
+    var scope = sails.models.topic.associations.reviews.scope;
+
+    RedisService.getJSONFromCache(key, RedisService.DAILY, function() {
+      return Review.findOne({
+        attributes: [[sequelize.fn('AVG', sequelize.col('rating')), 'rating']],
+        where: {
+          reviewable_id: topicId,
+          reviewable: scope.reviewable
+        },
+      });
+    })
+    // The method above will be cached
+    .then(function(json){
+      json.fromCache ? res.set('X-Cache', 'hit') : res.set('X-Cache', 'miss');
+      res.set('Cache-Control', 'max-age=' + RedisService.DAILY);
+      return res.ok({rating: json.rating});
+    })
+    .catch(function(err) {
+      return res.negotiate(err);
+    });
+  },
+
   redirect: function(req,res) {
     var packageName = req.param('name'),
         functionName = req.param('function');
