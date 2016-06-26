@@ -1,5 +1,6 @@
 var passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy,
+  BearerStrategy = require('passport-http-bearer').Strategy,
   bcrypt = require('bcrypt'),
   _ = require('lodash');
 
@@ -54,5 +55,23 @@ passport.use(new LocalStrategy(
     });
   }
 ));
+
+
+//API-Token strategy
+passport.use(new BearerStrategy(
+  function(token, cb) {
+    ApiToken.find({
+      where: { token: token }
+    }).then(function(tokenInstance) {
+      if(!tokenInstace)
+        cb(null, false, { message: 'Token not found' });
+      else {
+        var authorizations = _.pick(token, ['can_read', 'can_create', 'can_update', 'can_delete']);
+        cb(null, authorizations);
+      }
+    }).catch(function(err) {
+      cb(err);
+    });
+  }));
 
 module.exports = passport;
