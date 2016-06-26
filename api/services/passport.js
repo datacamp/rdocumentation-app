@@ -61,12 +61,12 @@ passport.use(new LocalStrategy(
 passport.use(new BearerStrategy(
   function(token, cb) {
     ApiToken.find({
-      where: { token: token }
+      where: { token: token },
     }).then(function(tokenInstance) {
-      if(!tokenInstace)
+      if(!tokenInstance)
         cb(null, false, { message: 'Token not found' });
       else {
-        var authorizations = _.pick(token, ['can_read', 'can_create', 'can_update', 'can_delete']);
+        var authorizations = _.pick(tokenInstance, ['can_read', 'can_create', 'can_update', 'can_delete']);
         cb(null, authorizations);
       }
     }).catch(function(err) {

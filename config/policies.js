@@ -49,7 +49,15 @@ module.exports.policies = {
 		// feed : ['isNiceToAnimals', 'hasRabbitFood']
 	// }
 
-  '*': [true, 'flash'],
+  '*': ['api_auth', 'flash'],
+
+  AuthController: {
+    '*': ['flash']
+  },
+
+  SearchController: {
+    '*': ['flash']
+  },
 
   ReviewController: {
     '*': ['sessionAuth', 'flash']
