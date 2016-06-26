@@ -121,7 +121,7 @@
               <td><a href="<%= path + '/topics/' + pkgVersion.topics[i].name %>"><%= pkgVersion.topics[i].name %></a></td>
               <td><%- pkgVersion.topics[i].title %></td>
               <td>
-                <div class="rating">
+                <div class="rating js-rating-download" data-url="/api/topics/<%= pkgVersion.topics[i].id %>/rating">
                   <i class="fa fa-star-o" aria-hidden="true"></i>
                   <i class="fa fa-star-o" aria-hidden="true"></i>
                   <i class="fa fa-star-o" aria-hidden="true"></i>
