@@ -186,6 +186,7 @@ module.exports = {
         reviewable: scope.reviewable,
         reviewable_id: packageVersionInstance.id
       }).then(function(instance) {
+        RedisClient.del('view_package_version_' + packageName + '_' + packageVersion);
         if(req.wantsJSON) {
           return res.created(instance.toJSON());
         } else {
