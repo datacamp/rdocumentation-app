@@ -58,6 +58,12 @@ module.exports = {
           .replace('/api/', '/')
         );
       }
+    }).catch(Sequelize.UniqueConstraintError, function (err) {
+      FlashService.error(req, 'You already reviewed this topic');
+      return res.redirect(sails.getUrlFor({ target: 'Topic.findById' })
+          .replace(':id', topicId)
+          .replace('/api/', '/')
+        );
     }).catch(function(err) {
       return res.negotiate(err);
     });
@@ -186,6 +192,9 @@ module.exports = {
           FlashService.success(req, 'Review successfully added.');
           return res.redirect(packageVersionInstance.uri);
         }
+      }).catch(Sequelize.UniqueConstraintError, function (err) {
+        FlashService.error(req, 'You already reviewed this package');
+        return res.redirect(packageVersionInstance.uri);
       });
     }).catch(function(err) {
       return res.negotiate(err);

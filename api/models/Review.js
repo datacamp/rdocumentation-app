@@ -58,6 +58,12 @@ module.exports = {
   },
 
   options: {
+    indexes: [
+      {
+        type: 'UNIQUE',
+        fields: ['user_id', 'reviewable', 'reviewable_id']
+      }
+    ],
     underscored: true
   }
 };
