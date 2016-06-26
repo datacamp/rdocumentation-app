@@ -20,11 +20,6 @@ module.exports = {
       allowNull: false
     },
 
-    can_read: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false
-    },
-
     can_update: {
       type: Sequelize.BOOLEAN,
       allowNull: false

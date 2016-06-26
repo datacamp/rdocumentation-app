@@ -17,9 +17,6 @@ module.exports = function(req, res, next) {
         case 'POST':
           authorized = authorizations.can_create === true;
           break;
-        case 'GET':
-          authorized = true;
-          break;
         case 'PUT':
           authorized = authorizations.can_update === true;
           break;
