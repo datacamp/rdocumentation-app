@@ -105,6 +105,10 @@
       <p><%- pkgVersion.description %></p>
     </section>
 
+    <div id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
+      <svg></svg>
+    </div>
+
     <section class="table-list">
       <input id="filterTopics" type="text" placeholder="Filter list">
       <table>

@@ -214,6 +214,19 @@ module.exports = {
 
       return res.json({total: total, percentile: Math.round(percentile * 100) / 100 });
     });
+  },
+
+  getLastMonthDownloadPerDay: function(req, res) {
+    var packageName = req.param('name');
+    ElasticSearchService.lastMonthPerDay(packageName).then(function(data) {
+      var serie = data.map(function(d) {
+        return {
+          timestamp: d.key,
+          count: d.doc_count
+        };
+      });
+      return res.json(serie);
+    });
   }
 
 };
