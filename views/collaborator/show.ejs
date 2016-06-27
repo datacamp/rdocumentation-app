@@ -14,7 +14,7 @@
           <% for(var i = 0; i < collaborator.maintained_packages.length; i++) { %>
             <% var maintained = collaborator.maintained_packages[i]; %>
             <div class='maintained-package col-md-4'>
-              <a href='<%= maintained.uri %>'><h4><%= maintained.package_name %></h4></a>
+              <a href='/packages/<%= maintained.package_name %>'><h4><%= maintained.package_name %></h4></a>
 
               <select id="packageVersionSelect">
               <% for(var j = 0; j < maintained.versions.length; j++) { %>
@@ -54,7 +54,7 @@
           <% for(var i = 0; i < collaborator.authored_packages.length; i++) { %>
             <% var authored = collaborator.authored_packages[i]; %>
             <div class='authored-package col-md-4'>
-              <a href='<%= authored.uri %>'><h4><%= authored.package_name %></h4></a>
+              <a href='/packages/<%= authored.package_name %>'><h4><%= authored.package_name %></h4></a>
 
               <select id="packageVersionSelect">
               <% for(var j = 0; j < authored.versions.length; j++) { %>
