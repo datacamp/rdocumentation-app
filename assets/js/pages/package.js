@@ -11,9 +11,9 @@ window.packageVersionToggleHandler = function() {
 };
 
 window.graphDownloadStatistics = function() {
-  var client = new $.es.Client({
-    hosts: 'http://ec2-54-67-61-189.us-west-1.compute.amazonaws.com:9200'
-  });
+  var getData = function(data_url, callback) {
+    return $.get(data_url, callback);
+  };
 
   nv.addGraph(function() {
       var chart = nv.models.multiBarChart()
@@ -23,33 +23,36 @@ window.graphDownloadStatistics = function() {
         .groupSpacing(0.1)    //Distance between each group of bars.
         .x(function (d){
           console.log(d);
-          return d.x;
+          return d.timestamp;
         })
         .y(function (d){
           console.log(d);
-          return d.y;
+          return d.count;
         })
       ;
 
       chart.xAxis
-          .tickFormat(d3.format(',f'));
+          .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)); });
 
       chart.yAxis
           .tickFormat(d3.format(',.1f'));
 
-      d3.select('#chart svg')
-          .datum([])
+      getData($('#chart').data('url'), function(data) {
+        var serie = {
+          key: "Last month downloads",
+          values: data
+        };
+        $('#chart').show();
+        d3.select('#chart svg')
+          .datum([serie])
           .call(chart);
+      });
+
 
       nv.utils.windowResize(chart.update);
 
       return chart;
   });
-
-  client.search({
-
-  });
-
 
 };
 

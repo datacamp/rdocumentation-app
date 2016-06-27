@@ -34,6 +34,12 @@ module.exports = {
             ]
 
         }
+      },
+      "last_month_per_day": {
+        "date_histogram" : {
+            "field" : "datetime",
+            "interval" : "day"
+        }
       }
     },
     filters: {
@@ -61,7 +67,7 @@ module.exports = {
     var body = {
       "query": ElasticSearchService.queries.filters.lastMonthStats,
       "size": 0, // do not retrieve data, we are only interested in aggregation data
-      "aggs" : ElasticSearchService.queries.aggregations
+      "aggs" : _.pick(ElasticSearchService.queries.aggregations, ['download_per_package', 'download_percentiles'])
     };
 
     return es.search({
@@ -91,6 +97,26 @@ module.exports = {
       return response.aggregations.download_per_package.buckets;
     });
 
+  },
+
+  lastMonthPerDay: function(packageName) {
+    var lastMonthPackageFilter =  _.clone(ElasticSearchService.queries.filters.lastMonthStats);
+    lastMonthPackageFilter.bool.filter.push({ "term": { "package": packageName } });
+    var body = {
+      "query": lastMonthPackageFilter,
+      "size": 0, // do not retrieve data, we are only interested in aggregation data
+      "aggs" : {
+        last_month_per_day: ElasticSearchService.queries.aggregations.last_month_per_day
+      }
+    };
+
+    return es.search({
+      index: 'stats',
+      requestCache: true, //cache the result,
+      body: body
+    }).then(function(response) {
+      return response.aggregations.last_month_per_day.buckets;
+    });
   },
 
   cachedLastMonthPercentiles: function( ) {

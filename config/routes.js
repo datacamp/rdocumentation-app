@@ -48,6 +48,8 @@ module.exports.routes = {
     'get /api/packages/:name/downloads' : 'PackageVersion.getDownloadStatistics',
     'get /api/packages/:name/versions/:version/percentile' : 'PackageVersion.getPercentile',
     'get /api/packages/:name/percentile' : 'PackageVersion.getPercentile',
+    'get /api/packages/:name/versions/:version/downloads/per_day_last_month' : 'PackageVersion.getLastMonthDownloadPerDay',
+    'get /api/packages/:name/downloads/per_day_last_month' : 'PackageVersion.getLastMonthDownloadPerDay',
     'get /api/packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
     'post /api/versions': 'PackageVersion.postDescription',
     // HTML
