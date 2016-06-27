@@ -9,6 +9,7 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.http.html
  */
 var dateFormat = require('dateformat');
+var autoLink = require('autolink-js');
 
 module.exports.http = {
 
@@ -67,6 +68,7 @@ module.exports.http = {
     res.locals.inViewerPane = (req.param('viewer_pane') === '1') ? true : false;
     res.locals.path = req.path;
     res.locals.dateformat = dateFormat;
+    res.locals.autoLink = autoLink;
     return next();
   },
 
@@ -98,7 +100,7 @@ module.exports.http = {
   locals: {
     filters: {
       formatDate: function(date) {
-        return dateFormat(date);
+        return dateFormat(date, 'mediumDate');
       }
     }
   }

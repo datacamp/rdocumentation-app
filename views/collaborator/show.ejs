@@ -8,22 +8,82 @@
     </header>
 
     <section class="collaborator--maintainer">
-      <h4>Maintainer of</h4>
-      <ul class="inline">
-        <% for(var i = 0; i < collaborator.maintained_packages.length; i++) { %>
-          <li><a href="<%= collaborator.maintained_packages[i].uri %>"><%= collaborator.maintained_packages[i].package_name %> v<%= collaborator.maintained_packages[i].version %></a></li>
-        <% } %>
-      </ul>
+      <h3>Maintainer of</h3>
+      <div class="container">
+        <div class='row'>
+          <% for(var i = 0; i < collaborator.maintained_packages.length; i++) { %>
+            <% var maintained = collaborator.maintained_packages[i]; %>
+            <div class='maintained-package col-md-4'>
+              <a href='<%= maintained.uri %>'><h4><%= maintained.package_name %></h4></a>
+
+              <select id="packageVersionSelect">
+              <% for(var j = 0; j < maintained.versions.length; j++) { %>
+                <option data-uri="<%= maintained.versions[j].uri %>"
+                 value="<%= maintained.versions[j].version %>"
+                  <%= (maintained.versions[j].version === maintained.version) ? 'selected' : '' %> >
+                  <%= maintained.versions[j].version %>
+                </option>
+              <% } %>
+              </select>
+              <p><%= maintained.title %></p>
+              <dl>
+                <% if (maintained.release_date) { %>
+                <dt>Release date</dt>
+                <dd><%=: maintained.release_date | formatDate %></dd>
+                <% } %>
+                <% if (maintained.license) { %>
+                <dt>License</dt>
+                <dd><%=: maintained.license %></dd>
+                <% } %>
+                <% if (maintained.url) { %>
+                <dt>Url</dt>
+                <dd><%- maintained.url.autoLink({target:'_blank'}) %></dd>
+                <% } %>
+              </dl>
+            </div>
+          <% } %>
+        </div>
+      </div>
     </section>
 
 
     <section class="collaborator--author">
       <h4>Author of</h4>
-      <ul class="inline">
-        <% for(var i = 0; i < collaborator.authored_packages.length; i++) { %>
-          <li><a href="<%= collaborator.authored_packages[i].uri %>"><%= collaborator.authored_packages[i].package_name %> v<%= collaborator.authored_packages[i].version %></a></li>
-        <% } %>
-      </ul>
+      <div class="container">
+        <div class='row'>
+          <% for(var i = 0; i < collaborator.authored_packages.length; i++) { %>
+            <% var authored = collaborator.authored_packages[i]; %>
+            <div class='authored-package col-md-4'>
+              <a href='<%= authored.uri %>'><h4><%= authored.package_name %></h4></a>
+
+              <select id="packageVersionSelect">
+              <% for(var j = 0; j < authored.versions.length; j++) { %>
+                <option data-uri="<%= authored.versions[j].uri %>"
+                 value="<%= authored.versions[j].version %>"
+                  <%= (authored.versions[j].version === authored.version) ? 'selected' : '' %> >
+                  <%= authored.versions[j].version %>
+                </option>
+              <% } %>
+              </select>
+              <p><%= authored.title %></p>
+              <dl>
+                <% if (authored.release_date) { %>
+                <dt>Release date</dt>
+                <dd><%=: authored.release_date | formatDate %></dd>
+                <% } %>
+                <% if (authored.license) { %>
+                <dt>License</dt>
+                <dd><%=: authored.license %></dd>
+                <% } %>
+                <% if (authored.url) { %>
+                <dt>Url</dt>
+                <dd><%- authored.url.autoLink({target:'_blank'}) %></dd>
+                <% } %>
+              </dl>
+            </div>
+          <% } %>
+        </div>
+      </div>
     </section>
 
   </div>
