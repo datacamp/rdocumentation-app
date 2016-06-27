@@ -298,7 +298,7 @@ module.exports = {
                       multi_match: {
                         query: query,
                         type: "best_fields",
-                        fields: ['package_name^4', 'title^3', 'description^2', 'license', 'url', 'copyright']
+                        fields: ['package_name^6', 'title^4', 'maintainer.name^4', 'collaborators.name^3', 'description^3', 'license', 'url', 'copyright']
                       },
                     },
                     {
@@ -348,8 +348,7 @@ module.exports = {
                               "function_score" : {
                                 "field_value_factor": {
                                   "field":    "last_month_downloads",
-                                  "factor": 1.5,
-                                  "modifier": "ln1p"
+                                  "modifier": "log1p"
                                 },
                                 "boost_mode": "replace"
                               }
@@ -382,6 +381,16 @@ module.exports = {
             "description": {highlight_query: {
                match : {
                   description : query
+              }
+            }},
+            "collaborators.name": {highlight_query: {
+               match : {
+                  "collaborators.name" : query
+              }
+            }},
+            "maintainer.name": {highlight_query: {
+               match : {
+                  "maintainer.name" : query
               }
             }},
             "name": {highlight_query: searchTopicQuery},
