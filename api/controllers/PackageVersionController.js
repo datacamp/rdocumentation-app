@@ -8,7 +8,7 @@ var axios = require('axios');
 var _ = require('lodash');
 var numeral = require('numeral');
 var Promise = require('bluebird');
-var autoLink = require('autoLink-js');
+var autoLink = require('autolink-js');
 
 
 _getDownloadStatistics = function (packageName) {
