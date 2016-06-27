@@ -165,7 +165,7 @@ module.exports = {
           version.rating = ratingInstance.getDataValue('rating');
           return version;
         }).then(function(version) {
-          version.url = version.url.autoLink({ target: "_blank", id: "1" });
+          if (version.url) version.url = version.url.autoLink({ target: "_blank", id: "1" });
           return version;
         });
       });
