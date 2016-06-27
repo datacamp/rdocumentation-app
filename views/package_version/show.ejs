@@ -110,7 +110,7 @@
     </div>
 
     <section class="table-list">
-      <input id="filterTopics" type="text" placeholder="Filter list">
+      <input id="filter" type="text" placeholder="Filter list">
       <table>
         <thead>
           <tr>
@@ -119,7 +119,7 @@
             <td width="115">Rating</td>
           </tr>
         </thead>
-        <tbody id="topics">
+        <tbody id="filterableItems">
           <% for(var i = 0; i < pkgVersion.topics.length; i++) { %>
             <tr>
               <td><a href="<%= path + '/topics/' + pkgVersion.topics[i].name %>"><%= pkgVersion.topics[i].name %></a></td>
