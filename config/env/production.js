@@ -38,6 +38,10 @@ module.exports = {
   session: {
     url: process.env.REDIS_URL,
     prefix: 'sess:',
+  },
+
+  grunt: {
+    _hookTimeout: 30000
   }
 
 
