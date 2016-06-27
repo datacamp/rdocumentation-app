@@ -17,7 +17,7 @@ module.exports = {
         id: id
       },
       include: [
-        { model: PackageVersion, as: 'maintained_packages', attributes:['id', 'package_name', 'version', 'title', 'release_date', 'license',  'url'] },
+        { model: PackageVersion, as: 'maintained_packages', attributes:['id', 'package_name', 'version', 'title', 'release_date', 'license', 'url', 'maintainer_id'], separate: true},
         { model: PackageVersion, as: 'authored_packages', attributes:['id', 'package_name', 'version', 'title', 'release_date', 'license', 'url'] },
       ]
     }).then(function(collaboratorInstance) {
