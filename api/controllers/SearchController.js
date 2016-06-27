@@ -39,10 +39,23 @@ module.exports = {
                   "has_parent" : {
                     "query" : {
                       "function_score" : {
-                        "field_value_factor": {
-                          "field":    "last_month_downloads",
-                          "modifier": "ln1p"
-                        },
+                        "functions": [
+                          {
+                            "filter": { "missing" : { "field" : "part_of_r" } },
+                            "field_value_factor": {
+                              "field":    "last_month_downloads",
+                              "modifier": "log1p"
+                            }
+                          },
+                          {
+                            "filter": { "exists" : { "field" : "part_of_r" } },
+                            "field_value_factor": {
+                              "field":    "part_of_r",
+                              "modifier": "log1p",
+                              "factor": 300000,
+                            }
+                          }
+                        ],
                         "boost_mode": "replace"
                       }
                     },
@@ -86,10 +99,23 @@ module.exports = {
                       "has_parent" : {
                         "query" : {
                           "function_score" : {
-                            "field_value_factor": {
-                              "field":    "last_month_downloads",
-                              "modifier": "ln1p"
-                            },
+                            "functions": [
+                              {
+                                "filter": { "missing" : { "field" : "part_of_r" } },
+                                "field_value_factor": {
+                                  "field":    "last_month_downloads",
+                                  "modifier": "log1p"
+                                }
+                              },
+                              {
+                                "filter": { "exists" : { "field" : "part_of_r" } },
+                                "field_value_factor": {
+                                  "field":    "part_of_r",
+                                  "modifier": "log1p",
+                                  "factor": 300000,
+                                }
+                              }
+                            ],
                             "boost_mode": "replace"
                           }
                         },
@@ -305,10 +331,23 @@ module.exports = {
                       "has_parent" : {
                         "query" : {
                           "function_score" : {
-                            "field_value_factor": {
-                              "field":    "last_month_downloads",
-                              "modifier": "log1p"
-                            },
+                            "functions": [
+                              {
+                                "filter": { "missing" : { "field" : "part_of_r" } },
+                                "field_value_factor": {
+                                  "field":    "last_month_downloads",
+                                  "modifier": "log1p"
+                                }
+                              },
+                              {
+                                "filter": { "exists" : { "field" : "part_of_r" } },
+                                "field_value_factor": {
+                                  "field":    "part_of_r",
+                                  "modifier": "log1p",
+                                  "factor": 300000,
+                                }
+                              }
+                            ],
                             "boost_mode": "replace"
                           }
                         },
@@ -346,10 +385,23 @@ module.exports = {
                           "has_parent" : {
                             "query" : {
                               "function_score" : {
-                                "field_value_factor": {
-                                  "field":    "last_month_downloads",
-                                  "modifier": "log1p"
-                                },
+                                "functions": [
+                                  {
+                                    "filter": { "missing" : { "field" : "part_of_r" } },
+                                    "field_value_factor": {
+                                      "field":    "last_month_downloads",
+                                      "modifier": "log1p"
+                                    }
+                                  },
+                                  {
+                                    "filter": { "exists" : { "field" : "part_of_r" } },
+                                    "field_value_factor": {
+                                      "field":    "part_of_r",
+                                      "modifier": "log1p",
+                                      "factor": 300000,
+                                    }
+                                  }
+                                ],
                                 "boost_mode": "replace"
                               }
                             },
