@@ -100,7 +100,7 @@ module.exports = {
   },
 
   lastMonthPerDay: function(packageName) {
-    var lastMonthPackageFilter =  _.clone(ElasticSearchService.queries.filters.lastMonthStats);
+    var lastMonthPackageFilter =  _.cloneDeep(ElasticSearchService.queries.filters.lastMonthStats);
     lastMonthPackageFilter.bool.filter.push({ "term": { "package": packageName } });
     var body = {
       "query": lastMonthPackageFilter,
