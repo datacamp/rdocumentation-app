@@ -81,14 +81,16 @@ module.exports = {
             bool: {
               should: [
                 {
-                  term: {
-                    "package_name" : token,
-                    "boost": 2.0
+                  "multi_match" : {
+                    "query":    token,
+                    "fields": [ "aliases^2", "name" ]
                   }
                 },
                 {
-                  prefix : {
-                    name: token,
+                  "multi_match" : {
+                    "fields" : ["aliases^2", "name"],
+                    "query" : token,
+                    "type" : "phrase_prefix"
                   }
                 },
                 {
@@ -293,8 +295,8 @@ module.exports = {
         query: query,
         type: "best_fields",
         fields: [
-          'name^6',
           'aliases^6',
+          'name^5',
           'title^3', 'description^3', 'keywords^3',
           'arguments.name^2', 'arguments.description^2',
           'details^2', 'value^2',
