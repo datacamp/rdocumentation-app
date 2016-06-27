@@ -294,7 +294,7 @@ module.exports = {
         type: "best_fields",
         fields: [
           'name^6',
-          'aliases^4',
+          'aliases^6',
           'title^3', 'description^3', 'keywords^3',
           'arguments.name^2', 'arguments.description^2',
           'details^2', 'value^2',
