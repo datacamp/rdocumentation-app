@@ -8,6 +8,7 @@ var axios = require('axios');
 var _ = require('lodash');
 var numeral = require('numeral');
 var Promise = require('bluebird');
+var autoLink = require('autoLink-js');
 
 
 _getDownloadStatistics = function (packageName) {
@@ -162,6 +163,9 @@ module.exports = {
           if (ratingInstance === null) return versionInstance.toJSON();
           var version = versionInstance.toJSON();
           version.rating = ratingInstance.getDataValue('rating');
+          return version;
+        }).then(function(version) {
+          version.url = version.url.autoLink({ target: "_blank", id: "1" });
           return version;
         });
       });

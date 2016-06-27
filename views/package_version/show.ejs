@@ -71,7 +71,7 @@
             <% } %>
             <% if(pkgVersion.url) { %>
               <dt>Package url</dt>
-              <dd><a href="<%= pkgVersion.url %>" target="_blank"><%= pkgVersion.url %></a></dd>
+              <dd><%- pkgVersion.url %></dd>
             <% } %>
             <% if(pkgVersion.package.inViews && pkgVersion.package.inViews.length > 0) { %>
               <dt>In Views:</dt>
