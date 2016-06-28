@@ -15,23 +15,7 @@ module.exports = {
       download_percentiles: {
         "percentiles_bucket": {
             "buckets_path": "download_per_package>download_count",
-            "percents": [ 1.00001, // 0.0001, hack to avoid javascript to turn 1.0 into 1, which does not work because of elasticsearch coercion system
-              5.00001,
-              10.00001,
-              20.00001,
-              30.00001,
-              40.00001,
-              50.00001,
-              60.00001,
-              70.00001,
-              80.00001,
-              90.00001,
-              95.00001,
-              99.00001,
-              99.5,
-              99.9,
-              99.99
-            ]
+            "percents": _.range(1.00001, 100, 1).concat([99.5, 99.9, 99.99])
 
         }
       },
