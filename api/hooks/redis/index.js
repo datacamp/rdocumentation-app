@@ -30,6 +30,7 @@ module.exports = function redis_init(sails) {
 
       if(process.env.NODE_ENV !== 'production') {
         redisClient.flushdb();
+        redisClient.flushall();
       }
 
       next();

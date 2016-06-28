@@ -142,7 +142,7 @@ module.exports = {
             {model: Argument, as: 'arguments', attributes: ['name', 'description', 'topic_id'], separate:true },
             {model: Section, as: 'sections', attributes: ['name', 'description', 'topic_id'], separate:true },
             {model: Tag, as: 'keywords', attributes: ['name']},
-            {model: Alias, as: 'aliases', attributes: ['name']},
+            {model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], separate: true },
             {model: Review, as: 'reviews',
               include: [{model: User, as: 'user', attributes: ['username']}]
             }

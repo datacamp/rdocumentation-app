@@ -25,7 +25,8 @@ module.exports = {
           max: 5,
           min: 2,
           idle: 10000
-        }
+        },
+        benchmark:true
       }
     },
 
