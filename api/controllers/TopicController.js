@@ -214,11 +214,14 @@ module.exports = {
     var fromPackageVersion = req.param('version');
     var alias = req.param('alias');
     var toPackage = req.param('to');
-    var splitted = toPackage.split(':');
 
-    if(splitted.length === 2) {
-      toPackage = splitted[0];
-      alias = splitted[1];
+    if(toPackage) {
+      var splitted = toPackage.split(':');
+
+      if(splitted.length === 2) {
+        toPackage = splitted[0];
+        alias = splitted[1];
+      }
     }
 
     var fromPackage = { package_name: fromPackageName, version: fromPackageVersion };
@@ -243,7 +246,7 @@ module.exports = {
       }).then(function(topic) {
         if(topic !== null) return {uri: topic.uri};
         else {
-          Alias.findByNameInLatestVersions(alias).then(function(aliases) {
+          return Alias.findByNameInLatestVersions(alias).then(function(aliases) {
             if (aliases.length === 0) return null; //no match found anywhere, 404
             if (aliases.length === 1) { //if there is only 1 match, redirect to this one
               return {uri: aliases[0].topic.uri};
@@ -273,7 +276,7 @@ module.exports = {
 
 
               };
-              searchInDependencies([fromPackage.package_name], 0).then(function(uri) {
+              return searchInDependencies([fromPackage.package_name], 0).then(function(uri) {
                 return {uri: uri};
               }).catch(function(err) {
                 console.info(err);
