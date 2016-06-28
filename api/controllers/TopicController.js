@@ -214,6 +214,13 @@ module.exports = {
     var fromPackageVersion = req.param('version');
     var alias = req.param('alias');
     var toPackage = req.param('to');
+    var splitted = toPackage.split(':');
+
+    if(splitted.length === 2) {
+      toPackage = splitted[0];
+      alias = splitted[1];
+    }
+
     var fromPackage = { package_name: fromPackageName, version: fromPackageVersion };
     var packageCriteria = toPackage ? {package_name: toPackage} : fromPackage;
 
