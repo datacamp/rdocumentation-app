@@ -39,7 +39,7 @@ window.graphDownloadStatistics = function() {
 
       getData($('#chart').data('url'), function(data) {
         var serie = {
-          key: "Last month downloads",
+          key: "Daily downloads",
           values: data
         };
         $('#chart').show();
