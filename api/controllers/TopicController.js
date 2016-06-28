@@ -327,7 +327,8 @@ module.exports = {
         { model: PackageVersion, as: 'latest_version' },
       ]
     }).then(function(package) {
-      if(package === null || !package.lastest_version) {
+      console.log(package.toJSON());
+      if(package === null || !package.latest_version) {
         return res.notFound();
       } else {
         return res.redirect(package.latest_version.uri + '/topics/' + functionName);
