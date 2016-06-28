@@ -89,6 +89,7 @@ module.exports.routes = {
     'post /api/taskviews': 'TaskViewController.postView',
     'get /api/taskviews': 'TaskViewController.findAll',
     'get /api/taskviews/:view/statistics': 'TaskViewController.getDownloadStatistics',
+    'get /api/taskviews/:view': 'TaskViewController.find',
     // HTML
     'get /taskviews': 'TaskViewController.findAll',
     'get /taskviews/:view': 'TaskViewController.find',
