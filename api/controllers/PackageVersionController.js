@@ -142,10 +142,13 @@ module.exports = {
           { model: Collaborator, as: 'collaborators' },
           { model: Package, as: 'dependencies' },
           { model: Package, as: 'package', include: [
-            { model: PackageVersion, as: 'versions'},
+            { model: PackageVersion, as: 'versions', attributes:['package_name', 'version'] },
             { model: TaskView, as: 'inViews', attributes:['name'] }
           ]},
-          { model: Topic, as: 'topics', include:[{model: Review, as: 'reviews'}], separate: true},
+          { model: Topic, as: 'topics',
+            attributes: ['package_version_id', 'name', 'title', 'id'],
+            include:[{model: Review, as: 'reviews'}],
+            separate: true },
           { model: Review, as: 'reviews', separate: true,
             include: [{model: User, as: 'user', attributes: ['username', 'id']}]
           }
