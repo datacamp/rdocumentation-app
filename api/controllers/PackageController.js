@@ -41,7 +41,8 @@ module.exports = {
       },
       include: [
         { model: PackageVersion, as: 'versions' },
-      ]
+      ],
+      order: [[sequelize.fn('INET_ATON', sequelize.col('version')), 'ASC' ]]
     }).then(function(package) {
       if(package === null) {
         return res.notFound();
