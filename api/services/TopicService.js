@@ -22,6 +22,7 @@ module.exports = {
     return Promise.resolve(topicInstance.package_version || topicInstance.getPackage_version()).then(function(packageVersion) {
       var replaced = _.mapValues(toSearch, function(section) {
         var replaceLinks = function (str) {
+          if(str === null) return null;
           var $ = cheerio.load(str, {decodeEntities: false});
           $('a').each(function(i, elem) {
             var current = $(elem).attr('href');
