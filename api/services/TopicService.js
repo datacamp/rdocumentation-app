@@ -27,7 +27,8 @@ module.exports = {
           $('a').each(function(i, elem) {
             var current = $(elem).attr('href');
             var rdOptions = $(elem).attr('rd-options');
-            if (rdOptions === '') {
+            if(!current) return;
+            if (rdOptions === '' || !rdOptions) {
               $(elem).attr('href', url.resolve(basePath, current) +
                 '?package=' + packageVersion.package_name +
                 '\&version=' + packageVersion.version);
