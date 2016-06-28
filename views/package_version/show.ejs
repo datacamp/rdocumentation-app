@@ -121,16 +121,20 @@
         </thead>
         <tbody id="filterableItems">
           <% for(var i = 0; i < pkgVersion.topics.length; i++) { %>
+            <% var topic = pkgVersion.topics[i]; %>
             <tr>
-              <td><a href="<%= path + '/topics/' + pkgVersion.topics[i].name %>"><%= pkgVersion.topics[i].name %></a></td>
-              <td><%- pkgVersion.topics[i].title %></td>
+              <td><a href="<%= path + '/topics/' + topic.name %>"><%= topic.name %></a></td>
+              <td><%- topic.title %></td>
               <td>
-                <div class="rating js-rating-download" data-url="/api/topics/<%= pkgVersion.topics[i].id %>/rating">
-                  <i class="fa fa-star-o" aria-hidden="true"></i>
-                  <i class="fa fa-star-o" aria-hidden="true"></i>
-                  <i class="fa fa-star-o" aria-hidden="true"></i>
-                  <i class="fa fa-star-o" aria-hidden="true"></i>
-                  <i class="fa fa-star-o" aria-hidden="true"></i>
+                <div class="rating">
+                  <% var rating = topic.reviews.length > 0 ? lodash.meanBy(topic.reviews, 'rating') : 0; %>
+                  <% for(var j=1; j <= 5; j++) { %>
+                    <i class="fa fa-star<%=
+                     rating < j ?
+                      rating <= j - 0.5 ? "-o" : "-half-o"
+                      : ""
+                    %>" aria-hidden="true"></i>
+                  <% } %>
                 </div>
               </td>
             </tr>

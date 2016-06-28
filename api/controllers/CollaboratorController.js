@@ -21,7 +21,7 @@ module.exports = {
         { model: PackageVersion, as: 'authored_packages', attributes:['id', 'package_name', 'version', 'title', 'release_date', 'license', 'url'] },
       ]
     }).then(function(collaboratorInstance) {
-      if(collaborator === null) return res.notFound();
+      if(collaboratorInstance === null) return res.notFound();
       else {
         var collaborator = collaboratorInstance.toJSON();
         collaborator.pageTitle = collaborator.name;

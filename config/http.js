@@ -69,6 +69,7 @@ module.exports.http = {
     res.locals.path = req.path;
     res.locals.dateformat = dateFormat;
     res.locals.autoLink = autoLink;
+    res.locals.lodash = require('lodash');
     return next();
   },
 

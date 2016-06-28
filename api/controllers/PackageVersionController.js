@@ -145,7 +145,7 @@ module.exports = {
             { model: PackageVersion, as: 'versions'},
             { model: TaskView, as: 'inViews', attributes:['name'] }
           ]},
-          { model: Topic, as: 'topics', separate: true},
+          { model: Topic, as: 'topics', include:[{model: Review, as: 'reviews'}], separate: true},
           { model: Review, as: 'reviews', separate: true,
             include: [{model: User, as: 'user', attributes: ['username', 'id']}]
           }
