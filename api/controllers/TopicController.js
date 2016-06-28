@@ -340,7 +340,8 @@ module.exports = {
       if(package === null || !package.latest_version) {
         return res.notFound();
       } else {
-        return res.redirect(package.latest_version.uri + '/topics/' + functionName);
+        var prefix = req.path.startsWith('/api/') ? '/api' : '';
+        return res.redirect(prefix + package.latest_version.uri + '/topics/' + functionName);
       }
     }).catch(function(err) {
       return res.negotiate(err);
