@@ -7,7 +7,7 @@ var passport = require('passport');
  *
  */
 module.exports = function(req, res, next) {
-  if(req.method === 'GET') return next();
+  if(req.method === 'GET' || req.method === 'HEAD') return next();
   passport.authenticate('bearer', function(err, authorizations, info) {
     if (err) { return next(err); }
     if (!authorizations) { return res.send(401, info); }
