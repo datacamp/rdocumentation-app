@@ -139,8 +139,8 @@ module.exports = {
         var options = _.mergeWith({
           where: criteria,
           include: [
-            {model: Argument, as: 'arguments', attributes: ['name', 'description']},
-            {model: Section, as: 'sections', attributes: ['name', 'description']},
+            {model: Argument, as: 'arguments', attributes: ['name', 'description', 'topic_id'], separate:true },
+            {model: Section, as: 'sections', attributes: ['name', 'description', 'topic_id'], separate:true },
             {model: Tag, as: 'keywords', attributes: ['name']},
             {model: Alias, as: 'aliases', attributes: ['name']},
             {model: Review, as: 'reviews',
