@@ -327,7 +327,6 @@ module.exports = {
         { model: PackageVersion, as: 'latest_version' },
       ]
     }).then(function(package) {
-      console.log(package.toJSON());
       if(package === null || !package.latest_version) {
         return res.notFound();
       } else {
