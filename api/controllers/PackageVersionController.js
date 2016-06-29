@@ -11,10 +11,10 @@ var Promise = require('bluebird');
 var autoLink = require('autolink-js');
 
 
-_getDownloadStatistics = function (packageName) {
+_getDownloadStatistics = function (res, packageName) {
   key = 'rdocs_download_stats_' + packageName;
 
-  return RedisService.getJSONFromCache(key, RedisService.DAILY, function() {
+  return RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
     return sequelize.query("SELECT DISTINCT package_name FROM Dependencies INNER JOIN PackageVersions on PackageVersions.id = Dependencies.dependant_version_id WHERE dependency_name = ? and type = 'depends'", { replacements: [packageName], type: sequelize.QueryTypes.SELECT})
       .then(function(data) {
         var packageNames = _.map(data, 'package_name');
@@ -191,7 +191,7 @@ module.exports = {
   getDownloadStatistics: function(req, res) {
     var packageName = req.param('name');
 
-    _getDownloadStatistics(packageName).then(function(json) {
+    _getDownloadStatistics(res, packageName).then(function(json) {
       json.fromCache ? res.set('X-Cache', 'hit') : res.set('X-Cache', 'miss');
       res.set('Cache-Control', 'max-age=' + RedisService.DAILY);
       return res.json(json);
@@ -203,7 +203,7 @@ module.exports = {
 
     var lastMonthPercentiles = ElasticSearchService.cachedLastMonthPercentiles(res);
 
-    var lastMonthDownload = _getDownloadStatistics(packageName);
+    var lastMonthDownload = _getDownloadStatistics(res, packageName);
 
     Promise.join(lastMonthPercentiles, lastMonthDownload, function(percentilesResponse, downloads) {
       var total = downloads.total;
