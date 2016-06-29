@@ -16,7 +16,7 @@ server:
   build: .
   command: node app.js --verbose
   volumes:
-    - .:/server
+    - .:/opt/app
   ports:
     - "1337:1337"
   environment:
