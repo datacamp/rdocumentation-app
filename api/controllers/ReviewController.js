@@ -49,6 +49,7 @@ module.exports = {
       reviewable: scope.reviewable,
       reviewable_id: topicId
     }).then(function(instance) {
+      RedisClient.del('view_topic_' + topicId);
       if(req.wantsJSON) {
         return res.created(instance.toJSON());
       } else {
