@@ -77,7 +77,7 @@ module.exports = {
 
   findAll: function(req, res) {
     var key = 'rdocs_view_index';
-    RedisService.getJSONFromCache(key, RedisService.DAILY, function() {
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       return TaskView.findAll({
         include: [{
           model: Package,
@@ -94,8 +94,6 @@ module.exports = {
     })
     // The method above will be cached
     .then(function(views){
-      views.fromCache ? res.set('X-Cache', 'hit') : res.set('X-Cache', 'miss');
-      res.set('Cache-Control', 'max-age=' + RedisService.DAILY);
       return res.ok(views, 'task_view/index.ejs');
     })
     .catch(function(err) {
@@ -119,7 +117,7 @@ module.exports = {
     var view = req.param('view'),
         key = 'rdocs_view_show_' + view;
 
-    RedisService.getJSONFromCache(key, RedisService.DAILY, function() {
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       return TaskView.findOne({
         where: {name: view },
         include: [{
@@ -161,8 +159,6 @@ module.exports = {
     .then(function(view){
       if(view === null) return res.notFound();
       else {
-        view.fromCache ? res.set('X-Cache', 'hit') : res.set('X-Cache', 'miss');
-        res.set('Cache-Control', 'max-age=' + RedisService.DAILY);
         return res.ok(view, 'task_view/show.ejs');
       }
     })
@@ -176,7 +172,7 @@ module.exports = {
     var view = req.param('view'),
     key = 'rdocs_view_download_stats_' + view;
 
-    RedisService.getJSONFromCache(key, RedisService.DAILY, function() {
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       return TaskView.findOne({
         where: {name: view},
         include: [{
@@ -199,8 +195,6 @@ module.exports = {
     })
     // The method above will be cached
     .then(function(json){
-      json.fromCache ? res.set('X-Cache', 'hit') : res.set('X-Cache', 'miss');
-      res.set('Cache-Control', 'max-age=' + RedisService.DAILY);
       return res.json(json);
     })
     .catch(function(err) {

@@ -131,7 +131,7 @@ module.exports = {
         packageVersion = req.param('version'),
         key = 'view_package_version_' + packageName + '_' + packageVersion;
 
-    RedisService.getJSONFromCache(key, RedisService.DAILY, function() {
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       return PackageVersion.findOne({
         where: {
           package_name: packageName,
@@ -178,8 +178,6 @@ module.exports = {
     .then(function(version){
       if(version === null) return res.notFound();
       else {
-        version.fromCache ? res.set('X-Cache', 'hit') : res.set('X-Cache', 'miss');
-        res.set('Cache-Control', 'max-age=' + RedisService.DAILY);
         version.pageTitle = version.package_name + ' v' + version.version;
         return res.ok(version, 'package_version/show.ejs');
       }
@@ -203,7 +201,7 @@ module.exports = {
   getPercentile: function(req, res) {
     var packageName = req.param('name');
 
-    var lastMonthPercentiles = ElasticSearchService.cachedLastMonthPercentiles();
+    var lastMonthPercentiles = ElasticSearchService.cachedLastMonthPercentiles(res);
 
     var lastMonthDownload = _getDownloadStatistics(packageName);
 

@@ -111,21 +111,27 @@ module.exports = {
     var packageName = req.param('name');
     var packageVersion = req.param('version');
     var topic = req.param('topic');
+    var key = 'view_topic_' + packageName + '_' + packageVersion + '_' + topic;
 
 
-    Topic.findOnePopulated({name: topic}, {
-      include: [{
-        model: PackageVersion,
-        as: 'package_version',
-        where: { package_name: packageName, version: packageVersion }
-      }]
-    }).then(function(topic) {
-      if(topic === null) return res.notFound();
-      else return TopicService.computeLinks('/link/', topic)
-        .then(function(topic) {
-          topic.pageTitle = topic.name;
-          return res.ok(topic, 'topic/show.ejs');
-        });
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+      return Topic.findOnePopulated({name: topic}, {
+        include: [{
+          model: PackageVersion,
+          as: 'package_version',
+          where: { package_name: packageName, version: packageVersion }
+        }]
+      }).then(function(topic) {
+        if(topic === null) return null;
+        else return TopicService.computeLinks('/link/', topic)
+          .then(function(topic) {
+            topic.pageTitle = topic.name;
+            return topic;
+          });
+      });
+    }).then(function(topicJSON) {
+      if(topicJSON === null) return res.notFound();
+      return res.ok(topicJSON, 'topic/show.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });
@@ -179,25 +185,34 @@ module.exports = {
 
   findById: function(req, res) {
     var id = req.param('id');
+    var key = 'view_topic_' + id;
 
-    Topic.findOnePopulated({id: id}, {
-      include: [{
-        model: PackageVersion,
-        as: 'package_version',
-        attributes: ['package_name', 'version']
-      }]
-    }).then(function(topic) {
-      if(topic === null) return res.notFound();
-      else {
-        return TopicService.computeLinks('/link/', topic)
-          .then(function(topic) {
-            topic.pageTitle = topic.name;
-            return res.ok(topic, 'topic/show.ejs');
-          });
-      }
+
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+
+      return Topic.findOnePopulated({id: id}, {
+        include: [{
+          model: PackageVersion,
+          as: 'package_version',
+          attributes: ['package_name', 'version']
+        }]
+      }).then(function(topic) {
+        if(topic === null) return null;
+        else {
+          return TopicService.computeLinks('/link/', topic)
+            .then(function(topic) {
+              topic.pageTitle = topic.name;
+              return topic;
+            });
+        }
+      });
+    }).then(function(topicJSON) {
+      if(topicJSON === null) return res.notFound();
+      return res.ok(topicJSON, 'topic/show.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
     });
+
   },
 
   /**
@@ -227,7 +242,7 @@ module.exports = {
     var fromPackage = { package_name: fromPackageName, version: fromPackageVersion };
     var packageCriteria = toPackage ? {package_name: toPackage} : fromPackage;
 
-    RedisService.getJSONFromCache(req.url, RedisService.WEEKLY, function() {
+    RedisService.getJSONFromCache(req.url, res, RedisService.WEEKLY, function() {
 
       return Topic.findOne({
         include: [{
@@ -305,7 +320,7 @@ module.exports = {
         key = 'topic_rating_' + topicId;
     var scope = sails.models.topic.associations.reviews.scope;
 
-    RedisService.getJSONFromCache(key, RedisService.DAILY, function() {
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       return Review.findOne({
         attributes: [[sequelize.fn('AVG', sequelize.col('rating')), 'rating']],
         where: {
@@ -316,8 +331,6 @@ module.exports = {
     })
     // The method above will be cached
     .then(function(json){
-      json.fromCache ? res.set('X-Cache', 'hit') : res.set('X-Cache', 'miss');
-      res.set('Cache-Control', 'max-age=' + RedisService.DAILY);
       return res.ok({rating: json.rating});
     })
     .catch(function(err) {

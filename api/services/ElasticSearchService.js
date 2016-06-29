@@ -103,8 +103,8 @@ module.exports = {
     });
   },
 
-  cachedLastMonthPercentiles: function( ) {
-    return RedisService.getJSONFromCache('percentiles', RedisService.DAILY, function() {
+  cachedLastMonthPercentiles: function(res) {
+    return RedisService.getJSONFromCache('percentiles', res, RedisService.DAILY, function() {
       return ElasticSearchService.lastMonthPercentiles();
     });
   }
