@@ -24,7 +24,7 @@ module.exports = {
         return json;
       } else {
         return Promise.resolve(missFn()).then(function(value) {
-          if (value) RedisClient.set(key, JSON.stringify(value));
+          if (value && process.env.NODE_ENV === 'production') RedisClient.set(key, JSON.stringify(value));
           res.set('X-Cache', 'miss');
           RedisClient.expire(key, expire);
           return value;
