@@ -1,7 +1,7 @@
 {
   "name": "rdocumentation-app",
   "private": true,
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Rdocumentation",
   "keywords": [],
   "dependencies": {
