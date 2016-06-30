@@ -118,6 +118,8 @@ nbproject
 .idea
 .node_history
 
+.Dockerrun.aws.json
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
