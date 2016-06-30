@@ -17,7 +17,7 @@ module.exports = function(grunt) {
     'concat',
     'uglify',
     'cssmin',
-    'rename',
+    'versioning',
     'sails-linker:prodJs',
     'sails-linker:prodStyles',
     'sails-linker:devTpl',

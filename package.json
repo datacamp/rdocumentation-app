@@ -33,6 +33,7 @@
     "grunt-sails-tasks": "https://github.com/ludov04/grunt-sails-tasks/releases/download/0.2.0/grunt-sails-tasks-0.2.0.tgz",
     "grunt-sass": "^1.2.0",
     "grunt-sync": "0.2.4",
+    "grunt-version-assets": "^1.1.0",
     "include-all": "~0.1.6",
     "lodash": "^4.13.1",
     "md5": "^2.1.0",
