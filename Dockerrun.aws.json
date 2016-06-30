@@ -1,0 +1,27 @@
+{
+  "AWSEBDockerrunVersion": 2,
+
+  "authentication": {
+    "bucket": "elasticbeanstalk-us-west-1-352211034136",
+    "key": "resources/dockercfg"
+  },
+
+  "volumes": [ ],
+
+  "containerDefinitions": [
+    {
+      "name": "rdocsv2",
+      "image": "dockerhub.datacamp.com:443/rdocsv2",
+      "environment": [ ],
+      "essential": true,
+      "memory": 1024,
+      "portMappings": [
+        {
+          "hostPort": 1337,
+          "containerPort": 1337
+        }
+      ],
+      "mountPoints": [ ]
+    }
+  ]
+}

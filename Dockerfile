@@ -4,7 +4,7 @@ MAINTAINER Ludovic Vannoorenberghe <ludo@datacamp.com>
 
 RUN apt-get update && apt-get install -y python build-essential
 
-RUN npm install -g node-gyp sails grunt bower npm-check-updates
+RUN npm install -g pm2 node-gyp sails grunt bower npm-check-updates
 
 ENV NODE_ENV production
 # use changes to package.json to force Docker not to use the cache
@@ -24,4 +24,4 @@ VOLUME ["/opt/app"]
 #Expose port
 EXPOSE 1337
 
-CMD ["node", "app.js"]
+CMD ["pm2", "start pm2.json", "--no-daemon"]

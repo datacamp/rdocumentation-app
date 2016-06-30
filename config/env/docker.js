@@ -36,6 +36,15 @@ module.exports = {
 
   models: {
     migrate: 'safe'
+  },
+
+  session: {
+    url: 'redis://redis:6379',
+    prefix: 'sess:'
+  },
+
+  grunt: {
+    _hookTimeout: 60000
   }
 
 

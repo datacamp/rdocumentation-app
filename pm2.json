@@ -1,0 +1,9 @@
+{
+  "apps" : [{
+    "name"       : "rdocsv2-web",
+    "script"     : "app.js",
+    "args"       : "--optimize_for_size --max_old_space_size=2048 --gc_interval=100 --port 5000",
+    "exec_mode"  : "cluster",
+    "instances"  : 1
+  }]
+}
