@@ -43,13 +43,17 @@ You have to have your repository configured with eb to be able to deploy. See
 http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-configuration.html to configure your eb.
 
 When your repo is clean and you're on the branch corresponding to the environment you want to deploy, run
-  ```./deploy.sh major|minor|patch```
+```
+./deploy.sh major|minor|patch
+```
 to bump version number, build docker image, upload it, and create version commit and tag on git.
 
 The major, minor or patch argument will bump version number accordingly.
 
 When this is done, run 
-  ```eb deploy``` 
+```
+eb deploy
+``` 
 to deploy to elasticbeanstalk
 
 ## License
