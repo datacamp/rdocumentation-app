@@ -7,7 +7,7 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 
 #bump version
-$version=$(npm version $1)
+version=$(npm version $1)
 
 #build new docker image
 docker build -t dockerhub.datacamp.com/rdocsv2:$version .
