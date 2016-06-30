@@ -118,7 +118,7 @@ nbproject
 .idea
 .node_history
 
-.Dockerrun.aws.json
+Dockerrun.aws.json
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

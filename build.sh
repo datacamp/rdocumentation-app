@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 
 if [ -n "$(git status --porcelain)" ]; then
   echo "Your git directory is not clean, commit your changes before building";
