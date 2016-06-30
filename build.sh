@@ -19,4 +19,4 @@ git push --follow-tags
 
 sed "s/\$version/$version/" < Dockerrun.aws.json.in > Dockerrun.aws.json
 
-zip -r build/release.zip Dockerrun.aws.json proxy
+zip -r build/release.zip Dockerrun.aws.json proxy .ebextensions
