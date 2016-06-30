@@ -18,3 +18,5 @@ docker push dockerhub.datacamp.com/rdocsv2:$version
 git push --follow-tags
 
 sed "s/\$version/$version/" < Dockerrun.aws.json.in > Dockerrun.aws.json
+
+zip -r build/release.zip Dockerrun.aws.json proxy
