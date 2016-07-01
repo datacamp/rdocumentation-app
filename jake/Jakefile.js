@@ -12,18 +12,48 @@ task('sails-load', {async: true}, function(){
 
 desc('Call a fn in sails');
 task('getPackage', ['sails-load'], {async: true}, function () {
-  Package.findAll({
-    where: {
-      name: 'Rcpp'
-    }
-  }).then(function(packages){
-    console.log(packages);
+
+  var sg = require('sitemap-stream')({sitemapDirectoryUrl: 'http://www.rdocumentation.org', outputFolder:'jake/sitemap/'});
+
+  //set concurrency to maximum number of connection to database
+  var concurrency = sails.config.connections.sequelize_mysql.options.pool.max;
+
+  PackageVersion.findAll({
+    attributes:['id', 'package_name', 'version']
+  }).map(function(p){
+
+    var package_json = p.toJSON();
+    var url =  package_json.uri;
+
+    sg.inject(url);
+
+    return p.getTopics({
+      attributes: ['id', 'package_version_id', 'name']
+    }).map(function(t) {
+      var topic_json = t.toJSON();
+      var url = '/packages/'+
+        encodeURIComponent(package_json.package_name)+
+        '/versions/'+
+        encodeURIComponent(package_json.version)+
+        '/topics/' +
+        encodeURIComponent(topic_json.name);
+
+      sg.inject(url);
+      return 1;
+    });
+
+  }, {concurrency: concurrency})
+  .then(function() {
+    return sg.done();
+  });
+
+  sg.on('drain', function() {
+    console.info('drain');
+  });
+
+  sg.on('done', function() {
+    console.info('The job is done !');
     complete();
   });
 
-});
-
-
-jake.addListener('complete', function () {
-  process.exit();
 });
