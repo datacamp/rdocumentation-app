@@ -6,17 +6,11 @@ if [ -n "$(git status --porcelain)" ]; then
   exit 1;
 fi
 
-#bump version
-version=$(npm version $1)
-
+docker login --username="$1" --password="$2" --email=a dockerhub.datacamp.com:443
 #build new docker image
-docker build -t dockerhub.datacamp.com/rdocsv2:$version .
+docker build -t dockerhub.datacamp.com:443/rdocsv2:$BUILD_NUMBER .
 #push image to docker registery
-docker push dockerhub.datacamp.com/rdocsv2:$version
+docker push dockerhub.datacamp.com:443/rdocsv2:$BUILD_NUMBER
 
-#push to git
-git push --follow-tags
+sed "s/\$version/$BUILD_NUMBER/" < Dockerrun.aws.json.in > Dockerrun.aws.json
 
-sed "s/\$version/$version/" < Dockerrun.aws.json.in > Dockerrun.aws.json
-
-zip -r build/release.zip Dockerrun.aws.json proxy .ebextensions
