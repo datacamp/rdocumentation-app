@@ -50,10 +50,10 @@ to bump version number, build docker image, upload it, and create version commit
 
 The major, minor or patch argument will bump version number accordingly.
 
-When this is done, run 
+When this is done, run
 ```
-eb deploy
-``` 
+eb deploy env-name
+```
 to deploy to elasticbeanstalk
 
 ## License
