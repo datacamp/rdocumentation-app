@@ -11,9 +11,15 @@ task('sails-load', {async: true}, function(){
 
 
 desc('Call a fn in sails');
-task('getPackage', ['sails-load'], {async: true}, function () {
+task('sitemap', ['sails-load'], {async: true}, function () {
 
-  var sg = require('sitemap-stream')({sitemapDirectoryUrl: 'http://www.rdocumentation.org', outputFolder:'jake/sitemap/'});
+  var host = 'http://www.rdocumentation.org';
+  var directoryUrl = host + '/sitemap/';
+
+  var sg = require('sitemap-stream')({
+    sitemapDirectoryUrl: directoryUrl,
+    outputFolder:'assets/sitemap/'
+  });
 
   //set concurrency to maximum number of connection to database
   var concurrency = sails.config.connections.sequelize_mysql.options.pool.max;
@@ -25,7 +31,7 @@ task('getPackage', ['sails-load'], {async: true}, function () {
     var package_json = p.toJSON();
     var url =  package_json.uri;
 
-    sg.inject(url);
+    sg.inject(host + url);
 
     return p.getTopics({
       attributes: ['id', 'package_version_id', 'name']
@@ -38,7 +44,7 @@ task('getPackage', ['sails-load'], {async: true}, function () {
         '/topics/' +
         encodeURIComponent(topic_json.name);
 
-      sg.inject(url);
+      sg.inject(host + url);
       return 1;
     });
 
