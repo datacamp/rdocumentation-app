@@ -41,7 +41,8 @@ module.exports = {
       },
       include: [
         { model: PackageVersion, as: 'versions' },
-      ]
+      ],
+      order: [[sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'ASC' ]]
     }).then(function(package) {
       if(package === null) {
         return res.notFound();
