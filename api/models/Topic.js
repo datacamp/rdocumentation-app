@@ -109,22 +109,22 @@ module.exports = {
       uri: function()  {
         if (this.package_version) {
           return '/api/packages/:name/versions/:version/topics/:topic'
-            .replace(':name', this.package_version.package_name)
-            .replace(':version', this.package_version.version)
-            .replace(':topic', this.name)
+            .replace(':name', encodeURIComponent(this.package_version.package_name))
+            .replace(':version', encodeURIComponent(this.package_version.version))
+            .replace(':topic', encodeURIComponent(this.name))
             .replace('/api/', '/');
         } else return sails.getUrlFor({ target: 'Topic.findById' })
-          .replace(':id', this.id)
+          .replace(':id', encodeURIComponent(this.id))
           .replace('/api/', '/');
       },
       api_uri: function()  {
         if (this.package_version) {
           return '/api/packages/:name/versions/:version/topics/:topic'
-            .replace(':name', this.package_version.package_name)
-            .replace(':version', this.package_version.version)
-            .replace(':topic', this.name);
+            .replace(':name', encodeURIComponent(this.package_version.package_name))
+            .replace(':version', encodeURIComponent(this.package_version.version))
+            .replace(':topic', encodeURIComponent(this.name));
         } else return sails.getUrlFor({ target: 'Topic.findById' })
-          .replace(':id', this.id);
+          .replace(':id', encodeURIComponent(this.id));
       }
     },
 

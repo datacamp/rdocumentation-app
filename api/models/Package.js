@@ -68,11 +68,11 @@ module.exports = {
     getterMethods: {
       api_uri: function()  {
         return '/api/packages/:name'
-          .replace(':name', this.getDataValue('name'));
+          .replace(':name', encodeURIComponent(this.getDataValue('name')));
       },
       uri: function()  {
         return '/packages/:name'
-          .replace(':name', this.getDataValue('name'));
+          .replace(':name', encodeURIComponent(this.getDataValue('name')));
       }
     },
     underscored: true

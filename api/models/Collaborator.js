@@ -31,11 +31,11 @@ module.exports = {
     getterMethods: {
       api_uri: function()  {
         return '/api/collaborators/:id'
-          .replace(':id', this.id);
+          .replace(':id', encodeURIComponent(this.id));
       },
       uri: function()  {
         return '/collaborators/:id'
-          .replace(':id', this.id);
+          .replace(':id', encodeURIComponent(this.id));
       },
       gravatar_url: function(){
         return 'https://www.gravatar.com/avatar/' + md5(_.trim(this.email).toLowerCase());

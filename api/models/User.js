@@ -60,11 +60,11 @@ module.exports = {
     getterMethods: {
       uri: function()  {
         return '/users/:id'
-          .replace(':id', this.id);
+          .replace(':id', encodeURIComponent(this.id));
       },
       api_uri: function()  {
         return '/api/users/:id'
-          .replace(':id', this.id);
+          .replace(':id', encodeURIComponent(this.id));
       }
     },
 
