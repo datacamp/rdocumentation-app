@@ -14,9 +14,9 @@ module.exports = {
   processMessage: function(req, res) {
     var type = req.headers['X-Aws-Sqsd-Attr-type'];
     var body =  req.body;
-    if (type === 'version') {
+    if (type === 'topic') {
       return TopicController.postRdFile(req, res);
-    } else if (type === 'topic') {
+    } else if (type === 'version') {
       return PackageVersion.postDescription(req, res);
     } else {
       res.send(400, 'Invalid type');
