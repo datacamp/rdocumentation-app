@@ -168,54 +168,35 @@ module.exports = {
             'examples'
           ];
 
-          var reduceArrayToHTMLString = function(array) {
-            return '<ul>' + array.reduce(function(acc, item) {
-              acc += '<li>';
-              if ( typeof item === 'string') {
-                acc += item;
-              } else if ( typeof item === 'object') {
-                for (var key in item) {
-                  acc += '<' + key + '>' + item[key] + '</' + key + '>';
-                }
-              }
-              return acc += '</li>';
+          var topic = _.pick(rdJSON, attributes);
 
-            }, '') + '</ul>';
+          var arrayToString = function(val) {
+            if (val instanceof Array) {
+              if(_.isEmpty(val)) return "";
+              else return val.join(" ");
+            } else return val;
           };
 
-          var topic = _.pick(rdJSON, attributes);
-          if (topic.value instanceof Array) {
-            var valueArray = topic.value;
-            topic.value = reduceArrayToHTMLString(valueArray);
-          }
-          var customSections = _.omit(rdJSON, attributes.concat(['alias', 'arguments', 'keyword', 'author', 'docType', 'Rdversion']));
+          topic = _.mapValues(topic, arrayToString);
 
-          if (rdJSON.author instanceof Array) {
-            topic.author = rdJSON.author.map(function(author){
-              return author.name + ' ' +author.email;
-            }).join(', ');
-          } else {
-            topic.author = rdJSON.author;
-          }
+          var customSections = rdJSON.sections;
 
-          customSections = _.mapValues(customSections, function(section) {
-            if (section instanceof Array) {
-              return reduceArrayToHTMLString(section);
-            } else return section;
-          });
-
-          topic = _.mapValues(topic, function(section) {
-            if (section instanceof Array) {
-              return reduceArrayToHTMLString(section);
-            } else return section;
+          customSections = _.map(customSections, function(section) {
+            return _.mapValues(section, arrayToString);
           });
 
           topic.sourceJSON = JSON.stringify(rdJSON);
 
-          return PackageVersion.findOne({
-            where: {package_name: opts.packageName, version: opts.packageVersion },
+          var packageVersion = {
+            package_name: opts.packageName,
+            version: opts.packageVersion,
+            description: "",
+            license: ""
+          };
+
+          return PackageVersion.upsertPackageVersion(packageVersion, {
             transaction: t
-          }).then(function(version) {
+          }).spread(function(version, created) {
             if (version === null) throw {
               status: 404,
               message: 'Package ' + opts.packageName + ' Version ' + opts.packageVersion + ' cannot be found'
@@ -223,7 +204,7 @@ module.exports = {
             else topic.package_version_id = version.id;
 
 
-            var keywords = rdJSON.keyword && !(rdJSON.keyword instanceof Array) ? [rdJSON.keyword] : rdJSON.keyword;
+            var keywords = rdJSON.keywords && !(rdJSON.keywords instanceof Array) ? [rdJSON.keywords] : rdJSON.keywords;
             var keywordsRecords =  _.isEmpty(keywords) ? [] :
               _.chain(keywords)
                 .map(function(entry) { return entry.split(','); })
@@ -249,14 +230,14 @@ module.exports = {
                   return _.merge({}, argument, {topic_id: topicInstance.id});
                 });
 
-                var aliases = rdJSON.alias && !(rdJSON.alias instanceof Array) ? [rdJSON.alias] : rdJSON.alias;
+                var aliases = rdJSON.aliases && !(rdJSON.aliases instanceof Array) ? [rdJSON.aliases] : rdJSON.aliases;
                 var aliasesRecords = _.isEmpty(aliases) ? [] : aliases.map(function(alias) {
                   return {name: alias, topic_id: topicInstance.id};
                 });
 
 
-                var sections = _.toPairs(customSections).map(function(pair) {
-                  return { name: pair[0], description: pair[1], topic_id: topicInstance.id };
+                var sections = customSections.map(function(section) {
+                  return { name: section.title, description: section.contents, topic_id: topicInstance.id };
                 });
 
                 return Promise.all([
