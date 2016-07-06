@@ -35,7 +35,8 @@ module.exports = {
   },
 
   routes: {
-    'post /tasks': 'WorkerController.processMessage'
+    'post /tasks': 'WorkerController.processMessage',
+    'get /index-stats': 'WorkerController.indexStats'
   }
 
 };

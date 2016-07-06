@@ -37,6 +37,15 @@ module.exports = {
     } else {
       res.send(400, 'Invalid type');
     }
+  },
+
+  indexStats: function(req, res) {
+    CronService.indexAggregatedDownloadStats().then(function(result) {
+      console.log("Finished indexing stats");
+      res.send(200, "done");
+    }).catch(function(err){
+      return res.negotiate(err.errors);
+    });
   }
 
 };

@@ -4,7 +4,7 @@ MAINTAINER Ludovic Vannoorenberghe <ludo@datacamp.com>
 
 RUN apt-get update && apt-get install -y python build-essential
 
-RUN npm install -g pm2 node-gyp sails grunt bower npm-check-updates
+RUN npm install -g pm2 node-gyp sails grunt bower jake npm-check-updates
 
 ENV NODE_ENV production
 # use changes to package.json to force Docker not to use the cache

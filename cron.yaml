@@ -1,0 +1,5 @@
+version: 1
+cron:
+ - name: "index-stats"          # required - unique across all entries in this file
+   url: "/index-stats"              # required - does not need to be unique
+   schedule: "0 */12 * * *"    # required - does not need to be unique
