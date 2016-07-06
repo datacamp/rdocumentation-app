@@ -126,7 +126,6 @@ module.exports = {
       upsertPackageVersion: function(packageVersion, opts) {
 
         var options = _.defaults(_.clone(opts), { where: {name: packageVersion.package_name} });
-        console.log(opts);
         return Package.findOrCreate(options).spread(function(instance, created) {
           var options = _.defaults(_.clone(opts), {
             where: {

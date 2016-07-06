@@ -23,11 +23,11 @@ module.exports = {
         res.json(value);
       })
       .catch(Sequelize.UniqueConstraintError, function (err) {
-        return res.send(409, err);
+        return res.send(409, err.errors);
       }).catch(Sequelize.ValidationError, function (err) {
-        return res.send(400, err);
+        return res.send(400, err.errors);
       }).catch(function(err){
-          return res.negotiate(err);
+          return res.negotiate(err.errors);
       });
 
     } else if (type === 'version') {

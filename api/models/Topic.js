@@ -197,11 +197,8 @@ module.exports = {
           return PackageVersion.upsertPackageVersion(packageVersion, {
             transaction: t
           }).spread(function(version, created) {
-            if (version === null) throw {
-              status: 404,
-              message: 'Package ' + opts.packageName + ' Version ' + opts.packageVersion + ' cannot be found'
-            };
-            else topic.package_version_id = version.id;
+
+            topic.package_version_id = version.id;
 
 
             var keywords = rdJSON.keywords && !(rdJSON.keywords instanceof Array) ? [rdJSON.keywords] : rdJSON.keywords;
@@ -215,8 +212,19 @@ module.exports = {
                 .value();
 
             return Promise.join(
-              Topic.create(topic, {
-                include: [ {model: Tag, as: 'keywords'} ]
+              Topic.findOrCreate({
+                where: {
+                  package_version_id: version.id,
+                  name: topic.name
+                },
+                defaults: topic,
+                transaction: t,
+                include: [
+                  {model: Tag, as: 'keywords'},
+                  {model: Argument, as: 'arguments'},
+                  {model: Section, as: 'sections'},
+                  {model: Alias, as: 'aliases'}
+                ]
               }),
               Tag.bulkCreate(keywordsRecords, {transaction:t, ignoreDuplicates: true})
               .then(function(instances) {
@@ -225,7 +233,8 @@ module.exports = {
                 });
                 return Tag.findAll({where: {name: {$in: names}}, transaction:t });
               }),
-              function(topicInstance, keywordsInstances) {
+              function(instanceCreatedArray, keywordsInstances) {
+                var topicInstance = instanceCreatedArray[0];
                 var topicArguments = _.isEmpty(rdJSON.arguments) ? [] : rdJSON.arguments.map(function(argument) {
                   return _.merge({}, argument, {topic_id: topicInstance.id});
                 });
@@ -241,10 +250,13 @@ module.exports = {
                 });
 
                 return Promise.all([
+                  topicInstance.removeArguments(topicInstance.arguments),
+                  topicInstance.removeSections(topicInstance.sections),
+                  topicInstance.removeAliases(topicInstance.aliases),
                   Argument.bulkCreate(topicArguments, {transaction: t}),
                   Alias.bulkCreate(aliasesRecords, {transaction: t}),
                   Section.bulkCreate(sections, {transaction: t}),
-                  topicInstance.addKeywords(keywordsInstances, {transaction: t })
+                  topicInstance.setKeywords(keywordsInstances, {transaction: t })
                 ]).then(_.partial(Topic.findOnePopulated, {id: topicInstance.id}, {transaction: t}));
             });
           });
