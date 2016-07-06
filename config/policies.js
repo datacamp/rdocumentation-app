@@ -66,5 +66,9 @@ module.exports.policies = {
   UserController: {
     'me': ['sessionAuth', 'flash'],
     'create': ['flash'],
+  },
+
+  WorkerController: {
+    '*': true
   }
 };

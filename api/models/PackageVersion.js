@@ -123,6 +123,21 @@ module.exports = {
 
     classMethods: {
 
+      upsertPackageVersion: function(packageVersion, opts) {
+
+        var options = _.defaults(_.clone(opts), { where: {name: packageVersion.package_name} });
+        return Package.findOrCreate(options).spread(function(instance, created) {
+          var options = _.defaults(_.clone(opts), {
+            where: {
+              package_name: packageVersion.package_name,
+              version: packageVersion.version
+            },
+            defaults: packageVersion,
+          });
+          return PackageVersion.findOrCreate(options);
+        });
+      },
+
       createWithDescriptionFile: function(opts) {
         var description = opts.input;
         var type = description.repoType || 'cran';

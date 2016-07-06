@@ -21,7 +21,7 @@
       "image": "dockerhub.datacamp.com:443/rdocsv2:$version",
       "environment": [ ],
       "essential": true,
-      "memory": 1024,
+      "memory": $memory,
       "portMappings": [
         {
           "hostPort": 1337,
