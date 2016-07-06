@@ -84,6 +84,8 @@ module.exports = {
     var result = PackageVersion.createWithDescriptionFile({input: req.body});
     result.then(function(value) {
       res.location('/api/packages/' + value.package_name + '/versions/' + value.version);
+      key = 'view_package_version_' + value.package_name + '_' + value.version;
+      RedisClient.del(key);
       res.json(value);
     }).catch(Sequelize.UniqueConstraintError, function (err) {
       return res.send(409, err.errors);

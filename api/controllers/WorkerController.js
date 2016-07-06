@@ -20,6 +20,8 @@ module.exports = {
       var packageVersion = req.body.package.version;
       var result = Topic.createWithRdFile({input: req.body, packageName: packageName, packageVersion: packageVersion});
       result.then(function(value) {
+        key = 'view_topic_' + value.id;
+        RedisClient.del(key);
         res.json(value);
       })
       .catch(Sequelize.UniqueConstraintError, function (err) {
