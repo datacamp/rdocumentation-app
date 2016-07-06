@@ -61,17 +61,29 @@
       </section>
     <% } %>
 
-    <% if(topic.references) { %>
-      <section>
-        <h5 class="topic--title">References</h5>
-        <p><%- topic.references %></p>
-      </section>
-    <% } %>
 
     <% if(topic.note) { %>
       <section>
         <h5 class="topic--title">Note</h5>
         <p><%- topic.note %></p>
+      </section>
+    <% } %>
+
+    <% if(topic.sections) { %>
+      <% for(var i = 0; i < topic.sections.length; i++) { %>
+        <% var section = topic.sections[i]; %>
+        <section>
+          <h5 class="topic--title"><%- section.name %></h5>
+          <p><%- section.description %></p>
+        </section>
+      <% } %>
+
+    <% } %>
+
+    <% if(topic.examples) { %>
+      <section>
+        <h5 class="topic--title">Examples</h5>
+        <pre><code class="R"><%- topic.examples %></code></pre>
       </section>
     <% } %>
 
@@ -82,10 +94,10 @@
       </section>
     <% } %>
 
-    <% if(topic.examples) { %>
+    <% if(topic.references) { %>
       <section>
-        <h5 class="topic--title">Examples</h5>
-        <pre><code class="R"><%- topic.examples %></code></pre>
+        <h5 class="topic--title">References</h5>
+        <p><%- topic.references %></p>
       </section>
     <% } %>
 
