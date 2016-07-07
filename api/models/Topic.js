@@ -235,6 +235,7 @@ module.exports = {
               }),
               function(instanceCreatedArray, keywordsInstances) {
                 var topicInstance = instanceCreatedArray[0];
+                topicInstance.set(_.pick(topic, ['title', 'description', 'usage', 'details', 'value', 'references', 'note', 'seealso', 'examples']));
                 var topicArguments = _.isEmpty(rdJSON.arguments) ? [] : rdJSON.arguments.map(function(argument) {
                   return _.merge({}, argument, {topic_id: topicInstance.id});
                 });
@@ -256,7 +257,8 @@ module.exports = {
                   Argument.bulkCreate(topicArguments, {transaction: t}),
                   Alias.bulkCreate(aliasesRecords, {transaction: t}),
                   Section.bulkCreate(sections, {transaction: t}),
-                  topicInstance.setKeywords(keywordsInstances, {transaction: t })
+                  topicInstance.setKeywords(keywordsInstances, {transaction: t }),
+                  topicInstance.save({transaction: t})
                 ]).then(_.partial(Topic.findOnePopulated, {id: topicInstance.id}, {transaction: t}));
             });
           });
