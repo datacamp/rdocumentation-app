@@ -24,4 +24,4 @@ VOLUME ["/opt/app"]
 #Expose port
 EXPOSE 1337
 
-CMD ["pm2", "start", "pm2.json", "--no-daemon"]
+CMD ["npm", "start"]

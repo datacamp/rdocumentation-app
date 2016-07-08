@@ -57,7 +57,7 @@
   "scripts": {
     "debug": "nf start debug",
     "prestart": "node node_modules/db-migrate/bin/db-migrate up",
-    "start": "nf start web"
+    "start": "pm2 start pm2.json --no-daemon"
   },
   "main": "app.js",
   "repository": {
