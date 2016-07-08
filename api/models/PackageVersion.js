@@ -146,8 +146,10 @@ module.exports = {
       createWithDescriptionFile: function(opts) {
         var description = opts.input;
         var type = description.repoType || 'cran';
+        var readmemd = description.readme;
         var packageVersion = PackageService.mapDescriptionToPackageVersion(description);
         packageVersion.fields.sourceJSON = JSON.stringify(description);
+        packageVersion.fields.readmemd = readmemd;
 
         return sequelize.transaction(function (t) {
           var package = Repository.findOrCreate({
