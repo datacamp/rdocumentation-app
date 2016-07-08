@@ -36,6 +36,7 @@
     "grunt-version-assets": "^1.1.0",
     "include-all": "~0.1.6",
     "lodash": "^4.13.1",
+    "marked": "^0.3.5",
     "md5": "^2.1.0",
     "newrelic": "^1.28.0",
     "node-sass": "^3.7.0",

@@ -10,6 +10,8 @@
  */
 var dateFormat = require('dateformat');
 var autoLink = require('autolink-js');
+var marked = require('marked');
+
 
 module.exports.http = {
 
@@ -70,6 +72,11 @@ module.exports.http = {
     res.locals.dateformat = dateFormat;
     res.locals.autoLink = autoLink;
     res.locals.lodash = require('lodash');
+    res.locals.md = function (md) {
+      var html = marked (md);
+      return html;
+    };
+
     return next();
   },
 

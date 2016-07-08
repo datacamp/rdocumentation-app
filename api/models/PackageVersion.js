@@ -47,6 +47,11 @@ module.exports = {
       type: Sequelize.STRING
     },
 
+    readmemd: {
+      type: Sequelize.TEXT,
+      allowNull: true
+    },
+
     sourceJSON: {
       type: Sequelize.TEXT,
       allowNull: true

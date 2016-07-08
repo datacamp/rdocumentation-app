@@ -144,6 +144,13 @@
       </table>
     </section>
 
+    <% if(pkgVersion.readmemd) { %>
+    <section class="package--readme">
+      <h3> Readme </h3>
+      <%- md(pkgVersion.readmemd) %>
+    </section>
+    <% } %>
+
     <section class="package--dependencies">
       <h4>Dependencies</h4>
       <ul class="inline">
