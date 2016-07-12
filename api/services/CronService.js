@@ -48,16 +48,11 @@ module.exports = {
 
   splittedAggregatedDownloadstats :function(){
     console.log('Started splitted aggregated download count');
-    return ElasticSearchService.lastWeekStats().then(function (hits) {
-      return new Promise(function (hits){
-          return getSplittedDownloadCounts(hits)
-        }).then(function (counts) {
-        return writeSplittedDownloadCounts(counts);
-        });
-    });
-
+    ElasticSearchService.lastMonthDownloadsBulk().then(function (hits){
+      console.log('found '+hits)
+      var totalhits = hits.total;
+    })
   }
-
 };
 
 getSplittedDownloadCounts = function (hits) {
@@ -114,7 +109,6 @@ getSplittedDownloadCounts = function (hits) {
           console.log( "updating : " +package.name + ", direct downloads : " + directDownloads[package.name] +"indirect downloads" + indirectDownloads[package.name])
           return {
             package_name: package.name,
-            last_month_downloads:directDownloads[package.name]+indirectDownloads[package.name] || directDownloads[package.name] || indirectDownloads[package.name] ||0,
             last_month_downloads_direct: directDownloads[package.name] || 0,
             last_month_downloads_indirect:indirectDownloads[package.name] || 0
           };
