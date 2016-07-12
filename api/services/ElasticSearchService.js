@@ -20,12 +20,12 @@ module.exports = {
         }
       },
       "last_month_per_day": {
-        "date_histogram" : {
-            "field" : "datetime",
-            "interval" : "day"
-        }
+          "date_histogram" : {
+              "field" : "datetime",
+              "interval" : "day"
+          }
       }
-    },
+    }
     filters: {
       lastMonthStats: {
         "bool": {
@@ -43,10 +43,104 @@ module.exports = {
             }
           ]
         }
+      },
+      lastWeek:{
+          {
+            "fields":["datetime","ip_id","package"],
+            "query":{
+                "bool": {
+                      "filter": [
+                        {
+                            "term": { "_type": "stats" }
+                        },
+                        {
+                          "range": {
+                              "datetime":  {
+                                  "gte" : "now-1w/d",
+                                  "lt" :  "now/d"
+                              }
+                          }
+                        }
+                      ]
+                      }
+                  }
+          }
+      },
+      secondLastWeek:{
+          {
+            "fields":["datetime","ip_id","package"],
+            "query":{
+                "bool": {
+                      "filter": [
+                        {
+                            "term": { "_type": "stats" }
+                        },
+                        {
+                          "range": {
+                              "datetime":  {
+                                  "gte" : "now-2w/d",
+                                  "lt" :  "now-1w/d"
+                              }
+                          }
+                        }
+                      ]
+                      }
+                  }
+          }
+      },
+      thirdLastWeek:{
+          {
+            "fields":["datetime","ip_id","package"],
+            "query":{
+                "bool": {
+                      "filter": [
+                        {
+                            "term": { "_type": "stats" }
+                        },
+                        {
+                          "range": {
+                              "datetime":  {
+                                  "gte" : "now-3w/d",
+                                  "lt" :  "now-2w/d"
+                              }
+                          }
+                        }
+                      ]
+                      }
+                  }
+          }
+      },
+      restOfMonth:{
+        {
+            "fields":["datetime","ip_id","package"],
+            "query":{
+                "bool": {
+                      "filter": [
+                        {
+                            "term": { "_type": "stats" }
+                        },
+                        {
+                          "range": {
+                              "datetime":  {
+                                  "gte" : "now-1M/d",
+                                  "lt" :  "now-3w/d"
+                              }
+                          }
+                        }
+                      ]
+                      }
+                  }
+          }
       }
     }
   },
 
+  splittedDownloadCounts: function() {
+    var body = {
+      "query": ElasticSearchService.queries.filters.splittedDownloadCounts,
+      "size": 0,
+      "aggs" : 
+  }
   lastMonthPercentiles: function() {
     var body = {
       "query": ElasticSearchService.queries.filters.lastMonthStats,
