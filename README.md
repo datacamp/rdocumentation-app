@@ -18,14 +18,14 @@ The web application running [rdocumentation.org](http://www.rdocumentation.org).
 
 ##Creating a new database migration:
 ###Using docker
-Run `docker-compose run server node node_modules/db-migrate/bin/db-migrate create migration_name`
+Run `docker-compose run server node node_modules/db-migrate/bin/db-migrate create migration_name --sql-file`
 then add your code to
   - `./migrations/{time}{migration_name}.js`
   - `./migrations/sqls/{time}{migration_name}.sql`
   - `./migrations/sqls/{time}{migration_name}.sql`
 
 ###Without docker
-Run `NODE_ENV=development node node_modules/db-migrate/bin/db-migrate create migration_name`
+Run `NODE_ENV=development node node_modules/db-migrate/bin/db-migrate create migration_name --sql-file`
 then add your code to
   - `./migrations/{time}{migration_name}.js`
   - `./migrations/sqls/{time}{migration_name}.sql`
