@@ -237,6 +237,7 @@ module.exports = {
                 var topicInstance = instanceCreatedArray[0];
                 topicInstance.set(_.pick(topic, ['title', 'description', 'usage', 'details', 'value', 'references', 'note', 'seealso', 'examples']));
                 var topicArguments = _.isEmpty(rdJSON.arguments) ? [] : rdJSON.arguments.map(function(argument) {
+                  argument.description = arrayToString(argument.description);
                   return _.merge({}, argument, {topic_id: topicInstance.id});
                 });
 

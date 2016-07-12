@@ -14,6 +14,6 @@ docker push dockerhub.datacamp.com:443/rdocsv2:$BUILD_NUMBER
 
 sed -e "s/\$version/$BUILD_NUMBER/" -e "s/\$memory/1024/" < Dockerrun.aws.json.in > Dockerrun.aws.json
 
-zip -r build/release.zip Dockerrun.aws.json proxy .ebextensions config.yaml
+zip -r build/release.zip Dockerrun.aws.json proxy .ebextensions cron.yaml
 
 eb deploy rdocsv2-workers
