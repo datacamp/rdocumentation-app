@@ -47,6 +47,8 @@ module.exports = {
       lastWeek:{
           {
             "fields":["datetime","ip_id","package"],
+            "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
+                    {"datetime":{"order":"asc","ignore_unmapped" : true}}],
             "query":{
                 "bool": {
                       "filter": [
@@ -69,6 +71,8 @@ module.exports = {
       secondLastWeek:{
           {
             "fields":["datetime","ip_id","package"],
+            "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
+                    {"datetime":{"order":"asc","ignore_unmapped" : true}}],
             "query":{
                 "bool": {
                       "filter": [
@@ -91,6 +95,8 @@ module.exports = {
       thirdLastWeek:{
           {
             "fields":["datetime","ip_id","package"],
+            "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
+                    {"datetime":{"order":"asc","ignore_unmapped" : true}}],
             "query":{
                 "bool": {
                       "filter": [
@@ -113,6 +119,8 @@ module.exports = {
       restOfMonth:{
         {
             "fields":["datetime","ip_id","package"],
+            "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
+                    {"datetime":{"order":"asc","ignore_unmapped" : true}}],
             "query":{
                 "bool": {
                       "filter": [
@@ -201,6 +209,52 @@ module.exports = {
     return RedisService.getJSONFromCache('percentiles', res, RedisService.DAILY, function() {
       return ElasticSearchService.lastMonthPercentiles();
     });
+  }
+
+  lastWeekStats:function(){
+       var body = {
+      "query": ElasticSearchService.queries.filters.lastWeek
+      };
+      return es.search({
+      index: 'stats',
+      body: body
+      }).then(function(response){
+        return response.hits.hits;
+      })
+  }
+  secondLastWeekStats:function(){
+       var body = {
+      "query": ElasticSearchService.queries.filters.secondLastWeek
+      };
+      return es.search({
+      index: 'stats',
+      body: body
+      }).then(function(response){
+        return response.hits.hits;
+      })
+  }
+  thirdLastWeekStats:function(){
+      var body = {
+        "query": ElasticSearchService.queries.filters.thirdLastWeek
+      };
+      return es.search({
+        index:'stats',
+        body:body
+      }).then(function(response){
+        return response.hits.hits;
+      })
+   }
+   restOfMonthStats:function(){
+       var body = {
+      "query": ElasticSearchService.queries.filters.restOfMonth
+      };
+      return es.search({
+      index: 'stats',
+      body: body
+      }).then(function(response){
+        return response.hits.hits;
+      })
+   }
   }
 
 
