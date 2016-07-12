@@ -44,9 +44,9 @@ module.exports = {
 
     });
 
-  }
+  },
 
-  splittedAggregatedDownloadstats = function(){
+  splittedAggregatedDownloadstats :function(){
     console.log('Started splitted aggregated download count');
     return ElasticSearchService.lastWeekStats().then(writeSplittedDownloadCounts(hits));
 
@@ -57,12 +57,10 @@ module.exports = {
 writeSplittedDownloadCounts = function (hits) {
       directDownloads= {};
       indirectDownloads = {};
-      boolean indirect = false;
+      var indirect = false;
       hits.forEach(function(hit,i) {
         indirect = false;
-        sequelize.query("SELECT DISTINCT b.package_name 
-                        FROM rdoc.Dependencies a,rdoc.PackageVersions b
-                        WHERE a.dependency_name = :name and a.dependant_version_id=b.id",
+        sequelize.query("SELECT DISTINCT b.package_name FROM rdoc.Dependencies a,rdoc.PackageVersions b WHERE a.dependency_name = :name and a.dependant_version_id=b.id",
                         { replacements: { name: hit.fields.package }, type: sequelize.QueryTypes.SELECT }
                         ).then(function(rootPackages){
                           j=i+1;
@@ -112,4 +110,5 @@ writeSplittedDownloadCounts = function (hits) {
           });
         }, {concurrency: 1});
       });
+    };
 
