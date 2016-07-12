@@ -48,37 +48,48 @@ module.exports = {
 
   splittedAggregatedDownloadstats :function(){
     console.log('Started splitted aggregated download count');
-    return ElasticSearchService.lastWeekStats().then(writeSplittedDownloadCounts(hits));
+    return ElasticSearchService.lastWeekStats().then(function (hits) {
+      return new Promise(function (hits){
+          return getSplittedDownloadCounts(hits)
+        }).then(function (counts) {
+        return writeSplittedDownloadCounts(counts);
+        });
+    });
 
   }
 
 };
 
-writeSplittedDownloadCounts = function (hits) {
+getSplittedDownloadCounts = function (hits) {
+      console.log(hits);
       directDownloads= {};
       indirectDownloads = {};
       var indirect = false;
       hits.forEach(function(hit,i) {
         indirect = false;
         sequelize.query("SELECT DISTINCT b.package_name FROM rdoc.Dependencies a,rdoc.PackageVersions b WHERE a.dependency_name = :name and a.dependant_version_id=b.id",
-                        { replacements: { name: hit.fields.package }, type: sequelize.QueryTypes.SELECT }
+                        { replacements: { name: hit.fields.package[0] }, type: sequelize.QueryTypes.SELECT }
                         ).then(function(rootPackages){
+                          rootPackageNames = _.map(rootPackages,function(package){
+                              return package.package_name;
+                          });
                           j=i+1;
-                          while (hits[j].fields.ip_id = hit.fields.ip_id
-                            && Date.parse(hits[j].fields.datetime).getTime()< (Date.parse(hit.fields.datetime).getTime()+60000)){
-                            if(_.includes(rootPackages,hits[j].fields.package))
+                          while (j<hits.length && hits[j].fields.ip_id == hit.fields.ip_id
+                            && new Date(hits[j].fields.datetime[0]).getTime()< (new Date(hit.fields.datetime[0]).getTime()+60000)){
+                            if(_.includes(rootPackageNames,hits[j].fields.package))
                             {
                                indirectDownloads[hits.fields.package] = indirectDownloads[hit.fields.package]+1 || 1;
                                indirect = true;
                                break;
                             }
                             j+=1;
+                            console.log ('testing date ' + hits[j].fields.datetime[0])
                           }
                           j=i-1;
-                          while (hits[j].fields.ip_id = hit.fields.ip_id
-                            && Date.parse(hits[j].fields.datetime).getTime()+60000> (Date.parse(hit.fields.datetime).getTime())
+                          while (j>=0 && hits[j].fields.ip_id == hit.fields.ip_id
+                            && new Date(hits[j].fields.datetime[0]).getTime()+60000> (new Date(hit.fields.datetime[0]).getTime())
                             && !(indirect)){
-                            if(_.includes(rootPackages,hits[j].fields.package))
+                            if(_.includes(rootPackageNames,hits[j].fields.package))
                             {
                                indirectDownloads[hit.fields.package] = indirectDownloads[hit.fields.package]+1 || 1;
                                indirect = true;
@@ -91,12 +102,19 @@ writeSplittedDownloadCounts = function (hits) {
                           }
                         })
           });
+      return [directDownloads,indirectDownloads]
+    };
+    writeSplittedDownloadCounts= function(counts){
+      var directDownloads = counts[0];
+      var indirectDownloads = counts[1];
       return Package.findAll({
         attributes: ['name']
       }).then(function(packages) {
         var records = _.map(packages, function(package) {
+          console.log( "updating : " +package.name + ", direct downloads : " + directDownloads[package.name] +"indirect downloads" + indirectDownloads[package.name])
           return {
             package_name: package.name,
+            last_month_downloads:directDownloads[package.name]+indirectDownloads[package.name] || directDownloads[package.name] || indirectDownloads[package.name] ||0,
             last_month_downloads_direct: directDownloads[package.name] || 0,
             last_month_downloads_indirect:indirectDownloads[package.name] || 0
           };
