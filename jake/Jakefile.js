@@ -20,7 +20,6 @@ task('sitemap', ['sails-load'], {async: true}, function () {
     sitemapDirectoryUrl: directoryUrl,
     outputFolder:'assets/sitemap/'
   });
-
   //set concurrency to maximum number of connection to database
   var concurrency = sails.config.connections.sequelize_mysql.options.pool.max;
 
@@ -62,4 +61,10 @@ task('sitemap', ['sails-load'], {async: true}, function () {
     complete();
   });
 
+});
+
+task('download-statistics', ['sails-load'], {async: true}, function () {
+  CronService.splittedAggregatedDownloadstats().then(function() {    
+    complete();
+  });
 });
