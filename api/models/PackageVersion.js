@@ -208,7 +208,25 @@ module.exports = {
                 var auth = packageVersionInstance.setCollaborators(authorInstances, {transaction: t, ignoreDuplicates: true});
                 return Promise.join(dep, auth,
                   function(dependencies, authors) {
-                    return packageVersionInstance;
+                    return PackageVersion.findOne({
+                      where: {
+                        package_name: packageVersion.package.name
+                      },
+                      order: [[sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'DESC' ]],
+                      transaction: t
+                    }).then(function(latestVersionInstance) {
+                      return Package.update({
+                          latest_version_id: latestVersionInstance.id
+                        },
+                        {
+                          where: { name: packageVersion.package.name },
+                          transaction: t
+                        })
+                        .then(function(count) {
+                          return packageVersionInstance;
+                        });
+                    });
+
                   });
               });
 
