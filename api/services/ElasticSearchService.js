@@ -200,9 +200,7 @@ module.exports = {
   },
 
   lastWeekStats:function(){
-       var body = {
-      "query": ElasticSearchService.queries.filters.lastWeek
-      };
+       var body = ElasticSearchService.queries.filters.lastWeek;
       return es.search({
       index: 'stats',
       body: body
@@ -211,9 +209,7 @@ module.exports = {
       })
   },
   secondLastWeekStats:function(){
-       var body = {
-      "query": ElasticSearchService.queries.filters.secondLastWeek
-      };
+       var body = ElasticSearchService.queries.filters.secondLastWeek;
       return es.search({
       index: 'stats',
       body: body
@@ -222,9 +218,7 @@ module.exports = {
       })
   },
   thirdLastWeekStats:function(){
-      var body = {
-        "query": ElasticSearchService.queries.filters.thirdLastWeek
-      };
+      var body = ElasticSearchService.queries.filters.thirdLastWeek;
       return es.search({
         index:'stats',
         body:body
@@ -233,9 +227,7 @@ module.exports = {
       })
    },
    restOfMonthStats:function(){
-       var body = {
-      "query": ElasticSearchService.queries.filters.restOfMonth
-      };
+       var body = ElasticSearchService.queries.filters.restOfMonth;
       return es.search({
       index: 'stats',
       body: body
