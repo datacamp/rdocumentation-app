@@ -237,8 +237,8 @@ module.exports = {
                 var topicInstance = instanceCreatedArray[0];
                 topicInstance.set(_.pick(topic, ['title', 'description', 'usage', 'details', 'value', 'references', 'note', 'seealso', 'examples']));
                 var topicArguments = _.isEmpty(rdJSON.arguments) ? [] : rdJSON.arguments.map(function(argument) {
-                  argument.description = arrayToString(argument.description);
-                  return _.merge({}, argument, {topic_id: topicInstance.id});
+                  var arg = _.mapValues(argument, arrayToString);
+                  return _.merge({}, arg, {topic_id: topicInstance.id});
                 });
 
                 var aliases = rdJSON.aliases && !(rdJSON.aliases instanceof Array) ? [rdJSON.aliases] : rdJSON.aliases;
@@ -248,7 +248,8 @@ module.exports = {
 
 
                 var sections = customSections.map(function(section) {
-                  return { name: section.title, description: section.contents, topic_id: topicInstance.id };
+                  var sect = _.mapValues(section, arrayToString);
+                  return { name: sect.title, description: sect.contents, topic_id: topicInstance.id };
                 });
 
                 return Promise.all([
