@@ -25,7 +25,7 @@ module.exports = {
               "interval" : "day"
           }
       }
-    }
+    },
     filters: {
       lastMonthStats: {
         "bool": {
@@ -45,7 +45,6 @@ module.exports = {
         }
       },
       lastWeek:{
-          {
             "fields":["datetime","ip_id","package"],
             "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
                     {"datetime":{"order":"asc","ignore_unmapped" : true}}],
@@ -66,9 +65,8 @@ module.exports = {
                       ]
                       }
                   }
-          }
       },
-      secondLastWeek:{
+      secondLastWeek:
           {
             "fields":["datetime","ip_id","package"],
             "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
@@ -90,9 +88,8 @@ module.exports = {
                       ]
                       }
                   }
-          }
-      },
-      thirdLastWeek:{
+          },
+      thirdLastWeek:
           {
             "fields":["datetime","ip_id","package"],
             "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
@@ -114,9 +111,8 @@ module.exports = {
                       ]
                       }
                   }
-          }
-      },
-      restOfMonth:{
+          },
+      restOfMonth:
         {
             "fields":["datetime","ip_id","package"],
             "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
@@ -139,16 +135,8 @@ module.exports = {
                       }
                   }
           }
-      }
     }
   },
-
-  splittedDownloadCounts: function() {
-    var body = {
-      "query": ElasticSearchService.queries.filters.splittedDownloadCounts,
-      "size": 0,
-      "aggs" : 
-  }
   lastMonthPercentiles: function() {
     var body = {
       "query": ElasticSearchService.queries.filters.lastMonthStats,
@@ -209,7 +197,7 @@ module.exports = {
     return RedisService.getJSONFromCache('percentiles', res, RedisService.DAILY, function() {
       return ElasticSearchService.lastMonthPercentiles();
     });
-  }
+  },
 
   lastWeekStats:function(){
        var body = {
@@ -221,7 +209,7 @@ module.exports = {
       }).then(function(response){
         return response.hits.hits;
       })
-  }
+  },
   secondLastWeekStats:function(){
        var body = {
       "query": ElasticSearchService.queries.filters.secondLastWeek
@@ -232,7 +220,7 @@ module.exports = {
       }).then(function(response){
         return response.hits.hits;
       })
-  }
+  },
   thirdLastWeekStats:function(){
       var body = {
         "query": ElasticSearchService.queries.filters.thirdLastWeek
@@ -243,7 +231,7 @@ module.exports = {
       }).then(function(response){
         return response.hits.hits;
       })
-   }
+   },
    restOfMonthStats:function(){
        var body = {
       "query": ElasticSearchService.queries.filters.restOfMonth
@@ -255,7 +243,4 @@ module.exports = {
         return response.hits.hits;
       })
    }
-  }
-
-
 };
