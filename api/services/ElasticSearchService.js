@@ -44,99 +44,32 @@ module.exports = {
           ]
         }
       },
-      lastWeek:{
-            "fields":["datetime","ip_id","package"],
-            "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
+      lastMonthDownloads: {
+        "size":"10000",
+        "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
                     {"datetime":{"order":"asc","ignore_unmapped" : true}}],
-            "query":{
-                "bool": {
-                      "filter": [
-                        {
-                            "term": { "_type": "stats" }
-                        },
-                        {
-                          "range": {
-                              "datetime":  {
-                                  "gte" : "now-1w/d",
-                                  "lt" :  "now/d"
-                              }
+        "query":{
+            "bool": {
+                  "filter": [
+                    {
+                        "term": { "_type": "stats" }
+                    },
+                    {
+                      "range": {
+                          "datetime":  {
+                              "gte" : "now-1w/d",
+                              "lt" :  "now/d"
                           }
-                        }
-                      ]
                       }
+                    }
+                  ]
                   }
-      },
-      secondLastWeek:
-          {
-            "fields":["datetime","ip_id","package"],
-            "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
-                    {"datetime":{"order":"asc","ignore_unmapped" : true}}],
-            "query":{
-                "bool": {
-                      "filter": [
-                        {
-                            "term": { "_type": "stats" }
-                        },
-                        {
-                          "range": {
-                              "datetime":  {
-                                  "gte" : "now-2w/d",
-                                  "lt" :  "now-1w/d"
-                              }
-                          }
-                        }
-                      ]
-                      }
-                  }
-          },
-      thirdLastWeek:
-          {
-            "fields":["datetime","ip_id","package"],
-            "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
-                    {"datetime":{"order":"asc","ignore_unmapped" : true}}],
-            "query":{
-                "bool": {
-                      "filter": [
-                        {
-                            "term": { "_type": "stats" }
-                        },
-                        {
-                          "range": {
-                              "datetime":  {
-                                  "gte" : "now-3w/d",
-                                  "lt" :  "now-2w/d"
-                              }
-                          }
-                        }
-                      ]
-                      }
-                  }
-          },
-      restOfMonth:
-        {
-            "fields":["datetime","ip_id","package"],
-            "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
-                    {"datetime":{"order":"asc","ignore_unmapped" : true}}],
-            "query":{
-                "bool": {
-                      "filter": [
-                        {
-                            "term": { "_type": "stats" }
-                        },
-                        {
-                          "range": {
-                              "datetime":  {
-                                  "gte" : "now-1M/d",
-                                  "lt" :  "now-3w/d"
-                              }
-                          }
-                        }
-                      ]
-                      }
-                  }
-          }
+              }
+
+      }
     }
   },
+      
   lastMonthPercentiles: function() {
     var body = {
       "query": ElasticSearchService.queries.filters.lastMonthStats,
@@ -199,40 +132,24 @@ module.exports = {
     });
   },
 
-  lastWeekStats:function(){
-       var body = ElasticSearchService.queries.filters.lastWeek;
+  lastMonthDownloadsBulk:function(){
+      console.log("here");
+       var body = ElasticSearchService.queries.filters.lastMonthDownloads;
+       console.log(body);
       return es.search({
+      scroll:'1m',
       index: 'stats',
-      body: body
+      body: body,
       }).then(function(response){
-        return response.hits.hits;
+        console.log(response);
+        return response;
       })
   },
-  secondLastWeekStats:function(){
-       var body = ElasticSearchService.queries.filters.secondLastWeek;
-      return es.search({
-      index: 'stats',
-      body: body
-      }).then(function(response){
-        return response.hits.hits;
-      })
-  },
-  thirdLastWeekStats:function(){
-      var body = ElasticSearchService.queries.filters.thirdLastWeek;
-      return es.search({
-        index:'stats',
-        body:body
-      }).then(function(response){
-        return response.hits.hits;
-      })
-   },
-   restOfMonthStats:function(){
-       var body = ElasticSearchService.queries.filters.restOfMonth;
-      return es.search({
-      index: 'stats',
-      body: body
-      }).then(function(response){
-        return response.hits.hits;
-      })
-   }
+  nextLastMontDownloadsBulk:function(response){
+    return es.scroll({
+      scrollId: response._scroll_id,
+      scroll: '30s'
+    });
+  }
+ 
 };
