@@ -18,8 +18,16 @@ module.exports = {
     last_month_downloads: {
       type: Sequelize.INTEGER,
       allowNull: false
-    }
+    },
 
+    last_month_downloads_direct: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
+    last_month_downloads_indirect: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    }
   },
 
   associations: function() {

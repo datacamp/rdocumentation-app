@@ -36,8 +36,8 @@ module.exports = {
             {
               "range": {
                   "datetime":  {
-                      "gte" : "now-1M/d",
-                      "lt" :  "now/d"
+                      "gte" : "now-4d/d",
+                      "lt" :  "now-3d/d"
                   }
               }
             }
@@ -58,8 +58,8 @@ module.exports = {
                     {
                       "range": {
                           "datetime":  {
-                              "gte" : "now-1w/d",
-                              "lt" :  "now/d"
+                              "gte" : "now-4d/d",
+                              "lt" :  "now-3d/d"
                           }
                       }
                     }
@@ -147,7 +147,7 @@ module.exports = {
         });
   },
   scrollLastMonthDownloadsBulk:function(response,directDownloads,indirectDownloads,total){
-    if (50000 > total) {
+    if (response.hits.total > total) {
         // now we can call scroll over and over
         es.scroll({
           scrollId: response._scroll_id,
@@ -156,9 +156,6 @@ module.exports = {
           CronService.processDownloads(response,directDownloads,indirectDownloads,total+10000);
         });
       } else {
-        console.log("all hits: "+hits.length);
-        console.log("directDownloads:"+directDownloads);
-        console.log("indirectDownloads:" + indirectDownloads);
         CronService.writeSplittedDownloadCounts(directDownloads,indirectDownloads);
       }
   } 
