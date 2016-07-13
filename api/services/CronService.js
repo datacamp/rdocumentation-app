@@ -46,13 +46,12 @@ module.exports = {
 
   },
 
-  splittedAggregatedDownloadstats :function(){
+  splittedAggregatedDownloadstats :function(callback){
     console.log('Started splitted aggregated download count');
-    return ElasticSearchService.lastMonthDownloadsBulk();
+    ElasticSearchService.lastMonthDownloadsBulk(callback);
    },
 
-  processDownloads:function(response,directDownloads,indirectDownloads,total){
-    console.log("response :"+response);
+  processDownloads:function(response,directDownloads,indirectDownloads,total,callback){
     var hits = response.hits.hits;
     var promises = [];
     hits.forEach(function(hit,i) {
@@ -93,17 +92,17 @@ module.exports = {
                         })
           });
         Promise.all(promises).then(function(){
-          return ElasticSearchService.scrollLastMonthDownloadsBulk(response,directDownloads,indirectDownloads,total);
+          return ElasticSearchService.scrollLastMonthDownloadsBulk(response,directDownloads,indirectDownloads,total,callback);
         });
 
   },
   writeSplittedDownloadCounts: function(directDownloads,indirectDownloads){
+      console.log("writing");
       return Package.findAll({
         attributes: ['name']
       }).then(function(packages) {
         var records = _.map(packages, function(package) {
           var totalDownloads = directDownloads[package.name]+indirectDownloads[package.name] || directDownloads[package.name] || indirectDownloads[package.name] || 0;
-          //console.log( "updating : " +package.name + ", direct downloads : " + directDownloads[package.name] +"indirect downloads" + indirectDownloads[package.name])
           return {
             package_name: package.name,
             last_month_downloads: totalDownloads,
