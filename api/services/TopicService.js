@@ -16,7 +16,6 @@ module.exports = {
       'note',
       'author',
       'seealso',
-      'examples',
       'arguments']
     );
     return Promise.resolve(topicInstance.package_version || topicInstance.getPackage_version()).then(function(packageVersion) {
