@@ -48,7 +48,7 @@ module.exports = {
 
   splittedAggregatedDownloadstats :function(){
     console.log('Started splitted aggregated download count');
-    ElasticSearchService.lastMonthDownloadsBulk();
+    return ElasticSearchService.lastMonthDownloadsBulk();
    },
 
   processDownloads:function(response,directDownloads,indirectDownloads,total){
@@ -59,7 +59,6 @@ module.exports = {
     hits.forEach(function(hit,i) {
         //console.log(hit);
         //console.log(hit.fields.package[0]);
-        indirect = false;
         promises.push(sequelize.query("SELECT DISTINCT b.package_name FROM rdoc.Dependencies a,rdoc.PackageVersions b WHERE a.dependency_name = :name and a.dependant_version_id=b.id",
                         { replacements: { name: hit.fields.package[0] }, type: sequelize.QueryTypes.SELECT }
                         ));
@@ -67,6 +66,7 @@ module.exports = {
                           rootPackageNames = _.map(rootPackages,function(package){
                               return package.package_name;
                           });
+                          indirect = false;
                           j=i+1;
                           //console.log("first test:" +j<hits.length);
                           //console.log("second test:"+ hits[j].fields.ip_id[0] == hit.fields.ip_id[0]);
@@ -115,7 +115,6 @@ module.exports = {
 
   },
   writeSplittedDownloadCounts: function(directDownloads,indirectDownloads){
-    console.log("example: "+directDownloads["labeling"]);
       return Package.findAll({
         attributes: ['name']
       }).then(function(packages) {
@@ -129,72 +128,15 @@ module.exports = {
             last_month_downloads_direct: directDownloads[package.name] || 0
           };
         });
-        var groups = _.chunk(records,10);
+        var groups = _.chunk(records,500);
 
         return Promise.map(groups, function(group) {
-          console.log(group);
           return DownloadStatistic.bulkCreate(group, {
-            updateOnDuplicate:true,
-            validate:true
+            updateOnDuplicate:true
           });
         }, {concurrency: 1});
       });
     }
 };
-
-function wait(ms){
-   var start = new Date().getTime();
-   var end = start;
-   while(end < start + ms) {
-     end = new Date().getTime();
-  }
-};
-
-getSplittedDownloadCounts = function (hits) {
-      console.log(hits);
-      directDownloads= {};
-      indirectDownloads = {};
-      var indirect = false;
-      hits.forEach(function(hit,i) {
-        indirect = false;
-        sequelize.query("SELECT DISTINCT b.package_name FROM rdoc.Dependencies a,rdoc.PackageVersions b WHERE a.dependency_name = :name and a.dependant_version_id=b.id",
-                        { replacements: { name: hit.fields.package[0] }, type: sequelize.QueryTypes.SELECT }
-                        ).then(function(rootPackages){
-                          rootPackageNames = _.map(rootPackages,function(package){
-                              return package.package_name;
-                          });
-                          j=i+1;
-                          while (j<hits.length && hits[j].fields.ip_id == hit.fields.ip_id
-                            && new Date(hits[j].fields.datetime[0]).getTime()< (new Date(hit.fields.datetime[0]).getTime()+60000)){
-                            if(_.includes(rootPackageNames,hits[j].fields.package))
-                            {
-                               indirectDownloads[hits.fields.package] = indirectDownloads[hit.fields.package]+1 || 1;
-                               indirect = true;
-                               break;
-                            }
-                            j+=1;
-                            console.log ('testing date ' + hits[j].fields.datetime[0])
-                          }
-                          j=i-1;
-                          while (j>=0 && hits[j].fields.ip_id == hit.fields.ip_id
-                            && new Date(hits[j].fields.datetime[0]).getTime()+60000> (new Date(hit.fields.datetime[0]).getTime())
-                            && !(indirect)){
-                            if(_.includes(rootPackageNames,hits[j].fields.package))
-                            {
-                               console.log("indirect download for " + indirectDownloads[hit.fields.package]);
-                               indirectDownloads[hit.fields.package] = indirectDownloads[hit.fields.package]+1 || 1;
-                               indirect = true;
-                               break;
-                            }
-                            j-=1;
-                          }
-                          if(!indirect){
-                            console.log("direct download for " + directDownloads[hit.fields.package]);
-                            directDownloads[hit.fields.package] = directDownloads[hit.fields.package]+1 || 1;
-                          }
-                        })
-          });
-      return [directDownloads,indirectDownloads]
-    };
 
 
