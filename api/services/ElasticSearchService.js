@@ -58,8 +58,8 @@ module.exports = {
                     {
                       "range": {
                           "datetime":  {
-                              "gte" : "now-4d/d",
-                              "lt" :  "now-3d/d"
+                              "gte" : "now-3d/d",
+                              "lt" :  "now-2d/d"
                           }
                       }
                     }
@@ -78,7 +78,7 @@ module.exports = {
       "aggs" : _.pick(ElasticSearchService.queries.aggregations, ['download_per_package', 'download_percentiles'])
     };
 
-    return es.search({
+    es.search({
       index: 'stats',
       requestCache: true, //cache the result
       body: body
@@ -133,30 +133,32 @@ module.exports = {
     });
   },
 
-  lastMonthDownloadsBulk:function(){
-      console.log("here");
+  lastMonthDownloadsBulk:function(callback){
       hits = [];
-       var body = ElasticSearchService.queries.filters.lastMonthDownloads;
-       console.log(body);
+      var body = ElasticSearchService.queries.filters.lastMonthDownloads;
       return es.search({
       scroll:'1m',
       index: 'stats',
       body: body,
       },function processAndGetMore(error,response){
-        CronService.processDownloads(response,{},{},10000);
+        CronService.processDownloads(response,{},{},10000,callback);
         });
   },
-  scrollLastMonthDownloadsBulk:function(response,directDownloads,indirectDownloads,total){
+  scrollLastMonthDownloadsBulk:function(response,directDownloads,indirectDownloads,total,callback){
     if (response.hits.total > total) {
         // now we can call scroll over and over
+        console.log("here");
         es.scroll({
           scrollId: response._scroll_id,
           scroll: '30s'
         }, function processScroll(error,response){
-          CronService.processDownloads(response,directDownloads,indirectDownloads,total+10000);
+          return CronService.processDownloads(response,directDownloads,indirectDownloads,total+10000,callback);
         });
       } else {
-        CronService.writeSplittedDownloadCounts(directDownloads,indirectDownloads);
+          CronService.writeSplittedDownloadCounts(directDownloads,indirectDownloads).then(function(){
+            callback();
+          });
+        
       }
   } 
 };
