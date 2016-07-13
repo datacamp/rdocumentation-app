@@ -68,4 +68,8 @@ task('download-statistics', ['sails-load'], {async: true}, function () {
   complete();
 });
 
+jake.addListener('complete', function () {
+  process.exit();
+});
+
 
