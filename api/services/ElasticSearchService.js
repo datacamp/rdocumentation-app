@@ -46,6 +46,7 @@ module.exports = {
       },
       lastMonthDownloads: {
         "size":"10000",
+        "fields":["datetime","ip_id","package"],
         "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
                     {"datetime":{"order":"asc","ignore_unmapped" : true}}],
         "query":{
@@ -134,22 +135,31 @@ module.exports = {
 
   lastMonthDownloadsBulk:function(){
       console.log("here");
+      hits = [];
        var body = ElasticSearchService.queries.filters.lastMonthDownloads;
        console.log(body);
       return es.search({
       scroll:'1m',
       index: 'stats',
       body: body,
-      }).then(function(response){
-        console.log(response);
-        return response;
-      })
+      },function processAndGetMore(error,response){
+        CronService.processDownloads(response,{},{},10000);
+        });
   },
-  nextLastMontDownloadsBulk:function(response){
-    return es.scroll({
-      scrollId: response._scroll_id,
-      scroll: '30s'
-    });
-  }
- 
+  scrollLastMonthDownloadsBulk:function(response,directDownloads,indirectDownloads,total){
+    if (50000 > total) {
+        // now we can call scroll over and over
+        es.scroll({
+          scrollId: response._scroll_id,
+          scroll: '30s'
+        }, function processScroll(error,response){
+          CronService.processDownloads(response,directDownloads,indirectDownloads,total+10000);
+        });
+      } else {
+        console.log("all hits: "+hits.length);
+        console.log("directDownloads:"+directDownloads);
+        console.log("indirectDownloads:" + indirectDownloads);
+        CronService.writeSplittedDownloadCounts(directDownloads,indirectDownloads);
+      }
+  } 
 };
