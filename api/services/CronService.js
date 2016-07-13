@@ -54,11 +54,8 @@ module.exports = {
   processDownloads:function(response,directDownloads,indirectDownloads,total){
     console.log("response :"+response);
     var hits = response.hits.hits;
-    var promises = []
-    //console.log(hits);
+    var promises = [];
     hits.forEach(function(hit,i) {
-        //console.log(hit);
-        //console.log(hit.fields.package[0]);
         promises.push(sequelize.query("SELECT DISTINCT b.package_name FROM rdoc.Dependencies a,rdoc.PackageVersions b WHERE a.dependency_name = :name and a.dependant_version_id=b.id",
                         { replacements: { name: hit.fields.package[0] }, type: sequelize.QueryTypes.SELECT }
                         ));
@@ -68,34 +65,22 @@ module.exports = {
                           });
                           indirect = false;
                           j=i+1;
-                          //console.log("first test:" +j<hits.length);
-                          //console.log("second test:"+ hits[j].fields.ip_id[0] == hit.fields.ip_id[0]);
-                          //console.log("third test :"+new Date(hits[j].fields.datetime[0]).getTime()< (new Date(hit.fields.datetime[0]).getTime()+60000));
                           while (j<hits.length && hits[j].fields.ip_id[0] == hit.fields.ip_id[0]
                             && new Date(hits[j].fields.datetime[0]).getTime()< (new Date(hit.fields.datetime[0]).getTime()+60000)){
-                            //console.log("in while");
                             if(_.includes(rootPackageNames,hits[j].fields.package[0]))
                             {
-                               //console.log("indirect download for " + hit.fields.package[0]);
-                               //console.log("fields "+ hit.fields.package);
-                               //console.log("ip_id " + hit.fields.ip_id);
                                indirectDownloads[hit.fields.package[0]] = indirectDownloads[hit.fields.package[0]]+1 || 1;
                                indirect = true;
                                break;
                             }
                             j+=1;
-                            //console.log ('testing date ' + hits[j].fields.datetime[0])
                           }
                           j=i-1;
                           while (j>=0 && hits[j].fields.ip_id[0] == hit.fields.ip_id[0]
                             && new Date(hits[j].fields.datetime[0]).getTime()+60000> (new Date(hit.fields.datetime[0]).getTime())
                             && !(indirect)){
-                            //console.log("in while");
                             if(_.includes(rootPackageNames,hits[j].fields.package))
                             {
-                               //console.log("indirect download for " + hit.fields.package[0]);
-                               //console.log("pacakge: "+hit.fields.package);
-                               //console.log("ip_id " + hit.fields.ip_id);
                                indirectDownloads[hit.fields.package[0]] = indirectDownloads[hit.fields.package[0]]+1 || 1;
                                indirect = true;
                                break;
@@ -103,13 +88,11 @@ module.exports = {
                             j-=1;
                           }
                           if(!indirect){
-                            //console.log("direct download for " + hit.fields.package[0]);
                             directDownloads[hit.fields.package[0]] = directDownloads[hit.fields.package[0]]+1 || 1;
                           }
                         })
           });
         Promise.all(promises).then(function(){
-          console.log("example: "+directDownloads["labeling"]);
           return ElasticSearchService.scrollLastMonthDownloadsBulk(response,directDownloads,indirectDownloads,total);
         });
 
