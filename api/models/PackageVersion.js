@@ -21,7 +21,7 @@ module.exports = {
     },
 
     title: {
-      type: Sequelize.STRING
+      type: Sequelize.TEXT
     },
 
     description: {
@@ -35,7 +35,7 @@ module.exports = {
     },
 
     license: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       allowNull: false
     },
 
@@ -44,7 +44,7 @@ module.exports = {
     },
 
     copyright: {
-      type: Sequelize.STRING
+      type: Sequelize.TEXT
     },
 
     readmemd: {

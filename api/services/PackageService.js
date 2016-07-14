@@ -54,9 +54,15 @@ module.exports = {
     var dependencies = dependencyArrayToRecords('Depends')
       .concat(dependencyArrayToRecords('Imports'))
       .concat(dependencyArrayToRecords('Suggests'))
-      .concat(dependencyArrayToRecords('Enhances'));
+      .concat(dependencyArrayToRecords('Enhances'))
+      .concat(dependencyArrayToRecords('LinkingTo'));
+
     var authorArray = descriptionJSON.Author ? AuthorService.authorsSanitizer(descriptionJSON.Author) : [];
     var name = descriptionJSON.Package || descriptionJSON.Bundle || 'Undefined';
+
+    var timestamp = descriptionJSON.Date ? Date.parse(descriptionJSON.Date) : null;
+
+    var release_date = isNaN(timestamp) ? null : new Date(timestamp);
 
     return {
       package: {
@@ -65,7 +71,7 @@ module.exports = {
       fields: {
         version: descriptionJSON.Version,
         title: descriptionJSON.Title,
-        release_date: descriptionJSON.Date ? new Date(descriptionJSON.Date) : null,
+        release_date: release_date,
         description: descriptionJSON.Description || '',
         license: descriptionJSON.License,
         url: descriptionJSON.URL,
