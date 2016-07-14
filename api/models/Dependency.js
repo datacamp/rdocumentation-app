@@ -38,6 +38,10 @@ module.exports = {
 
           return data;
         });
+      },
+      findByDependantForIndependentDownloads: function(package){
+        return sequelize.query("SELECT DISTINCT b.package_name FROM rdoc.Dependencies a,rdoc.PackageVersions b where a.dependency_name = :name and a.dependant_version_id=b.id",{ replacements: { name: package }, type: sequelize.QueryTypes.SELECT }
+)
       }
     }
   }
