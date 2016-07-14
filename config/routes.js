@@ -42,6 +42,13 @@ module.exports.routes = {
     'get /packages/:name': 'PackageController.findByName',
   //***** /Package *****
 
+  //***** Downloads *****
+    // API
+    'get /api/packages/:name/splitteddownloads': 'PackageVersionController.getSplittedDownloadStatistics',
+    // HTML
+    'get /packages/:name/splitteddownloads': 'PackageVersionController.getSplittedDownloadStatistics',
+  //***** /Downloads *****
+
   //***** PackageVersion *****
     // API
     'get /api/packages/:name/versions/:version/downloads' : 'PackageVersion.getDownloadStatistics',
