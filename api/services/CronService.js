@@ -6,6 +6,7 @@
 
 var _ = require('lodash');
 var Promise = require('bluebird');
+var dateFormat = require('dateformat');
 
 
 module.exports = {
@@ -55,9 +56,7 @@ module.exports = {
     var hits = response.hits.hits;
     var promises = [];
     hits.forEach(function(hit,i) {
-        promises.push(sequelize.query("SELECT DISTINCT b.package_name FROM rdoc.Dependencies a,rdoc.PackageVersions b WHERE a.dependency_name = :name and a.dependant_version_id=b.id",
-                        { replacements: { name: hit.fields.package[0] }, type: sequelize.QueryTypes.SELECT }
-                        ));
+        promises.push(Dependency.options.classMethods.findByDependantForIndependentDownloads(hit.fields.package[0]));
         promises[promises.length-1].then(function(rootPackages){
                           rootPackageNames = _.map(rootPackages,function(package){
                               return package.package_name;
@@ -92,11 +91,13 @@ module.exports = {
                         })
           });
         Promise.all(promises).then(function(){
-          return ElasticSearchService.scrollLastMonthDownloadsBulk(response,directDownloads,indirectDownloads,total,callback);
+          dateBadFormat = new Date(date=hits[1].fields.datetime[0])
+          date = dateFormat(dateBadFormat,"yyyy-mm-dd").toString();
+          return ElasticSearchService.scrollLastMonthDownloadsBulk(response,date,directDownloads,indirectDownloads,total,callback);
         });
 
   },
-  writeSplittedDownloadCounts: function(directDownloads,indirectDownloads){
+  writeSplittedDownloadCounts: function(date,directDownloads,indirectDownloads){
       console.log("writing");
       return Package.findAll({
         attributes: ['name']
@@ -105,9 +106,9 @@ module.exports = {
           var totalDownloads = directDownloads[package.name]+indirectDownloads[package.name] || directDownloads[package.name] || indirectDownloads[package.name] || 0;
           return {
             package_name: package.name,
-            last_month_downloads: totalDownloads,
-            last_month_downloads_indirect: indirectDownloads[package.name] || 0,
-            last_month_downloads_direct: directDownloads[package.name] || 0
+            date: date,
+            indirect_downloads: indirectDownloads[package.name] || 0,
+            direct_downloads: directDownloads[package.name] || 0
           };
         });
         var groups = _.chunk(records,500);

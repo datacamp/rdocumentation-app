@@ -15,16 +15,16 @@ module.exports = {
       unique: true
     },
 
-    last_month_downloads: {
-      type: Sequelize.INTEGER,
+    date: {
+      type: Sequelize.DATE,
       allowNull: false
     },
 
-    last_month_downloads_direct: {
+    direct_downloads: {
       type: Sequelize.INTEGER,
       allowNull: false
     },
-    last_month_downloads_indirect: {
+    indirect_downloads: {
       type: Sequelize.INTEGER,
       allowNull: false
     }
