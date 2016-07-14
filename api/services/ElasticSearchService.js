@@ -58,8 +58,8 @@ module.exports = {
                     {
                       "range": {
                           "datetime":  {
-                              "gte" : "now-5d/d",
-                              "lt" :  "now-4d/d"
+                              "gte" : "now-7d/d",
+                              "lt" :  "now-6d/d"
                           }
                       }
                     }
