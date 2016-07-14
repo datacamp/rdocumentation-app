@@ -6,7 +6,7 @@ if [ -n "$(git status --porcelain)" ]; then
   exit 1;
 fi
 
-BUILD_NUMBER=$1
+BUILD_NUMBER=$(git rev-parse --short HEAD)
 #build new docker image
 docker build -t dockerhub.datacamp.com:443/rdocsv2:$BUILD_NUMBER .
 #push image to docker registery
