@@ -42,13 +42,6 @@ module.exports.routes = {
     'get /packages/:name': 'PackageController.findByName',
   //***** /Package *****
 
-  //***** Downloads *****
-    // API
-    'get /api/packages/:name/splitteddownloads': 'PackageVersionController.getSplittedDownloadStatistics',
-    // HTML
-    'get /packages/:name/splitteddownloads': 'PackageVersionController.getSplittedDownloadStatistics',
-  //***** /Downloads *****
-
   //***** PackageVersion *****
     // API
     'get /api/packages/:name/versions/:version/downloads' : 'PackageVersion.getDownloadStatistics',
@@ -59,6 +52,7 @@ module.exports.routes = {
     'get /api/packages/:name/downloads/per_day_last_month' : 'PackageVersion.getLastMonthDownloadPerDay',
     'get /api/packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
     'post /api/versions': 'PackageVersion.postDescription',
+    'get /api/packages/:name/downloads/splitted': 'PackageVersionController.getSplittedDownloadStatistics',
     // HTML
     'get /packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
   //***** /PackageVersion *****
