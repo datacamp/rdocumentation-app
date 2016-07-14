@@ -81,7 +81,6 @@ module.exports = {
                             {
                                indirectDownloads[hit.fields.package[0]] = indirectDownloads[hit.fields.package[0]]+1 || 1;
                                indirect = true;
-                               break;
                             }
                             j-=1;
                           }
