@@ -4,8 +4,9 @@ $(document).ready(function() {
     var $self = $(this);
     var url = $self.data('url');
     $.get(url, function(data){
-      $self.find(".total").text(data.total);
+      $self.find(".total").text(data.totalStr);
       $self.find(".deps").text(data.indirectDownloadsStr);
+      $self.find(".indeps").text(data.directDownloadsStr);
       $('.downloads').css({'visibility': 'visible'});
     });
   });
