@@ -204,11 +204,11 @@ module.exports = {
     var packageName = req.param('name');
 
     DownloadStatistic.getMonthlySplittedDownloads(packageName).then(function(stats){
-      return {
-        indirect_downloads : stats.SUM(indirect_downloads),
-        direct_downloads: stats.SUM(direct_downloads),
-        total_downloads: stats.SUM(indirect_downloads)+stats.SUM(direct_downloads)
-      }
+      return res.json({
+        "direct_downloads": stats[0].direct_downloads,
+        "indirect_downloads": stats[0].indirect_downloads,
+        "total": (stats[0].direct_downloads + stats[0].indirect_downloads)
+      });
     });
 
   },
