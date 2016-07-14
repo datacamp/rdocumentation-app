@@ -16,8 +16,12 @@ $(document).ready(function() {
     var $self = $(this);
     var url = $self.data('url');
     $.get(url, function(data){
+      if(data.percentile != null){
       $self.find(".percentile").text(''+ data.percentile + 'th');
       $('.percentile-task').css({'visibility': 'visible'});
+    } else{
+      $('.percentile-task').css({'display': 'none'});
+    }
     });
   });
 
