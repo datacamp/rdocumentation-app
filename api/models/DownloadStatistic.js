@@ -27,10 +27,6 @@ module.exports = {
     last_month_downloads_indirect: {
       type: Sequelize.INTEGER,
       allowNull: false
-    },
-    date: {
-      type: Sequelize.DATE,
-      allowNull: false
     }
   },
 
