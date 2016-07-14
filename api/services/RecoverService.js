@@ -19,9 +19,11 @@ module.exports = {
         var progress = index / total * 100;
         console.log(100 - progress);
 
-        return PackageVersion.createWithDescriptionFile({input: source}).catch(function(err) {
-          console.log(err);
-        });
+        return PackageVersion.createWithDescriptionFile({input: source})
+          .catch(function(err) {
+            console.log(err);
+            return 0;
+          });
 
       }, {concurrency: 1});
     });
