@@ -200,6 +200,19 @@ module.exports = {
     });
   },
 
+  getSplittedDownloadStatistics : function(req,res){
+    var packageName = req.param('name');
+
+    DownloadStatistics.getMonthlySplittedDownloads(packageName).then(function(stats){
+      return {
+        indirect_downloads : stats.SUM(indirect_downloads),
+        direct_downloads: stats.SUM(direct_downloads),
+        total_downloads: stats.SUM(indirect_downloads)+stats.SUM(direct_downloads)
+      }
+    });
+
+  }
+
   getPercentile: function(req, res) {
     var packageName = req.param('name');
 
