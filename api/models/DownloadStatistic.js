@@ -47,7 +47,7 @@ module.exports = {
   options: {
     underscored: true,
     classMethods: {
-      getMonthlySplittedDownloads =function(package_name){
+      getMonthlySplittedDownloads :function(package_name){
         return sequelize.query("SELECT SUM(indirect_downloads),SUM(direct_downloads) FROM DownloadStatistics WHERE date >= current_date() - interval '30' day and package_name = :package",{ replacements: { package: package_name }, type: sequelize.QueryTypes.SELECT });
       }
     }
