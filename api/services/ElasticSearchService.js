@@ -80,7 +80,7 @@ module.exports = {
       "aggs" : _.pick(ElasticSearchService.queries.aggregations, ['download_per_package', 'download_percentiles'])
     };
 
-    es.search({
+    return es.search({
       index: 'stats',
       requestCache: true, //cache the result
       body: body
