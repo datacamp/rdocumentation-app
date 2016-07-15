@@ -62,7 +62,7 @@ module.exports = {
       console.log("you received an undefined response, response:"+response);
       console.log("this was probably caused because there were no stats yet for this day");
       console.log("or processing time took over 5 minutes (the scroll interval");
-      calback();
+      callback();
     }    
     //loop over all hits
     hits.forEach(function(hit,i) {
@@ -114,7 +114,6 @@ module.exports = {
         attributes: ['name']
       }).then(function(packages) {
         var records = _.map(packages, function(package) {
-          var totalDownloads = directDownloads[package.name]+indirectDownloads[package.name] || directDownloads[package.name] || indirectDownloads[package.name] || 0;
           return {
             package_name: package.name,
             date: date,
