@@ -67,7 +67,7 @@ module.exports = {
     //loop over all hits
     hits.forEach(function(hit,i) {
         //execute queries to find inverse dependencies for all hits asynchronous, and find indirect hits before and after in ordered records
-        promises.push(Dependency.options.classMethods.findByDependantForIndependentDownloads(hit.fields.package[0]));
+        promises.push(Dependency.findByDependantForIndependentDownloads(hit.fields.package[0]));
         promises[promises.length-1].then(function(rootPackages){
                           rootPackageNames = _.map(rootPackages,function(package){
                               return package.package_name;
