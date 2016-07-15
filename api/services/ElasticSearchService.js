@@ -145,10 +145,10 @@ module.exports = {
       },function processAndGetMore(error,response){
             //check the response
         if (typeof response == "undefined" || typeof response.hits == "undefined") {    
-          console.log("you received an undefined response, response:"+response);
-          console.log("this was probably caused because there were no stats yet for this day");
-          console.log("or processing time took over 5 minutes (the scroll interval");
-        callback();
+          var err ="you received an undefined response, response:"+response+
+          "\n this was probably caused because there were no stats yet for this day"+
+          "\n or processing time took over 5 minutes (the scroll interval";
+        callback(err);
         }  
         DownloadStatsService.processDownloads(response,{},{},10000,callback);
         });
@@ -163,17 +163,17 @@ module.exports = {
           scroll: '5M'
         }, function processScroll(error,response){
             if (typeof response == "undefined" || typeof response.hits == "undefined") {    
-              console.log("you received an undefined response, response:"+response);
-              console.log("this was probably caused because there were no stats yet for this day");
-              console.log("or processing time took over 5 minutes (the scroll interval");
-            callback();
+              var err ="you received an undefined response, response:"+response+
+              "\n this was probably caused because there were no stats yet for this day"+
+              "\n or processing time took over 5 minutes (the scroll interval";
+            callback(err);
             }  
             return DownloadStatsService.processDownloads(response,directDownloads,indirectDownloads,total+10000,callback);
         });
       } else {
         //write the responses to the database when done
-          DownloadStatsService.writeSplittedDownloadCounts(date,directDownloads,indirectDownloads).then(function(){
-            callback();
+          DownloadStatsService.writeSplittedDownloadCounts(date,directDownloads,indirectDownloads).then(function(result){
+            callback(null,result);
           });
         
       }

@@ -75,8 +75,15 @@ task('sitemap', ['sails-load'], {async: true}, function () {
 });
 
 task('download-statistics', ['sails-load'], {async: true}, function () {
-  CronService.splittedAggregatedDownloadstats(1,function() {
-    complete();
+  CronService.splittedAggregatedDownloadstats(1,function(err,resp) {
+    if(err==null){
+      complete();
+    }
+    else{
+      console.log(err.message);
+      complete();
+    }
+    
   });
 });
 
