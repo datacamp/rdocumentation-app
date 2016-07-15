@@ -11,4 +11,4 @@ ADD (`direct_downloads` int(11) NOT NULL,
 
 CREATE INDEX package_name_index ON DownloadStatistics(package_name);
 CREATE UNIQUE INDEX package_month ON DownloadStatistics(package_name,date);
-ALTER TABLE rdoc.DownloadStatistics DROP INDEX package;
+ALTER TABLE DownloadStatistics DROP INDEX package;

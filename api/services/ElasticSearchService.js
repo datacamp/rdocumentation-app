@@ -143,7 +143,14 @@ module.exports = {
       index: 'stats',
       body: body,
       },function processAndGetMore(error,response){
-        CronService.processDownloads(response,{},{},10000,callback);
+            //check the response
+        if (typeof response == "undefined" || typeof response.hits == "undefined") {    
+          console.log("you received an undefined response, response:"+response);
+          console.log("this was probably caused because there were no stats yet for this day");
+          console.log("or processing time took over 5 minutes (the scroll interval");
+        callback();
+        }  
+        DownloadStatsService.processDownloads(response,{},{},10000,callback);
         });
   },
   //scroll further in search result, when response already contains a scroll id
@@ -155,11 +162,17 @@ module.exports = {
           scrollId: response._scroll_id,
           scroll: '5M'
         }, function processScroll(error,response){
-          return CronService.processDownloads(response,directDownloads,indirectDownloads,total+10000,callback);
+            if (typeof response == "undefined" || typeof response.hits == "undefined") {    
+              console.log("you received an undefined response, response:"+response);
+              console.log("this was probably caused because there were no stats yet for this day");
+              console.log("or processing time took over 5 minutes (the scroll interval");
+            callback();
+            }  
+            return DownloadStatsService.processDownloads(response,directDownloads,indirectDownloads,total+10000,callback);
         });
       } else {
         //write the responses to the database when done
-          CronService.writeSplittedDownloadCounts(date,directDownloads,indirectDownloads).then(function(){
+          DownloadStatsService.writeSplittedDownloadCounts(date,directDownloads,indirectDownloads).then(function(){
             callback();
           });
         
