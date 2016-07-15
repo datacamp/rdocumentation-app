@@ -19,7 +19,7 @@ module.exports = {
     },
 
     type: {
-      type: Sequelize.ENUM('depends', 'imports', 'suggests', 'enhances'),
+      type: Sequelize.ENUM('depends', 'imports', 'suggests', 'enhances', 'linkingto'),
       allowNull: true
     }
 
