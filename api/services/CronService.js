@@ -47,15 +47,26 @@ module.exports = {
 
   },
 
-  splittedAggregatedDownloadstats :function(callback){
+  splittedAggregatedDownloadstats :function(days,callback){
     console.log('Started splitted aggregated download count');
-    ElasticSearchService.lastMonthDownloadsBulk(callback);
+    ElasticSearchService.lastMonthDownloadsBulk(days,callback);
    },
 
   processDownloads:function(response,directDownloads,indirectDownloads,total,callback){
-    var hits = response.hits.hits;
-    var promises = [];
+    //check the response
+    if (typeof response.hits != "undefined") {    
+      var hits = response.hits.hits;
+      var promises = [];
+    }
+    else{
+      console.log("you received an undefined response, response:"+response);
+      console.log("this was probably caused because there were no stats yet for this day");
+      console.log("or processing time took over 5 minutes (the scroll interval");
+      calback();
+    }    
+    //loop over all hits
     hits.forEach(function(hit,i) {
+        //execute queries to find inverse dependencies for all hits asynchronous, and find indirect hits before and after in ordered records
         promises.push(Dependency.options.classMethods.findByDependantForIndependentDownloads(hit.fields.package[0]));
         promises[promises.length-1].then(function(rootPackages){
                           rootPackageNames = _.map(rootPackages,function(package){
@@ -63,13 +74,12 @@ module.exports = {
                           });
                           indirect = false;
                           j=i+1;
-                          while (j<hits.length && hits[j].fields.ip_id[0] == hit.fields.ip_id[0]
+                          while (!indirect && j<hits.length && hits[j].fields.ip_id[0] == hit.fields.ip_id[0]
                             && new Date(hits[j].fields.datetime[0]).getTime()< (new Date(hit.fields.datetime[0]).getTime()+60000)){
                             if(_.includes(rootPackageNames,hits[j].fields.package[0]))
                             {
-                               indirectDownloads[hit.fields.package[0]] = indirectDownloads[hit.fields.package[0]]+1 || 1;
-                               indirect = true;
-                               break;
+                              indirectDownloads[hit.fields.package[0]] = indirectDownloads[hit.fields.package[0]]+1 || 1;
+                              indirect=true;
                             }
                             j+=1;
                           }
@@ -77,18 +87,19 @@ module.exports = {
                           while (j>=0 && hits[j].fields.ip_id[0] == hit.fields.ip_id[0]
                             && new Date(hits[j].fields.datetime[0]).getTime()+60000> (new Date(hit.fields.datetime[0]).getTime())
                             && !(indirect)){
-                            if(_.includes(rootPackageNames,hits[j].fields.package))
+                            if(_.includes(rootPackageNames,hits[j].fields.package[0]))
                             {
-                               indirectDownloads[hit.fields.package[0]] = indirectDownloads[hit.fields.package[0]]+1 || 1;
-                               indirect = true;
+                              indirectDownloads[hit.fields.package[0]] = indirectDownloads[hit.fields.package[0]]+1 || 1;
+                              indirect=true;
                             }
                             j-=1;
                           }
                           if(!indirect){
                             directDownloads[hit.fields.package[0]] = directDownloads[hit.fields.package[0]]+1 || 1;
                           }
-                        })
+                        })                    
           });
+        //when all promises are resolved, proceed and scroll search results
         Promise.all(promises).then(function(){
           dateBadFormat = new Date(date=hits[1].fields.datetime[0])
           date = dateFormat(dateBadFormat,"yyyy-mm-dd").toString();
@@ -96,8 +107,9 @@ module.exports = {
         });
 
   },
+  //write all splitted download counts to the database
   writeSplittedDownloadCounts: function(date,directDownloads,indirectDownloads){
-      console.log("writing");
+      console.log("writing data");
       return Package.findAll({
         attributes: ['name']
       }).then(function(packages) {

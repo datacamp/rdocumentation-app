@@ -44,9 +44,10 @@ module.exports = {
           ]
         }
       },
-      lastMonthDownloads: {
+      lastMonthDownloads: function(n){
+        return {
         "size":"10000",
-        "fields":["datetime","ip_id","package"],
+        "fields":["datetime","ip_id","package","version"],
         "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
                     {"datetime":{"order":"asc","ignore_unmapped" : true}}],
         "query":{
@@ -58,8 +59,8 @@ module.exports = {
                     {
                       "range": {
                           "datetime":  {
-                              "gte" : "now-2d/d",
-                              "lt" :  "now-1d/d"
+                              "gte" : "now-"+(n+1)+"d/d",
+                              "lt" :  "now-"+n+"d/d"
                           }
                       }
                     }
@@ -67,7 +68,8 @@ module.exports = {
                   }
               }
 
-      }
+          }
+        }
     }
   },
       
@@ -132,28 +134,31 @@ module.exports = {
       return ElasticSearchService.lastMonthPercentiles();
     });
   },
-
-  lastMonthDownloadsBulk:function(callback){
+  //download first 10000 results and proceed by processing and scrolling
+  lastMonthDownloadsBulk:function(days,callback){
       hits = [];
-      var body = ElasticSearchService.queries.filters.lastMonthDownloads;
+      var body = ElasticSearchService.queries.filters.lastMonthDownloads(days);
       return es.search({
-      scroll:'1m',
+      scroll:'5M',
       index: 'stats',
       body: body,
       },function processAndGetMore(error,response){
         CronService.processDownloads(response,{},{},10000,callback);
         });
   },
+  //scroll further in search result, when response already contains a scroll id
   scrollLastMonthDownloadsBulk:function(response,date,directDownloads,indirectDownloads,total,callback){
+    console.log("processing next 10000 records");
     if (response.hits.total > total) {
         // now we can call scroll over and over
         es.scroll({
           scrollId: response._scroll_id,
-          scroll: '30s'
+          scroll: '5M'
         }, function processScroll(error,response){
           return CronService.processDownloads(response,directDownloads,indirectDownloads,total+10000,callback);
         });
       } else {
+        //write the responses to the database when done
           CronService.writeSplittedDownloadCounts(date,directDownloads,indirectDownloads).then(function(){
             callback();
           });
