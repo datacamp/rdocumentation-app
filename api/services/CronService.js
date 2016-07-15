@@ -48,7 +48,7 @@ module.exports = {
 
   splittedAggregatedDownloadstats :function(days,callback){
     console.log('Started splitted aggregated download count');
-    ElasticSearchService.lastMonthDownloadsBulk(days,callback);
+    ElasticSearchService.dailyDownloadsBulk(days,callback);
    }
 };
 

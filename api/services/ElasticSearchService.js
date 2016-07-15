@@ -135,7 +135,7 @@ module.exports = {
     });
   },
   //download first 10000 results and proceed by processing and scrolling
-  lastMonthDownloadsBulk:function(days,callback){
+  dailyDownloadsBulk:function(days,callback){
       hits = [];
       var body = ElasticSearchService.queries.filters.lastMonthDownloads(days);
       return es.search({
@@ -154,7 +154,7 @@ module.exports = {
         });
   },
   //scroll further in search result, when response already contains a scroll id
-  scrollLastMonthDownloadsBulk:function(response,date,directDownloads,indirectDownloads,total,callback){
+  scrollDailyDownloadsBulk:function(response,date,directDownloads,indirectDownloads,total,callback){
     console.log("processing next 10000 records");
     if (response.hits.total > total) {
         // now we can call scroll over and over

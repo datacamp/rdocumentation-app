@@ -45,7 +45,7 @@ module.exports ={
         Promise.all(promises).then(function(){
           dateBadFormat = new Date(date=hits[1].fields.datetime[0])
           date = dateFormat(dateBadFormat,"yyyy-mm-dd").toString();
-          return ElasticSearchService.scrollLastMonthDownloadsBulk(response,date,directDownloads,indirectDownloads,total,callback);
+          return ElasticSearchService.scrollDailyDownloadsBulk(response,date,directDownloads,indirectDownloads,total,callback);
         });
 
   },
