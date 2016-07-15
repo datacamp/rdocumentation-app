@@ -48,8 +48,8 @@ module.exports = {
 
   splittedAggregatedDownloadstats :function(days,callback){
     console.log('Started splitted aggregated download count');
-    ElasticSearchService.dailyDownloadsBulk(days,callback);
-   }
+    return Promise.promisify(ElasticSearchService.dailyDownloadsBulk)(days);
+  }
 };
 
 
