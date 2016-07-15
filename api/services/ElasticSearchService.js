@@ -46,33 +46,35 @@ module.exports = {
       },
       lastMonthDownloads: function(n){
         return {
-        "size":"10000",
-        "fields":["datetime","ip_id","package","version"],
-        "sort":[ {"ip_id":{"order":"asc","ignore_unmapped" : true}},
-                    {"datetime":{"order":"asc","ignore_unmapped" : true}}],
-        "query":{
+          "size": "10000",
+          "fields": ["datetime","ip_id","package","version"],
+          "sort": [
+            {"ip_id":{"order":"asc","ignore_unmapped" : true}},
+            {"datetime":{"order":"asc","ignore_unmapped" : true}}
+          ],
+          "query":{
             "bool": {
-                  "filter": [
-                    {
-                        "term": { "_type": "stats" }
-                    },
-                    {
-                      "range": {
-                          "datetime":  {
-                              "gte" : "now-"+(n+1)+"d/d",
-                              "lt" :  "now-"+n+"d/d"
-                          }
-                      }
+              "filter": [
+                {
+                  "term": { "_type": "stats" }
+                },
+                {
+                  "range": {
+                    "datetime":  {
+                      "gte" : "now-"+(n+1)+"d/d",
+                      "lt" :  "now-"+n+"d/d"
                     }
-                  ]
                   }
-              }
-
+                }
+              ]
+            }
           }
-        }
+
+        };
+      }
     }
   },
-      
+
   lastMonthPercentiles: function() {
     var body = {
       "query": ElasticSearchService.queries.filters.lastMonthStats,
@@ -134,48 +136,49 @@ module.exports = {
       return ElasticSearchService.lastMonthPercentiles();
     });
   },
+
   //download first 10000 results and proceed by processing and scrolling
-  dailyDownloadsBulk:function(days,callback){
-      hits = [];
-      var body = ElasticSearchService.queries.filters.lastMonthDownloads(days);
-      return es.search({
+  dailyDownloadsBulk:function(days, callback){
+    var body = ElasticSearchService.queries.filters.lastMonthDownloads(days);
+
+    return es.search({
       scroll:'5M',
       index: 'stats',
       body: body,
-      },function processAndGetMore(error,response){
-            //check the response
-        if (typeof response == "undefined" || typeof response.hits == "undefined") {    
+    }, function processAndGetMore(error,response){
+      //check the response
+      if (typeof response == "undefined" || typeof response.hits == "undefined") {
+        var err ="you received an undefined response, response:"+response+
+        "\n this was probably caused because there were no stats yet for this day"+
+        "\n or processing time took over 5 minutes (the scroll interval";
+        callback(err);
+      }
+      DownloadStatsService.processDownloads(response,{},{},10000,callback);
+    });
+  },
+
+  //scroll further in search result, when response already contains a scroll id
+  scrollDailyDownloadsBulk: function(response,date,directDownloads,indirectDownloads,total,callback) {
+    console.log("processing next 10000 records");
+    if (response.hits.total > total) {
+      // now we can call scroll over and over
+      es.scroll({
+        scrollId: response._scroll_id,
+        scroll: '5M'
+      }, function processScroll(error,response){
+        if (typeof response == "undefined" || typeof response.hits == "undefined") {
           var err ="you received an undefined response, response:"+response+
           "\n this was probably caused because there were no stats yet for this day"+
           "\n or processing time took over 5 minutes (the scroll interval";
-        callback(err);
-        }  
-        DownloadStatsService.processDownloads(response,{},{},10000,callback);
-        });
-  },
-  //scroll further in search result, when response already contains a scroll id
-  scrollDailyDownloadsBulk:function(response,date,directDownloads,indirectDownloads,total,callback){
-    console.log("processing next 10000 records");
-    if (response.hits.total > total) {
-        // now we can call scroll over and over
-        es.scroll({
-          scrollId: response._scroll_id,
-          scroll: '5M'
-        }, function processScroll(error,response){
-            if (typeof response == "undefined" || typeof response.hits == "undefined") {    
-              var err ="you received an undefined response, response:"+response+
-              "\n this was probably caused because there were no stats yet for this day"+
-              "\n or processing time took over 5 minutes (the scroll interval";
-            callback(err);
-            }  
-            return DownloadStatsService.processDownloads(response,directDownloads,indirectDownloads,total+10000,callback);
-        });
-      } else {
-        //write the responses to the database when done
-          DownloadStatsService.writeSplittedDownloadCounts(date,directDownloads,indirectDownloads).then(function(result){
-            callback(null,result);
-          });
-        
-      }
-  } 
+          callback(err);
+        }
+        return DownloadStatsService.processDownloads(response,directDownloads,indirectDownloads,total+10000,callback);
+      });
+    } else {
+      //write the responses to the database when done
+      DownloadStatsService.writeSplittedDownloadCounts(date,directDownloads,indirectDownloads).then(function(result){
+        callback(null,result);
+      });
+    }
+  }
 };
