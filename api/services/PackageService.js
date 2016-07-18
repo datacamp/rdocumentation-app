@@ -30,7 +30,7 @@ module.exports = {
   mapDescriptionToPackageVersion: function(descriptionJSON) {
 
     var parseDependency = function(dependency) {
-      var matches = dependency.match(/\s*([^\s]*)(?:\s*\(\s*(<|<=|=|>=|>)\s*(.*)\s*\))?/);
+      var matches = dependency.match(/\s*([^\s(]*)(?:\s*\(\s*(<|<=|=|>=|>)\s*(.*)\s*\))?/);
       return {
         package: matches[1],
         comparator: matches[2] || null,
