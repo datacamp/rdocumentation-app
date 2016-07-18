@@ -24,6 +24,14 @@
   }
 
   section.topic--value {
+    dl {
+      dd {
+        float: none;
+      }
+      dt {
+        float: none;
+      }
+    }
     ul {
       @include clearfix;
       display: block;
