@@ -147,7 +147,7 @@
     <% if(pkgVersion.readmemd) { %>
     <section class="package--readme">
       <h3> Readme </h3>
-      <%- md(pkgVersion.readmemd) %>
+      <%- md(pkgVersion.readmemd,pkgVersion.url) %>
     </section>
     <% } %>
 
