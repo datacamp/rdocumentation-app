@@ -74,23 +74,41 @@ module.exports.http = {
     res.locals.autoLink = autoLink;
     res.locals.lodash = require('lodash');
     res.locals.md = function (md,baseLink) {
-      var base = cheerio.load(baseLink);
-      base = base('a').attr('href');
+      if(baseLink!=""){
+        var base = cheerio.load(baseLink);
+        base = base('a').attr('href');
+      }
+      else{
+        base = "";
+      }      
       var html = marked (md);
       $ = cheerio.load(html);
       var links = $('a');
       links.attr('href',function(i,link){
-        if(link.startsWith("/..")){
-          return link.replace("/..",base);
-        }
-        else{
-          return link;
+        if(!(link.startsWith("http") || link.startsWith("www"))){
+          if(link.startsWith("/..")){
+            return link.replace("/..",base);
+          }
+          else if(base.startsWith("http://github.com")){
+            return base.replace("http://github.com","https://raw.githubusercontent.com")+"/master/"+ link;
+          } 
+          else{
+            return link;
+          }
         }
       })
       links = $('img');
       links.attr('src',function(i,link){
-        if(link.startsWith("/..")){
-          return link.replace("/..",base+"/blob");
+        if(!(link.startsWith("http") || link.startsWith("www"))){
+          if(link.startsWith("/..")){
+            return link.replace("/..",base+"/blob");
+          }
+          else if(base.startsWith("http://github.com")){
+            return base.replace("http://github.com","https://raw.githubusercontent.com")+"/master/"+ link;
+          } 
+          else{
+            return link;
+          }
         }
         else{
           return link;
