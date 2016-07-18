@@ -1,4 +1,7 @@
 var lifter = require('./sails-lifter');
+var _ = require('lodash');
+var Promise = require('bluebird');
+
 
 //Load sails to benefit from services and models definition
 // This will load a minimal version of sails without http, sessions, controllers, ...
@@ -78,6 +81,24 @@ task('download-statistics', ['sails-load'], {async: true}, function () {
     console.log("No stats for this time range yet");
     complete();
   });
+});
+
+
+
+task('bootstrap-splitted-download-statistics', ['sails-load'], {async: true}, function () {
+  var lastMonth = _.range(3, 28);
+  Promise.map(lastMonth, function(day) {
+    return CronService.splittedAggregatedDownloadstats(day).then(function(resp) {
+      console.log("Done " + day);
+      return 1;
+    }).catch({message: "empty"}, function() {
+      console.log("No stats for this time range yet");
+      return 0;
+    });
+  }, {concurrency: 1}).then(function () {
+    complete();
+  });
+
 });
 
 jake.addListener('complete', function () {
