@@ -16,7 +16,8 @@ module.exports = {
       'note',
       'author',
       'seealso',
-      'arguments']
+      'arguments',
+      'sections']
     );
     return Promise.resolve(topicInstance.package_version || topicInstance.getPackage_version()).then(function(packageVersion) {
       var replaced = _.mapValues(toSearch, function(section) {
