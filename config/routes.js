@@ -42,6 +42,13 @@ module.exports.routes = {
     'get /packages/:name': 'PackageController.findByName',
   //***** /Package *****
 
+  //***** Trends *****
+    // startpage
+    'get /trends': {view: 'trends/show'},
+    // API
+    'get /api/trends/download': 'TrendsController.mostDownloaded',
+  //***** /Trends *****
+
   //***** PackageVersion *****
     // API
     'get /api/packages/:name/versions/:version/downloads' : 'PackageVersion.getDownloadStatistics',

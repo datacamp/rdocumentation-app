@@ -24,7 +24,67 @@ module.exports = {
               "field" : "datetime",
               "interval" : "day"
           }
-      }
+      },
+       lastWeekTrends: {
+            "query": {
+              "filtered": {
+                "query": {
+                  "query_string": {
+                    "query": "*",
+                    "analyze_wildcard": true
+                  }
+                },
+                "filter": {
+                  "bool": {
+                    "must": [
+                      {
+                        "query": {
+                          "query_string": {
+                            "analyze_wildcard": true,
+                            "query": "*"
+                          }
+                        }
+                      },
+                      {
+                        "range": {
+                          "datetime": {
+                            "gte": "now-3d/d",
+                            "lte": "now-1d/d"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "size": 0,
+            "aggs": {
+              "lastweek": {
+                "date_histogram": {
+                  "field": "datetime",
+                  "interval": "1d",
+                  "time_zone": "Europe/Berlin",
+                  "min_doc_count": 1,
+                  "extended_bounds": {
+                    "min": "now-7d/d",
+                    "max": "now-1d/d"
+                  }
+                },
+                "aggs": {
+                  "day": {
+                    "terms": {
+                      "field": "package",
+                      "size": 10,
+                      "order": {
+                        "_count": "desc"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
     },
     filters: {
       lastMonthStats: {
@@ -88,7 +148,6 @@ module.exports = {
               ]
             }
           }
-
         };
       }
     }
@@ -166,6 +225,15 @@ module.exports = {
       body: body
     }).then(function(response) {
       return response.aggregations.last_month_per_day.buckets;
+    });
+  },
+
+  lastWeekPerDayTrending: function() {
+    var body = ElasticSearchService.queries.aggregations.lastWeekTrends;
+    return es.search({
+      body: body
+    }).then(function(response) {
+      return response.aggregations.lastweek.buckets;
     });
   },
 
