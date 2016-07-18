@@ -11,6 +11,7 @@
 var dateFormat = require('dateformat');
 var autoLink = require('autolink-js');
 var marked = require('marked');
+var cheerio = require ('cheerio');
 
 
 module.exports.http = {
@@ -72,9 +73,30 @@ module.exports.http = {
     res.locals.dateformat = dateFormat;
     res.locals.autoLink = autoLink;
     res.locals.lodash = require('lodash');
-    res.locals.md = function (md) {
+    res.locals.md = function (md,baseLink) {
+      var base = cheerio.load(baseLink);
+      base = base('a').attr('href');
       var html = marked (md);
-      return html;
+      $ = cheerio.load(html);
+      var links = $('a');
+      links.attr('href',function(i,link){
+        if(link.startsWith("/..")){
+          return link.replace("/..",base);
+        }
+        else{
+          return link;
+        }
+      })
+      links = $('img');
+      links.attr('src',function(i,link){
+        if(link.startsWith("/..")){
+          return link.replace("/..",base+"/blob");
+        }
+        else{
+          return link;
+        }
+      })
+      return $.html();
     };
 
     return next();
