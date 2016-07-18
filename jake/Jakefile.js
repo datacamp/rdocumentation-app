@@ -74,6 +74,9 @@ task('download-statistics', ['sails-load'], {async: true}, function () {
   CronService.splittedAggregatedDownloadstats(1).then(function(resp) {
     console.log("Done !");
     complete();
+  }).catch({message: "empty"}, function() {
+    console.log("No stats for this time range yet");
+    complete();
   });
 });
 

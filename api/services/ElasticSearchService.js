@@ -61,8 +61,8 @@ module.exports = {
                 {
                   "range": {
                     "datetime":  {
-                      "gte" : "now-"+(n+1)+"d/d",
-                      "lt" :  "now-"+n+"d/d"
+                      "gte" : "now-"+(n)+"d/d",
+                      "lt" :  "now-"+(n-1)+"d/d"
                     }
                   }
                 }
@@ -141,19 +141,21 @@ module.exports = {
   dailyDownloadsBulk:function(days, callback){
     var body = ElasticSearchService.queries.filters.lastMonthDownloads(days);
 
+
     return es.search({
       scroll:'5M',
       index: 'stats',
       body: body,
     }, function processAndGetMore(error,response){
       //check the response
-      if (typeof response == "undefined" || typeof response.hits == "undefined") {
+      console.log(response.hits.total);
+      if (typeof response === "undefined") {
         var err ="you received an undefined response, response:"+response+
         "\n this was probably caused because there were no stats yet for this day"+
         "\n or processing time took over 5 minutes (the scroll interval";
         callback(err);
-      }
-      DownloadStatsService.processDownloads(response,{},{},10000,callback);
+      } else if (response.hits.total === 0) { return callback({message: "empty"}); }
+      else DownloadStatsService.processDownloads(response,{},{},10000,callback);
     });
   },
 
