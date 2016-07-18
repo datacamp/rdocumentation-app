@@ -128,7 +128,8 @@ module.exports = {
       },
       details: function() {
         var old = this.getDataValue('details');
-        return old.replace(/\n/g, "<br />");
+        if(old) return old.replace(/\n/g, "<br />");
+        else return old;
       }
     },
 
