@@ -80,7 +80,6 @@ module.exports.http = {
       $ = cheerio.load(html);
       var links = $('a');
       links.attr('href',function(i,link){
-        console.log(link);
         if(link.startsWith("/..")){
           return link.replace("/..",base);
         }
@@ -90,7 +89,6 @@ module.exports.http = {
       })
       links = $('img');
       links.attr('src',function(i,link){
-        console.log(link);
         if(link.startsWith("/..")){
           return link.replace("/..",base+"/blob");
         }
