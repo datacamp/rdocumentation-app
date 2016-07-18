@@ -46,6 +46,18 @@ module.exports = {
     }).catch(function(err){
       return res.negotiate(err.errors);
     });
+  },
+
+  lastDaySplittedDownloads: function(req, res) {
+    CronService.splittedAggregatedDownloadstats(1).then(function (result) {
+      console.log("Finished indexing splitted stats");
+      res.send(200, "done");
+    }).catch({message: "empty"}, function() {
+      console.log("No stats for this time range yet");
+      res.send(200, "done");
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
   }
 
 };
