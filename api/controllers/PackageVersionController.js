@@ -200,6 +200,22 @@ module.exports = {
     });
   },
 
+  getSplittedDownloadStatistics : function(req,res){
+    var packageName = req.param('name');
+
+    DownloadStatistic.getMonthlySplittedDownloads(packageName).then(function(stats){
+      return res.json({
+        directDownloadsStr: numeral(stats[0].direct_downloads).format('0,0'),
+        indirectDownloadsStr: numeral(stats[0].indirect_downloads).format('0,0'),
+        totalStr: numeral(stats[0].direct_downloads + stats[0].indirect_downloads).format('0,0'),
+        directDownloads: stats[0].direct_downloads,
+        indirectDownloads: stats[0].indirect_downloads,
+        total: stats[0].direct_downloads + stats[0].indirect_downloads
+      });
+    });
+
+  },
+
   getPercentile: function(req, res) {
     var packageName = req.param('name');
 

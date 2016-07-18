@@ -20,10 +20,10 @@ module.exports = {
         }
       },
       "last_month_per_day": {
-        "date_histogram" : {
-            "field" : "datetime",
-            "interval" : "day"
-        }
+          "date_histogram" : {
+              "field" : "datetime",
+              "interval" : "day"
+          }
       }
     },
     filters: {
@@ -43,6 +43,34 @@ module.exports = {
             }
           ]
         }
+      },
+      lastMonthDownloads: function(n){
+        return {
+          "size": "10000",
+          "fields": ["datetime","ip_id","package","version"],
+          "sort": [
+            {"ip_id":{"order":"asc","ignore_unmapped" : true}},
+            {"datetime":{"order":"asc","ignore_unmapped" : true}}
+          ],
+          "query":{
+            "bool": {
+              "filter": [
+                {
+                  "term": { "_type": "stats" }
+                },
+                {
+                  "range": {
+                    "datetime":  {
+                      "gte" : "now-"+(n)+"d/d",
+                      "lt" :  "now-"+(n-1)+"d/d"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+
+        };
       }
     }
   },
@@ -107,7 +135,52 @@ module.exports = {
     return RedisService.getJSONFromCache('percentiles', res, RedisService.DAILY, function() {
       return ElasticSearchService.lastMonthPercentiles();
     });
+  },
+
+  //download first 10000 results and proceed by processing and scrolling
+  dailyDownloadsBulk:function(days, callback){
+    var body = ElasticSearchService.queries.filters.lastMonthDownloads(days);
+
+
+    return es.search({
+      scroll:'5M',
+      index: 'stats',
+      body: body,
+    }, function processAndGetMore(error,response){
+      //check the response
+      console.log(response.hits.total);
+      if (typeof response === "undefined") {
+        var err ="you received an undefined response, response:"+response+
+        "\n this was probably caused because there were no stats yet for this day"+
+        "\n or processing time took over 5 minutes (the scroll interval";
+        callback(err);
+      } else if (response.hits.total === 0) { return callback({message: "empty"}); }
+      else DownloadStatsService.processDownloads(response,{},{},10000,callback);
+    });
+  },
+
+  //scroll further in search result, when response already contains a scroll id
+  scrollDailyDownloadsBulk: function(response,date,directDownloads,indirectDownloads,total,callback) {
+    console.log("processing next 10000 records");
+    if (response.hits.total > total) {
+      // now we can call scroll over and over
+      es.scroll({
+        scrollId: response._scroll_id,
+        scroll: '5M'
+      }, function processScroll(error,response){
+        if (typeof response == "undefined" || typeof response.hits == "undefined") {
+          var err ="you received an undefined response, response:"+response+
+          "\n this was probably caused because there were no stats yet for this day"+
+          "\n or processing time took over 5 minutes (the scroll interval";
+          callback(err);
+        }
+        return DownloadStatsService.processDownloads(response,directDownloads,indirectDownloads,total+10000,callback);
+      });
+    } else {
+      //write the responses to the database when done
+      DownloadStatsService.writeSplittedDownloadCounts(date,directDownloads,indirectDownloads).then(function(result){
+        callback(null,result);
+      });
+    }
   }
-
-
 };

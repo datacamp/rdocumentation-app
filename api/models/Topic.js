@@ -125,6 +125,10 @@ module.exports = {
             .replace(':topic', encodeURIComponent(this.name));
         } else return sails.getUrlFor({ target: 'Topic.findById' })
           .replace(':id', encodeURIComponent(this.id));
+      },
+      details: function() {
+        var old = this.getDataValue('details');
+        return old.replace(/\n/g, "<br />");
       }
     },
 

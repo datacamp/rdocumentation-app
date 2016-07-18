@@ -1,8 +1,7 @@
 var lifter = require('./sails-lifter');
+var _ = require('lodash');
+var Promise = require('bluebird');
 
-jake.addListener('complete', function () {
-  process.exit();
-});
 
 //Load sails to benefit from services and models definition
 // This will load a minimal version of sails without http, sessions, controllers, ...
@@ -31,7 +30,6 @@ task('sitemap', ['sails-load'], {async: true}, function () {
     sitemapDirectoryUrl: directoryUrl,
     outputFolder:'assets/sitemap/'
   });
-
   //set concurrency to maximum number of connection to database
   var concurrency = sails.config.connections.sequelize_mysql.options.pool.max;
 
@@ -74,3 +72,37 @@ task('sitemap', ['sails-load'], {async: true}, function () {
   });
 
 });
+
+task('download-statistics', ['sails-load'], {async: true}, function () {
+  CronService.splittedAggregatedDownloadstats(1).then(function(resp) {
+    console.log("Done !");
+    complete();
+  }).catch({message: "empty"}, function() {
+    console.log("No stats for this time range yet");
+    complete();
+  });
+});
+
+
+
+task('bootstrap-splitted-download-statistics', ['sails-load'], {async: true}, function () {
+  var lastMonth = _.range(3, 28);
+  Promise.map(lastMonth, function(day) {
+    return CronService.splittedAggregatedDownloadstats(day).then(function(resp) {
+      console.log("Done " + day);
+      return 1;
+    }).catch({message: "empty"}, function() {
+      console.log("No stats for this time range yet");
+      return 0;
+    });
+  }, {concurrency: 1}).then(function () {
+    complete();
+  });
+
+});
+
+jake.addListener('complete', function () {
+  process.exit();
+});
+
+
