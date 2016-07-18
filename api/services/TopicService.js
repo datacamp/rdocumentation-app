@@ -16,7 +16,8 @@ module.exports = {
       'note',
       'author',
       'seealso',
-      'arguments']
+      'arguments',
+      'sections']
     );
     return Promise.resolve(topicInstance.package_version || topicInstance.getPackage_version()).then(function(packageVersion) {
       var replaced = _.mapValues(toSearch, function(section) {
@@ -28,20 +29,20 @@ module.exports = {
             var rdOptions = $(elem).attr('rd-options');
             if(!current) return;
             if (rdOptions === '' || !rdOptions) {
-              $(elem).attr('href', url.resolve(basePath, current) +
-                '?package=' + packageVersion.package_name +
-                '\&version=' + packageVersion.version);
+              $(elem).attr('href', url.resolve(basePath, encodeURIComponent(current)) +
+                '?package=' + encodeURIComponent(packageVersion.package_name) +
+                '\&version=' + encodeURIComponent(packageVersion.version));
             } else {
               if (rdOptions.split(':') > 1) {
-                $(elem).attr('href', url.resolve(basePath, rdOptions[1]) +
-                  '?package=' + packageVersion.package_name +
-                  '\&version=' + packageVersion.version +
-                  '\&to=' + rdOptions[0]);
+                $(elem).attr('href', url.resolve(basePath, encodeURIComponent(rdOptions[1])) +
+                  '?package=' + encodeURIComponent(packageVersion.package_name) +
+                  '\&version=' + encodeURIComponent(packageVersion.version) +
+                  '\&to=' + encodeURIComponent(rdOptions[0]));
               } else {
-                $(elem).attr('href', url.resolve(basePath, current) +
-                  '?package=' + packageVersion.package_name +
-                  '\&version=' + packageVersion.version +
-                  '\&to=' + rdOptions);
+                $(elem).attr('href', url.resolve(basePath, encodeURIComponent(current)) +
+                  '?package=' + encodeURIComponent(packageVersion.package_name) +
+                  '\&version=' + encodeURIComponent(packageVersion.version) +
+                  '\&to=' + encodeURIComponent(rdOptions));
               }
             }
 
