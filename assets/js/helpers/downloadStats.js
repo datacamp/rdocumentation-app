@@ -5,7 +5,8 @@ $(document).ready(function() {
     var url = $self.data('url');
     $.get(url, function(data){
       $self.find(".total").text(data.totalStr);
-      $self.find(".deps").text(data.revDepsStr);
+      $self.find(".deps").text(data.indirectDownloadsStr);
+      $self.find(".indeps").text(data.directDownloadsStr);
       $('.downloads').css({'visibility': 'visible'});
     });
   });
@@ -15,8 +16,12 @@ $(document).ready(function() {
     var $self = $(this);
     var url = $self.data('url');
     $.get(url, function(data){
+      if(data.percentile != null){
       $self.find(".percentile").text(''+ data.percentile + 'th');
       $('.percentile-task').css({'visibility': 'visible'});
+    } else{
+      $('.percentile-task').css({'display': 'none'});
+    }
     });
   });
 

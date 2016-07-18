@@ -15,11 +15,19 @@ module.exports = {
       unique: true
     },
 
-    last_month_downloads: {
+    date: {
+      type: Sequelize.DATE,
+      allowNull: false
+    },
+
+    direct_downloads: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
+    indirect_downloads: {
       type: Sequelize.INTEGER,
       allowNull: false
     }
-
   },
 
   associations: function() {
@@ -37,7 +45,20 @@ module.exports = {
 
 
   options: {
-    underscored: true
+    underscored: true,
+
+    indexes: [
+      {
+        type: 'UNIQUE',
+        fields: ['package_name', 'date' ]
+      }
+    ],
+
+    classMethods: {
+      getMonthlySplittedDownloads :function(package_name){
+        return sequelize.query("SELECT SUM(indirect_downloads) AS indirect_downloads,SUM(direct_downloads) AS direct_downloads FROM DownloadStatistics WHERE date >= current_date() - interval '1' month and package_name = :package",{ replacements: { package: package_name }, type: sequelize.QueryTypes.SELECT });
+      }
+    }
   }
 };
 

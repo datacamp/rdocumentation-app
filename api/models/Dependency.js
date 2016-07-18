@@ -19,7 +19,7 @@ module.exports = {
     },
 
     type: {
-      type: Sequelize.ENUM('depends', 'imports', 'suggests', 'enhances'),
+      type: Sequelize.ENUM('depends', 'imports', 'suggests', 'enhances', 'linkingto'),
       allowNull: true
     }
 
@@ -38,6 +38,9 @@ module.exports = {
 
           return data;
         });
+      },
+      findByDependantForIndependentDownloads: function(package){
+        return sequelize.query("SELECT DISTINCT b.package_name FROM Dependencies a,PackageVersions b where a.dependency_name = :name and a.dependant_version_id=b.id and a.type!='enhances'",{ replacements: { name: package }, type: sequelize.QueryTypes.SELECT });
       }
     }
   }
