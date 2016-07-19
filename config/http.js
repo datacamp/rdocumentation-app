@@ -83,37 +83,42 @@ module.exports.http = {
       }      
       var html = marked (md);
       $ = cheerio.load(html);
-      var links = $('a');
+      //replace non external links with the base
+      var links = $('a:not(.js-external)');
       links.attr('href',function(i,link){
-        if(!(link.startsWith("http") || link.startsWith("www"))){
-          if(link.startsWith("/..")){
-            return link.replace("/..",base);
-          }
-          else if(base.startsWith("http://github.com")){
-            return base.replace("http://github.com","https://raw.githubusercontent.com")+"/master/"+ link;
-          } 
-          else{
-            return link;
-          }
-        }
-      })
-      links = $('img');
-      links.attr('src',function(i,link){
-        if(!(link.startsWith("http") || link.startsWith("www"))){
-          if(link.startsWith("/..")){
-            return link.replace("/..",base+"/blob");
-          }
-          else if(base.startsWith("http://github.com")){
-            return base.replace("http://github.com","https://raw.githubusercontent.com")+"/master/"+ link;
-          } 
-          else{
-            return link;
-          }
+        if(link.startsWith("/..")){
+          return link.replace("/..",base);
         }
         else{
           return link;
         }
       })
+      //non external links for images need to be adjusted, here links from github are also in the repositories
+      links = $('img:not(.js-external)');
+      links.attr('src',function(i,link){
+        if(link.startsWith("/..")){
+            return link.replace("/..",base+"/blob");
+        }
+        else if((!link.startsWith('http:/')) && (!link.startsWith('https:/'))){
+          return base + link;
+        }
+        else{
+          return link;
+        }
+      });
+      //github images are actually in the githubusercontent
+      links = $('img');
+      links.attr('src',function(i,link){
+        if(link.startsWith("http://github.com")){
+          return link.replace("http://github.com","https://raw.githubusercontent.com").replace("/blob","");
+        } 
+        else if(link.startsWith("https://github.com")){
+          return link.replace("https://github.com","https://raw.githubusercontent.com").replace("/blob","");
+        } 
+        else{
+          return link;
+        }
+      });
       return $.html();
     };
 
