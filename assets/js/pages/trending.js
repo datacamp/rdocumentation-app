@@ -60,7 +60,7 @@ trendingPackagesLastWeek = function(){
         				i++;
         			}
         			if(!found){
-        				dict[key.toString()].push({
+        				dict[key.toString()].splice(days.indexOf(day),0,{
         					count : 0,
         					key   : key.toString(),
         					timestamp : day
