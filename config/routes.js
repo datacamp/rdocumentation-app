@@ -47,6 +47,7 @@ module.exports.routes = {
     'get /trends': {view: 'trends/show'},
     // API
     'get /api/trends/download': 'TrendsController.mostDownloaded',
+    'get /api/trends/keyword': 'TrendsController.topKeywords',
   //***** /Trends *****
 
   //***** PackageVersion *****

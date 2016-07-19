@@ -7,16 +7,13 @@ trendingPackagesLastWeek = function(){
   	var chart = nv.models.multiBarChart()
         .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
         .rotateLabels(0)      //Angle to rotate x-axis labels.
-        .showControls(true)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
         .groupSpacing(0.1)    //Distance between each group of bars.
         .stacked(true)
         .showControls(false)
         .x(function (d){
-          console.log(d);
           return d.timestamp;
         })
         .y(function (d){
-          console.log(d);
           return d.count;
         })
       ;
@@ -36,9 +33,7 @@ trendingPackagesLastWeek = function(){
         	days.push(time);
         	buckets.forEach(function(bucket){
         		var key = bucket.key;
-        		console.log(key);
         		var array = dict[key.toString()]||[];
-        		console.log(array);
         		array.push({
         			count : bucket.doc_count,
         			key   : bucket.key,
@@ -61,7 +56,7 @@ trendingPackagesLastWeek = function(){
         			}
         			if(!found){
         				dict[key.toString()].splice(days.indexOf(day),0,{
-        					count : 0,
+        					count : -1,
         					key   : key.toString(),
         					timestamp : day
         				});
@@ -71,20 +66,22 @@ trendingPackagesLastWeek = function(){
         	}
         }
         var series =[];
-        console.log(dict);
         for(var key in dict){
-        	console.log(key);
         	series.push({
         		key: key,
         		values: dict[key.toString()]
         	})
         }
-        console.log(series);
         $('#trendingdownloads').show();
         d3.select('#trendingdownloads svg')
           .datum(series)
           .call(chart);
       });
+
+		chart.multibar.dispatch.on("elementClick", function(e) {
+		    var url = "/packages/"+e.data.key;
+		    document.location = url;
+		});
 
 
       nv.utils.windowResize(chart.update);
@@ -92,8 +89,46 @@ trendingPackagesLastWeek = function(){
       return chart;
 });
 }
+trendingKeywords = function(){
+	var getData = function(data_url, callback) {
+    return $.get(data_url, callback);
+  };
 
+  nv.addGraph(function() {
+  	var chart = nv.models.discreteBarChart()
+        .x(function (d){
+          return d["key"];
+        })
+        .y(function (d){
+          return d.doc_count;
+        })
+        .staggerLabels(true)
+        .color(['#33aacc'])
+      ;
+
+      getData($('#topkeywords').data('url'), function(data) {
+      	console.log(data);
+        $('#topkeywords').show();
+        d3.select('#topkeywords svg')
+          .datum([{
+          	key: "Top keywords",
+          	values: data
+          }])
+          .call(chart);
+      });
+
+      chart.discretebar.dispatch.on("elementClick", function(e) {
+		    var url = "/search?q="+e.data.key;
+		    document.location = url;
+		});
+
+      nv.utils.windowResize(chart.update);
+
+      return chart;
+});
+}
 
 $(document).ready(function(){
 	trendingPackagesLastWeek();
+	trendingKeywords();
 });

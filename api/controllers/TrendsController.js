@@ -7,6 +7,11 @@ module.exports = {
 		ElasticSearchService.lastWeekPerDayTrending().then(function(result){
 			return res.json(result);
 		});
+	},
+	topKeywords: function (req,res){
+		ElasticSearchService.topKeywords().then(function(result){
+			return res.json(result);
+		});
 	}
 
 	}

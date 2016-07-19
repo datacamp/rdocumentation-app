@@ -25,7 +25,8 @@ module.exports = {
               "interval" : "day"
           }
       },
-       lastWeekTrends: {
+       lastWeekTrends: function(n){
+        return {
             "query": {
               "filtered": {
                 "query": {
@@ -48,8 +49,8 @@ module.exports = {
                       {
                         "range": {
                           "datetime": {
-                            "gte": "now-3d/d",
-                            "lte": "now-1d/d"
+                            "gte": "now-"+(7+n)+"d/d",
+                            "lte": "now-"+(1+n)+"d/d"
                           }
                         }
                       }
@@ -64,11 +65,10 @@ module.exports = {
                 "date_histogram": {
                   "field": "datetime",
                   "interval": "1d",
-                  "time_zone": "Europe/Berlin",
                   "min_doc_count": 1,
                   "extended_bounds": {
-                    "min": "now-7d/d",
-                    "max": "now-1d/d"
+                    "min": "now-"+(7+n)+"d/d",
+                    "max": "now-"+(1+n)+"d/d"
                   }
                 },
                 "aggs": {
@@ -84,7 +84,47 @@ module.exports = {
                 }
               }
             }
+          };
+        },
+        topKeywords: {
+          "query": {
+            "filtered": {
+              "query": {
+                "query_string": {
+                  "analyze_wildcard": true,
+                  "query": "*"
+                }
+              },
+              "filter": {
+                "bool": {
+                  "must": [
+                    {
+                      "query": {
+                        "query_string": {
+                          "query": "*",
+                          "analyze_wildcard": true
+                        }
+                      }
+                    }
+                  ],
+                  "must_not": []
+                }
+              }
+            }
+          },
+          "size": 0,
+          "aggs": {
+            "top": {
+              "terms": {
+                "field": "keywords",
+                "size": 20,
+                "order": {
+                  "_count": "desc"
+                }
+              }
+            }
           }
+        }
     },
     filters: {
       lastMonthStats: {
@@ -229,11 +269,41 @@ module.exports = {
   },
 
   lastWeekPerDayTrending: function() {
-    var body = ElasticSearchService.queries.aggregations.lastWeekTrends;
+    var query = {
+      "query": ElasticSearchService.queries.filters.lastDaysStats(1),
+      size: 0
+    };
     return es.search({
-      body: body
-    }).then(function(response) {
-      return response.aggregations.lastweek.buckets;
+      index: "stats",
+      body: query
+    }).then(function(lastDay){
+      var body;
+      console.log(lastDay.hits.total);
+      if(lastDay.hits.total ==0){
+        body = ElasticSearchService.queries.aggregations.lastWeekTrends(1);
+        console.log(JSON.stringify(body));
+        return es.search({
+        body: body
+      }).then(function(response) {
+        return response.aggregations.lastweek.buckets;
+      });
+    }
+      else{
+        body = ElasticSearchService.queries.aggregations.lastWeekTrends(0);
+        return es.search({
+        body: body
+      }).then(function(response) {
+        return response.aggregations.lastweek.buckets;
+      });
+      }
+    });
+  },
+  topKeywords: function() {
+    return es.search({
+      index: "rdoc",
+      body: ElasticSearchService.queries.aggregations.topKeywords
+    }).then(function(keywords){
+      return keywords.aggregations.top.buckets;
     });
   },
 
