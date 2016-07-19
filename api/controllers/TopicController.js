@@ -338,6 +338,34 @@ module.exports = {
       return res.negotiate(err);
     });
   },
+  orderedFindByAlias : function(req,res){
+    var packageName = req.param('package');
+    var alias = req.param('alias');
+    return RStudioService.orderedFindByAlias(packageName,alias).then(function(json){
+      if(json.length == 0){
+        console.log("finding others");
+        if(packageName){
+          var newPackageName= "%"+packageName+"%";
+        }
+        else{
+          var newPackageName=packageName;
+        }
+        return Alias.orderedFindByAlias(newPackageName,"%"+alias+"%").then(function(json){
+          console.log("found "+json[0]);
+          console.log("name "+json[0].function_name);
+          res.ok(json,'rStudio/function_not_found.ejs');
+        });
+      }
+      if(json.length == 1){
+        console.log("redirecting");
+        console.log(json[0]);
+        return res.ok(json[0],'topic/show.ejs');
+      }
+      else{
+        return res.ok(json,'rStudio/list_options.ejs');
+      }
+    });
+  },
 
   rating: function(req, res) {
     var topicId = req.param('id'),

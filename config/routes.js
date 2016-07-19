@@ -103,6 +103,8 @@ module.exports.routes = {
 
   // Link
   'get /link/:alias': 'Topic.findByAlias',
+  'get /link/:alias/ordered': 'Topic.orderedFindByAlias',
+  'get /link/:alias/:package/ordered': 'Topic.orderedFindByAlias',
 
   // Search
   'post /api/quick_search': 'SearchController.quickSearch',
