@@ -48,6 +48,7 @@ module.exports.routes = {
     // API
     'get /api/trends/download': 'TrendsController.mostDownloaded',
     'get /api/trends/keyword': 'TrendsController.topKeywords',
+    'get /api/trends/graph': 'TrendsController.dependencyGraph',
   //***** /Trends *****
 
   //***** PackageVersion *****
