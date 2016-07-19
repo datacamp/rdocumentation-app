@@ -15,12 +15,26 @@ $(function() {
     var bindGlobalClickHandler = function(){
       $('a:not(.js-external)').unbind('click', window.asyncClickHandler);
       $('a:not(.js-external)').bind('click', window.asyncClickHandler);
-      $( "form" ).on( "submit", function( event ) {
+      $( "form" ).submit(function( event ) {
           event.preventDefault();
           console.log( $( this ).serialize() );
-          $.post('/login', $('form').serialize());
+          console.log($( "form" ));
+          var action = $("form")[0].action;
+          if (typeof $("form")[1] != 'undefined'){
+            action = $("form")[1].action;
+          }
+          $.ajax({
+            type: "POST",
+            url: action,
+            data: $( this ).serialize(),
+            contentType:"application/x-www-form-urlencoded",
+            crossDomain:true,
+            xhrFields: {
+              withCredentials: true
+            }
+          }).then(rerenderBody);
       });
-    }
+    };
 
     function rerenderBody(html){
       var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
