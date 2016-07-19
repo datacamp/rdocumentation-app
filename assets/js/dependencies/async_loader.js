@@ -15,6 +15,11 @@ $(function() {
     var bindGlobalClickHandler = function(){
       $('a:not(.js-external)').unbind('click', window.asyncClickHandler);
       $('a:not(.js-external)').bind('click', window.asyncClickHandler);
+      $( "form" ).on( "submit", function( event ) {
+          event.preventDefault();
+          console.log( $( this ).serialize() );
+          $.post('/login', $('form').serialize());
+      });
     }
 
     function rerenderBody(html){
@@ -31,7 +36,7 @@ $(function() {
     window.replacePage = function(url) {
       $.ajax({
         type: 'GET',
-        url: 'https://rdocs-v2.herokuapp.com' + url + '?viewer_pane=1',
+        url: 'http://localhost:1337' + url + '?viewer_pane=1',
         cache: false,
         dataType: 'html',
         xhrFields: {

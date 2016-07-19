@@ -343,7 +343,6 @@ module.exports = {
     var alias = req.param('alias');
     return RStudioService.orderedFindByAlias(packageName,alias).then(function(json){
       if(json.length == 0){
-        console.log("finding others");
         if(packageName){
           var newPackageName= "%"+packageName+"%";
         }
@@ -351,8 +350,6 @@ module.exports = {
           var newPackageName=packageName;
         }
         return Alias.orderedFindByAlias(newPackageName,"%"+alias+"%").then(function(json){
-          console.log("found "+json[0]);
-          console.log("name "+json[0].function_name);
           res.ok(json,'rStudio/function_not_found.ejs');
         });
       }
