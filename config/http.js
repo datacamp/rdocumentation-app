@@ -135,16 +135,8 @@ module.exports.http = {
             if(!link.startsWith("/master")){
                substr = "/master".concat(substr);
             }
-            return base+"/blob"+substr+link;
+            return base+"/blob"+substr+link+"?raw=true";
           }
-        }
-        else{
-          return link;
-        }
-      });
-      links.attr('src',function(i,link){
-        if(link.indexOf("github.com")>-1){
-          return link+"?raw=true";
         }
         else{
           return link;
