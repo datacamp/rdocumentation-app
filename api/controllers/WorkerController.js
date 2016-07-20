@@ -7,7 +7,7 @@
 
 
 var Promise = require('bluebird');
-
+var _ = require('lodash');
 
 module.exports = {
 
@@ -49,15 +49,33 @@ module.exports = {
   },
 
   lastDaySplittedDownloads: function(req, res) {
-    CronService.splittedAggregatedDownloadstats(1).then(function (result) {
-      console.log("Finished indexing splitted stats");
-      res.send(200, "done");
-    }).catch({message: "empty"}, function() {
-      console.log("No stats for this time range yet");
-      res.send(200, "done");
-    }).catch(function(err) {
-      return res.negotiate(err);
+    DownloadStatistic.findLastIndexedDay().then(function(lastDay) {
+      var lastDate = new Date(lastDay);
+      var now = new Date();
+      var diff = Utils.dateDiffInDays(lastDate, now);
+      return diff;
+    }).then(function(nDays) {
+      if (nDays <= 1) {
+        console.log("Nothing new");
+        return res.send(200, "done");
+      }
+      var range = _.range(1, nDays);
+      Promise.map(range, function (nDay) {
+        return CronService.splittedAggregatedDownloadstats(nDay)
+          .catch({message: "empty"}, function() {
+            console.log("No stats for this time range yet");
+            return 1;
+          });
+      }, {concurrency: 1})
+      .then(function (result) {
+        console.log("Finished indexing splitted stats");
+        res.send(200, "done");
+      }).catch(function(err) {
+        return res.negotiate(err);
+      });
+
     });
+
   }
 
 };

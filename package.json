@@ -48,7 +48,6 @@
     "rc": "1.0.1",
     "redis": "^2.6.2",
     "sails": "~0.12.3",
-    "sails-hook-cron": "^2.2.0",
     "sails-hook-sequelize": "^1.0.1",
     "sails-hook-sequelize-blueprints": "^0.3.0",
     "sitemap-stream": "^2.0.1",

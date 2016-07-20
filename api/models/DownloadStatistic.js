@@ -57,6 +57,10 @@ module.exports = {
     classMethods: {
       getMonthlySplittedDownloads :function(package_name){
         return sequelize.query("SELECT SUM(indirect_downloads) AS indirect_downloads,SUM(direct_downloads) AS direct_downloads FROM DownloadStatistics WHERE date >= current_date() - interval '1' month and package_name = :package",{ replacements: { package: package_name }, type: sequelize.QueryTypes.SELECT });
+      },
+
+      findLastIndexedDay: function() {
+        return DownloadStatistic.max('date');
       }
     }
   }
