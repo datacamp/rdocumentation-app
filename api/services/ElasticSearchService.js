@@ -180,6 +180,109 @@ module.exports = {
       DownloadStatsService.writeSplittedDownloadCounts(date,directDownloads,indirectDownloads).then(function(result){
         callback(null,result);
       });
+    },
+
+  fuzzyAliasAndPackage:function(alias,package){
+    var aliasQuery =  {
+                                "fuzzy" : { "name" : alias }
+                      };
+    var packageQuery = { 
+                            bool: {
+                                filter: {term : { latest_version : 1 } },
+                                should:{"fuzzy":{package_name:package} },minimum_should_match :1
+                                }
+                            };
+    if(typeof package == 'undefined'){
+      packageQuery = {term : { latest_version : 1 } };
     }
+    console.log("ready to query");
+    es.search({
+      index: "rdoc",
+      body:{ query: {
+          bool : {
+            should : [
+              {
+                bool: {
+                  filter:[
+                    {
+                      type : {
+                        value : "topic"
+                      }
+                    },
+                    {
+                      has_parent : {
+                        parent_type : "package_version",
+                        query : packageQuery
+                      }
+                    }
+                  ],
+                  should:[
+                           aliasQuery,
+                    {
+                      has_parent : {
+                        parent_type : "package_version",
+                        score_mode: "score",
+                        query : {
+                          "has_parent" : {
+                            "query" : {
+                              "function_score" : {
+                                "functions": [
+                                  {
+                                    "filter": { "missing" : { "field" : "part_of_r" } },
+                                    "field_value_factor": {
+                                      "field":    "last_month_downloads",
+                                      "modifier": "log1p"
+                                    }
+                                  },
+                                  {
+                                    "filter": { "exists" : { "field" : "part_of_r" } },
+                                    "field_value_factor": {
+                                      "field":    "part_of_r",
+                                      "modifier": "log1p",
+                                      "factor": 300000
+                                    }
+                                  }
+                                ],
+                                "boost_mode": "replace"
+                              }
+                            },
+
+                            "parent_type" : "package",
+                            "score_mode" : "score"
+                          }
+                        },
+                        inner_hits : { fields: ["package_name", "version", "latest_version"] }
+                    }
+                    }
+                  ],
+                  minimum_should_match : 2
+                }
+              }
+            ],
+            minimum_should_match : 1
+          }
+        }
+      },
+        fields: ["package_name", "version", "name","aliases","description"]
+    }).then(function(response){
+      console.log("got response "+response);
+      console.log(response.hits);
+      return _.map(response.hits.hits,function(record){
+                console.log(record.fields);
+                console.log(record.inner_hits);
+                console.log('id'+record._id);
+                console.log(record.inner_hits.package_version.hits.hits);
+                console.log(record.fields);
+                console.log('package name '+ record.inner_hits.package_version.hits.hits[0].fields.package_name);
+                console.log('function name' + record.fields.name);
+                return {
+                id:record._id,
+                package_name:record.package_version.inner_hits.hits.hits[0].fields.package_name,
+                function_name:record.fields.name,
+                function_alias:record.fields.aliases,
+                function_description:record.fields.description
+                };
+        });
+    });
   }
 };

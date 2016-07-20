@@ -1,5 +1,6 @@
 var Promise = require('bluebird');
 var _ = require('lodash');
+cheerio = require('cheerio');
 
 module.exports = {
 	orderedFindByAlias :function(packageName,alias){
@@ -25,7 +26,16 @@ module.exports = {
 			}
             return aliases;
 		});
-	}
+	},
+	externalBindGlobalClickHandler: function(html){
+		if(inViewerPane){
+			$  = cheerio.load(html);
+    		$('a:not(.js-external)').unbind('click', window.asyncClickHandler);
+    		$('a:not(.js-external)').bind('click', window.asyncClickHandler); 
+    		return $.html();
+		}
+		return html;		
+  	}
 };
 _notfound = function(){	
 	return [];

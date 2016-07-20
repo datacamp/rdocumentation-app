@@ -1,4 +1,3 @@
-
 $(function() {
   if(urlParam('viewer_pane') === '1'){
     console.log('*********************** AJAX MODE ***********************');
@@ -12,7 +11,16 @@ $(function() {
       window.replacePage(url);
     }
 
-    var bindGlobalClickHandler = function(){
+    function rerenderBody(html){
+      var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
+      $pageBody.html(body);
+      window.bindGlobalClickHandler();
+      window.searchHandler(jQuery);
+      window.packageVersionToggleHandler(jQuery);
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub])
+    }
+
+    window.bindGlobalClickHandler = function(){
       $('a:not(.js-external)').unbind('click', window.asyncClickHandler);
       $('a:not(.js-external)').bind('click', window.asyncClickHandler);
       $( "form" ).submit(function( event ) {
@@ -20,11 +28,13 @@ $(function() {
           console.log( $( this ).serialize() );
           console.log($( "form" ));
           var action = $("form")[0].action;
+          var type = "GET";
           if (typeof $("form")[1] != 'undefined'){
             action = $("form")[1].action;
+            type = "POST";
           }
           $.ajax({
-            type: "POST",
+            type: type,
             url: action,
             data: $( this ).serialize(),
             contentType:"application/x-www-form-urlencoded",
@@ -35,15 +45,6 @@ $(function() {
           }).then(rerenderBody);
       });
     };
-
-    function rerenderBody(html){
-      var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
-      $pageBody.html(body);
-      bindGlobalClickHandler();
-      window.searchHandler(jQuery);
-      window.packageVersionToggleHandler(jQuery);
-      MathJax.Hub.Queue(["Typeset",MathJax.Hub])
-    }
 
     // Helper function to grab new HTML
     // and replace the content
@@ -60,7 +61,7 @@ $(function() {
       .done(rerenderBody);
     };
 
-    bindGlobalClickHandler();
+    window.bindGlobalClickHandler();
   }
 
 

@@ -343,13 +343,9 @@ module.exports = {
     var alias = req.param('alias');
     return RStudioService.orderedFindByAlias(packageName,alias).then(function(json){
       if(json.length == 0){
-        if(packageName){
-          var newPackageName= "%"+packageName+"%";
-        }
-        else{
-          var newPackageName=packageName;
-        }
-        return Alias.orderedFindByAlias(newPackageName,"%"+alias+"%").then(function(json){
+        console.log("querying elasticsearch");
+        return ElasticSearchService.fuzzyAliasAndPackage(alias,packageName).then(function(json){
+          console.log("results"+json);
           res.ok(json,'rStudio/function_not_found.ejs');
         });
       }
