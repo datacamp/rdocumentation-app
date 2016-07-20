@@ -28,6 +28,10 @@
 
 }
 
+.package--readme img {
+    max-width: 100%;
+}
+
 .package--stats {
   dd a {
     margin-right: $default-space / 3.0;
