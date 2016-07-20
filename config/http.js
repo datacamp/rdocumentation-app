@@ -74,6 +74,21 @@ module.exports.http = {
     res.locals.autoLink = autoLink;
     res.locals.lodash = require('lodash');
     res.locals.md = function (md,baseLink) {
+      //when multiple bases, pick the one from github
+      var bases= baseLink.split(",");
+      if(bases.length>1){
+        var i=0;
+        while(i<bases.length && !bases[i].indexOf("github.com")>-1){
+          i++;
+        }
+        if(bases[i-1].indexOf("github.com")>-1){
+          baseLink = bases[i-1];
+        }
+        else{
+          baseLink = "";
+        }
+      }
+      //remove the link from the html tag
       if(baseLink!=""){
         var base = cheerio.load(baseLink);
         base = base('a').attr('href');
@@ -83,37 +98,50 @@ module.exports.http = {
       }      
       var html = marked (md);
       $ = cheerio.load(html);
+      //replace non external links with the base
       var links = $('a');
       links.attr('href',function(i,link){
-        if(!(link.startsWith("http") || link.startsWith("www"))){
-          if(link.startsWith("/..")){
+        if(link.startsWith("/..")){
+          if(base.indexOf("github.com")>-1){
             return link.replace("/..",base);
           }
-          else if(base.startsWith("http://github.com")){
-            return base.replace("http://github.com","https://raw.githubusercontent.com")+"/master/"+ link;
-          } 
           else{
-            return link;
+            return null;
           }
         }
-      })
-      links = $('img');
-      links.attr('src',function(i,link){
-        if(!(link.startsWith("http") || link.startsWith("www"))){
-          if(link.startsWith("/..")){
-            return link.replace("/..",base+"/blob");
+        else if(link.startsWith("/")){
+          if(base.indexOf("github.com")>-1){
+            return link.replace("/",base);
           }
-          else if(base.startsWith("http://github.com")){
-            return base.replace("http://github.com","https://raw.githubusercontent.com")+"/master/"+ link;
-          } 
           else{
-            return link;
+            return null;
           }
         }
         else{
           return link;
         }
       })
+      //non external links for images need to be adjusted, here links from github are also in the repositories
+     
+      //github images are actually on /blob/master, sometimes one of these folders is specified, somtimes none
+      links = $('img');
+      links.attr('src',function(i,link){
+        if((!link.startsWith('http:/')) && (!link.startsWith('https:/'))){
+          var substr = ""
+          if(base.indexOf("github.com")>-1){
+            if(!link.startsWith("/")){
+               substr = "/";
+            }
+            if(!link.startsWith("/master")){
+               substr = "/master".concat(substr);
+            }
+            return base+"/blob"+substr+link+"?raw=true";
+          }
+        }
+        else{
+          return link;
+        }
+      });
       return $.html();
     };
 
