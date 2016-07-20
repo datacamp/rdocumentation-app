@@ -58,6 +58,11 @@ module.exports = {
             email: author.email
           };
         }
+        else {
+          where = {
+            name: author.name
+          };
+        }
 
         var params = _.defaults({
           where: where,

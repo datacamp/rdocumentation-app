@@ -211,4 +211,11 @@ jake.addListener('complete', function () {
   process.exit();
 });
 
+task('parse-author', ['sails-load'], {async: true}, function () {
+  AuthorService.recoverAuthorsR().then(function() {
+    
+    complete();
+  });
+});
+
 

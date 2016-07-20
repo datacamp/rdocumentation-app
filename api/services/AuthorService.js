@@ -124,6 +124,55 @@ module.exports = {
 
     return mapped;
 
+  },
+
+  recoverAuthorsR: function(){
+    var authorsRExample = function () {
+      return sequelize.query("SELECT * FROM rdoc.PackageVersions Where id =76", { type: sequelize.QueryTypes.SELECT});
+    };
+    return authorsRExample().then(function(Result){
+      var json = JSON.parse(Result[0].sourceJSON);
+      var person = json["Authors@R"].split("person(");
+      person.shift();
+      var hasMaintainer = false;
+      var promises = [];
+      return PackageVersion.findById(Result[0].id).then(function(b){
+      person.forEach(function(str){
+        var list = str.split(",");
+        var name = "", family = "", email, isMaintainer = false;
+        list.forEach(function(piece){
+          console.log(piece);
+          if(piece.indexOf("given")>=0){
+            name = piece.split("\"")[1];
+          }
+          if(piece.indexOf("family")>=0){
+            family = piece.split("\"")[1];
+          }
+          if(piece.indexOf("email")>=0){
+            email = piece.split("\"")[1];
+          }
+          if(piece.indexOf("cre")>=0&&!hasMaintainer){
+            console.log("checking");
+            isMaintainer=true;
+            hasMaintainer=true;
+          }
+        });
+        fullName = name+" "+family;
+        var author = {};
+        author.name = fullName;
+        author.email = email;
+        promises.push(Collaborator.insertAuthor(author).then(function(auth){
+            return b.addCollaborator(auth).then(function(){              
+              if(isMaintainer){
+              b.maintainer_id = auth.id;
+              return b.save();
+            }
+            });
+        }));
+        });
+      return Promise.all(promises);
+      });
+  });
   }
 
 };
