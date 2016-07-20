@@ -94,7 +94,7 @@ module.exports.http = {
         base = base('a').attr('href');
       }
       else{
-        base = null;
+        base = "";
       }      
       var html = marked (md);
       $ = cheerio.load(html);
