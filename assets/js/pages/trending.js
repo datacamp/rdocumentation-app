@@ -15,8 +15,7 @@ trendingPackagesLastWeek = function(){
         })
         .y(function (d){
           return d.count;
-        })
-      ;
+        });
 
       chart.xAxis
           .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)); });
@@ -25,56 +24,9 @@ trendingPackagesLastWeek = function(){
           .tickFormat(d3.format(',.1f'));
 
       getData($('#trendingdownloads').data('url'), function(data) {
-      	var dict = {};
-      	var days = [];
-        data.forEach(function(day,i){
-        	var buckets = day.day.buckets;
-        	var time = day.key;
-        	days.push(time);
-        	buckets.forEach(function(bucket){
-        		var key = bucket.key;
-        		var array = dict[key.toString()]||[];
-        		array.push({
-        			count : bucket.doc_count,
-        			key   : bucket.key,
-        			timestamp : time
-        		});
-        		dict[key.toString()] = array;
-        	})
-        });
-        console.log(days.length);
-        for(var key in dict){
-        	if(dict[key.toString()].length!=days.length){
-        		days.forEach(function(day){
-        			var found = false;
-        			var i = 0;
-        			while(!found&&i<dict[key.toString()].length){
-        				if(dict[key.toString()][i].timestamp==day){
-        					found = true;
-        				}
-        				i++;
-        			}
-        			if(!found){
-        				dict[key.toString()].splice(days.indexOf(day),0,{
-        					count : -1,
-        					key   : key.toString(),
-        					timestamp : day
-        				});
-        			}
-
-        		});
-        	}
-        }
-        var series =[];
-        for(var key in dict){
-        	series.push({
-        		key: key,
-        		values: dict[key.toString()]
-        	})
-        }
         $('#trendingdownloads').show();
         d3.select('#trendingdownloads svg')
-          .datum(series)
+          .datum(data)
           .call(chart);
       });
 
@@ -84,9 +36,9 @@ trendingPackagesLastWeek = function(){
 		});
 
 
-      nv.utils.windowResize(chart.update);
+      	nv.utils.windowResize(chart.update);
 
-      return chart;
+      	return chart;
 });
 }
 trendingKeywords = function(){
@@ -107,7 +59,6 @@ trendingKeywords = function(){
       ;
 
       getData($('#topkeywords').data('url'), function(data) {
-      	console.log(data);
         $('#topkeywords').show();
         d3.select('#topkeywords svg')
           .datum([{
@@ -148,13 +99,8 @@ dependencyGraph = function(){
                     .attr("dy", ".35em")
                     .text(function(d) { return d.name });
                 });
-            chart.dispatch.on('renderEnd', function(){
-                console.log('render complete');
-            });
              getData($('#dependencygraph').data('url'), function(data) {
-      	console.log(data);
         $('#dependencygraph').show();
-        console.log(data);
         d3.select('#dependencygraph svg')
               .datum(data)
               .call(chart);

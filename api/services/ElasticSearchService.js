@@ -278,24 +278,18 @@ module.exports = {
       body: query
     }).then(function(lastDay){
       var body;
-      console.log(lastDay.hits.total);
       if(lastDay.hits.total ==0){
         body = ElasticSearchService.queries.aggregations.lastWeekTrends(1);
-        console.log(JSON.stringify(body));
-        return es.search({
-        body: body
-      }).then(function(response) {
-        return response.aggregations.lastweek.buckets;
-      });
-    }
+      }
       else{
         body = ElasticSearchService.queries.aggregations.lastWeekTrends(0);
-        return es.search({
+      }
+      return es.search({
         body: body
       }).then(function(response) {
         return response.aggregations.lastweek.buckets;
       });
-      }
+
     });
   },
   topKeywords: function() {

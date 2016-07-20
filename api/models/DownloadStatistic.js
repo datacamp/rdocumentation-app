@@ -99,7 +99,7 @@ module.exports = {
       },
 
       getMostPopular: function(){
-        return sequelize.query("SELECT package_name, SUM(direct_downloads) AS total FROM rdoc.DownloadStatistics WHERE date >= current_date() - interval '1' month group by package_name order by total DESC limit 0,1");
+        return sequelize.query("SELECT package_name, SUM(direct_downloads) AS total FROM rdoc.DownloadStatistics WHERE date >= current_date() - interval '1' month group by package_name order by total DESC limit 0,10");
       }
     }
   }
