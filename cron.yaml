@@ -3,3 +3,6 @@ cron:
  - name: "index-stats"          # required - unique across all entries in this file
    url: "/index-stats"              # required - does not need to be unique
    schedule: "0 */12 * * *"    # required - does not need to be unique
+ - name: "last-day-splitted-stats"  # required - unique across all entries in this file
+   url: "/last-day-splitted-stats"              # required - does not need to be unique
+   schedule: "0 */12 * * *"    # required - does not need to be unique
