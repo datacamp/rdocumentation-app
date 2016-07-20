@@ -343,15 +343,11 @@ module.exports = {
     var alias = req.param('alias');
     return RStudioService.orderedFindByAlias(packageName,alias).then(function(json){
       if(json.length == 0){
-        console.log("querying elasticsearch");
         return ElasticSearchService.fuzzyAliasAndPackage(alias,packageName).then(function(json){
-          console.log("results"+json);
-          res.ok(json,'rStudio/function_not_found.ejs');
+          return res.ok(json,'rStudio/function_not_found.ejs');
         });
       }
       if(json.length == 1){
-        console.log("redirecting");
-        console.log(json[0]);
         return res.ok(json[0],'topic/show.ejs');
       }
       else{

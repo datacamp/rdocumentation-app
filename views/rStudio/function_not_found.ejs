@@ -20,7 +20,7 @@
             <% for(var i = 0; i < topics.length; ++i) { %>
               <%var topic = topics[i];%>            
               <tr>
-                <td><a href="<%= '/topics/' + topic.id %>"><%= topic.function_name %> (alias:<%=topic.function_alias%>)</a></td>
+                <td><a href="<%= '/packages/' + topic.package_name +'/versions/'+topic.package_version+'/topics/'+topic.function_name %>"><%= topic.function_name %> (alias:<%=topic.function_alias%>)</a></td>
                 <td><%- topic.package_name %></td>
                 <td><%- topic.function_description%></td>
               </tr>
