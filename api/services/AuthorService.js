@@ -94,27 +94,24 @@ module.exports = {
 
   extractPersonInfo: function(person) {
     var match = person.match(Utils.emailRegex);
+    var personJSON = {};
     if(match) {
-      var personName = person
-        .replace(Utils.emailRegex, '')
-        .replace(/[^\w\s]/gi, '') // remove all special characters
-        .replace(/(?: (aut|com|ctb|cph|cre|ctr|dtc|ths|trl)$)|(?:^(aut|com|ctb|cph|cre|ctr|dtc|ths|trl)(?= ))|(?: (aut|com|ctb|cph|cre|ctr|dtc|ths|trl)(?= ))/g, '')
-        .trim(); // trim it
-      return {
-        name: personName,
-        email: match[0].trim()
-      };
-    } else {
-      return { name: person.replace(/[^\w\s]/gi, '').trim() };
+      person = person.replace(Utils.emailRegex, '');
+      personJSON.email = match[0].trim();
     }
+
+    personJSON.name = person.match(/(\s*([A-Z][^\s,&]*)\s*)+/)[0].trim();
+
+    return personJSON;
+
   },
 
   authorsSanitizer: function(authorString) {
     // var authorString = "Jean Marc and Ally Son, RIP R. & Hello World!"
     var sanitized = authorString.replace('<email>', '')
                                 .replace('</email>', '')
-                                .replace(/\s+/g, ' ')
                                 .trim();
+
 
     var separated = sanitized.split(/,|and|&|;/);
 

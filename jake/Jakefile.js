@@ -19,6 +19,18 @@ task('recoverPackageVersions',['sails-load'], {async: true}, function(){
 });
 
 
+task('test-extraction',['sails-load'], function(){
+  var nlp = require('nlp_compromise');
+
+  var sanitized = AuthorService.authorsSanitizer("Luciano Souza <lcnsza@gmail.com>, Lucas Gallindo <lgallindo@gmail.com>, Luciano Serafim de Souza <lucianoserafimdesouza@gmail.com>");
+
+  console.log(sanitized);
+
+});
+
+
+
+
 
 
 desc('Call a fn in sails');
