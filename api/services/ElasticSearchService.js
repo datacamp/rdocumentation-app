@@ -140,7 +140,7 @@ module.exports = {
   //download first 10000 results and proceed by processing and scrolling
   dailyDownloadsBulk:function(days, callback){
     var body = ElasticSearchService.queries.filters.lastMonthDownloads(days);
-
+    if (days < 1) return Promise.resolve("Nothing to do");
 
     return es.search({
       scroll:'5M',
@@ -148,7 +148,6 @@ module.exports = {
       body: body,
     }, function processAndGetMore(error,response){
       //check the response
-      console.log(response.hits.total);
       if (typeof response === "undefined") {
         var err ="you received an undefined response, response:"+response+
         "\n this was probably caused because there were no stats yet for this day"+
