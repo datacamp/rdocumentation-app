@@ -240,7 +240,8 @@ module.exports = {
               }),
               function(instanceCreatedArray, keywordsInstances) {
                 var topicInstance = instanceCreatedArray[0];
-                topicInstance.set(_.pick(topic, ['title', 'description', 'usage', 'details', 'value', 'references', 'note', 'seealso', 'examples']));
+                topicInstance.set(_.pick(topic, ['title', 'description', 'usage', 'details', 'value', 'references', 'note', 'seealso', 'examples', 'author', 'sourceJSON']));
+
                 var topicArguments = _.isEmpty(rdJSON.arguments) ? [] : rdJSON.arguments.map(function(argument) {
                   var arg = _.mapValues(argument, arrayToString);
                   return _.merge({}, arg, {topic_id: topicInstance.id});
