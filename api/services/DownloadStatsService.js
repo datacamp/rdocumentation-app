@@ -24,23 +24,34 @@ module.exports = {
     }
   },
 
+  binarySearchIncludes: function (haystack, needle) {
+    return _.sortedIndexOf(haystack, needle) !== -1 ;
+  },
+
   processDownloads:function(response,directDownloads,indirectDownloads,total,callback) {
     var hits = response.hits.hits;
-    var binarySearchIncludes = function (haystack, needle) {
-      return _.sortedIndexOf(haystack, needle) !== -1 ;
+    var _response = {
+      hits: { total: response.hits.total },
+      _scroll_id: response._scroll_id
     };
+    var hit_date = hits[1].fields.datetime[0];
+    var date = new Date(hit_date);
+    var formattedDate = dateFormat(date, "yyyy-mm-dd").toString();
 
     Promise.map(hits, function(hit, i) {
       //execute queries to find inverse dependencies for all hits asynchronous, and find indirect hits before and after in ordered records
       var package_name = hit.fields.package[0];
       return DownloadStatsService.getReverseDependencies(package_name).then(function(rootPackageNames) {
 
-        indirect = false;
-        j=i+1;
+        var indirect = false;
+        var j=i+1;
+
+        var thisHitTimestamp = new Date(hit.fields.datetime[0]).getTime();
+
         while (!indirect && j<hits.length && hits[j].fields.ip_id[0] == hit.fields.ip_id[0] &&
-          new Date(hits[j].fields.datetime[0]).getTime()< (new Date(hit.fields.datetime[0]).getTime()+60000)
+          new Date(hits[j].fields.datetime[0]).getTime()< (thisHitTimestamp+60000)
         ) {
-          if(binarySearchIncludes(rootPackageNames,hits[j].fields.package[0])) {
+          if(DownloadStatsService.binarySearchIncludes(rootPackageNames,hits[j].fields.package[0])) {
             indirectDownloads[package_name] = indirectDownloads[package_name]+1 || 1;
             indirect=true;
           }
@@ -48,10 +59,10 @@ module.exports = {
         }
         j=i-1;
         while (j>=0 && hits[j].fields.ip_id[0] == hit.fields.ip_id[0] &&
-          new Date(hits[j].fields.datetime[0]).getTime()+60000> (new Date(hit.fields.datetime[0]).getTime()) &&
+          new Date(hits[j].fields.datetime[0]).getTime()+60000> (thisHitTimestamp) &&
           !(indirect)
         ) {
-          if(binarySearchIncludes(rootPackageNames,hits[j].fields.package[0])) {
+          if(DownloadStatsService.binarySearchIncludes(rootPackageNames,hits[j].fields.package[0])) {
             indirectDownloads[package_name] = indirectDownloads[package_name]+1 || 1;
             indirect=true;
           }
@@ -62,10 +73,9 @@ module.exports = {
         }
       });
 
-    }, {concurrency: 10}).then(function(){
-      dateBadFormat = new Date(date=hits[1].fields.datetime[0]);
-      date = dateFormat(dateBadFormat, "yyyy-mm-dd").toString();
-      return ElasticSearchService.scrollDailyDownloadsBulk(response,date,directDownloads,indirectDownloads,total,callback);
+    }, {concurrency: 3}).then(function(){
+
+      return ElasticSearchService.scrollDailyDownloadsBulk(_response,formattedDate,directDownloads,indirectDownloads,total,callback);
     });
   },
 
