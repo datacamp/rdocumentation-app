@@ -224,10 +224,12 @@ jake.addListener('complete', function () {
 });
 
 task('parse-author', ['sails-load'], {async: true}, function () {
-  AuthorService.recoverAuthorsR().then(function() {
-    
+  //console.log(AuthorService.recoverAuthorsR({"Package":"proxy","Type":"Package","Title":"Distance and Similarity Measures","Version":"0.4-14","Date":"2015-02-03","Authors@R":"c(person(given = \"David\", family = \"Meyer\", role = c(\"aut\", \"cre\"), email = \"David.Meyer@R-project.org\"),\n             person(given = \"Christian\", family = \"Buchta\", role = \"aut\"))","Description":"Provides an extensible framework for the efficient calculation of auto- and cross-proximities, along with implementations of the most popular ones. ","Depends":"R (>= 2.4.0)","Suggests":"cba","Collate":"registry.R database.R dist.R similarities.R dissimilarities.R\n        util.R seal.R","License":"GPL-2","Packaged":"2015-02-04 13:09:30 UTC; david","Author":"David Meyer [aut, cre],\n  Christian Buchta [aut]","Maintainer":"David Meyer <David.Meyer@R-project.org>","NeedsCompilation":"yes","Repository":"CRAN","Date/Publication":"2015-02-04 22:24:48","repoType":"cran"}));
+  AuthorService.parseAllAuthors().then(function(){
     complete();
   });
+  //console.log(AuthorService.authorsSanitizer("Sourav Chatterjee [aut, cre]"));
+  //complete();
 });
 
 

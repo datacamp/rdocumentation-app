@@ -136,6 +136,10 @@ module.exports = {
 
     classMethods: {
 
+      getAllVersions: function(){
+        return PackageVersion.findAll({ where:{ id:{  gt: 200,lte: 400  }}});
+      },
+
       upsertPackageVersion: function(packageVersion, opts) {
 
         var options = _.defaults(_.clone(opts), { where: {name: packageVersion.package_name} });

@@ -123,33 +123,25 @@ module.exports = {
 
   },
 
-  recoverAuthorsR: function(){
-    var authorsRExample = function () {
-      return sequelize.query("SELECT * FROM rdoc.PackageVersions Where id =76", { type: sequelize.QueryTypes.SELECT});
-    };
-    return authorsRExample().then(function(Result){
-      var json = JSON.parse(Result[0].sourceJSON);
+  recoverAuthorsR: function(json){
+      //var json = JSON.parse(sourceJSON);
       var person = json["Authors@R"].split("person(");
       person.shift();
       var hasMaintainer = false;
-      var promises = [];
-      return PackageVersion.findById(Result[0].id).then(function(b){
+      var result = {
+        contributors : [],
+        maintainer : {}
+      };
       person.forEach(function(str){
         var list = str.split(",");
         var name = "", family = "", email, isMaintainer = false;
+        name = list.shift().split("\"")[1];
+        family = list.shift().split("\"")[1];
         list.forEach(function(piece){
-          console.log(piece);
-          if(piece.indexOf("given")>=0){
-            name = piece.split("\"")[1];
-          }
-          if(piece.indexOf("family")>=0){
-            family = piece.split("\"")[1];
-          }
           if(piece.indexOf("email")>=0){
             email = piece.split("\"")[1];
           }
           if(piece.indexOf("cre")>=0&&!hasMaintainer){
-            console.log("checking");
             isMaintainer=true;
             hasMaintainer=true;
           }
@@ -158,18 +150,43 @@ module.exports = {
         var author = {};
         author.name = fullName;
         author.email = email;
-        promises.push(Collaborator.insertAuthor(author).then(function(auth){
-            return b.addCollaborator(auth).then(function(){              
-              if(isMaintainer){
-              b.maintainer_id = auth.id;
-              return b.save();
-            }
-            });
-        }));
+        result.contributors.push(author);
+        if(isMaintainer){
+          result.maintainer = author;
+        }
         });
-      return Promise.all(promises);
-      });
-  });
-  }
+      return result;
+  },
 
+  parseAllAuthors: function(){
+    return PackageVersion.getAllVersions().then(function(Results){
+      var promises = [];
+      Results.forEach(function(Result){
+      if(Result.sourceJSON){
+        json = JSON.parse(Result.sourceJSON);
+        try{
+        var auth = {contributors : []};
+        if(json["Authors@R"]){
+          var auth = AuthorService.recoverAuthorsR(json);
+        }
+        else{
+          if(json["Author"]){
+            auth["contributors"]=AuthorService.authorsSanitizer(json["Author"]); 
+          }
+          if(json["Maintainer"]){
+          auth["maintainer"]  =AuthorService.authorsSanitizer(json["Maintainer"])[0];
+          }
+        }
+        promises.push(Collaborator.insertAllAuthors(auth,Result));
+      }
+      catch(err){
+        console.log("Warning: " + Result.id);
+        console.log(json["Author"]);
+        console.log(json["Maintainer"]);
+      }
+    }
+      });
+      return Promise.all(promises);
+    })
+  }
 };

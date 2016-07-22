@@ -76,6 +76,25 @@ module.exports = {
             return instance.update({email: author.email}, options);
           } else return instance;
         });
+      },
+
+      insertAllAuthors: function(json,version){
+        promises = [];
+        json.contributors.forEach(function(contributor){
+          promises.push(Collaborator.insertAuthor(contributor).then(function(auth){
+            return version.addCollaborator(auth);
+          }));
+        });
+        if(json.maintainer){
+        var maintainer = json.maintainer;
+        promises.push(Collaborator.insertAuthor(maintainer).then(function(auth){
+           return version.addCollaborator(auth).then(function(){
+             version.maintainer_id = auth.id;
+             return version.save()
+           });
+         }));
+      } 
+        return Promise.all(promises);
       }
 
     }
@@ -83,4 +102,3 @@ module.exports = {
   }
 
 };
-
