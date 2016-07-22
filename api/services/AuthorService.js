@@ -189,6 +189,7 @@ module.exports = {
         }
         return Collaborator.insertAllAuthors(auth,Result);
     }
+      return;
       });
     })
   }
