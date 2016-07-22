@@ -8,33 +8,32 @@ module.exports = {
 
   },
 
+  getReverseDependencies: function(package_name) {
+    var reverseDependencies = DownloadStatsService.reverseDependenciesCache[package_name];
+    if (reverseDependencies) {
+      return Promise.resolve(reverseDependencies);
+    } else {
+      return Dependency.findByDependantForIndependentDownloads(package_name).then(function(rootPackages) {
+        var rootPackageNames = _.map(rootPackages,function(package){
+          return package.package_name;
+        });
+        rootPackageNames = _.sortBy(rootPackageNames);
+        DownloadStatsService.reverseDependenciesCache[package_name] = rootPackageNames;
+        return rootPackageNames;
+      });
+    }
+  },
+
   processDownloads:function(response,directDownloads,indirectDownloads,total,callback) {
     var hits = response.hits.hits;
-    promises = [];
     var binarySearchIncludes = function (haystack, needle) {
       return _.sortedIndexOf(haystack, needle) !== -1 ;
     };
 
-    var getReverseDependencies = function(package_name) {
-      var reverseDependencies = DownloadStatsService.reverseDependenciesCache[package_name];
-      if (reverseDependencies) {
-        return Promise.resolve(reverseDependencies);
-      } else {
-        return Dependency.findByDependantForIndependentDownloads(package_name).then(function(rootPackages) {
-          var rootPackageNames = _.map(rootPackages,function(package){
-            return package.package_name;
-          });
-          rootPackageNames = _.sortBy(rootPackageNames);
-          DownloadStatsService.reverseDependenciesCache[package_name] = rootPackageNames;
-          return rootPackageNames;
-        });
-      }
-    };
-    //loop over all hits
-    hits.forEach(function(hit,i) {
+    Promise.map(hits, function(hit, i) {
       //execute queries to find inverse dependencies for all hits asynchronous, and find indirect hits before and after in ordered records
       var package_name = hit.fields.package[0];
-      var promise = getReverseDependencies(package_name).then(function(rootPackageNames) {
+      return DownloadStatsService.getReverseDependencies(package_name).then(function(rootPackageNames) {
 
         indirect = false;
         j=i+1;
@@ -63,10 +62,7 @@ module.exports = {
         }
       });
 
-      promises.push(promise);
-    });
-    //when all promises are resolved, proceed and scroll search results
-    Promise.all(promises).then(function(){
+    }, {concurrency: 10}).then(function(){
       dateBadFormat = new Date(date=hits[1].fields.datetime[0]);
       date = dateFormat(dateBadFormat, "yyyy-mm-dd").toString();
       return ElasticSearchService.scrollDailyDownloadsBulk(response,date,directDownloads,indirectDownloads,total,callback);

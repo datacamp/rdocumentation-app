@@ -47,7 +47,7 @@ module.exports = {
       lastMonthDownloads: function(n){
         return {
           "size": "10000",
-          "fields": ["datetime","ip_id","package","version"],
+          "fields": ["datetime","ip_id","package"],
           "sort": [
             {"ip_id":{"order":"asc","ignore_unmapped" : true}},
             {"datetime":{"order":"asc","ignore_unmapped" : true}}
