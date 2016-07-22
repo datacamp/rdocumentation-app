@@ -61,9 +61,14 @@ module.exports = {
       }
       var range = _.range(1, nDays);
       Promise.map(range, function (nDay) {
+        console.log("Started indexing for today - " + nDay + "days");
         return CronService.splittedAggregatedDownloadstats(nDay)
           .catch({message: "empty"}, function() {
             console.log("No stats for this time range yet");
+            return 1;
+          })
+          .catch(function(err) {
+            console.log("Undefined response");
             return 1;
           });
       }, {concurrency: 1})
