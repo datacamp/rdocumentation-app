@@ -16,6 +16,7 @@ server:
   build: .
   volumes:
     - .:/opt/app
+    - /opt/app/node_modules/
   ports:
     - "1337:1337"
   env_file: .env

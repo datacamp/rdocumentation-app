@@ -45,6 +45,12 @@ module.exports = {
 
   grunt: {
     _hookTimeout: 60000
+  },
+
+  routes: {
+    'post /tasks': 'WorkerController.processMessage',
+    'get /index-stats': 'WorkerController.indexStats',
+    'get /last-day-splitted-stats': 'WorkerController.lastDaySplittedDownloads'
   }
 
 
