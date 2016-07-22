@@ -100,7 +100,13 @@ module.exports = {
       personJSON.email = match[0].trim();
     }
 
-    personJSON.name = person.match(/(\s*([A-Z][^\s,&]*)\s*)+/)[0].trim();
+    //console.log(person);
+    if(person.match(/(\s*([A-Z][^\s,&]*)\s*)+/i)){
+    personJSON.name = person.match(/(\s*([A-Z][^\s,&]*)\s*)+/i)[0].trim();
+    } else {
+      personJSON = undefined;
+      console.log(person);
+    }
 
     return personJSON;
 
@@ -110,16 +116,22 @@ module.exports = {
     // var authorString = "Jean Marc and Ally Son, RIP R. & Hello World!"
     var sanitized = authorString.replace('<email>', '')
                                 .replace('</email>', '')
+                                .replace(/\[.*?\]/,'')
+                                .replace(/\(.*?\)/,'')
                                 .trim();
 
 
-    var separated = sanitized.split(/,|and|&|;/);
+    var separated = sanitized.replace('\n','').replace('\t','').split(/,\s*and|,|\sand|&|;/);
 
     var trimmed = separated.map(function(item) {return item.trim();});
+    //console.log(trimmed);
 
     var mapped = trimmed.map(AuthorService.extractPersonInfo);
 
-    return mapped;
+    var filtered = mapped.filter(function(item){if(item == undefined){return false;} return true;});
+    console.log(filtered);
+
+    return filtered;
 
   },
 
@@ -160,11 +172,9 @@ module.exports = {
 
   parseAllAuthors: function(){
     return PackageVersion.getAllVersions().then(function(Results){
-      var promises = [];
-      Results.forEach(function(Result){
+      return Promise.map(Results, function(Result){
       if(Result.sourceJSON){
         json = JSON.parse(Result.sourceJSON);
-        try{
         var auth = {contributors : []};
         if(json["Authors@R"]){
           var auth = AuthorService.recoverAuthorsR(json);
@@ -177,16 +187,9 @@ module.exports = {
           auth["maintainer"]  =AuthorService.authorsSanitizer(json["Maintainer"])[0];
           }
         }
-        promises.push(Collaborator.insertAllAuthors(auth,Result));
-      }
-      catch(err){
-        console.log("Warning: " + Result.id);
-        console.log(json["Author"]);
-        console.log(json["Maintainer"]);
-      }
+        return Collaborator.insertAllAuthors(auth,Result);
     }
       });
-      return Promise.all(promises);
     })
   }
 };

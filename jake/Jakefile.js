@@ -228,7 +228,7 @@ task('parse-author', ['sails-load'], {async: true}, function () {
   AuthorService.parseAllAuthors().then(function(){
     complete();
   });
-  //console.log(AuthorService.authorsSanitizer("Sourav Chatterjee [aut, cre]"));
+  //console.log(AuthorService.authorsSanitizer("Sebastian Calonico <calonico@umich.edu>, Matias D. Cattaneo \n\t<cattaneo@umich.edu>, Rocio Titiunik <titiunik@umich.edu>"));
   //complete();
 });
 

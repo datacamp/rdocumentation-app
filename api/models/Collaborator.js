@@ -6,6 +6,7 @@
 
  */
 var _ = require('lodash');
+var Promise = require('bluebird');
 var md5 = require('md5');
 
 module.exports = {
@@ -78,7 +79,7 @@ module.exports = {
         });
       },
 
-      insertAllAuthors: function(json,version){
+      insertAllAuthors2: function(json,version){
         promises = [];
         json.contributors.forEach(function(contributor){
           promises.push(Collaborator.insertAuthor(contributor).then(function(auth){
@@ -90,11 +91,30 @@ module.exports = {
         promises.push(Collaborator.insertAuthor(maintainer).then(function(auth){
            return version.addCollaborator(auth).then(function(){
              version.maintainer_id = auth.id;
-             return version.save()
+             return version.save();
            });
          }));
       } 
         return Promise.all(promises);
+      },
+
+      insertAllAuthors: function(json,version){
+        return Promise.map(json.contributors,function(contributor){
+          return Collaborator.insertAuthor(contributor).then(function(auth){
+            return version.addCollaborator(auth);
+          });
+        }).then(function(){
+          if(json.maintainer){
+        var maintainer = json.maintainer;
+        return Collaborator.insertAuthor(maintainer).then(function(auth){
+           return version.addCollaborator(auth).then(function(){
+             version.maintainer_id = auth.id;
+             return version.save();
+           });
+         });
+      }
+
+        });
       }
 
     }
