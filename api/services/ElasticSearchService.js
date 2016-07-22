@@ -153,7 +153,7 @@ module.exports = {
         "\n this was probably caused because there were no stats yet for this day"+
         "\n or processing time took over 5 minutes (the scroll interval";
         callback(err);
-      } else if (response.hits.total === 0) { return callback({message: "empty"}); }
+      } else if (typeof response.hits === "undefined" || response.hits.total === 0) { return callback({message: "empty"}); }
       else DownloadStatsService.processDownloads(response,{},{},10000,callback);
     });
   },
