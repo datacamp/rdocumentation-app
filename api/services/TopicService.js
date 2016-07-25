@@ -28,6 +28,8 @@ module.exports = {
             var current = $(elem).attr('href');
             var rdOptions = $(elem).attr('rd-options');
             if(!current) return;
+            var absolutePattern = /^https?:\/\//i;
+            if (absolutePattern.test(current)) return;
             if (rdOptions === '' || !rdOptions) {
               $(elem).attr('href', url.resolve(basePath, encodeURIComponent(current)) +
                 '?package=' + encodeURIComponent(packageVersion.package_name) +
