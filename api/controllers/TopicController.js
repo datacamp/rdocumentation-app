@@ -119,7 +119,8 @@ module.exports = {
         include: [{
           model: PackageVersion,
           as: 'package_version',
-          where: { package_name: packageName, version: packageVersion }
+          where: { package_name: packageName, version: packageVersion },
+          include: { model: Package, as: 'package', attributes: ['name', 'latest_version_id']}
         }]
       }).then(function(topic) {
         if(topic === null) return null;
