@@ -119,7 +119,8 @@ module.exports = {
         include: [{
           model: PackageVersion,
           as: 'package_version',
-          where: { package_name: packageName, version: packageVersion }
+          where: { package_name: packageName, version: packageVersion },
+          include: { model: Package, as: 'package', attributes: ['name', 'latest_version_id']}
         }]
       }).then(function(topic) {
         if(topic === null) return null;
@@ -308,7 +309,7 @@ module.exports = {
       if(json === null) {
         return res.notFound();
       } else {
-        return res.redirect(json.uri);
+        return res.redirect(301, json.uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);
@@ -354,7 +355,7 @@ module.exports = {
         return res.notFound();
       } else {
         var prefix = req.path.startsWith('/api/') ? '/api' : '';
-        return res.redirect(prefix + package.latest_version.uri + '/topics/' + functionName);
+        return res.redirect(301, prefix + package.latest_version.uri + '/topics/' + functionName);
       }
     }).catch(function(err) {
       return res.negotiate(err);

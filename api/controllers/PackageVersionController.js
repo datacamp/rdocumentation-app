@@ -105,9 +105,11 @@ module.exports = {
           { model: Collaborator, as: 'collaborators' },
           { model: Package, as: 'dependencies' },
           { model: Package, as: 'package', include: [
-            { model: PackageVersion, as: 'versions', attributes:['package_name', 'version'], separate: true },
-            { model: TaskView, as: 'inViews', attributes:['name'] }
-          ]},
+              { model: PackageVersion, as: 'versions', attributes:['package_name', 'version'], separate: true },
+              { model: TaskView, as: 'inViews', attributes:['name'] }
+            ],
+            attributes: ['name', 'latest_version_id']
+          },
           { model: Topic, as: 'topics',
             attributes: ['package_version_id', 'name', 'title', 'id'],
             include:[{model: Review, as: 'reviews'}],

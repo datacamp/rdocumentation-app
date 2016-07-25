@@ -150,6 +150,7 @@ module.exports = {
         var packageVersion = PackageService.mapDescriptionToPackageVersion(description);
         packageVersion.fields.sourceJSON = JSON.stringify(description);
         packageVersion.fields.readmemd = readmemd;
+        packageVersion.fields.license = packageVersion.fields.license || "";
 
         return sequelize.transaction(function (t) {
           var package = Repository.findOrCreate({
