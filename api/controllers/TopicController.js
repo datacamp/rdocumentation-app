@@ -195,7 +195,8 @@ module.exports = {
         include: [{
           model: PackageVersion,
           as: 'package_version',
-          attributes: ['package_name', 'version']
+          attributes: ['package_name', 'version'],
+          include: { model: Package, as: 'package', attributes: ['name', 'latest_version_id']}
         }]
       }).then(function(topic) {
         if(topic === null) return null;

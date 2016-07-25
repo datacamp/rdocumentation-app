@@ -130,6 +130,16 @@ module.exports = {
         var old = this.getDataValue('details');
         if(old) return old.replace(/\n\n/g, "<br />");
         else return old;
+      },
+      canonicalLink: function() {
+        if(this.package_version) {
+          var isLatestVersion = this.package_version.package.latest_version_id === this.package_version_id;
+          if(isLatestVersion) return null;
+          return sails.getUrlFor({ target: 'Topic.redirect' })
+            .replace(':name', encodeURIComponent(this.package_version.package_name))
+            .replace(':function', encodeURIComponent(this.name))
+            .replace('/api/', '/');
+        } else return null;
       }
     },
 
