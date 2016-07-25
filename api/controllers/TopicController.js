@@ -411,10 +411,26 @@ module.exports = {
     var pattern = req.param("pattern");
     var fields = req.param("fields");
     fields = fields.split(",");
-    var fuzzy = req.parram("fuzzy");
-    var max_dist = req.param("max_dist");
+    var fuzzy = req.param("fuzzy");
+    if(fuzzy == "TRUE"){
+      fuzzy = true;
+    }
+    else{
+      fuzzy = false;
+    }
+    var max_dist = parseInt(req.param("max_dist"));
     var ignore_case = req.param("ignore_case");
-  }
+    if(ignore_case == "TRUE"){
+      ignore_case = true;
+    }
+    else{
+      ignore_case = false;
+    }
+    ElasticSearchService.helpSearchQuery(pattern,fields,fuzzy,max_dist,ignore_case).then(function(json){
+      return res.ok(json,'rStudio/list_options.ejs');
+    })
+
+  },
 
   rating: function(req, res) {
     var topicId = req.param('id'),

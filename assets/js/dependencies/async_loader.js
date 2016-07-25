@@ -49,9 +49,10 @@ $(function() {
     // Helper function to grab new HTML
     // and replace the content
     window.replacePage = function(url) {
+      var base = $('base').text();
       $.ajax({
         type: 'GET',
-        url: 'http://localhost:1337' + url + '?viewer_pane=1',
+        url: base + url + '?viewer_pane=1',
         cache: false,
         dataType: 'html',
         xhrFields: {

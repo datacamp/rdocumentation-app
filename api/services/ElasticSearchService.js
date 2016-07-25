@@ -281,5 +281,122 @@ module.exports = {
           });
       }
     });
+  },
+  helpSearchQuery:function(pattern,fields,fuzzy,max_dist,ignore_case){
+    var t = '{ "index" : "rdoc",'+
+              '"body" : {'+
+                '"query":{'+
+                  '"bool":'+
+                  '{ '+
+                    '"filter":'+
+                    '['+
+                '{'+
+                 ' "type" : {'+
+                    '"value": "topic"'+
+                  '}'+
+                '},'+
+                '{'+
+                    '"has_parent" : {'+
+                        '"parent_type" : "package_version",'+
+                            '"query" : {'+
+                            '"term" : {'+
+                                '"latest_version" : 1'+
+                            '}'+
+                        '},'+
+                        '"inner_hits" : { "fields": ["package_name", "version", "latest_version"] }'+
+                    '}'+
+                '}'+
+            '],'+
+            '"should": ['+
+            '{ ';
+      for(var i = 0;i<fields.length;i++){
+      if(fuzzy){
+        t= t.concat(
+          '"match": '+
+           ' { "' + fields[i]+ '":'+ 
+            '              {'+
+             '             "query" :"'+ pattern +'",'+
+              '            "fuzziness" :' +max_dist +
+               '           }'+
+               '      }'+
+              '},{');
+      }
+      else{
+        t = t.concat(''+
+          '"regexp": '+
+           '           { "'+fields[i]+'":"'+pattern+'"} '+
+            '  },{');
+      }
+      }
+      t = t.concat(''+
+                '"has_parent" : {'+
+                '"score_mode": "score",'+
+                '"parent_type" : "package_version",'+
+                '"query" : {'+
+                    '"has_parent ":{'+
+                        '"query":{'+
+                            '"function_score" : {'+
+                                '"functions": ['+
+                                  '{'+
+                                    '"filter": { "missing" : { "field" : "part_of_r" } },'+
+                                    '"field_value_factor": {'+
+                                      '"field":    "last_month_downloads",'+
+                                      '"modifier": "log1p"'+
+                                    '}'+
+                                  '},'+
+                                  '{'+
+                                   ' "filter": { "exists" : { "field" : "part_of_r" } },'+
+                                    '"field_value_factor": {'+
+                                      '"field":    "part_of_r",'+
+                                      '"modifier": "log1p",'+
+                                      '"factor": 300000'+
+                                    '}'+
+                                  '}'+
+                                '],'+
+                                '"boost_mode": "replace"'+
+                              '}'+
+                            '},'+
+                            '"parent_type" : "package",'+
+                            '"score_mode" : "score"'+
+                        '}'+
+                    '},';
+
+                '"query" :{ '+
+                    '"match": '+
+                        '{ "package_name":'+ 
+                            '{'+
+                            '"query" :         "fs",'+
+                            '"fuzziness" :     2'+
+                            '}'+
+                        '}'+
+                    '}'+
+                '}'+
+            '}'+
+            '],'+
+            '"minimum_number_should_match": 1'+
+        '}'+
+        
+    '},'+
+    '"size": 10,'+
+    '"fields": ["package_name", "version", "name","aliases","description"]'+
+'}}');
+  return es.search(JSON.parse(t)).then(function(response){
+      console.log(response);
+      if(parseInt(response.hits.total) == 0){
+        return [];
+      }
+      else{
+        return _.map(response.hits.hits,function(record){
+                  return {
+                  id:record._id,
+                  package_name:record.inner_hits.package_version.hits.hits[0].fields.package_name[0],
+                  package_version:record.inner_hits.package_version.hits.hits[0].fields.version[0],
+                  function_name:record.fields.name[0],
+                  function_alias:record.fields.aliases,
+                  function_description:record.fields.description[0]
+                  };
+          });
+      }
+    });
   }
 };
