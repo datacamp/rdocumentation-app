@@ -308,7 +308,7 @@ module.exports = {
       if(json === null) {
         return res.notFound();
       } else {
-        return res.redirect(json.uri);
+        return res.redirect(301, json.uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);
@@ -354,7 +354,7 @@ module.exports = {
         return res.notFound();
       } else {
         var prefix = req.path.startsWith('/api/') ? '/api' : '';
-        return res.redirect(prefix + package.latest_version.uri + '/topics/' + functionName);
+        return res.redirect(301, prefix + package.latest_version.uri + '/topics/' + functionName);
       }
     }).catch(function(err) {
       return res.negotiate(err);

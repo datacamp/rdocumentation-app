@@ -50,7 +50,7 @@ module.exports = {
         return res.json(package);
       } else {
         if (package.versions.length === 0) return res.notFound();
-        return res.redirect(package.versions[package.versions.length - 1].uri);
+        return res.redirect(301, package.versions[package.versions.length - 1].uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);
