@@ -340,12 +340,44 @@ module.exports = {
   },
   orderedFindByAlias : function(req,res){
     var packageName = req.param('package');
+    if(typeof packageName != "undefined"){
+      packageNames= packageName.split(",");
+    }
+    else{
+      packageNames =null;
+    }    
     var alias = req.param('alias');
-    return RStudioService.orderedFindByAlias(packageName,alias).then(function(json){
+    console.log("alias " + alias);
+    if(alias=="NULL"){
+      return RStudioService.findPackage(packageName).then(function(version){
+        if(version == null){
+          return RStudioService.findPackage("%".concat(packageName).concat("%")).then(function(version){
+            if(version == null){
+              return res.ok([],'rStudio/function_not_found.ejs');
+            }
+            else{
+              return res.ok(version,'package_version/show.ejs');
+            }
+          });
+        }
+        else{
+          return res.ok(version,'package_version/show.ejs');
+        }
+      });
+    };
+    return RStudioService.orderedFindByAlias(packageNames,alias,false).then(function(json){
       if(json.length == 0){
-        return ElasticSearchService.fuzzyAliasAndPackage(alias,packageName).then(function(json){
-          return res.ok(json,'rStudio/function_not_found.ejs');
-        });
+        if(packageNames.lenght == 1){
+          console.log("fuzzy query");
+          return ElasticSearchService.fuzzyAliasAndPackage(alias,packageName).then(function(json){
+            return res.ok(json,'rStudio/function_not_found.ejs');
+          });
+        }
+        else{
+          return ElasticSearchService.fuzzyAliasAndPackage(alias).then(function(json){
+            return res.ok(json,'rStudio/function_not_found.ejs');
+          });
+        }
       }
       if(json.length == 1){
         return res.ok(json[0],'topic/show.ejs');
@@ -355,6 +387,34 @@ module.exports = {
       }
     });
   },
+  multipleHelpTopics:function(req,res){
+    var topics= req.param("topics");
+    topics = topics.split(",");
+    var packages = req.param("packages");
+    packages= packages.split(",");
+    var results = [];
+    var promises = [];
+    for(var i=0;i<topics.length;i++){
+      promises.push(RStudioService.orderedFindByAlias(packages,topics[i],true).then(function(json){
+        results = results.concat(json);
+      }));
+    }
+
+    Promise.all(promises).then(function(){
+      console.log("results");
+      console.log(results);
+      return res.ok(results,'rStudio/list_options.ejs');
+    });
+  },
+
+  fuzzySearch:function(req,res){
+    var pattern = req.param("pattern");
+    var fields = req.param("fields");
+    fields = fields.split(",");
+    var fuzzy = req.parram("fuzzy");
+    var max_dist = req.param("max_dist");
+    var ignore_case = req.param("ignore_case");
+  }
 
   rating: function(req, res) {
     var topicId = req.param('id'),

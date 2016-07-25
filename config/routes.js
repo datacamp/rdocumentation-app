@@ -68,6 +68,7 @@ module.exports.routes = {
     //HTML
     'get /topics/:id': 'Topic.findById',
     'get /packages/:name/topics/:function': 'Topic.redirect',
+    'get /topics/:topics/packages/:packages/help': 'TopicController.multipleHelpTopics',
     'get /packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
     // Backwards compatibility
     'get /packages/:name/functions/:function': 'Topic.redirect',
@@ -105,6 +106,7 @@ module.exports.routes = {
   'get /link/:alias': 'Topic.findByAlias',
   'get /link/:alias/ordered': 'Topic.orderedFindByAlias',
   'get /link/:alias/:package/ordered': 'Topic.orderedFindByAlias',
+  'get /link/:pattern/:fields/:fuzzy/:max_dist/:ignore_case/ordered': 'TopicController.fuzzySearch',
 
   // Search
   'post /api/quick_search': 'SearchController.quickSearch',
