@@ -48,14 +48,14 @@ module.exports = {
                             }
                           },
                           {
-                            "filter": { "term" : { "part_of_r" : 1 } },
+                            "filter": { "term" : { "part_of_r" : 0 } },
                             "field_value_factor": {
                               "field":    "last_month_downloads",
                               "modifier": "log1p"
                             }
                           },
                           {
-                            "filter": { "term" : { "part_of_r" : 0 } },
+                            "filter": { "term" : { "part_of_r" : 1 } },
                             "field_value_factor": {
                               "field":    "part_of_r",
                               "modifier": "log1p",
