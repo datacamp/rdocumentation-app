@@ -67,6 +67,7 @@ module.exports.routes = {
     'post /api/packages/:name/versions/:version/topics': 'Topic.postRdFile',
     //HTML
     'get /topics/:id': 'Topic.findById',
+    'get /packages/:name/topics/:function': 'Topic.redirect',
     'get /packages/:name/versions/:version/topics/:topic': 'Topic.findByName',
     // Backwards compatibility
     'get /packages/:name/functions/:function': 'Topic.redirect',
