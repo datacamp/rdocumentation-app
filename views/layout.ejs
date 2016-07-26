@@ -10,6 +10,10 @@
 
     <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv=Content-Type content=text/html; charset="UTF-8">
+    <% if( (typeof data !== 'undefined') && (data.description) ) { %>
+      <meta name="description" content="<%= data.description %>" />
+    <% } %>
     <base href="<%= process.env.BASE_URL ? process.env.BASE_URL : '/' %>">
 
     <!--STYLES-->
@@ -20,7 +24,7 @@
     <link rel="stylesheet" href='https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css'>
 
     <% if( (typeof data !== 'undefined') && (data.canonicalLink) ) { %>
-      <link href=<%= data.canonicalLink %> rel="canonical" />
+      <link href="<%= data.canonicalLink %>" rel="canonical" />
     <% } %>
 
     <script type="text/x-mathjax-config">
