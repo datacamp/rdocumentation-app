@@ -36,8 +36,8 @@ module.exports = {
 
   routes: {
     'post /tasks': 'WorkerController.processMessage',
-    'get /index-stats': 'WorkerController.indexStats',
-    'get /last-day-splitted-stats': 'WorkerController.lastDaySplittedDownloads'
+    'post /index-stats': 'WorkerController.indexStats',
+    'post /last-day-splitted-stats': 'WorkerController.lastDaySplittedDownloads'
   }
 
 };
