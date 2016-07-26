@@ -282,105 +282,138 @@ module.exports = {
       }
     });
   },
-  helpSearchQuery:function(pattern,fields,fuzzy,max_dist,ignore_case){
-    var t = '{ "index" : "rdoc",'+
-              '"body" : {'+
-                '"query":{'+
-                  '"bool":'+
-                  '{ '+
-                    '"filter":'+
-                    '['+
-                '{'+
-                 ' "type" : {'+
-                    '"value": "topic"'+
-                  '}'+
-                '},'+
-                '{'+
-                    '"has_parent" : {'+
-                        '"parent_type" : "package_version",'+
-                            '"query" : {'+
-                            '"term" : {'+
-                                '"latest_version" : 1'+
-                            '}'+
-                        '},'+
-                        '"inner_hits" : { "fields": ["package_name", "version", "latest_version"] }'+
-                    '}'+
-                '}'+
-            '],'+
-            '"should": ['+
-            '{ ';
+  helpSearchQuery:function(pattern,fields,fuzzy,max_dist){
+    var t = {}
+    t["index"] = "rdoc";
+    t["body"] = {
+      "query":{
+        "bool":{
+          "filter":[
+            {
+              "type":
+              {
+                "value":"topic"
+              }
+            },
+            {
+              "has_parent":
+              {
+                "parent_type" : "package_version",
+                "query":{
+                  "term":{
+                    "latest_version":1
+                  }
+                },
+                "inner_hits": { "fields" : ["package_name","version","latest_version"]}
+              }
+            }
+          ],"should":
+          [
+            {},
+            {
+              "has_parent":
+              {
+                "score_mode":"score",
+                "parent_type":"package_version",
+                "query":
+                {
+                  "has_parent":{
+                    "query":{
+                      "function_score":{
+                        "functions":[
+                          {
+                            "filter": {"missing":{"field":"part_of_r"}},
+                            "field_value_factor":
+                            {
+                              "field":"last_month_downloads",
+                              "modifier":"log1p"
+                            }
+                          },
+                          {
+                            "filter": { "exists" : { "field" : "part_of_r" } },
+                            "field_value_factor":
+                            {
+                              "field":    "part_of_r",
+                              "modifier": "log1p",
+                              "factor": 300000
+                            }
+                          }
+                        ],
+                        "boost_mode": "replace"
+                      }
+                    },
+                    "parent_type" : "package",
+                    "score_mode" : "score"
+                  }
+                }
+              }
+            }
+          ],"minimum_number_should_match": 1
+        }
+      },
+      "size":10,
+      "fields": ["package_name", "version", "name","aliases","description"]
+    }
+    if(fuzzy){
+      t["body"]["query"]["bool"]["should"][0]["multi_match"] = {
+        "query":pattern,
+        "fields":fields,
+        "fuzziness":max_dist
+      };
+      if(_.includes(fields,"concept")){
+        t["body"]["query"]["bool"]["should"][0]["query"]={
+          "bool":{
+            "filter":
+            {
+              "term":{"sections.name":"concept"}
+            },
+            "should":
+            [
+             {
+                "match":
+                {
+                    "sections.description":{
+                        "query":pattern,
+                        "fuzziness":max_dist
+                    }
+                }
+              }
+            ]
+          }
+        };
+      }
+    }
+    else{
+      t["body"]["query"]["bool"]["should"][0]["regexp"]={};
       for(var i = 0;i<fields.length;i++){
-      if(fuzzy){
-        t= t.concat(
-          '"match": '+
-           ' { "' + fields[i]+ '":'+ 
-            '              {'+
-             '             "query" :"'+ pattern +'",'+
-              '            "fuzziness" :' +max_dist +
-               '           }'+
-               '      }'+
-              '},{');
+        t["body"]["query"]["bool"]["should"][0]["regexp"][fields[i]] = {
+          "value":pattern
+        };
       }
-      else{
-        t = t.concat(''+
-          '"regexp": '+
-           '           { "'+fields[i]+'":"'+pattern+'"} '+
-            '  },{');
+      if(_.includes(fields,"concept")){
+        t["body"]["query"]["bool"]["should"][0]["query"]={
+          "bool":{
+            "filter":
+            {
+              "term":{"sections.name":"concept"}
+            },
+            "should":
+            [
+             {
+                "regexp":
+                {
+                    "sections.description":{
+                        "value":pattern
+                    }
+                }
+            }
+           ]
+          }
+        };
       }
-      }
-      t = t.concat(''+
-                '"has_parent" : {'+
-                '"score_mode": "score",'+
-                '"parent_type" : "package_version",'+
-                '"query" : {'+
-                    '"has_parent ":{'+
-                        '"query":{'+
-                            '"function_score" : {'+
-                                '"functions": ['+
-                                  '{'+
-                                    '"filter": { "missing" : { "field" : "part_of_r" } },'+
-                                    '"field_value_factor": {'+
-                                      '"field":    "last_month_downloads",'+
-                                      '"modifier": "log1p"'+
-                                    '}'+
-                                  '},'+
-                                  '{'+
-                                   ' "filter": { "exists" : { "field" : "part_of_r" } },'+
-                                    '"field_value_factor": {'+
-                                      '"field":    "part_of_r",'+
-                                      '"modifier": "log1p",'+
-                                      '"factor": 300000'+
-                                    '}'+
-                                  '}'+
-                                '],'+
-                                '"boost_mode": "replace"'+
-                              '}'+
-                            '},'+
-                            '"parent_type" : "package",'+
-                            '"score_mode" : "score"'+
-                        '}'+
-                    '},';
-
-                '"query" :{ '+
-                    '"match": '+
-                        '{ "package_name":'+ 
-                            '{'+
-                            '"query" :         "fs",'+
-                            '"fuzziness" :     2'+
-                            '}'+
-                        '}'+
-                    '}'+
-                '}'+
-            '}'+
-            '],'+
-            '"minimum_number_should_match": 1'+
-        '}'+
-        
-    '},'+
-    '"size": 10,'+
-    '"fields": ["package_name", "version", "name","aliases","description"]'+
-'}}');
-  return es.search(JSON.parse(t)).then(function(response){
+    }
+    console.log(t["body"]["query"]["bool"]["should"]);
+  return es.search(t).then(function(response){
       console.log(response);
       if(parseInt(response.hits.total) == 0){
         return [];
@@ -397,6 +430,9 @@ module.exports = {
                   };
           });
       }
+    })
+    .catch(function(err){
+      console.log(err.message);
     });
-  }
+  } 
 };

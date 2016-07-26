@@ -7,6 +7,7 @@ module.exports = {
 		return Alias.orderedFindByAlias(packageName,alias).then(function(aliases){
 			if (aliases.length == 0) return _notfound(); //no match found anywhere, 404
             if (!multipleQueries && aliases.length == 1) { //if there is only 1 match, redirect to this one
+            	console.log("one alias");
         		return Topic.findOnePopulated({id: aliases[0].id}, {
 			        include: [{
 			          model: PackageVersion,

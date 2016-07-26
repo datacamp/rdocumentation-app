@@ -367,7 +367,7 @@ module.exports = {
     };
     return RStudioService.orderedFindByAlias(packageNames,alias,false).then(function(json){
       if(json.length == 0){
-        if(packageNames.lenght == 1){
+        if(packageNames == null || packageNames.lenght == 1){
           console.log("fuzzy query");
           return ElasticSearchService.fuzzyAliasAndPackage(alias,packageName).then(function(json){
             return res.ok(json,'rStudio/function_not_found.ejs');
@@ -380,6 +380,7 @@ module.exports = {
         }
       }
       if(json.length == 1){
+        console.log(json[0]);
         return res.ok(json[0],'topic/show.ejs');
       }
       else{
@@ -396,6 +397,7 @@ module.exports = {
     var promises = [];
     for(var i=0;i<topics.length;i++){
       promises.push(RStudioService.orderedFindByAlias(packages,topics[i],true).then(function(json){
+        console.log(results);
         results = results.concat(json);
       }));
     }
