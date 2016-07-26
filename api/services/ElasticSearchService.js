@@ -49,7 +49,7 @@ module.exports = {
                       {
                         "range": {
                           "datetime": {
-                            "gte": "now-"+(7+n)+"d/d",
+                            "gte": "now-"+(30+n)+"d/d",
                             "lte": "now-"+(1+n)+"d/d"
                           }
                         }
@@ -67,7 +67,7 @@ module.exports = {
                   "interval": "1d",
                   "min_doc_count": 1,
                   "extended_bounds": {
-                    "min": "now-"+(7+n)+"d/d",
+                    "min": "now-"+(30+n)+"d/d",
                     "max": "now-"+(1+n)+"d/d"
                   }
                 },
