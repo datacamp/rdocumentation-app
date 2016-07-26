@@ -3,11 +3,10 @@ var _ = require('lodash');
 cheerio = require('cheerio');
 
 module.exports = {
-	orderedFindByAlias :function(packageName,alias,multipleQueries){
-		return Alias.orderedFindByAlias(packageName,alias).then(function(aliases){
-			if (aliases.length == 0) return _notfound(); //no match found anywhere, 404
-            if (!multipleQueries && aliases.length == 1) { //if there is only 1 match, redirect to this one
-            	console.log("one alias");
+	orderedFindByAlias :function(packageNames,alias){
+		return Alias.orderedFindByAliases(packageNames,alias).then(function(aliases){
+			if (aliases.length == 0) return []; //no match found anywhere
+            if (aliases.length == 1) { //if there is only 1 match, redirect to this one (except if function is going to run on mutltiple aliases)
         		return Topic.findOnePopulated({id: aliases[0].id}, {
 			        include: [{
 			          model: PackageVersion,
@@ -25,18 +24,9 @@ module.exports = {
 			        }
 			    });
 			}
-            return aliases;
+            return aliases; //return all matches to list
 		});
 	},
-	externalBindGlobalClickHandler: function(html){
-		if(inViewerPane){
-			$  = cheerio.load(html);
-    		$('a:not(.js-external)').unbind('click', window.asyncClickHandler);
-    		$('a:not(.js-external)').bind('click', window.asyncClickHandler); 
-    		return $.html();
-		}
-		return html;		
-  	},
   	findPackage:function(packageName){
   		return PackageVersion.findOne({
         where: {
@@ -96,7 +86,4 @@ module.exports = {
 	  	});
     }
        
-};
-_notfound = function(){	
-	return [];
 };

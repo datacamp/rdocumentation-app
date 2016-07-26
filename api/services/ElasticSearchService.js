@@ -411,28 +411,26 @@ module.exports = {
           }
         };
       }
-    }
-    console.log(t["body"]["query"]["bool"]["should"]);
-  return es.search(t).then(function(response){
-      console.log(response);
-      if(parseInt(response.hits.total) == 0){
-        return [];
-      }
-      else{
-        return _.map(response.hits.hits,function(record){
-                  return {
-                  id:record._id,
-                  package_name:record.inner_hits.package_version.hits.hits[0].fields.package_name[0],
-                  package_version:record.inner_hits.package_version.hits.hits[0].fields.version[0],
-                  function_name:record.fields.name[0],
-                  function_alias:record.fields.aliases,
-                  function_description:record.fields.description[0]
-                  };
-          });
-      }
-    })
-    .catch(function(err){
-      console.log(err.message);
-    });
+    };
+    return es.search(t).then(function(response){
+        if(parseInt(response.hits.total) == 0){
+          return [];
+        }
+        else{
+          return _.map(response.hits.hits,function(record){
+                    return {
+                    id:record._id,
+                    package_name:record.inner_hits.package_version.hits.hits[0].fields.package_name[0],
+                    package_version:record.inner_hits.package_version.hits.hits[0].fields.version[0],
+                    function_name:record.fields.name[0],
+                    function_alias:record.fields.aliases,
+                    function_description:record.fields.description[0]
+                    };
+            });
+        }
+      })
+      .catch(function(err){
+        console.log(err.message);
+      });
   } 
 };

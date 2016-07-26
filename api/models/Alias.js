@@ -54,50 +54,66 @@ module.exports = {
           where: { name: name }
         });
       },
-    orderedFindByAlias : function(packageName,alias) {
-      if(!packageName){
-        return sequelize.query("SELECT SUM(direct_downloads) AS direct_downloads,aka.name AS alias,t.id,t.name,t.description,t.package_version_id,pv.package_name FROM Aliases aka,Topics t,PackageVersions pv,DownloadStatistics d WHERE d.package_name = pv.package_name AND aka.topic_id=t.id AND t.package_version_id=pv.id AND d.date >= current_date() - interval '1' month AND aka.name LIKE ?  GROUP BY t.name ,t.package_version_id,t.id,aka.name ORDER BY SUM(direct_downloads) DESC;",
-          { replacements: [alias], type: sequelize.QueryTypes.SELECT}).then(function(data){
-            console.log(data);
-              allResults = _.map(data,function(record){
-                return {
-                id:record.id,
-                package_name:record.package_name,
-                function_name:record.name,
-                function_alias:record.alias,
-                function_description:record.description
-                };
-              })
-              return allResults;            
-          }).catch(function(err){
-          console.log(err.message);
-        });
-      }
-      else
-        query = "SELECT SUM(direct_downloads) AS direct_downloads,aka.name AS alias,t.id,t.name,t.description,t.package_version_id,pv.package_name FROM Aliases aka,Topics t,PackageVersions pv,DownloadStatistics d WHERE d.package_name = pv.package_name AND aka.topic_id=t.id AND t.package_version_id=pv.id AND d.date >= current_date() - interval '1' month AND aka.name LIKE ? AND pv.package_name IN ("
-        for(var i=0;i<packageName.length-1;i++){
+    orderedFindByAliases : function(packageNames,alias) {
+      query = "SELECT SUM(direct_downloads) AS direct_downloads,aka.name AS alias,t.id,t.name,t.description,t.package_version_id,pv.package_name FROM Aliases aka,Topics t,PackageVersions pv,DownloadStatistics d WHERE d.package_name = pv.package_name AND aka.topic_id=t.id AND t.package_version_id=pv.id AND d.date >= current_date() - interval '1' month AND aka.name = ? ";
+      if(packageNames){
+        query = query.concat("AND pv.package_name IN (")
+        for(var i=0;i<packageNames.length-1;i++){
           query = query.concat("?,");
         }
-        query = query.concat("?");
-        var replace = [alias].concat(packageName);
-        query = query.concat(") GROUP BY t.name ,t.package_version_id,t.id,aka.name ORDER BY SUM(direct_downloads) DESC;");
-        return sequelize.query(query,
-          { replacements: replace, type: sequelize.QueryTypes.SELECT}).then(function(data){
-              allResults = _.map(data,function(record){
-                console.log(record.description);
-                return {
-                id:record.id,
-                package_name:record.package_name,
-                function_name:record.name,
-                function_alias:record.alias,
-                function_description:record.description
-                };
-            })
-            return allResults; 
-         }).catch(function(err){
-          console.log(err.message);
-        });
+        query = query.concat("?)");
+        var replace = [alias].concat(packageNames);
       }
+      else{
+        var replace = [alias]
+      }
+      query = query.concat(" GROUP BY t.name ,t.package_version_id,t.id,aka.name ORDER BY SUM(direct_downloads) DESC;");
+      console.log(query);
+      return sequelize.query(query,
+        { replacements: replace, type: sequelize.QueryTypes.SELECT}).then(function(data){
+            allResults = _.map(data,function(record){
+              return {
+              id:record.id,
+              package_name:record.package_name,
+              function_name:record.name,
+              function_alias:record.alias,
+              function_description:record.description
+              };
+          })
+          return allResults; 
+       }).catch(function(err){
+        console.log(err.message);
+      });
+    },
+    orderedFindByTopicsAndPackages:function(topics,packageNames){
+      query = "SELECT SUM(direct_downloads) AS direct_downloads,aka.name AS alias,t.id,t.name,t.description,t.package_version_id,pv.package_name FROM Aliases aka,Topics t,PackageVersions pv,DownloadStatistics d WHERE d.package_name = pv.package_name AND aka.topic_id=t.id AND t.package_version_id=pv.id AND d.date >= current_date() - interval '1' month AND t.name IN(";
+      for(var i=0;i<packageNames.length-1;i++){
+          query = query.concat("?,");
+      }
+      query = query.concat("?) AND pv.package_name IN (")
+      for(var i=0;i<packageNames.length-1;i++){
+        query = query.concat("?,");
+      }
+      query = query.concat("?)");
+      var replace = topics.concat(packageNames);
+      query = query.concat(" GROUP BY t.name ,t.package_version_id,t.id,aka.name ORDER BY SUM(direct_downloads) DESC;");
+      console.log(query);
+      return sequelize.query(query,
+        { replacements: replace, type: sequelize.QueryTypes.SELECT}).then(function(data){
+            allResults = _.map(data,function(record){
+              return {
+              id:record.id,
+              package_name:record.package_name,
+              function_name:record.name,
+              function_alias:record.alias,
+              function_description:record.description
+              };
+          })
+          return allResults; 
+       }).catch(function(err){
+        console.log(err.message);
+      });
+    }
     }
   }
 };

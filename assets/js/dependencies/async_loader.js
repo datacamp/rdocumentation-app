@@ -17,6 +17,7 @@ $(function() {
       window.bindGlobalClickHandler();
       window.searchHandler(jQuery);
       window.packageVersionToggleHandler(jQuery);
+      window.scrollTo(0,0);
       MathJax.Hub.Queue(["Typeset",MathJax.Hub])
     }
 

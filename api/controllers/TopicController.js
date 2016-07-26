@@ -338,8 +338,18 @@ module.exports = {
       return res.negotiate(err);
     });
   },
-  orderedFindByAlias : function(req,res){
-    var packageName = req.param('package');
+    /**
+  * @api {post} /link/help?[package=][version=] Redirect to a topic
+  * @apiName Get help for topic with alias, package name or topic and packagename
+  * @apiGroup Topic
+  *
+  * @apiParam {String} alias Alias to search for
+  * @apiParam {String} packages The package to get help for if no alias specified, a list of packages to search in if the alias is 
+  *           |        specified (as a string where packages are separated by a comma)
+  */
+  helpFindByAliasAndPackage : function(req,res){
+    //parse parameters
+    var packageName = req.param('packages');
     if(typeof packageName != "undefined"){
       packageNames= packageName.split(",");
     }
@@ -347,66 +357,49 @@ module.exports = {
       packageNames =null;
     }    
     var alias = req.param('alias');
-    console.log("alias " + alias);
-    if(alias=="NULL"){
+    //if no alias, then show the package, if there is no package with that name, redirect to topic_not_found
+    if(typeof alias == "undefined"){
       return RStudioService.findPackage(packageName).then(function(version){
         if(version == null){
-          return RStudioService.findPackage("%".concat(packageName).concat("%")).then(function(version){
-            if(version == null){
-              return res.ok([],'rStudio/function_not_found.ejs');
-            }
-            else{
-              return res.ok(version,'package_version/show.ejs');
-            }
-          });
+          return res.ok([],'rStudio/topic_not_found.ejs');
         }
         else{
           return res.ok(version,'package_version/show.ejs');
         }
       });
     };
-    return RStudioService.orderedFindByAlias(packageNames,alias,false).then(function(json){
+    //if there is an alias, search for it in the specified packages (might be none)
+    return RStudioService.orderedFindByAlias(packageNames,alias).then(function(json){
       if(json.length == 0){
-        if(packageNames == null || packageNames.lenght == 1){
-          console.log("fuzzy query");
-          return ElasticSearchService.fuzzyAliasAndPackage(alias,packageName).then(function(json){
-            return res.ok(json,'rStudio/function_not_found.ejs');
-          });
-        }
-        else{
-          return ElasticSearchService.fuzzyAliasAndPackage(alias).then(function(json){
-            return res.ok(json,'rStudio/function_not_found.ejs');
-          });
-        }
+        //with no results : fuzzy search
+        return ElasticSearchService.helpSearchQuery(alias,['aliases'],true,2).then(function(json){
+          return res.ok(json,'rStudio/topic_not_found.ejs');
+        });
       }
+      //1 result : redirect to result
       if(json.length == 1){
-        console.log(json[0]);
         return res.ok(json[0],'topic/show.ejs');
       }
       else{
+        //multiple results :show options
         return res.ok(json,'rStudio/list_options.ejs');
       }
     });
   },
-  multipleHelpTopics:function(req,res){
-    var topics= req.param("topics");
-    topics = topics.split(",");
-    var packages = req.param("packages");
-    packages= packages.split(",");
-    var results = [];
-    var promises = [];
-    for(var i=0;i<topics.length;i++){
-      promises.push(RStudioService.orderedFindByAlias(packages,topics[i],true).then(function(json){
-        console.log(results);
-        results = results.concat(json);
-      }));
-    }
-
-    Promise.all(promises).then(function(){
-      console.log("results");
-      console.log(results);
-      return res.ok(results,'rStudio/list_options.ejs');
+  helpFindByTopicsAndPackages:function(req,res){
+    var topics = req.param("topics").split(",");
+    var packages = req.param("packages").split(",");
+    return Alias.orderedFindByTopicsAndPackages(topics,packages).then(function(json){
+      if(json.length == 0){
+        //no fuzzy search, because you should have found what you were searching for
+        return res.ok(json,'rStudio/topic_not_found.ejs');
+      }
+      else{
+        //multiple results :show options
+        return res.ok(json,'rStudio/list_options.ejs');
+      }
     });
+
   },
 
   fuzzySearch:function(req,res){

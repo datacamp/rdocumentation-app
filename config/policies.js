@@ -58,6 +58,10 @@ module.exports.policies = {
   SearchController: {
     '*': ['flash']
   },
+  TopicController: {
+    'helpFindByAliasAndPackage': ['flash'],
+    'helpFindByTopicsAndPackages':['flash']
+  },
 
   ReviewController: {
     '*': ['sessionAuth', 'flash']

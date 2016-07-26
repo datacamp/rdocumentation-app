@@ -104,8 +104,8 @@ module.exports.routes = {
 
   // Link
   'get /link/:alias': 'Topic.findByAlias',
-  'get /link/:alias/ordered': 'Topic.orderedFindByAlias',
-  'get /link/:alias/:package/ordered': 'Topic.orderedFindByAlias',
+  'post /link/alias/help': 'Topic.helpFindByAliasAndPackage',
+  'post /link/topics/help' : 'Topic.helpFindByTopicsAndPackages',
   'get /link/:pattern/:fields/:fuzzy/:max_dist/:ignore_case/ordered': 'TopicController.fuzzySearch',
 
   // Search
