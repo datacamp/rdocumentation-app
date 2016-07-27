@@ -1,23 +1,24 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <% var pkgVersion = data; %>
-<section class="package">
+<section class="package" itemscope itemtype="http://schema.org/SoftwareApplication">
   <div class="container">
     <header>
-      <h1><%- pkgVersion.package_name %></h1>
+      <h1 itemprop="name"><%- pkgVersion.package_name %></h1>
 
       <div class="select">
         <select id="packageVersionSelect">
           <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
             <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
               value="<%= pkgVersion.package.versions[i].version %>"
-              <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %> >
+              <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %>
+              <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
+              >
               <%= pkgVersion.package.versions[i].version %>
             </option>
           <% } %>
         </select>
       </div>
-      <div class="rating" title=<%= pkgVersion.rating %>>
-
+      <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>
         <% if (pkgVersion.rating) { %>
          <% for(var i=1; i <= 5; i++) { %>
             <i class="fa fa-star<%=
@@ -26,8 +27,9 @@
               : ""
             %>" aria-hidden="true"></i>
           <% } %>
+           <span itemprop="ratingValue" hidden>(<%= pkgVersion.rating %></span>
         <% } %>
-          <span>(<%= pkgVersion.reviews.length %> votes)</span>
+          (<span itemprop="reviewCount"><%= pkgVersion.reviews.length %> </span>votes)
       </div>
 
 
@@ -46,7 +48,7 @@
           <dl>
             <% if (pkgVersion.maintainer) { %>
             <dt>Maintainer:</dt>
-            <dd><a href="<%= pkgVersion.maintainer.uri %>">
+            <dd><a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>">
               <%= pkgVersion.maintainer.name %></a></dd>
             <% } %>
             <% if(pkgVersion.collaborators.length > 0) { %>
@@ -59,26 +61,26 @@
             <% } %>
             <% if (pkgVersion.release_date) { %>
               <dt>Release date:</dt>
-              <dd><%= dateformat(pkgVersion.release_date, "mediumDate") %></dd>
+              <dd itemprop="datePublished"><%= dateformat(pkgVersion.release_date, "mediumDate") %></dd>
             <% } %>
             <% if(pkgVersion.license) { %>
               <dt>License</dt>
-              <dd><%= pkgVersion.license %></dd>
+              <dd itemprop="license"><%= pkgVersion.license %></dd>
             <% } %>
             <% if(pkgVersion.copyright) { %>
               <dt>Copyright</dt>
-              <dd><%= pkgVersion.copyright %></dd>
+              <dd itemprop="copyrightHolder"><%= pkgVersion.copyright %></dd>
             <% } %>
             <% if(pkgVersion.url) { %>
               <dt>Package url</dt>
-              <dd><%- pkgVersion.url %></dd>
+              <dd itemprop="url"><%- pkgVersion.url %></dd>
             <% } %>
             <% if(pkgVersion.package.inViews && pkgVersion.package.inViews.length > 0) { %>
               <dt>In Views:</dt>
               <% var views = pkgVersion.package.inViews.map(function(view) {
                   return '<a href="/taskviews/' + view.name + '">' + view.name + '</a>';
                 }) -%>
-              <dd><%- views.join(', ') %></dd>
+              <dd itemprop="isPartOf"><%- views.join(', ') %></dd>
             <% } %>
           </dl>
         </div>
@@ -100,8 +102,8 @@
     </section>
 
     <section class="package--info">
-      <h4><%- pkgVersion.title %></h4>
-      <p><%- pkgVersion.description %></p>
+      <h4 itemprop="headline"><%- pkgVersion.title %></h4>
+      <p itemprop="description"><%- pkgVersion.description %></p>
     </section>
 
     <div id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
@@ -152,7 +154,7 @@
       <% if(!pkgVersion.url) {%>
         <%-md(pkgVersion.readmemd,"") %>
       <% }%>
-     
+
     </section>
     <% } %>
 
@@ -160,7 +162,7 @@
       <h4>Dependencies</h4>
       <ul class="inline">
         <% for(var i = 0; i < pkgVersion.dependencies.length; i++) { %>
-          <li><a href="<%= pkgVersion.dependencies[i].uri %>"><%= pkgVersion.dependencies[i].name %></a></li>
+          <li ><a itemprop="softwareRequirements" href="<%= pkgVersion.dependencies[i].uri %>"><%= pkgVersion.dependencies[i].name %></a></li>
         <% } %>
       </ul>
     </section>

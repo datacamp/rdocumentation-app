@@ -308,14 +308,14 @@ module.exports = {
       multi_match: {
         query: query,
         type: "best_fields",
+        boost: 0.7,
         fields: [
           'aliases^6',
-          'name^5',
-          'title^3', 'description^3', 'keywords^3',
-          'arguments.name^2', 'arguments.description^2',
-          'details^2', 'value^2',
-          'note', 'author',
-          'references', 'license', 'url', 'copyright']
+          'name^2',
+          'title^2', 'description', 'keywords^2',
+          'arguments.name', 'arguments.description',
+          'details', 'value',
+          'note', 'author']
       }
     };
 
@@ -404,8 +404,11 @@ module.exports = {
                       has_parent : {
                         parent_type : "package_version",
                         score_mode: "score",
+
                         query : {
                           "has_parent" : {
+                            "parent_type" : "package",
+                            "score_mode" : "score",
                             "query" : {
                               "function_score" : {
                                 "functions": [
@@ -434,17 +437,14 @@ module.exports = {
                                 ],
                                 "boost_mode": "replace"
                               }
-                            },
-
-                            "parent_type" : "package",
-                            "score_mode" : "score"
+                            }
                           }
                         },
                         inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
                       }
                     }
                   ],
-                  minimum_should_match : 2,
+                  minimum_should_match : 1,
                 }
               }
             ],
