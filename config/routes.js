@@ -104,9 +104,11 @@ module.exports.routes = {
 
   // Link
   'get /link/:alias': 'Topic.findByAlias',
-  'post /link/alias/help': 'Topic.helpFindByAliasAndPackage',
-  'post /link/topics/help' : 'Topic.helpFindByTopicsAndPackages',
-  'get /link/:pattern/:fields/:fuzzy/:max_dist/:ignore_case/ordered': 'TopicController.fuzzySearch',
+
+  //rstudio
+  'post /rstudio/normal/help': 'RStudioController.normalHelp',
+  'post /rstudio/search/help' : 'RStudioController.searchHelp',
+  'get /rstudio/package/:packageName':'RstudioController.findPackage',
 
   // Search
   'post /api/quick_search': 'SearchController.quickSearch',

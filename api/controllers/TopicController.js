@@ -339,7 +339,7 @@ module.exports = {
     });
   },
     /**
-  * @api {post} /link/help?[package=][version=] Redirect to a topic
+  * @api {post} /link/alias/help
   * @apiName Get help for topic with alias, package name or topic and packagename
   * @apiGroup Topic
   *
@@ -347,7 +347,7 @@ module.exports = {
   * @apiParam {String} packages The package to get help for if no alias specified, a list of packages to search in if the alias is 
   *           |        specified (as a string where packages are separated by a comma)
   */
-  helpFindByAliasAndPackage : function(req,res){
+  normalHelp : function(req,res){
     //parse parameters
     var packageName = req.param('packages');
     if(typeof packageName != "undefined"){
@@ -356,20 +356,15 @@ module.exports = {
     else{
       packageNames =null;
     }    
-    var alias = req.param('alias');
-    //if no alias, then show the package, if there is no package with that name, redirect to topic_not_found
-    if(typeof alias == "undefined"){
-      return RStudioService.findPackage(packageName).then(function(version){
-        if(version == null){
-          return res.ok([],'rStudio/topic_not_found.ejs');
-        }
-        else{
-          return res.ok(version,'package_version/show.ejs');
-        }
-      });
-    };
+    var topicName = req.param('topic_names');
+    if(typeof topicName != "undefined"){
+      topicNames= topicName.split(",");
+    }
+    else{
+      topicNames =null;
+    }
     //if there is an alias, search for it in the specified packages (might be none)
-    return RStudioService.orderedFindByAlias(packageNames,alias).then(function(json){
+    return RStudioService.orderedFindByAlias(packageNames,topicNames).then(function(json){
       if(json.length == 0){
         //with no results : fuzzy search
         return ElasticSearchService.helpSearchQuery(alias,['aliases'],true,2).then(function(json){
@@ -386,6 +381,14 @@ module.exports = {
       }
     });
   },
+     /**
+  * @api {post} /link/topics/help
+  * @apiName Get help for multiple topics given their name, and possible package names
+  * @apiGroup Topic
+  *
+  * @apiParam {String} topics Topicnames to search for, provided as a string and seperated by commas
+  * @apiParam {String} packages The packageNames to search in, provided as a string and seperated by commas
+  */
   helpFindByTopicsAndPackages:function(req,res){
     var topics = req.param("topics").split(",");
     var packages = req.param("packages").split(",");

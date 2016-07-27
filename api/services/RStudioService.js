@@ -3,11 +3,11 @@ var _ = require('lodash');
 cheerio = require('cheerio');
 
 module.exports = {
-	orderedFindByAlias :function(packageNames,alias){
-		return Alias.orderedFindByAliases(packageNames,alias).then(function(aliases){
-			if (aliases.length == 0) return []; //no match found anywhere
-            if (aliases.length == 1) { //if there is only 1 match, redirect to this one (except if function is going to run on mutltiple aliases)
-        		return Topic.findOnePopulated({id: aliases[0].id}, {
+	helpFindByTopicsAndPackages :function(topicNames,packageNames){
+		return Alias.orderedFindByTopicsAndPackages(topicNames,packageNames).then(function(results){
+			if (results.length == 0) return []; //no match found anywhere
+            if (results.length == 1) { //if there is only 1 match, redirect to this one (except if function is going to run on mutltiple aliases)
+        		return Topic.findOnePopulated({id: results[0].id}, {
 			        include: [{
 			          model: PackageVersion,
 			          as: 'package_version',
@@ -24,7 +24,31 @@ module.exports = {
 			        }
 			    });
 			}
-            return aliases; //return all matches to list
+            return results; //return all matches to list
+		});
+	},
+	helpFindByAlias:function(alias){
+		return Alias.orderedFindByAlias(alias).then(function(results){
+			if (results.length == 0) return []; //no match found anywhere
+            if (results.length == 1) { //if there is only 1 match, redirect to this one (except if function is going to run on mutltiple aliases)
+        		return Topic.findOnePopulated({id: results[0].id}, {
+			        include: [{
+			          model: PackageVersion,
+			          as: 'package_version',
+			          attributes: ['package_name', 'version']
+			        }]
+			      }).then(function(topic) {
+			        if(topic === null) return [];
+			        else {
+			          return TopicService.computeLinks('/link/', topic)
+			            .then(function(topic) {
+			              topic.pageTitle = topic.name;
+			              return [topic];
+			            });
+			        }
+			    });
+			}
+            return results; //return all matches to list
 		});
 	},
   	findPackage:function(packageName){
@@ -51,7 +75,6 @@ module.exports = {
         order: [[sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'DESC' ]]
       })
       .then(function(versionInstance) {
-      	console.log("version now "+ versionInstance);
       	if(versionInstance == null){
       		return null;
       	}
@@ -73,6 +96,9 @@ module.exports = {
 			  return version;
 			})
 		}
+		})
+		.catch(function(err){
+			console.log(err.message);
 		})	
 			// The method above will be cached
 			.then(function(version){

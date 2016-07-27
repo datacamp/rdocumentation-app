@@ -58,9 +58,9 @@ module.exports.policies = {
   SearchController: {
     '*': ['flash']
   },
-  TopicController: {
-    'helpFindByAliasAndPackage': ['flash'],
-    'helpFindByTopicsAndPackages':['flash']
+  RStudioController: {
+    'normalHelp': ['flash'],
+    'searchHelp':['flash']
   },
 
   ReviewController: {
