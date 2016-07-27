@@ -21,20 +21,7 @@ module.exports = {
         { query: {
             bool: {
               should: [
-                {
-                  term: {
-                    "package_name" : token,
-                    "boost": 2.0
-                  }
-                },
-                {
-                  match_phrase_prefix : {
-                      "package_name" : {
-                          "query" : token,
-                          "max_expansions" : 20
-                      }
-                  }
-                },
+
                 {
                   "has_parent" : {
                     "query" : {
@@ -63,7 +50,7 @@ module.exports = {
                             }
                           }
                         ],
-                        "boost_mode": "replace"
+                        "boost_mode": "multiply"
                       }
                     },
 
@@ -72,9 +59,24 @@ module.exports = {
                   }
                 }
               ],
-              "minimum_number_should_match": 1,
+              "minimum_number_should_match": 2,
               filter: {
-                term: { latest_version: 1 }
+                bool: {
+                  must: [
+                    {
+                      match_phrase_prefix : {
+                        "package_name" : {
+                            "query" : token,
+                            "max_expansions" : 20,
+                        }
+                      }
+                    },
+                    {
+                      term: { latest_version: 1 }
+                    }
+                  ]
+                }
+
               }
             }
           },
