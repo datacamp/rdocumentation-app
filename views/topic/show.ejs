@@ -22,7 +22,7 @@
       <dl>
         <dt>Keywords</dt>
         <% var keywords = topic.keywords.map(function(keyword) {
-          return '<a href="/search/keywords/' + keyword.name + '">' + keyword.name + '</a>';
+          return '<a href="/search/keywords/' + encodeURIComponent(keyword.name) + '">' + keyword.name + '</a>';
         }) -%>
         <dd><%- keywords.join(', ') %></dd>
       </dl>
