@@ -7,6 +7,7 @@
       <title><%= data.pageTitle %> | RDocumentation</title>
     <% } %>
 
+    <base href="<%= process.env.BASE_URL ? process.env.BASE_URL : '/' %>">
 
     <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -14,7 +15,9 @@
     <% if( (typeof data !== 'undefined') && (data.description) ) { %>
       <meta name="description" content="<%= data.description %>" />
     <% } %>
-    <base href="<%= process.env.BASE_URL ? process.env.BASE_URL : '/' %>">
+    <% if( (typeof data !== 'undefined') && (data.canonicalLink) ) { %>
+      <link href="<%= data.canonicalLink %>" rel="canonical" />
+    <% } %>
 
     <!--STYLES-->
     <link rel="stylesheet" href="/styles/application.css">
@@ -22,10 +25,6 @@
     <!--STYLES END-->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href='https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css'>
-
-    <% if( (typeof data !== 'undefined') && (data.canonicalLink) ) { %>
-      <link href="<%= data.canonicalLink %>" rel="canonical" />
-    <% } %>
 
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({

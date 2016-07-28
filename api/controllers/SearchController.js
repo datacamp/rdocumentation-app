@@ -171,8 +171,8 @@ module.exports = {
         var name = hit.fields.package_name[0];
         var version = hit.fields.version[0];
         var uri = sails.getUrlFor({ target: 'PackageVersion.findByNameVersion' })
-          .replace(':name', name)
-          .replace(':version', version)
+          .replace(':name', encodeURIComponent(name))
+          .replace(':version', encodeURIComponent(version))
           .replace('/api/', '/');
         return { uri: uri,  name: name };
       });
@@ -183,8 +183,10 @@ module.exports = {
         var inner_hit = hit.inner_hits.package_version.hits.hits[0];
         var package_name = inner_hit.fields.package_name[0];
         var version = inner_hit.fields.version[0];
-        var uri =  sails.getUrlFor({ target: 'Topic.findById' })
-          .replace(':id', id)
+        var uri = '/api/packages/:name/versions/:version/topics/:topic'
+          .replace(':name', encodeURIComponent(package_name))
+          .replace(':version', encodeURIComponent(version))
+          .replace(':topic', encodeURIComponent(name))
           .replace('/api/', '/');
         return { uri: uri,  name: name, package_name: package_name, package_version: version };
       });

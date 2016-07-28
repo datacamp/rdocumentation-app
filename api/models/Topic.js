@@ -130,16 +130,6 @@ module.exports = {
         var old = this.getDataValue('details');
         if(old) return old.replace(/\n\n/g, "<br />");
         else return old;
-      },
-      canonicalLink: function() {
-        if(this.package_version) {
-          var isLatestVersion = this.package_version.package.latest_version_id === this.package_version_id;
-          if(isLatestVersion) return null;
-          return sails.getUrlFor({ target: 'Topic.redirect' })
-            .replace(':name', encodeURIComponent(this.package_version.package_name))
-            .replace(':function', encodeURIComponent(this.name))
-            .replace('/api/', '/');
-        } else return null;
       }
     },
 
@@ -160,11 +150,64 @@ module.exports = {
             {model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], separate: true },
             {model: Review, as: 'reviews',
               include: [{model: User, as: 'user', attributes: ['username']}]
+            },
+            { model: PackageVersion,
+              as: 'package_version',
+              attributes: ['package_name', 'version']
             }
           ]
         }, opts, customizer);
 
         return Topic.findOne(options);
+      },
+
+      findByNameInPackage: function(packageName, name, version) {
+        var packageCriteria = {
+          package_name: packageName
+        };
+
+        if(version) { //if version is specified, find in this one
+          packageCriteria.version = version;
+        }
+
+        var params = {
+          where: {
+            name: name
+          },
+          include: [
+            { model: PackageVersion, as: 'package_version', attributes: ['package_name', 'version'], where: packageCriteria }
+          ],
+          order: [[sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'DESC' ]]
+        };
+
+        return Topic.findOne(params);
+      },
+
+      findByAliasInPackage: function(packageName, alias, version) {
+        var packageCriteria = {
+          package_name: packageName
+        };
+
+        if(version) { //if version is specified, find in this one
+          packageCriteria.version = version;
+        }
+
+        var params = {
+          include: [
+            { model: PackageVersion, as: 'package_version', attributes: ['package_name', 'version'], where: packageCriteria },
+            { model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], where: { name: alias }}
+          ],
+          order: [
+            [
+              sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'DESC'
+            ]
+          ]
+        };
+
+        return Topic.findAll(params).then(function(topicInstances) {
+          if(topicInstances) return topicInstances[0];
+          else return topicInstances;
+        });
       },
 
       createWithRdFile: function(opts) {
@@ -250,7 +293,18 @@ module.exports = {
               }),
               function(instanceCreatedArray, keywordsInstances) {
                 var topicInstance = instanceCreatedArray[0];
-                topicInstance.set(_.pick(topic, ['title', 'description', 'usage', 'details', 'value', 'references', 'note', 'seealso', 'examples', 'author', 'sourceJSON']));
+                topicInstance.set(_.pick(topic, ['title',
+                  'description',
+                  'usage',
+                  'details',
+                  'value',
+                  'references',
+                  'note',
+                  'seealso',
+                  'examples',
+                  'author',
+                  'sourceJSON'])
+                );
 
                 var topicArguments = _.isEmpty(rdJSON.arguments) ? [] : rdJSON.arguments.map(function(argument) {
                   var arg = _.mapValues(argument, arrayToString);
