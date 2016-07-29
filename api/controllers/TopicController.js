@@ -325,7 +325,7 @@ module.exports = {
 
     }).then(function(json) {
       if(json === null) {
-        return res.notFound();
+        return res.redirect(302, '/packages/' + fromPackageName + '/versions/' + fromPackageVersion);
       } else {
         return res.redirect(301, json.uri);
       }
