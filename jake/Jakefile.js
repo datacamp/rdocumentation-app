@@ -82,6 +82,84 @@ task('sitemap', ['sails-load'], {async: true}, function () {
 
 });
 
+
+task('url-checker', ['sails-load'], {async: true}, function () {
+
+  var host = process.env.BASE_URL;
+  //set concurrency to maximum number of connection to database
+  var concurrency = sails.config.connections.sequelize_mysql.options.pool.max;
+
+  var blc = require('broken-link-checker');
+
+  var brokens = [];
+
+  var htmlUrlChecker = new blc.HtmlUrlChecker({
+    excludeExternalLinks: true,
+    filterLevel: 0,
+    maxSockets: 400
+  }, {
+    link: function(result, customData){
+      console.log(result);
+      if (result.broken) {
+        brokens.push(result);
+        console.log(result.brokenReason);
+        //=> HTTP_404
+      } else if (result.excluded) {
+        console.log(result.excludedReason);
+        //=> BLC_ROBOTS
+      }
+    },
+    page: function(error, pageUrl, customData){
+      console.log("Retrieved: " + pageUrl);
+      if(error) {
+        console.log(error);
+        brokens.push(pageUrl);
+      }
+    },
+    end: function(){
+      console.info('The job is done !');
+      console.log(brokens);
+      //complete();
+    }
+  });
+
+  Package.findAll({
+    include: [{
+      model: PackageVersion,
+      as: "latest_version",
+      attributes: [ "id", "version", "package_name" ],
+      required: true
+    }],
+    attributes:['name', 'latest_version_id']
+  }).map(function(package){
+    var p = package.latest_version;
+    var package_json = p.toJSON();
+    var url =  package_json.uri;
+
+    htmlUrlChecker.enqueue(host + url);
+
+    return p.getTopics({
+      attributes: ['id', 'package_version_id', 'name']
+    }).map(function(t) {
+      var topic_json = t.toJSON();
+      var url = '/packages/'+
+        encodeURIComponent(package_json.package_name)+
+        '/versions/'+
+        encodeURIComponent(package_json.version)+
+        '/topics/' +
+        encodeURIComponent(topic_json.name);
+
+      htmlUrlChecker.enqueue(host + url);
+      return 1;
+    });
+
+  }, {concurrency: concurrency})
+  .then(function() {
+    htmlUrlChecker.resume();
+  });
+
+});
+
 task('download-statistics', ['sails-load'], {async: true}, function () {
   CronService.splittedAggregatedDownloadstats(1).then(function(resp) {
     console.log("Done !");
