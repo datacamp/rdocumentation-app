@@ -33,10 +33,16 @@ task('sitemap', ['sails-load'], {async: true}, function () {
   //set concurrency to maximum number of connection to database
   var concurrency = sails.config.connections.sequelize_mysql.options.pool.max;
 
-  PackageVersion.findAll({
-    attributes:['id', 'package_name', 'version']
-  }).map(function(p){
-
+  Package.findAll({
+    include: [{
+      model: PackageVersion,
+      as: "latest_version",
+      attributes: [ "id", "version", "package_name" ],
+      required: true
+    }],
+    attributes:['name', 'latest_version_id']
+  }).map(function(package){
+    var p = package.latest_version;
     var package_json = p.toJSON();
     var url =  package_json.uri;
 
@@ -52,8 +58,11 @@ task('sitemap', ['sails-load'], {async: true}, function () {
         encodeURIComponent(package_json.version)+
         '/topics/' +
         encodeURIComponent(topic_json.name);
-
-      sg.inject(host + url);
+      var item = {
+        url: host + url,
+        changeFreq: "weekly"
+      };
+      sg.inject(item);
       return 1;
     });
 
