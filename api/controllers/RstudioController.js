@@ -19,24 +19,25 @@ module.exports = {
   * @apiParam {String} topic_names the list of topicnames that the local help function found a hit for
   */
   normalHelp : function(req,res){
+    console.log(req.signedCookies);
     //parse parameters
-    var packageName = req.param('packages');
+    var packageName = req.param('packages')[0];
     if(typeof packageName != "undefined" && packageName.length>0){
       packageNames= packageName.split(",");
     }
     else{
       packageNames =null;
     }    
-    var topicName = req.param('topic_names');
+    var topicName = req.param('topic_names')[0];
     if(typeof topicName != "undefined" && topicName.length>0){
       topicNames= topicName.split(",");
     }
     else{
       topicNames =null;
     }
-    var topic = req.param("topic");
-    var rStudioPort = req.param("Rstudio_port");
-    var rStudioShared = req.param("Rstudio_XS_Secret");
+    var topic = req.param("topic")[0];
+    var rStudioPort = req.param("Rstudio_port")[0];
+    var rStudioShared = req.param("XS_Secret")[0];
     console.log(packageNames);
     console.log(topicNames);
     //if topicNames and packageNames where found by the local help function, search for it in the specified packages (might be none)
@@ -81,9 +82,10 @@ module.exports = {
   },
 
   findPackage:function(req,res){
+    console.log(req.signedCookies);
     var package = req.param("packageName");
     var rStudioPort = req.param("Rstudio_port");
-    var rStudioShared = req.param("Rstudio_XS_Secret");
+    var rStudioShared = req.param("XS_Secret");
     console.log(package);
     return RStudioService.findPackage(package).then(function(json){
       if(json.length == 0){
@@ -99,27 +101,28 @@ module.exports = {
   },
 
   searchHelp:function(req,res){
+    console.log(req.signedCookies);
     //parse parameters
-    var packageName = req.param('matching_packages');
+    var packageName = req.param('matching_packages')[0];
     if(typeof packageName != "undefined" && packageName.length>0){
       packageNames= packageName.split(",");
     }
     else{
       packageNames =null;
     }    
-    var topicName = req.param('matching_titles');
+    var topicName = req.param('matching_titles')[0];
     if(typeof topicName != "undefined" && topicName.length>0){
       topicNames= topicName.split(",");
     }
     else{
       topicNames =null;
     } 
-    var pattern = req.param("query");
-    var fields = req.param("fields");
+    var pattern = req.param("query")[0];
+    var fields = req.param("fields")[0];
     fields = fields.split(",");
-    var fuzzy = req.param("type");
-    var rStudioPort = req.param("Rstudio_port");
-    var rStudioShared = req.param("Rstudio_XS_Secret");
+    var fuzzy = req.param("type")[0];
+    var rStudioPort = req.param("Rstudio_port")[0];
+    var rStudioShared = req.param("XS_Secret")[0];
     if(fuzzy == "fuzzy"){
       fuzzy = true;
     }
@@ -127,7 +130,7 @@ module.exports = {
       fuzzy = false;
     }
     var max_dist = 2    ;
-    var ignore_case = req.param("ignore_case");
+    var ignore_case = req.param("ignore_case")[0];
     if(ignore_case == "TRUE"){
       ignore_case = true;
     }
@@ -159,5 +162,15 @@ module.exports = {
     }
     
 
+  },
+  redirect:function(req,res){
+    res.redirect(req._parsedOriginalUrl.path.substring(5,req._parsedOriginalUrl.path.length));
+  },
+  getSessionCookie:function(req,res){
+    console.log(req.cookies);
+    console.log(req.headers);
+    console.log(req.signedCookies);
+    console.log(req.allParams());
+    res.send(req.signedCookies);
   }
 };
