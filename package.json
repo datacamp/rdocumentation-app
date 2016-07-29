@@ -50,7 +50,6 @@
     "sails": "~0.12.3",
     "sails-hook-sequelize": "^1.0.1",
     "sails-hook-sequelize-blueprints": "^0.3.0",
-    "sitemap-stream": "^2.0.1",
     "striptags": "^2.1.1"
   },
   "scripts": {
@@ -65,5 +64,8 @@
   },
   "author": "ludov",
   "license": "",
-  "devDependencies": {}
+  "devDependencies": {
+    "broken-link-checker": "^0.7.2",
+    "sitemap-stream": "^2.0.1"
+  }
 }

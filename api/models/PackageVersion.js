@@ -126,10 +126,10 @@ module.exports = {
       },
       canonicalLink: function() {
         if(!this.package) return null;
-        var isLatestVersion = this.package.latest_version_id === this.id;
-        if(isLatestVersion) return null;
-        return sails.getUrlFor({ target: 'PackageController.findByName' })
+        if(!this.package.latest_version) return null;
+        return sails.getUrlFor({ target: 'PackageVersion.findByNameVersion' })
           .replace(':name', encodeURIComponent(this.getDataValue('package_name')))
+          .replace(':version', encodeURIComponent(this.package.latest_version.version))
           .replace('/api/', '/');
       }
     },

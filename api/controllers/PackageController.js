@@ -49,8 +49,17 @@ module.exports = {
       } else if(req.wantsJSON) {
         return res.json(package);
       } else {
-        if (package.versions.length === 0) return res.notFound();
-        return res.redirect(301, package.versions[package.versions.length - 1].uri);
+        if (package.versions.length === 0)
+          return Package.findOne({
+            where: {name: packageName},
+            include: [{ model: PackageVersion, attributes: ['package_name', 'version', 'id'], as: 'reverse_dependencies'}]
+          }).then(function(packageInstance) {
+            if(packageInstance === null) return res.notFound();
+            var package = packageInstance.toJSON();
+            package.pageTitle = packageInstance.name;
+            return res.ok(package, 'package/show.ejs');
+          });
+        else return res.redirect(301, package.versions[package.versions.length - 1].uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);

@@ -114,21 +114,38 @@ module.exports = {
     var key = 'view_topic_' + packageName + '_' + packageVersion + '_' + topic;
 
 
+
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
-      return Topic.findOnePopulated({name: topic}, {
+      var canonicalPromise = Topic.findByNameInPackage(packageName, topic).then(function(t) {
+        return t.uri;
+      });
+
+      var topicPromise = Topic.findOnePopulated({name: topic}, {
         include: [{
           model: PackageVersion,
           as: 'package_version',
           where: { package_name: packageName, version: packageVersion },
           include: { model: Package, as: 'package', attributes: ['name', 'latest_version_id']}
         }]
-      }).then(function(topic) {
-        if(topic === null) return null;
-        else return TopicService.computeLinks('/link/', topic)
+      }).then(function(topicInstance) {
+        if(topicInstance === null) {
+          return Topic.findByAliasInPackage(packageName, topic, packageVersion).then(function(topicInstance) {
+            return res.redirect(301, topicInstance.uri);
+          });
+        }
+        else return topicInstance;
+      }).then(function(topicInstance) {
+        if(topicInstance === null) return null;
+        else return TopicService.computeLinks('/link/', topicInstance)
           .then(function(topic) {
             topic.pageTitle = topic.name;
             return topic;
           });
+      });
+
+      return Promise.join(topicPromise, canonicalPromise, function(topicJSON, canonicalLink) {
+        topicJSON.canonicalLink = canonicalLink;
+        return topicJSON;
       });
     }).then(function(topicJSON) {
       if(topicJSON === null) return res.notFound();
@@ -191,23 +208,23 @@ module.exports = {
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
 
+
       return Topic.findOnePopulated({id: id}, {
-        include: [{
-          model: PackageVersion,
-          as: 'package_version',
-          attributes: ['package_name', 'version'],
-          include: { model: Package, as: 'package', attributes: ['name', 'latest_version_id']}
-        }]
-      }).then(function(topic) {
-        if(topic === null) return null;
+      }).then(function(topicInstance) {
+        if(topicInstance === null) return null;
         else {
-          return TopicService.computeLinks('/link/', topic)
-            .then(function(topic) {
-              topic.pageTitle = topic.name;
-              return topic;
-            });
+          return Topic.findByNameInPackage(topicInstance.package_version.package_name, topicInstance.name).then(function(t) {
+            return TopicService.computeLinks('/link/', topicInstance)
+              .then(function(topic) {
+                topic.pageTitle = topic.name;
+                topic.canonicalLink = t.uri;
+                return topic;
+              });
+          });
         }
+
       });
+
     }).then(function(topicJSON) {
       if(topicJSON === null) return res.notFound();
       return res.ok(topicJSON, 'topic/show.ejs');
@@ -308,7 +325,7 @@ module.exports = {
 
     }).then(function(json) {
       if(json === null) {
-        return res.notFound();
+        return res.redirect(302, '/packages/' + fromPackageName + '/versions/' + fromPackageVersion);
       } else {
         return res.redirect(301, json.uri);
       }
@@ -344,19 +361,18 @@ module.exports = {
     var packageName = req.param('name'),
         functionName = req.param('function');
 
-    Package.findOne({
-      where: {
-        name: packageName,
-      },
-      include: [
-        { model: PackageVersion, as: 'latest_version' },
-      ]
-    }).then(function(package) {
-      if(package === null || !package.latest_version) {
+    Topic.findByNameInPackage(packageName, functionName).then(function(topicInstance) {
+      if(topicInstance === null) {
+        return Topic.findByAliasInPackage(packageName, functionName);
+      } else {
+        return topicInstance;
+      }
+    }).then(function(topicInstance) {
+      if(topicInstance === null) {
         return res.notFound();
       } else {
         var prefix = req.path.startsWith('/api/') ? '/api' : '';
-        return res.redirect(301, prefix + package.latest_version.uri + '/topics/' + functionName);
+        return res.redirect(301, prefix + topicInstance.uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);

@@ -106,6 +106,7 @@ module.exports = {
           { model: Package, as: 'dependencies' },
           { model: Package, as: 'package', include: [
               { model: PackageVersion, as: 'versions', attributes:['package_name', 'version'], separate: true },
+              { model: PackageVersion, as: 'latest_version', attributes:['package_name', 'version'] },
               { model: TaskView, as: 'inViews', attributes:['name'] }
             ],
             attributes: ['name', 'latest_version_id']

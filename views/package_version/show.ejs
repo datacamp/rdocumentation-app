@@ -78,7 +78,7 @@
             <% if(pkgVersion.package.inViews && pkgVersion.package.inViews.length > 0) { %>
               <dt>In Views:</dt>
               <% var views = pkgVersion.package.inViews.map(function(view) {
-                  return '<a href="/taskviews/' + view.name + '">' + view.name + '</a>';
+                  return '<a href="/taskviews/' + encodeURIComponent(view.name) + '">' + view.name + '</a>';
                 }) -%>
               <dd itemprop="isPartOf"><%- views.join(', ') %></dd>
             <% } %>
@@ -124,7 +124,7 @@
           <% for(var i = 0; i < pkgVersion.topics.length; i++) { %>
             <% var topic = pkgVersion.topics[i]; %>
             <tr>
-              <td><a href="<%= path + '/topics/' + topic.name %>"><%= topic.name %></a></td>
+              <td><a href="<%= path + '/topics/' + encodeURIComponent(topic.name) %>"><%= topic.name %></a></td>
               <td><%- topic.title %></td>
               <td>
                 <div class="rating">

@@ -76,6 +76,7 @@ module.exports.http = {
     res.locals.md = function (md,baseLink) {
       //when multiple bases, pick the one from github
       var bases= baseLink.split(",");
+      var base;
       if(bases.length>1){
         var i=0;
         while(i<bases.length && !bases[i].indexOf("github.com")>-1){
@@ -89,19 +90,19 @@ module.exports.http = {
         }
       }
       //remove the link from the html tag
-      if(baseLink!=""){
-        var base = cheerio.load(baseLink);
+      if(baseLink !== ""){
+        base = cheerio.load(baseLink);
         base = base('a').attr('href');
       }
       else{
         base = "";
-      }      
+      }
       var html = marked (md);
       $ = cheerio.load(html);
       //replace non external links with the base
       var links = $('a');
       links.attr('href',function(i,link){
-        if(link.startsWith("/..")){
+        if(link && link.startsWith("/..")){
           if(base.indexOf("github.com")>-1){
             return link.replace("/..",base);
           }
@@ -109,7 +110,7 @@ module.exports.http = {
             return null;
           }
         }
-        else if(link.startsWith("/")){
+        else if(link && link.startsWith("/")){
           if(base.indexOf("github.com")>-1){
             return link.replace("/",base);
           }
@@ -120,14 +121,16 @@ module.exports.http = {
         else{
           return link;
         }
-      })
+      });
       //non external links for images need to be adjusted, here links from github are also in the repositories
-     
+
       //github images are actually on /blob/master, sometimes one of these folders is specified, somtimes none
       links = $('img');
+
       links.attr('src',function(i,link){
-        if((!link.startsWith('http:/')) && (!link.startsWith('https:/'))){
-          var substr = ""
+
+        if(link && (!link.startsWith('http:/')) && (!link.startsWith('https:/'))){
+          var substr = "";
           if(base.indexOf("github.com")>-1){
             if(!link.startsWith("/")){
                substr = "/";
