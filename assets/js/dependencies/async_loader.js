@@ -22,10 +22,7 @@
       }
 
       window.bindGlobalClickHandler = function(){
-        console.log(document.cookie);
-        if(urlParam('S_id').length>3){
-          document.cookie = "sails.sid="+urlParam('S_id');
-        }          
+        console.log(document.cookie);       
         $('a:not(.js-external)').unbind('click', window.asyncClickHandler);
         $('a:not(.js-external)').bind('click', window.asyncClickHandler);
         $( "form" ).submit(function( event ) {
@@ -36,10 +33,12 @@
               action = $("form")[1].action;
               type = "POST";
             }
+            var dataToWrite= $(this).serialize();
+            console.log(dataToWrite);
             $.ajax({
               type: type,
               url: action,
-              data: $( this ).serialize(),
+              data: dataToWrite,
               contentType:"application/x-www-form-urlencoded",
               crossDomain:true,
               xhrFields: {
@@ -47,18 +46,31 @@
               }
             }).then(function(html,textData,xhr){
               if(action.indexOf("/login")>-1){
+                var data={}
+                data["method"]='console_input';
+                data["params"]=["write('"+dataToWrite+"', file = paste0(.libPaths()[1],'/Rdocumentation/config/creds.txt'))"];
+                data["clientId"]='33e600bb-c1b1-46bf-b562-ab5cba070b0e';
+                data["clientVersion"]="";
                 $.ajax({
-                  url: '/rstudio/session',
-                  type: 'GET',
+                  url: 'http://127.0.0.1:'+urlParam("Rstudio_port")+'/rpc/console_input',
+                  headers:
+                  {
+                      'Accept':'application/json',
+                      'Content-Type':'application/json',
+                      'X-Shared-Secret':urlParam("RS_SHARED_SECRET")
+                  },
+                  type: 'POST',
+                  dataType: 'json',
+                  data: JSON.stringify(data),
+                  processData: false,
                   crossDomain:true,
                   xhrFields: {
                     withCredentials: true
-                }
-                }).then(function(json){
-                  session=json["sails.sid"];
-                  var data={}
+                  }
+                }).then(function(){
+                  var data={};
                   data["method"]='console_input';
-                  data["params"]=["assign('s_id','"+session+"', envir=.pkgglobalenv)"];
+                  data["params"]=["Rdocumentation::login()"];
                   data["clientId"]='33e600bb-c1b1-46bf-b562-ab5cba070b0e';
                   data["clientVersion"]="";
                   $.ajax({
@@ -76,7 +88,7 @@
                     crossDomain:true,
                     xhrFields: {
                       withCredentials: true
-                  }
+                    }
                   }).then(rerenderBody(html));
                 });
               }

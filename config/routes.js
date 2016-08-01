@@ -109,7 +109,6 @@ module.exports.routes = {
   'post /rstudio/normal/help': 'RStudioController.normalHelp',
   'post /rstudio/search/help' : 'RStudioController.searchHelp',
   'get /rstudio/package/:packageName':'RstudioController.findPackage',
-  'get /rstudio/session':'RstudioController.getSessionCookie',
   'get /help/*':'RstudioController.redirect',
 
   // Search
