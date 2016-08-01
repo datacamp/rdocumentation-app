@@ -117,6 +117,7 @@ module.exports = {
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       var canonicalPromise = Topic.findByNameInPackage(packageName, topic).then(function(t) {
+        if(t === null) return null;
         return t.uri;
       });
 
@@ -130,12 +131,14 @@ module.exports = {
       }).then(function(topicInstance) {
         if(topicInstance === null) {
           return Topic.findByAliasInPackage(packageName, topic, packageVersion).then(function(topicInstance) {
-            return res.redirect(301, topicInstance.uri);
+            if(!topicInstance) return null;
+            else return { redirect_uri: topicInstance.uri };
           });
         }
         else return topicInstance;
       }).then(function(topicInstance) {
         if(topicInstance === null) return null;
+        else if(topicInstance.redirect_uri) return topicInstance;
         else return TopicService.computeLinks('/link/', topicInstance)
           .then(function(topic) {
             topic.pageTitle = topic.name;
@@ -144,11 +147,13 @@ module.exports = {
       });
 
       return Promise.join(topicPromise, canonicalPromise, function(topicJSON, canonicalLink) {
+        if(topicJSON === null) return null;
         topicJSON.canonicalLink = canonicalLink;
         return topicJSON;
       });
     }).then(function(topicJSON) {
-      if(topicJSON === null) return res.notFound();
+      if(topicJSON === null) return res.redirect(301, '/packages/' + encodeURIComponent(packageName) + '/versions/' + encodeURIComponent(packageVersion));
+      else if(topicJSON.redirect_uri) return res.redirect(301, topicJSON.redirect_uri);
       return res.ok(topicJSON, 'topic/show.ejs');
     }).catch(function(err) {
       return res.negotiate(err);

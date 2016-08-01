@@ -45,7 +45,7 @@ module.exports = {
       order: [[sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'ASC' ]]
     }).then(function(package) {
       if(package === null) {
-        return res.notFound();
+        return res.redirect(302, '/search?q=' + encodeURIComponent(packageName));
       } else if(req.wantsJSON) {
         return res.json(package);
       } else {

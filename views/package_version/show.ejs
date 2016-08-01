@@ -125,7 +125,7 @@
             <% var topic = pkgVersion.topics[i]; %>
             <tr>
               <td><a href="<%= path + '/topics/' + encodeURIComponent(topic.name) %>"><%= topic.name %></a></td>
-              <td><%- topic.title %></td>
+              <td><%= striptags(topic.title) %></td>
               <td>
                 <div class="rating">
                   <% var rating = topic.reviews.length > 0 ? lodash.meanBy(topic.reviews, 'rating') : 0; %>

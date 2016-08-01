@@ -1,6 +1,7 @@
 var lifter = require('./sails-lifter');
 var _ = require('lodash');
 var Promise = require('bluebird');
+var fs = require('fs');
 
 
 //Load sails to benefit from services and models definition
@@ -93,13 +94,31 @@ task('url-checker', ['sails-load'], {async: true}, function () {
 
   var brokens = [];
 
+  var eventify = function(arr, callback) {
+    arr.push = function(e) {
+      Array.prototype.push.call(arr, e);
+      callback(arr);
+    };
+  };
+
+  eventify(brokens, function(updatedArr) {
+    fs.writeFile("jake/brokens.json", JSON.stringify(updatedArr, null, 2), function(err) {
+      if(err) {
+        return console.log(err);
+      }
+      console.log("Wrote file !");
+    });
+  });
+
   var htmlUrlChecker = new blc.HtmlUrlChecker({
     excludeExternalLinks: true,
     filterLevel: 0,
-    maxSockets: 400
+    maxSockets: 400,
+    maxSocketsPerHost: 400,
+    excludedKeywords: ['/login', '/register']
   }, {
     link: function(result, customData){
-      console.log(result);
+      console.log(result.url.resolved);
       if (result.broken) {
         brokens.push(result);
         console.log(result.brokenReason);
