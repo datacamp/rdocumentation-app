@@ -121,6 +121,7 @@ module.exports = {
         ]
       })
       .then(function(versionInstance) {
+        if(versionInstance === null) return null;
         return Review.findOne({
           attributes: [[sequelize.fn('AVG', sequelize.col('rating')), 'rating']],
           where: {
@@ -142,7 +143,7 @@ module.exports = {
     })
     // The method above will be cached
     .then(function(version){
-      if(version === null) return res.notFound();
+      if(version === null) return res.redirect(301, '/packages/' + encodeURIComponent(packageName));
       else {
         version.pageTitle = version.package_name + ' v' + version.version;
         return res.ok(version, 'package_version/show.ejs');
