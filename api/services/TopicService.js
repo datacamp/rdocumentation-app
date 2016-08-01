@@ -8,7 +8,10 @@ module.exports = {
 
   computeLinks: function(basePath, topicInstance) {
     var topic = topicInstance.toJSON();
-    var toSearch = _.pick(topic, ['description',
+    var toSearch = _.pick(topic, [
+      'name',
+      'title',
+      'description',
       'usage',
       'details',
       'value',
