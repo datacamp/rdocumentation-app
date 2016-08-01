@@ -73,6 +73,8 @@ module.exports.http = {
     res.locals.dateformat = dateFormat;
     res.locals.autoLink = autoLink;
     res.locals.lodash = require('lodash');
+    res.locals.striptags = require('striptags');
+
     res.locals.md = function (md,baseLink) {
       //when multiple bases, pick the one from github
       var bases= baseLink.split(",");
@@ -113,6 +115,22 @@ module.exports.http = {
         else if(link && link.startsWith("/")){
           if(base.indexOf("github.com")>-1){
             return link.replace("/",base);
+          }
+          else{
+            return null;
+          }
+        } else if(link && (!link.startsWith('http:/')) && (!link.startsWith('https:/'))) {
+          if(base.indexOf("github.com")>-1){
+            var substr = "";
+            if(base.indexOf("github.com")>-1){
+              if(!link.startsWith("/")){
+                 substr = "/";
+              }
+              if(!link.startsWith("/master")){
+                 substr = "/master".concat(substr);
+              }
+              return base+"/blob"+substr+link;
+            }
           }
           else{
             return null;
