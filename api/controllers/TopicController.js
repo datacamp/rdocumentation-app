@@ -112,7 +112,7 @@ module.exports = {
     var packageVersion = req.param('version');
     var topic = req.param('topic');
     var key = 'view_topic_' + packageName + '_' + packageVersion + '_' + topic;
-
+    if (topic.endsWith('.html')) topic = topic.replace('.html', '');
 
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
@@ -365,6 +365,7 @@ module.exports = {
   redirect: function(req,res) {
     var packageName = req.param('name'),
         functionName = req.param('function');
+    if (functionName.endsWith('.html')) functionName = functionName.replace('.html', '');
 
     Topic.findByNameInPackage(packageName, functionName).then(function(topicInstance) {
       if(topicInstance === null) {
@@ -373,8 +374,8 @@ module.exports = {
         return topicInstance;
       }
     }).then(function(topicInstance) {
-      if(topicInstance === null) {
-        return res.notFound();
+      if(!topicInstance) {
+        return res.redirect(301, '/packages/' + encodeURIComponent(packageName));
       } else {
         var prefix = req.path.startsWith('/api/') ? '/api' : '';
         return res.redirect(301, prefix + topicInstance.uri);
