@@ -84,10 +84,6 @@ module.exports = {
   */
 
   findPackage:function(req,res){
-    var urlParams="";
-    if(req.param("viewer_pane")==1){
-      urlParams='?viewer_pane=1&Rstudio_port='+req.param('Rstudio_port')+"&RS_SHARED_SECRET="+req.param('RS_SHARED_SECRET');
-    }
     var package = req.param("packageName");
     return RStudioService.findPackage(package).then(function(json){
       if(json.length == 0){
@@ -96,7 +92,7 @@ module.exports = {
       }
       else{
         //multiple results :show options
-        return res.redirect(json.uri+urlParams);
+        return res.rstudio_redirect(json.uri);
       }
     });
 

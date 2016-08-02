@@ -249,10 +249,6 @@ module.exports = {
   * @apiParam {String} version Package version (string) from which we refer to this topic
   */
   findByAlias: function(req, res) {
-    var urlParams="";
-    if(req.param("viewer_pane")==1){
-      urlParams='?viewer_pane=1&Rstudio_port='+req.param('Rstudio_port')+"&RS_SHARED_SECRET="+req.param('RS_SHARED_SECRET');
-    }
     var fromPackageName = req.param('package');
     var fromPackageVersion = req.param('version');
     var alias = req.param('alias');
@@ -336,7 +332,7 @@ module.exports = {
       if(json === null) {
         return res.redirect(302, '/packages/' + fromPackageName + '/versions/' + fromPackageVersion);
       } else {
-        return res.redirect(301, json.uri);
+        return res.rstudio_redirect(json.uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);
