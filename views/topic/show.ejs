@@ -85,6 +85,9 @@
         <h5 class="topic--title">Examples</h5>
         <pre><code class="R"><%- topic.examples %></code></pre>
       </section>
+      <% if(inViewerPane){ %>
+        <a href="javascript:;" onclick="window.runExamples();" class="btn btn-primary">Run examples</a>
+      <% }%>
     <% } %>
 
     <% if(topic.seealso) { %>

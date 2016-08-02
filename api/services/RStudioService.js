@@ -76,7 +76,7 @@ module.exports = {
       })
       .then(function(versionInstance) {
       	if(versionInstance == null){
-      		return null;
+      		return [];
       	}
       	else{
 			return Review.findOne({
@@ -94,7 +94,9 @@ module.exports = {
 			}).then(function(version) {
 			  if (version.url) version.url = version.url.autoLink({ target: "_blank", id: "1" });
 			  return version;
-			})
+			}).catch(function(err){
+				console.log(err.message);
+			})	
 		}
 		})
 		.catch(function(err){
@@ -102,8 +104,8 @@ module.exports = {
 		})	
 			// The method above will be cached
 			.then(function(version){
-			  if(version === null){
-			  	return null;
+			  if(version == []){
+			  	return [];
 			  }
 			  else {
 			    version.pageTitle = version.package_name + ' v' + version.version;

@@ -249,6 +249,10 @@ module.exports = {
   * @apiParam {String} version Package version (string) from which we refer to this topic
   */
   findByAlias: function(req, res) {
+    var urlParams="";
+    if(req.param("viewer_pane")==1){
+      urlParams='?viewer_pane=1&Rstudio_port='+req.param('Rstudio_port')+"&RS_SHARED_SECRET="+req.param('RS_SHARED_SECRET');
+    }
     var fromPackageName = req.param('package');
     var fromPackageVersion = req.param('version');
     var alias = req.param('alias');
@@ -320,7 +324,7 @@ module.exports = {
               }).catch(function(err) {
                 console.info(err);
                 console.info("link not found, go to: " + aliases[0].topic.uri);
-                return { uri: aliases[0].topic.uri }; // no match in dependencies, just redirect to first one
+                return { uri: aliases[0].topic.uri}; // no match in dependencies, just redirect to first one
               });
 
             }
