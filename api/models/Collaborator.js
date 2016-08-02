@@ -47,6 +47,13 @@ module.exports = {
 
 
     classMethods: {
+      wait: function(ms){
+         var start = new Date().getTime();
+         var end = start;
+         while(end < start + ms) {
+           end = new Date().getTime();
+        }
+      },
 
       /**
       * author is an object with attributes name and optionnally email
@@ -70,7 +77,6 @@ module.exports = {
           defaults: author,
           order: [['email', 'DESC']]
         }, options);
-
         return Collaborator.findOrCreate(params)
         .spread(function(instance, created) {
           if (instance.email === null && author.email) {
@@ -78,28 +84,9 @@ module.exports = {
           } else return instance;
         });
       },
-
-      insertAllAuthors2: function(json,version){
-        promises = [];
-        json.contributors.forEach(function(contributor){
-          promises.push(Collaborator.insertAuthor(contributor).then(function(auth){
-            return version.addCollaborator(auth);
-          }));
-        });
-        if(json.maintainer){
-        var maintainer = json.maintainer;
-        promises.push(Collaborator.insertAuthor(maintainer).then(function(auth){
-           return version.addCollaborator(auth).then(function(){
-             version.maintainer_id = auth.id;
-             return version.save();
-           });
-         }));
-      } 
-        return Promise.all(promises);
-      },
-
+      
       insertAllAuthors: function(json,version){
-        return Promise.map(json.contributors,function(contributor){
+        return Promise.mapSeries(json.contributors,function(contributor){
           return Collaborator.insertAuthor(contributor).then(function(auth){
             return version.addCollaborator(auth);
           });

@@ -93,19 +93,26 @@ module.exports = {
 
 
   extractPersonInfo: function(person) {
-    var match = person.match(Utils.emailRegex);
+    var match = person.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i);
     var personJSON = {};
     if(match) {
-      person = person.replace(Utils.emailRegex, '');
+      person = person.replace(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i
+        , '').replace(/</,'').replace(/>/,'');
       personJSON.email = match[0].trim();
+    }
+    if(person.indexOf("\"")!==-1){
+      person = person.split("\"")[1];
     }
 
     //console.log(person);
     if(person.match(/(\s*([A-Z][^\s,&]*)\s*)+/i)){
     personJSON.name = person.match(/(\s*([A-Z][^\s,&]*)\s*)+/i)[0].trim();
+    if(personJSON.name[personJSON.name.length-1]=='.')
+    { 
+      personJSON.name = personJSON.name.slice(0,personJSON.name.length-1);
+    }
     } else {
       personJSON = undefined;
-      console.log(person);
     }
 
     return personJSON;
@@ -113,42 +120,52 @@ module.exports = {
   },
 
   authorsSanitizer: function(authorString) {
-    // var authorString = "Jean Marc and Ally Son, RIP R. & Hello World!"
     var sanitized = authorString.replace('<email>', '')
                                 .replace('</email>', '')
-                                .replace(/\[.*?\]/,'')
-                                .replace(/\(.*?\)/,'')
+                                .replace(/\[.*?\]/g,'')
+                                .replace(/\(.*?\)/g,'')
+                                .replace(/\n\s*/g,' ')
+                                .replace('\t',' ')
+                                .replace(/with.*$/g,'')
+                                .replace(/based on.*$/g,'')
+                                .replace(/assistance.*$/g,'')
+                                .replace(/derived from.*$/g,'')
+                                .replace(/uses.*$/g,'')
+                                .replace(/as represented by.*$/g,'')
+                                .replace(/contributions.*$/g,'')
+                                .replace(/under.*$/g,'')
+                                .replace(/and others.*$/g,'')
+                                .replace(/and many others.*$/g,'')
+                                .replace(/and authors.*$/g,'')
+                                .replace(/assisted.*$/g,'')
                                 .trim();
 
+    var separated = sanitized.split(/,\s*and|,|\sand|&|;/);
 
-    var separated = sanitized.replace('\n','').replace('\t','').split(/,\s*and|,|\sand|&|;/);
 
     var trimmed = separated.map(function(item) {return item.trim();});
-    //console.log(trimmed);
 
     var mapped = trimmed.map(AuthorService.extractPersonInfo);
 
     var filtered = mapped.filter(function(item){if(item == undefined){return false;} return true;});
-    console.log(filtered);
 
     return filtered;
 
   },
 
   recoverAuthorsR: function(json){
-      //var json = JSON.parse(sourceJSON);
+      if(json["Authors@R"].indexOf("as.person(")!==-1){
+        return AuthorService.authorsSanitizer(json["Authors@R"]);
+      }
       var person = json["Authors@R"].split("person(");
       person.shift();
       var hasMaintainer = false;
       var result = {
-        contributors : [],
-        maintainer : {}
+        contributors : []
       };
       person.forEach(function(str){
         var list = str.split(",");
-        var name = "", family = "", email, isMaintainer = false;
-        name = list.shift().split("\"")[1];
-        family = list.shift().split("\"")[1];
+        var name = "", middle ="", family = "", email, isMaintainer = false;
         list.forEach(function(piece){
           if(piece.indexOf("email")>=0){
             email = piece.split("\"")[1];
@@ -158,10 +175,22 @@ module.exports = {
             hasMaintainer=true;
           }
         });
-        fullName = name+" "+family;
+        name = list[0].split("\"")[1];
+        var fullName;
+        if(list[0].indexOf("c(")!==-1){
+          middle = list[1].split("\"")[1];
+          family = list[2].split("\"")[1];
+          fullName = name +" "+ middle + " "+family;
+        }
+        else{
+          family = list[1].split("\"")[1];
+          fullName = name+" "+family;
+        }
         var author = {};
         author.name = fullName;
+        if(email){
         author.email = email;
+      }
         result.contributors.push(author);
         if(isMaintainer){
           result.maintainer = author;
@@ -172,11 +201,11 @@ module.exports = {
 
   parseAllAuthors: function(){
     return PackageVersion.getAllVersions().then(function(Results){
-      return Promise.map(Results, function(Result){
+      return Promise.mapSeries(Results, function(Result){
       if(Result.sourceJSON){
         json = JSON.parse(Result.sourceJSON);
         var auth = {contributors : []};
-        if(json["Authors@R"]){
+        if(json["Authors@R"]&&json["Authors@R"].indexOf("as.person(")==-1){
           var auth = AuthorService.recoverAuthorsR(json);
         }
         else{
@@ -185,6 +214,14 @@ module.exports = {
           }
           if(json["Maintainer"]){
           auth["maintainer"]  =AuthorService.authorsSanitizer(json["Maintainer"])[0];
+          if(auth["maintainer"]){
+          auth["contributors"].forEach(
+            function(cont,i){
+              if(cont.name==auth["maintainer"].name){
+                auth["contributors"].splice(i,1);
+              }
+            });
+        }
           }
         }
         return Collaborator.insertAllAuthors(auth,Result);

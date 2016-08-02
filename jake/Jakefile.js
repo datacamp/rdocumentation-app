@@ -2,6 +2,7 @@ var lifter = require('./sails-lifter');
 var _ = require('lodash');
 var Promise = require('bluebird');
 var fs = require('fs');
+var human = require('humanparser');
 
 
 //Load sails to benefit from services and models definition
@@ -228,7 +229,7 @@ task('parse-author', ['sails-load'], {async: true}, function () {
   AuthorService.parseAllAuthors().then(function(){
     complete();
   });
-  //console.log(AuthorService.authorsSanitizer("Sebastian Calonico <calonico@umich.edu>, Matias D. Cattaneo \n\t<cattaneo@umich.edu>, Rocio Titiunik <titiunik@umich.edu>"));
+  //console.log(AuthorService.authorsSanitizer("Yuan Tang <terrytangyuan@gmail.com> and Zachary Deane-Mayer with contributions from Nan Xiao."));
   //complete();
 });
 
