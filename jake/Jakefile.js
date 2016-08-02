@@ -2,7 +2,6 @@ var lifter = require('./sails-lifter');
 var _ = require('lodash');
 var Promise = require('bluebird');
 var fs = require('fs');
-var human = require('humanparser');
 
 
 //Load sails to benefit from services and models definition

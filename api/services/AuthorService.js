@@ -202,6 +202,7 @@ module.exports = {
   parseAllAuthors: function(){
     return PackageVersion.getAllVersions().then(function(Results){
       return Promise.mapSeries(Results, function(Result){
+        try{
       if(Result.sourceJSON){
         json = JSON.parse(Result.sourceJSON);
         var auth = {contributors : []};
@@ -227,6 +228,10 @@ module.exports = {
         return Collaborator.insertAllAuthors(auth,Result);
     }
       return;
+    }
+    catch(err){
+      return;
+    }
       });
     })
   }
