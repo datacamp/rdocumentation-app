@@ -8,14 +8,15 @@
       <% for(var i = 0; i < data.hits.length; i++) { %>
         <% var hit = data.hits[i] %>
         <section class='search-result--item'>
+          <% var versionURI = '/packages/' + encodeURIComponent(hit.fields.package_name) + '/versions/' + encodeURIComponent(hit.fields.version) %>
           <% if (hit.type === 'topic') { %>
             <h5 class="search-result--item-header">
-              Function <a href='/packages/<%- hit.fields.package_name %>/versions/<%- hit.fields.version %>/topics/<%- hit.fields.name %>'><%- hit.fields.name %></a>
-              <span><a href='/packages/<%- hit.fields.package_name %>/versions/<%- hit.fields.version %>'>[<%- hit.fields.package_name %>&nbsp;v<%- hit.fields.version %>]</a></span>
+              Function <a href='<%- versionURI %>/topics/<%- encodeURIComponent(hit.fields.name) %>'><%- hit.fields.name %></a>
+              <span><a href='<%- versionURI %>'>[<%- hit.fields.package_name %>&nbsp;v<%- hit.fields.version %>]</a></span>
             </h5>
           <% } else if (hit.type === 'package_version') { %>
             <h5 class="search-result--item-header">
-              Package <a href='/packages/<%- hit.fields.package_name %>/versions/<%- hit.fields.version %>'><%- hit.fields.package_name %>&nbsp;v<%- hit.fields.version %></a>
+              Package <a href='<%- versionURI %>'><%- hit.fields.package_name %>&nbsp;v<%- hit.fields.version %></a>
             </h5>
           <% } %>
 
