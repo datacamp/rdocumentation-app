@@ -52,17 +52,9 @@ module.exports = {
       *
       */
       insertAuthor: function(author, options) {
-        var where = author;
-        if(author.email) {
-          where = {
-            email: author.email
-          };
-        }
-        else {
-          where = {
-            name: author.name
-          };
-        }
+        var where = {
+          name: author.name
+        };
 
         var params = _.defaults({
           where: where,
@@ -73,10 +65,12 @@ module.exports = {
         .spread(function(instance, created) {
           if (instance.email === null && author.email) {
             return instance.update({email: author.email}, options);
-          } else return instance;
+          } else {
+            return instance.update({email: instance.email.concat(', ' + author.email)});
+          }
         });
       },
-      
+
       insertAllAuthors: function(json,version){
         return Promise.mapSeries(json.contributors,function(contributor){
           return Collaborator.insertAuthor(contributor).then(function(auth){
