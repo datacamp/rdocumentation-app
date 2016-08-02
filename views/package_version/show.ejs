@@ -4,7 +4,6 @@
   <div class="container">
     <header>
       <h1 itemprop="name"><%- pkgVersion.package_name %></h1>
-
       <div class="select">
         <select id="packageVersionSelect">
           <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
@@ -19,6 +18,13 @@
         </select>
       </div>
       <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>
+      <% if(inViewerPane) { %>
+      <div class="versionCheck">
+        <%=pkgVersion.package_name%>,
+        <%=pkgVersion.package['type_id']%>
+      </div>
+      <% } %>
+      <div class="rating" title=<%= pkgVersion.rating %>>
         <% if (pkgVersion.rating) { %>
          <% for(var i=1; i <= 5; i++) { %>
             <i class="fa fa-star<%=
