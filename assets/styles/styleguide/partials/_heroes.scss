@@ -4,7 +4,8 @@
 }
 
 .bg-navigation {
-    padding: 1em;
+    font-size: small;
+    padding: 0.2em;
     background-color: $primary;
     background-image: linear-gradient(transparent 90%, rgba(0,0,0,0.01)),linear-gradient(173deg, #3AAACA, #2389B1);
     color: $text-invert;

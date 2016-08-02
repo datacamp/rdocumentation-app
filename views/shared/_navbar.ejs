@@ -12,6 +12,16 @@
         <div class="search--results"></div>
       </form>
     </div>
-    <%- partial ('_navigation.ejs') %>
+
+    <% if(!inViewerPane) { %>
+      <%- partial ('_navigation.ejs') %>
+    <% } %>
+
+    <ul class="navbar--navigation">
+    <% if(!inViewerPane) { %>
+        <li><a href="https://github.com/datacamp/Rdocumentation" class="link">R package</a></li>
+    <% } %>
+        <li><a href="/trends" class="link">Leaderboard</a></li>
+    </ul>
   </nav>
 </section>

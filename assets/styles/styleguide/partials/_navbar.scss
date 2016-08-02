@@ -7,9 +7,22 @@
         float: left;
         background-size: contain;
         display: block;
-        height: 25px;
-        width: 25px;
+        height: 21px;
+        width: 21px;
         vertical-align: middle;
+        margin-top: 3px;
+        margin-left: 2px;
+    }
+    .github {
+        background: url("../images/GitHub-Mark-32px.png") no-repeat center center;
+        float: left;
+        background-size: contain;
+        display: block;
+        height: 21px;
+        width: 21px;
+        vertical-align: middle;
+        margin-top: 3px;
+        margin-left: 2px;
     }
 
     .logo-title {
@@ -17,7 +30,7 @@
         font-weight: 500;
         color: $text-invert;
         &:hover, &:focus {color: $text-invert }
-        margin: 0 0 0 10px;
+        margin: 0 0 0 3px;
         display: block;
         float: left;
         line-height: $navbar-height - 10px;
@@ -30,11 +43,11 @@ $navbar-search-results-width: 32%px;
     width: $navbar-search-width;
     position: absolute;
     left: 50%;
-    top: 12px;
+    top: 6px;
     transform: translateX(-50%);
 
     input {
-        padding: 0.5rem 1rem;
+        padding: 0.1rem 0.5rem;
     }
 
     .search .results {
@@ -48,6 +61,8 @@ $navbar-search-results-width: 32%px;
     @extend ul.inline;
     display: inline-block;
     float: right;
+    margin-top: 4px;
+    margin-right: 10px;
 
     .link {
         color: white;
