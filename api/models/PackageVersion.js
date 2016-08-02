@@ -137,7 +137,7 @@ module.exports = {
     classMethods: {
 
       getAllVersions: function(){
-        return PackageVersion.findAll({ where:{ id:{ lte: 500  }}});
+        return PackageVersion.findAll();
       },
 
       upsertPackageVersion: function(packageVersion, opts) {
