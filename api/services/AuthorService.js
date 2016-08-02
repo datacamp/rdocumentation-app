@@ -106,11 +106,20 @@ module.exports = {
 
     //console.log(person);
     if(person.match(/(\s*([A-Z][^\s,&]*)\s*)+/i)){
-    personJSON.name = person.match(/(\s*([A-Z][^\s,&]*)\s*)+/i)[0].trim();
-    if(personJSON.name[personJSON.name.length-1]=='.')
-    { 
-      personJSON.name = personJSON.name.slice(0,personJSON.name.length-1);
-    }
+      personJSON.name = person.match(/(\s*([A-Z][^\s,&]*)\s*)+/i)[0].trim();
+
+      if(personJSON.name[personJSON.name.length-1]=='.') {
+        personJSON.name = personJSON.name.slice(0,personJSON.name.length-1);
+      }
+
+      var splittedName = personJSON.name.split(" ");
+      if(splittedName.length > 2) {
+        var middleName = splittedName[1];
+        splittedName.splice(1, 1);
+        var newName = splittedName.join(' ');
+        personJSON.name = newName;
+      }
+
     } else {
       personJSON = undefined;
     }
@@ -143,6 +152,7 @@ module.exports = {
     var separated = sanitized.split(/,\s*and|,|\sand|&|;/);
 
 
+
     var trimmed = separated.map(function(item) {return item.trim();});
 
     var mapped = trimmed.map(AuthorService.extractPersonInfo);
@@ -154,85 +164,84 @@ module.exports = {
   },
 
   recoverAuthorsR: function(json){
-      if(json["Authors@R"].indexOf("as.person(")!==-1){
-        return AuthorService.authorsSanitizer(json["Authors@R"]);
+    if(json["Authors@R"].indexOf("as.person(")!==-1){
+      return AuthorService.authorsSanitizer(json["Authors@R"]);
+    }
+
+    var person = json["Authors@R"].split("person(");
+    person.shift();
+    var hasMaintainer = false;
+    var result = {
+      contributors : []
+    };
+
+    person.forEach(function(str){
+      var list = str.split(",");
+      var name = "", middle ="", family = "", email, isMaintainer = false;
+      var fullName;
+
+      list.forEach(function(piece){
+        if(piece.indexOf("email")>=0) {
+          email = piece.split("\"")[1];
+        }
+        if(piece.indexOf("cre")>=0&&!hasMaintainer) {
+          isMaintainer=true;
+          hasMaintainer=true;
+        }
+      });
+
+      name = list[0].split("\"")[1];
+
+      if(list[0].indexOf("c(")!==-1) {
+        middle = list[1].split("\"")[1];
+        family = list[2].split("\"")[1];
+        fullName = name +" "+ middle + " "+family;
       }
-      var person = json["Authors@R"].split("person(");
-      person.shift();
-      var hasMaintainer = false;
-      var result = {
-        contributors : []
-      };
-      person.forEach(function(str){
-        var list = str.split(",");
-        var name = "", middle ="", family = "", email, isMaintainer = false;
-        list.forEach(function(piece){
-          if(piece.indexOf("email")>=0){
-            email = piece.split("\"")[1];
-          }
-          if(piece.indexOf("cre")>=0&&!hasMaintainer){
-            isMaintainer=true;
-            hasMaintainer=true;
-          }
-        });
-        name = list[0].split("\"")[1];
-        var fullName;
-        if(list[0].indexOf("c(")!==-1){
-          middle = list[1].split("\"")[1];
-          family = list[2].split("\"")[1];
-          fullName = name +" "+ middle + " "+family;
-        }
-        else{
-          family = list[1].split("\"")[1];
-          fullName = name+" "+family;
-        }
-        var author = {};
-        author.name = fullName;
-        if(email){
+      else {
+        family = list[1].split("\"")[1];
+        fullName = name+" "+family;
+      }
+      var author = {};
+      author.name = fullName;
+
+      if(email) {
         author.email = email;
       }
-        result.contributors.push(author);
-        if(isMaintainer){
-          result.maintainer = author;
-        }
-        });
-      return result;
+
+      result.contributors.push(author);
+
+      if(isMaintainer) {
+        result.maintainer = author;
+      }
+    });
+    return result;
   },
 
-  parseAllAuthors: function(){
-    return PackageVersion.getAllVersions().then(function(Results){
-      return Promise.mapSeries(Results, function(Result){
-        try{
-      if(Result.sourceJSON){
-        json = JSON.parse(Result.sourceJSON);
-        var auth = {contributors : []};
-        if(json["Authors@R"]&&json["Authors@R"].indexOf("as.person(")==-1){
-          var auth = AuthorService.recoverAuthorsR(json);
-        }
-        else{
-          if(json["Author"]){
-            auth["contributors"]=AuthorService.authorsSanitizer(json["Author"]); 
+
+  parseAllAuthors: function() {
+    return PackageVersion.getAllVersions().then(function(Results) {
+      return Promise.mapSeries(Results, function(Result) {
+
+        if(Result.sourceJSON) {
+          var json = JSON.parse(Result.sourceJSON);
+          var auth = {contributors : []};
+          if(json["Authors@R"] && json["Authors@R"].indexOf("as.person(")==-1) {
+            auth = AuthorService.recoverAuthorsR(json);
           }
-          if(json["Maintainer"]){
-          auth["maintainer"]  =AuthorService.authorsSanitizer(json["Maintainer"])[0];
-          if(auth["maintainer"]){
-          auth["contributors"].forEach(
-            function(cont,i){
-              if(cont.name==auth["maintainer"].name){
-                auth["contributors"].splice(i,1);
-              }
-            });
-        }
+          else {
+            if(json.Author){
+              auth.contributors = AuthorService.authorsSanitizer(json.Author);
+            }
+            if(json.Maintainer) {
+              auth.maintainer = AuthorService.authorsSanitizer(json.Maintainer)[0];
+
+            }
           }
-        }
-        return Collaborator.insertAllAuthors(auth,Result);
-    }
-      return;
-    }
-    catch(err){
-      return;
-    }
+
+          return Collaborator.insertAllAuthors(auth, Result);
+        } else return;
+
       });
-    })
+    });
   }
 };
