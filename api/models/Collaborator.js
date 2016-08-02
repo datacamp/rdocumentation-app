@@ -47,14 +47,6 @@ module.exports = {
 
 
     classMethods: {
-      wait: function(ms){
-         var start = new Date().getTime();
-         var end = start;
-         while(end < start + ms) {
-           end = new Date().getTime();
-        }
-      },
-
       /**
       * author is an object with attributes name and optionnally email
       *
