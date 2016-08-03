@@ -320,7 +320,7 @@ module.exports = {
               }).catch(function(err) {
                 console.info(err);
                 console.info("link not found, go to: " + aliases[0].topic.uri);
-                return { uri: aliases[0].topic.uri }; // no match in dependencies, just redirect to first one
+                return { uri: aliases[0].topic.uri}; // no match in dependencies, just redirect to first one
               });
 
             }
@@ -332,7 +332,7 @@ module.exports = {
       if(json === null) {
         return res.redirect(302, '/packages/' + fromPackageName + '/versions/' + fromPackageVersion);
       } else {
-        return res.redirect(301, json.uri);
+        return res.rstudio_redirect(json.uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);
