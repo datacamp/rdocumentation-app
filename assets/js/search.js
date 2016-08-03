@@ -87,7 +87,6 @@ window.searchHandler = function() {
   function hover(){
     //var clas = document.getElementsByClassName("search--results");
     var elements = $(".search--results li");
-    console.log(elements);
     elements.each(function(i){
       $(this).mouseenter(function(){
         sethovering($(this).find("a"));
@@ -145,7 +144,6 @@ window.searchHandler = function() {
       if($("li a.hover").length>0){
         e.preventDefault();
         var next =($("li a.hover").parent().prev("li"));
-        console.log(next);
         if(next.length > 0){
           sethovering(next.find("a"));
         }
