@@ -59,10 +59,6 @@
           var packageInfo=$('.versionCheck').text().trim();
           var packageName=packageInfo.split(',')[0];
           var packageSource=packageInfo.split(',')[1];
-          console.log($('dl').find('dt'));
-          console.log($('dl').find('dt').filter(function(i,el){
-            return $(this).text()=='Package url';
-          }));
           window.checkPackageVersion(packageName).then(function(installed){
             if(installed==false){
               $('.versionCheck').text('');

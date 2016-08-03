@@ -92,7 +92,7 @@ module.exports = {
       }
       else{
         //multiple results :show options
-        return res.rstudio_redirect(json.uri);
+        return res.rstudio_redirect(303,json.uri);
       }
     });
 

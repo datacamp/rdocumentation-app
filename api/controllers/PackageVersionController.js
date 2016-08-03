@@ -109,7 +109,7 @@ module.exports = {
               { model: PackageVersion, as: 'latest_version', attributes:['package_name', 'version'] },
               { model: TaskView, as: 'inViews', attributes:['name'] }
             ],
-            attributes: ['name', 'latest_version_id']
+            attributes: ['name', 'latest_version_id','type_id']
           },
           { model: Topic, as: 'topics',
             attributes: ['package_version_id', 'name', 'title', 'id'],
