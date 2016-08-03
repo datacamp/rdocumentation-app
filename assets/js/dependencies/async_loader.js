@@ -182,6 +182,13 @@
           }
         });
       };
+
+      window.setDefault=function(){
+        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::makeDefault()"]);
+      }
+      window.hideViewer=function(){
+        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::hideViewer()"]);
+      }
     }
 
 
@@ -200,7 +207,7 @@ _rStudioRequest=function(url,method,shared_secret,port,params){
     {
         'Accept':'application/json',
         'Content-Type':'application/json',
-        'X-Shared-Secret':urlParam("RS_SHARED_SECRET")
+        'X-Shared-Secret':shared_secret
     },
     type: 'POST',
     dataType: 'json',

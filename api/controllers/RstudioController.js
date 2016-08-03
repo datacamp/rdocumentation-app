@@ -170,6 +170,9 @@ module.exports = {
     
 
   },
+  makeDefault:function(req,res){
+    res.ok([],'rStudio/make_default.ejs')
+  },
   redirect:function(req,res){
     res.redirect(req._parsedOriginalUrl.path.substring(5,req._parsedOriginalUrl.path.length));
   }
