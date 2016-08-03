@@ -26,10 +26,22 @@
     float: right;
 }
 
-.footer--credits {
+
+
+.footer--credits--title {
+    display: inline-block;
     position: absolute;
-    text-align: center;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
+    .footer--credits {
+    display: inline-block;
+    position: relative;
+    font-size: $h5-size;
+    font-weight: 500;
+    margin: 0 0 0 3px;
+    display: block;
+    line-height: $navbar-height - 10px;
+}
+    
 }
