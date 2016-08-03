@@ -6,12 +6,7 @@
         <div class="logo-title">RDocumentation</div>
       </a>
     </div>
-    <div class="navbar--search">
-      <form class="search" action="/search">
-        <input name="q" type="text" placeholder="Search for packages, functions, etc" autocomplete="off">
-        <div class="search--results"></div>
-      </form>
-    </div>
+    
 
     <% if(!inViewerPane) { %>
       <%- partial ('_navigation.ejs') %>
@@ -23,5 +18,11 @@
     <% } %>
         <li><a href="/trends" class="link">Leaderboard</a></li>
     </ul>
+    <div class="navbar--search">
+      <form class="search" action="/search">
+        <input name="q" type="text" placeholder="Search for packages, functions, etc" autocomplete="off">
+        <div class="search--results"></div>
+      </form>
+    </div>
   </nav>
 </section>

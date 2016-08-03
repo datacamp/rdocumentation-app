@@ -55,6 +55,16 @@ $navbar-search-results-width: 32%px;
         left: ($navbar-search-width - $navbar-search-results-width) / 2.0;
     }
 }
+@media (max-width: 950px){
+    .navbar--search{
+    top: 6px;
+    float: right;
+    left : initial;
+    transform: initial;
+    position: relative;
+    margin-right: 10px;
+    }
+}
 
 
 .navbar--navigation {
