@@ -80,7 +80,9 @@ window.searchHandler = function() {
       object += '</ul>';
     }
     searchResultsPane.html(object);
-
+    if(window.bindGlobalClickHandler){
+      window.bindGlobalClickHandler();
+    }    
   }
 
   searchInput.keyup(debounce(function(){

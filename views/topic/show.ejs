@@ -8,7 +8,7 @@
         <% if(!inViewerPane) { %>
           <a href="javascript:;" onclick="document.location.hash='postReview';" class="btn btn-primary">Review Topic</a>
         <% } else { %>
-          <a href="<%= path + '#postReview' %>" class="btn btn-primary js-external">Review Topic</a>
+          <a href="<%= path + '#postReview' %>" class="btn btn-primary js-internal">Review Topic</a>
         <% } %>
       </div>
     </header>
@@ -85,6 +85,9 @@
         <h5 class="topic--title">Examples</h5>
         <pre><code class="R"><%- topic.examples %></code></pre>
       </section>
+      <% if(inViewerPane){ %>
+        <a href="javascript:;" onclick="window.runExamples();" class="btn btn-primary">Run examples</a>
+      <% }%>
     <% } %>
 
     <% if(topic.seealso) { %>

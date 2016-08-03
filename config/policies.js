@@ -58,6 +58,10 @@ module.exports.policies = {
   SearchController: {
     '*': ['flash']
   },
+  RStudioController: {
+    'normalHelp': ['flash'],
+    'searchHelp':['flash']
+  },
 
   ReviewController: {
     '*': ['sessionAuth', 'flash']

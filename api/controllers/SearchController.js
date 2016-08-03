@@ -46,7 +46,7 @@ module.exports = {
                             "field_value_factor": {
                               "field":    "part_of_r",
                               "modifier": "log1p",
-                              "factor": 300000,
+                              "factor": 300000
                             }
                           }
                         ],
@@ -130,7 +130,7 @@ module.exports = {
                                 "field_value_factor": {
                                   "field":    "part_of_r",
                                   "modifier": "log1p",
-                                  "factor": 300000,
+                                  "factor": 300000
                                 }
                               }
                             ],
