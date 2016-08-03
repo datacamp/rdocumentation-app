@@ -46,7 +46,7 @@
     
 }
 
-@media (max-width: 1180px){
+@media (min-width: 800px) and (max-width: 1180px){
 	.footer--credits--title {
 	position: relative;
     display: inline-block;

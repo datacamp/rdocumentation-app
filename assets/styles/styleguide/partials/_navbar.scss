@@ -66,6 +66,22 @@ $navbar-search-results-width: 32%px;
     }
 }
 
+@media (max-width: 800px){
+    .navbar--navigation.largescreen{
+    display: none;
+    }
+    .navbar--title.largescreen{
+    display: none;
+    }
+    .logo-title.largescreen{
+    display: none;
+    }
+    .navbar--search{
+    top: 1px;
+    margin-right: 5px;
+    }
+}
+
 
 .navbar--navigation {
     @extend ul.inline;
