@@ -28,4 +28,4 @@
 
   sails.log.silly('res.restudio_redirect() :: Sending 303 (redirect) response');
   res.redirect(code,uri+urlParams);
-}
+};
