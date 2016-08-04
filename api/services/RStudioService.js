@@ -7,13 +7,7 @@ module.exports = {
 		return Alias.orderedFindByTopicsAndPackages(topicNames,packageNames).then(function(results){
 			if (results.length == 0) return []; //no match found anywhere
             if (results.length == 1) { //if there is only 1 match, redirect to this one (except if function is going to run on mutltiple aliases)
-        		return Topic.findOnePopulated({id: results[0].id}, {
-			        include: [{
-			          model: PackageVersion,
-			          as: 'package_version',
-			          attributes: ['package_name', 'version']
-			        }]
-			      }).then(function(topic) {
+        		return Topic.findOnePopulated({id: results[0].id}).then(function(topic) {
 			        if(topic === null) return [];
 			        else {
 			          return TopicService.computeLinks('/link/', topic)
@@ -31,13 +25,7 @@ module.exports = {
 		return Alias.orderedFindByAlias(alias).then(function(results){
 			if (results.length == 0) return []; //no match found anywhere
             if (results.length == 1) { //if there is only 1 match, redirect to this one (except if function is going to run on mutltiple aliases)
-        		return Topic.findOnePopulated({id: results[0].id}, {
-			        include: [{
-			          model: PackageVersion,
-			          as: 'package_version',
-			          attributes: ['package_name', 'version']
-			        }]
-			      }).then(function(topic) {
+        		return Topic.findOnePopulated({id: results[0].id}).then(function(topic) {
 			        if(topic === null) return [];
 			        else {
 			          return TopicService.computeLinks('/link/', topic)
@@ -46,7 +34,10 @@ module.exports = {
 			              return [topic];
 			            });
 			        }
-			    });
+			    })
+			      .catch(function(err){
+			      	console.log(err.message);
+			      });
 			}
             return results; //return all matches to list
 		});
