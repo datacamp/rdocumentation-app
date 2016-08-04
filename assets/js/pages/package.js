@@ -46,17 +46,59 @@ window.graphDownloadStatistics = function() {
         d3.select('#chart svg')
           .datum([serie])
           .call(chart);
+        $('#chart').hide();
       });
 
 
       nv.utils.windowResize(chart.update);
-
       return chart;
   });
 
 };
 
+window.makeSlider = function(){
+  $(".slider").click(function(){
+    var slider = $(".slider");
+    if(slider.hasClass("fa-angle-down")){
+      slider.removeClass("fa-angle-down");
+      slider.addClass("fa-angle-up");
+      $(".sliding").slideDown();
+    }else{
+      slider.removeClass("fa-angle-up");
+      slider.addClass("fa-angle-down");
+      $(".sliding").slideUp();
+    }
+  });
+};
+
+window.triggerIcon = function(){
+  $("table").bind("sortEnd",function(){
+    console.log('test');
+    $("thead td").each(function(){
+      var current = $(this);
+      if(current.hasClass("tablesorter-headerDesc")){
+        current.find("i").removeClass("fa-sort");
+        current.find("i").removeClass("fa-sort-asc");
+        current.find("i").addClass("fa-sort-desc");
+      }
+      if(current.hasClass("tablesorter-headerAsc")){
+        current.find("i").removeClass("fa-sort");
+        current.find("i").removeClass("fa-sort-desc");
+        current.find("i").addClass("fa-sort-asc");
+      }
+      if(current.hasClass("tablesorter-headerUnSorted")){
+        current.find("i").removeClass("fa-sort-desc");
+        current.find("i").removeClass("fa-sort-asc");
+        current.find("i").addClass("fa-sort");
+      }
+    });
+  })
+}
+
 $(document).ready(function() {
   window.packageVersionToggleHandler();
   window.graphDownloadStatistics();
+  window.makeSlider();
+  $("table").tablesorter(); 
+  window.triggerIcon();
 });
