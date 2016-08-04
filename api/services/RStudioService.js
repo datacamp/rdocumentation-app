@@ -9,8 +9,8 @@ module.exports = {
 	helpFindByAlias:function(alias){
 		return Alias.orderedFindByAlias(alias).then(_processResults);
 	},
-  	findPackage:function(packageName){
-  		return PackageVersion.getPackageVersionFromCondition({package_name:packageName});
+  	findLatestVersion:function(packageName){
+  		return PackageVersion.getLatestVersion(packageName);
   	}
        
 };

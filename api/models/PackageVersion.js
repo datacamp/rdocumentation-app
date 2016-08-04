@@ -135,6 +135,12 @@ module.exports = {
     },
 
     classMethods: {
+      getLatestVersion:function(packageName){
+        return PackageVersion.findOne({
+          where:{package_name:packageName},
+          order: [[sequelize.fn('ORDER_VERSION', sequelize.col('PackageVersion.version')), 'DESC' ]]
+        });
+      },
 
       upsertPackageVersion: function(packageVersion, opts) {
 

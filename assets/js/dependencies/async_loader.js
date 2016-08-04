@@ -23,81 +23,10 @@
       }
 
       /************************************************************************************************************************************************
-      checking installation of package and package version
-      ************************************************************************************************************************************************/
-
-      window.checkPackageVersion=function(package){
-        var installed =true;
-        var found=false;
-        return _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["check_package('"+package+"')"])
-        .then(function(){
-          return _rStudioRequest('/events/get_events','get_events',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),[0])
-          .then(function(result){
-            for(var i=0;i<result.result.length;i++){
-              if(typeof result.result[i] != "undefined" && result.result[i].type=="console_output"){
-                if(result.result[i].data.indexOf("FALSE\n")>0){
-                  installed = false;
-                }
-                else{
-                  installed=result.result[i].data;
-                }
-                found=true;
-              }
-            }
-            //Rstudio runs the get_events request periodically. It could happen that we accidently missed the response(small chance), so run it again then
-            if(!found){
-              installed = window.checkPackageVersion(package);
-            }
-            return installed;
-          })
-        });
-      };
-
-      window.packageVersionControl=function(){
-        var versions = $('#packageVersionSelect').find('option');
-        if(versions.length>0){
-          var packageInfo=$('.versionCheck> p:eq(0)').text().trim();
-          var packageName=packageInfo.split(',')[0];
-          window.checkPackageVersion(packageName).then(function(installed){
-            if(installed==false){
-              $('.versionCheck').append('<a id="js-install" class="btn btn-primary js-external">Install</a>');
-            }
-            else{
-              installedVersion=installed.split('‘')[1];
-              installedVersion=installedVersion.substring(0,installedVersion.length-2).replace('-','.');
-              var upToDate=true;
-              for(var i=0;i<versions.length;i++){
-                if($(versions[i]).text().trim()!="@VERSION@"&& _versionCompare($(versions[i]).text().trim(),installedVersion)){
-                  $('.versionCheck').append('<a id="js-install" class="btn btn-primary js-external">Update</a>');
-                  upToDate=false
-                }
-              }
-              if(upToDate){
-                $('.versionCheck').text('you currently have the latest version  ');
-                $('.versionCheck').append('<i class="fa fa-check icon-green" aria-hidden="true"></i>')
-              }
-            }
-            $('#js-install').unbind('click',window.installpackage);
-            $('#js-install').bind('click',window.installpackage);
-          });
-        }
-      };
-
-      window.installpackage=function(e){
-        e.preventDefault();
-        var packageInfo=$('.versionCheck> p:eq(0)').text().trim();
-        var packageName=packageInfo.split(',')[0];
-        var packageSource=packageInfo.split(',')[1];
-        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
-                  ["install_package('"+packageName+"',"+packageSource+")"])
-      }
-
-
-      /************************************************************************************************************************************************
       rebinding and executing trough ajax requests
       ************************************************************************************************************************************************/
 
-      window.bindGlobalClickHandler = function(){       
+      window.bindGlobalClickHandler = function(){     
         $('a:not(.js-external)').unbind('click', window.asyncClickHandler);
         $('a:not(.js-external)').bind('click', window.asyncClickHandler);
         $('#js-examples').unbind('click',window.runExamples);
@@ -138,43 +67,50 @@
               }            
             });
         });
-        //check the packageversion
-        window.packageVersionControl();
       };
 
       // Helper function to grab new HTML
       // and replace the content
       window.replacePage = function(url) {
-        url = url.replace("../","");
-        if(url.charAt(0)!="/"){
-          url="/"+url;
-        }
-        var base = $('base').attr('href');
-        if(url.indexOf('?')>-1){
-          url = url + '&viewer_pane=1&Rstudio_XS_Secret=' + urlParam("Rstudio_XS_Secret")+"&Rstudio_port=" + urlParam("Rstudio_port");
+        if(url.indexOf('#')==0){
+          url = url.substring(1,url.length);
+          document.getElementById(url).scrollIntoView();
         }
         else{
-          url=url+'?viewer_pane=1&Rstudio_XS_Secret=' + urlParam("Rstudio_XS_Secret")+"&Rstudio_port=" + urlParam("Rstudio_port");
-        }
-        return $.ajax({
-          type: 'GET',
-          url : url,
-          cache: false,
-          dataType: 'html',
-          xhrFields: {
-            withCredentials: true
+          url = url.replace("../","");
+          if(url.charAt(0)!="/"){
+            url="/"+url;
           }
-        })
-        .then(rerenderBody);
+          var base = $('base').attr('href');
+          if(url.indexOf('?')>-1){
+            url = url + '&viewer_pane=1&Rstudio_XS_Secret=' + urlParam("Rstudio_XS_Secret")+"&Rstudio_port=" + urlParam("Rstudio_port");
+          }
+          else{
+            url=url+'?viewer_pane=1&Rstudio_XS_Secret=' + urlParam("Rstudio_XS_Secret")+"&Rstudio_port=" + urlParam("Rstudio_port");
+          }
+          return $.ajax({
+            type: 'GET',
+            url : url,
+            cache: false,
+            dataType: 'html',
+            xhrFields: {
+              withCredentials: true
+            }
+          })
+          .then(rerenderBody);
+        }
+        
       };
-      /************************************************************************************************************************************************
+
+            /************************************************************************************************************************************************
       button press functions (running examples, installing packages);
       ************************************************************************************************************************************************/
       window.runExamples=function(e){
+        console.log("called");
         e.preventDefault();
         var package="";
         $('a').attr('href',function(i,link){
-          if(link.indexOf("/packages/")>=0 && link.indexOf("/versions/">0)){
+          if(typeof link != "undefined" && link.indexOf("/packages/")>=0 && link.indexOf("/versions/">0)){
             package=link.substring(link.indexOf("/packages/")+10,link.indexOf("/versions/"))
           }
         });
@@ -186,20 +122,94 @@
             _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["require("+package+")\n"+examples])
           }
         });
+        return false;
       };
 
       window.setDefault=function(e){
         e.preventDefault();
         _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::makeDefault()"]);
-      }
+        return false;
+      };
       window.hideViewer=function(e){
         e.preventDefault();
         _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::hideViewer()"]);
-      }
+        return false;
+      };
+      /************************************************************************************************************************************************
+      checking installation of package and package version
+      ************************************************************************************************************************************************/
+
+      window.checkPackageVersion=function(package){
+        var installed =true;
+        var found=false;
+        return _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["check_package('"+package+"')"])
+        .then(function(){
+          return _rStudioRequest('/events/get_events','get_events',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),[0])
+          .then(function(result){
+            for(var i=0;i<result.result.length;i++){
+              if(typeof result.result[i] != "undefined" && result.result[i].type=="console_output"){
+                if(result.result[i].data.indexOf("FALSE\n")>0){
+                  installed = false;
+                }
+                else{
+                  installed=result.result[i].data;
+                }
+                found=true;
+              }
+            }
+            //Rstudio runs the get_events request periodically. It could happen that we accidently missed the response(small chance), so run it again then
+            if(!found){
+              installed = window.checkPackageVersion(package);
+            }
+            return installed;
+          })
+        });
+      };
+
+      window.packageVersionControl=function(){
+        var versions = $('#packageVersionSelect').find('option');
+        if(versions.length>0){
+          var packageInfo=$('.versionCheck> p:eq(0)').text().trim();
+          var packageName=packageInfo.split(',')[0];
+          window.checkPackageVersion(packageName).then(function(installed){
+            if(installed==false){
+              $('.versionCheck').append('<button type="button" id="js-install" class="btn btn-primary js-external">Install</button>');
+            }
+            else{
+              installedVersion=installed.split('‘')[1];
+              installedVersion=installedVersion.substring(0,installedVersion.length-2).replace('-','.');
+              var upToDate=true;
+              for(var i=0;i<versions.length;i++){
+                if($(versions[i]).text().trim()!="@VERSION@"&& _versionCompare($(versions[i]).text().trim(),installedVersion)){
+                  $('.versionCheck').append('<button type="button" id="js-install" class="btn btn-primary js-external">Update</button>');
+                  upToDate=false
+                }
+              }
+              if(upToDate){
+                $('.versionCheck').text('you currently have the latest version  ');
+                $('.versionCheck').append('<i class="fa fa-check icon-green" aria-hidden="true"></i>')
+              }
+            }
+            $('#js-install').unbind('click',window.installpackage);
+            $('#js-install').bind('click',window.installpackage);
+          });
+        }
+      };
+
+      window.installpackage=function(e){
+        e.preventDefault();
+        var packageInfo=$('.versionCheck> p:eq(0)').text().trim();
+        var packageName=packageInfo.split(',')[0];
+        var packageSource=packageInfo.split(',')[1];
+        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
+                  ["install_package('"+packageName+"',"+packageSource+")"])
+        return false;
+      };
+      //check the packageversion
+      window.packageVersionControl();
       window.bindGlobalClickHandler();
+      window.scrollTo(0,0);
     }
-
-
   });
 
 _rStudioRequest=function(url,method,shared_secret,port,params){
