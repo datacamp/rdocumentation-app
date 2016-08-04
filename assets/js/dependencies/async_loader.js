@@ -27,16 +27,11 @@
       ************************************************************************************************************************************************/
 
       window.bindGlobalClickHandler = function(){     
-        $('a:not(.js-external)').unbind('click', window.asyncClickHandler);
-        $('a:not(.js-external)').bind('click', window.asyncClickHandler);
-        $('#js-examples').unbind('click',window.runExamples);
-        $('#js-examples').bind('click',window.runExamples);
-        $('#js-install').unbind('click',window.installpackage);
-        $('#js-install').bind('click',window.installpackage);
-        $('#js-hideviewer').unbind('click',window.hideViewer);
-        $('#js-hideviewer').bind('click',window.hideViewer);
-        $('#js-makedefault').unbind('click',window.setDefault);
-        $('#js-makedefault').bind('click',window.setDefault);
+        $('a:not(.js-external)').unbind('click').bind('click', window.asyncClickHandler);
+        $('#js-examples').unbind('click').bind('click',window.runExamples);
+        $('#js-install').unbind('click').bind('click',window.installpackage);
+        $('#js-hideviewer').unbind('click').bind('click',window.hideViewer);
+        $('#js-makedefault').unbind('click').bind('click',window.setDefault);
         $( "form" ).submit(function( event ) {
             event.preventDefault();
             var action = $("form")[0].action;
