@@ -60,7 +60,7 @@
           var packageName=packageInfo.split(',')[0];
           window.checkPackageVersion(packageName).then(function(installed){
             if(installed==false){
-              $('.versionCheck').append('<a href="NULL" id="js-install" class="btn btn-primary js-external">Install</a>');
+              $('.versionCheck').append('<a id="js-install" class="btn btn-primary js-external">Install</a>');
             }
             else{
               installedVersion=installed.split('‘')[1];
@@ -68,7 +68,7 @@
               var upToDate=true;
               for(var i=0;i<versions.length;i++){
                 if($(versions[i]).text().trim()!="@VERSION@"&& _versionCompare($(versions[i]).text().trim(),installedVersion)){
-                  $('.versionCheck').append('<a href="NULL" id="js-install" class="btn btn-primary js-external">Update</a>');
+                  $('.versionCheck').append('<a id="js-install" class="btn btn-primary js-external">Update</a>');
                   upToDate=false
                 }
               }
