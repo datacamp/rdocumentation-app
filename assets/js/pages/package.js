@@ -46,17 +46,99 @@ window.graphDownloadStatistics = function() {
         d3.select('#chart svg')
           .datum([serie])
           .call(chart);
+        $('#chart').hide();
       });
 
 
       nv.utils.windowResize(chart.update);
-
       return chart;
   });
 
 };
 
+window.makeSlider = function(){
+  $(".slider").click(function(){
+    var slider = $(".slider");
+    if(slider.hasClass("fa-angle-down")){
+      slider.removeClass("fa-angle-down");
+      slider.addClass("fa-angle-up");
+      $(".sliding").slideDown();
+    }else{
+      slider.removeClass("fa-angle-up");
+      slider.addClass("fa-angle-down");
+      $(".sliding").slideUp();
+    }
+  });
+};
+
+window.triggerIcon = function(){
+  $("table").bind("sortEnd",function(){
+    console.log('test');
+    $("thead td").each(function(){
+      var current = $(this);
+      if(current.hasClass("tablesorter-headerDesc")){
+        current.find("i").removeClass("fa-sort");
+        current.find("i").removeClass("fa-sort-asc");
+        current.find("i").addClass("fa-sort-desc");
+      }
+      if(current.hasClass("tablesorter-headerAsc")){
+        current.find("i").removeClass("fa-sort");
+        current.find("i").removeClass("fa-sort-desc");
+        current.find("i").addClass("fa-sort-asc");
+      }
+      if(current.hasClass("tablesorter-headerUnSorted")){
+        current.find("i").removeClass("fa-sort-desc");
+        current.find("i").removeClass("fa-sort-asc");
+        current.find("i").addClass("fa-sort");
+      }
+    });
+  })
+}
+
+
+
 $(document).ready(function() {
   window.packageVersionToggleHandler();
   window.graphDownloadStatistics();
+  window.makeSlider();
+  // add parser through the tablesorter addParser method 
+  $.tablesorter.addParser({ 
+      // set a unique id 
+      id: 'rating', 
+      is: function(s) { 
+          // return false so this parser is not auto detected 
+          return false; 
+      }, 
+      format: function(s) { 
+          // format your data for normalization 
+          console.log(parseFloat(s));
+          return parseFloat(s);
+      }, 
+      // set type, either numeric or text 
+      type: 'numeric' 
+  });
+  $("table").tablesorter({ 
+        headers: {
+            2: {
+                sorter:'rating' 
+            } 
+        },
+        textExtraction: function (node){
+          if($(node).find("i").length>0){
+            var stars = $(node).find("i");
+            console.log(stars);
+            var count = 0.0;
+            stars.each(function(i){
+              if($(this).hasClass("fa-star")){
+                count += 1.0;
+              }else if($(this).hasClass("fa-star-half-o")){
+                count += 0.5;
+              }
+            });
+            return ""+count;
+          }
+          return $(node).text();
+        }
+    }); 
+  window.triggerIcon();
 });
