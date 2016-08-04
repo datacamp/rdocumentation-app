@@ -85,7 +85,6 @@ window.searchHandler = function() {
   }
 
   function hover(){
-    //var clas = document.getElementsByClassName("search--results");
     var elements = $(".search--results li");
     elements.each(function(i){
       $(this).mouseenter(function(){
