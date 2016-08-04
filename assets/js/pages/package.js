@@ -95,10 +95,37 @@ window.triggerIcon = function(){
   })
 }
 
+
+
 $(document).ready(function() {
   window.packageVersionToggleHandler();
   window.graphDownloadStatistics();
   window.makeSlider();
-  $("table").tablesorter(); 
+  // add parser through the tablesorter addParser method 
+  $.tablesorter.addParser({ 
+      // set a unique id 
+      id: 'rating', 
+      is: function(s) { 
+          // return false so this parser is not auto detected 
+          return false; 
+      }, 
+      format: function(s) { 
+          // format your data for normalization 
+          var total=0.0;
+          console.log(s.split("<i"));
+          var stars = [];
+          console.log(total);
+          return total;
+      }, 
+      // set type, either numeric or text 
+      type: 'numeric' 
+  });
+  $("table").tablesorter({ 
+        headers: {
+            1: {
+                sorter:'rating' 
+            } 
+        } 
+    }); 
   window.triggerIcon();
 });

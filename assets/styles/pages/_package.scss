@@ -2,6 +2,8 @@
   min-height: 82%;
   .container-fluid {
     margin-top: $default-space;
+    margin-right: 2.5rem;
+    margin-left: 2.5rem;
   }
 
   header {
@@ -76,6 +78,9 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+}
+.slider:hover {
+  cursor: pointer;
 }
 
 
