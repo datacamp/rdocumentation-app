@@ -8,7 +8,7 @@
         e.preventDefault();
         // Grab the url from the anchor tag
         var url = $(this).attr('href');
-        return window.replacePage(url);
+        return window.replacePage(url);       
       }
 
       function rerenderBody(html){
@@ -58,11 +58,10 @@
         if(versions.length>0){
           var packageInfo=$('.versionCheck').text().trim();
           var packageName=packageInfo.split(',')[0];
-          var packageSource=packageInfo.split(',')[1];
           window.checkPackageVersion(packageName).then(function(installed){
             if(installed==false){
               $('.versionCheck').text('');
-              $('.versionCheck').append('<a href="javascript:;" onclick="window.installpackage(\''+packageName+'\','+packageSource+');" class="btn btn-primary">Install</a>');
+              $('.versionCheck').append('<a href="NULL" id="js-install" class="btn btn-primary js-external">Install</a>');
             }
             else{
               installedVersion=installed.split('‘')[1];
@@ -71,7 +70,7 @@
               for(var i=0;i<versions.length;i++){
                 if($(versions[i]).text().trim()!="@VERSION@"&& _versionCompare($(versions[i]).text().trim(),installedVersion)){
                   $('.versionCheck').text('');
-                  $('.versionCheck').append('<a href="javascript:;" onclick="window.installpackage(\''+packageName+'\','+packageSource+');" class="btn btn-primary">Update</a>');
+                  $('.versionCheck').append('<a href="NULL" id="js-install" class="btn btn-primary js-external">Update</a>');
                   upToDate=false
                 }
               }
@@ -80,13 +79,19 @@
                 $('.versionCheck').append('<i class="fa fa-check icon-green" aria-hidden="true"></i>')
               }
             }
+            $('#js-install').unbind('click',window.installpackage);
+            $('#js-install').bind('click',window.installpackage);
           });
         }
       };
 
-      window.installpackage=function(packageName,source){
+      window.installpackage=function(e){
+        e.preventDefault();
+        var packageInfo=$('.versionCheck').text().trim();
+        var packageName=packageInfo.split(',')[0];
+        var packageSource=packageInfo.split(',')[1];
         _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
-                  ["install_package('"+packageName+"',"+source+")"])
+                  ["install_package('"+packageName+"',"+packageSource+")"])
       }
 
 
@@ -97,6 +102,16 @@
       window.bindGlobalClickHandler = function(){       
         $('a:not(.js-external)').unbind('click', window.asyncClickHandler);
         $('a:not(.js-external)').bind('click', window.asyncClickHandler);
+        console.log($('a:not(.js-external)'));
+        console.log($('#js-examples'));
+        $('#js-examples').unbind('click',window.runExamples);
+        $('#js-examples').bind('click',window.runExamples);
+        $('#js-install').unbind('click',window.installpackage);
+        $('#js-install').bind('click',window.installpackage);
+        $('#js-hideviewer').unbind('click',window.hideViewer);
+        $('#js-hideviewer').bind('click',window.hideViewer);
+        $('#js-makedefault').unbind('click',window.setDefault);
+        $('#js-makedefault').bind('click',window.setDefault);
         $( "form" ).submit(function( event ) {
             event.preventDefault();
             var action = $("form")[0].action;
@@ -156,12 +171,12 @@
         })
         .then(rerenderBody);
       };
-      window.bindGlobalClickHandler();
-
       /************************************************************************************************************************************************
       button press functions (running examples, installing packages);
       ************************************************************************************************************************************************/
-      window.runExamples=function(){
+      window.runExamples=function(e){
+        e.preventDefault();
+        console.log("running examples");
         var package="";
         $('a').attr('href',function(i,link){
           if(link.indexOf("/packages/")>=0 && link.indexOf("/versions/">0)){
@@ -169,7 +184,6 @@
           }
         });
         window.checkPackageVersion(package).then(function(installed){
-          console.log(package);
           if(installed!=false){
             var examples= $('.topic').find('.topic--title').filter(function(i,el){
               return $(this).text()=="Examples";
@@ -179,12 +193,15 @@
         });
       };
 
-      window.setDefault=function(){
+      window.setDefault=function(e){
+        e.preventDefault();
         _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::makeDefault()"]);
       }
-      window.hideViewer=function(){
+      window.hideViewer=function(e){
+        e.preventDefault();
         _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::hideViewer()"]);
       }
+      window.bindGlobalClickHandler();
     }
 
 
