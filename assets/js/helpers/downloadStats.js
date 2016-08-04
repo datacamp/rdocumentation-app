@@ -1,5 +1,3 @@
-var downloads;
-
 $(document).ready(function() {
 
   $('.download-task').each(function(elem) {
