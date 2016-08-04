@@ -111,21 +111,34 @@ $(document).ready(function() {
       }, 
       format: function(s) { 
           // format your data for normalization 
-          var total=0.0;
-          console.log(s.split("<i"));
-          var stars = [];
-          console.log(total);
-          return total;
+          console.log(parseFloat(s));
+          return parseFloat(s);
       }, 
       // set type, either numeric or text 
       type: 'numeric' 
   });
   $("table").tablesorter({ 
         headers: {
-            1: {
+            2: {
                 sorter:'rating' 
             } 
-        } 
+        },
+        textExtraction: function (node){
+          if($(node).find("i").length>0){
+            var stars = $(node).find("i");
+            console.log(stars);
+            var count = 0.0;
+            stars.each(function(i){
+              if($(this).hasClass("fa-star")){
+                count += 1.0;
+              }else if($(this).hasClass("fa-star-half-o")){
+                count += 0.5;
+              }
+            });
+            return ""+count;
+          }
+          return $(node).text();
+        }
     }); 
   window.triggerIcon();
 });
