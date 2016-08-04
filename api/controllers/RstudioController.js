@@ -85,14 +85,11 @@ module.exports = {
 
   findPackage:function(req,res){
     var package = req.param("packageName");
-    return RStudioService.findPackage(package).then(function(json){
-      if(json.length == 0){
-        //no fuzzy search, because you should have found what you were searching for
-        return res.ok([],'rStudio/topic_not_found.ejs');
-      }
-      else{
-        //multiple results :show options
-        return res.rstudio_redirect(303,json.uri);
+    return RStudioService.findPackage(package).then(function(version){
+      if(version === null) return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName));
+      else {
+        version.pageTitle = version.package_name + ' v' + version.version;
+        return res.ok(version, 'package_version/show.ejs');
       }
     });
 
