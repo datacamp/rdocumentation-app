@@ -1,7 +1,7 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <% var pkgVersion = data; %>
 <section class="package" itemscope itemtype="http://schema.org/SoftwareApplication">
-  <div class="container">
+  <div class="container-fluid">
     <header>
       <h1 itemprop="name"><%- pkgVersion.package_name %></h1>
       <div class="select">
@@ -25,7 +25,7 @@
             </p>
           </div>
         <%}%>
-      <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>  
+      <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>
         <div class="rating" title=<%= pkgVersion.rating %>>
           <% if (pkgVersion.rating) { %>
             <% for(var i=1; i <= 5; i++) { %>
@@ -40,16 +40,31 @@
           (<span itemprop="reviewCount"><%= pkgVersion.reviews.length %> </span>votes)
         </div>
       </div>
-      <div class="package--review pull-right" >
-        <% if(!inViewerPane) { %>
-          <a href="<%= path + '#postReview' %>" class="btn btn-primary js-internal">Review Package</a>
-        <% } else { %>
-          <a href='#postReview' class="btn btn-primary js-internal">Review Package</a>
-        <% } %>
+      <% if(pkgVersion.maintainer) { %>
+      <i class="fa fa-user" aria-hidden="true"></i>
+      <div class="maintainer">
+        <div class="data">
+        <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>">
+              <%= pkgVersion.maintainer.name %></a>
+              <a href="mailto:<%= pkgVersion.maintainer.email %>">
+              <i class="fa fa-envelope" aria-hidden="true"></i></a>
+        </div>
+        <p>Maintainer</p>
       </div>
+
+      <% } %>
+
+      <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
+        <span class="downloads-nr" >
+          <span class='indeps'>0</span>
+          <i class="fa fa-info-circle fa-3x" aria-hidden="false"></i>
+        </span>
+        <p>Monthly downloads</p>
+      </div>
+
     </header>
 
-    <section class="stats">
+    <section class="stats sliding">
       <div class="row">
         <div class="col-md-8">
           <dl>
@@ -91,40 +106,30 @@
             <% } %>
           </dl>
         </div>
-        <div class="col-md-4">
-          <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
-            <span class="downloads-nr" >
-              <span class='indeps'>0</span>
-              <span>Direct downloads this month</span>
-            </span>
-            <span class="downloads-nr small percentile-task" data-url="/api<%= path %>/percentile" >
-              <span class='percentile'>0th</span>
-              <span>Percentile</span>
-            </span>
-            <span class="downloads-ind">With another
-            <span class='deps'></span> indirect downloads, for a total of <span class='total'></span> downloads</span>
-          </div>
-        </div>
       </div>
     </section>
+
+
+    <div class="sliding" id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
+      <svg></svg>
+    </div>
+
+    <i class="slider fa fa-angle-down" aria-hidden="true"></i>
 
     <section class="package--info">
       <h4 itemprop="headline"><%- pkgVersion.title %></h4>
       <p itemprop="description"><%- pkgVersion.description %></p>
     </section>
 
-    <div id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
-      <svg></svg>
-    </div>
-
     <section class="table-list">
-      <input id="filter" type="text" placeholder="Filter list">
+      <h4 class="table-title">Functions in <%- pkgVersion.package_name %>  </h4>
+      <input id="filter" type="text" placeholder="Search">
       <table>
         <thead>
           <tr>
-            <td>Name</td>
-            <td>Description</td>
-            <td width="115">Rating</td>
+            <td>Name <i class="fa fa-sort" aria-hidden="true"></i></td>
+            <td>Description <i class="fa fa-sort" aria-hidden="true"></i></td>
+            <td width="115">Rating <i class="fa fa-sort" aria-hidden="true"></i></td>
           </tr>
         </thead>
         <tbody id="filterableItems">

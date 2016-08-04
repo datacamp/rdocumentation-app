@@ -1,6 +1,6 @@
 .package {
   min-height: 82%;
-  .container {
+  .container-fluid {
     margin-top: $default-space;
   }
 
@@ -20,12 +20,79 @@
     .rating {
       margin-left: 1rem;
     }
+    i.fa {
+      display: inline-block;
+    }
+    i.fa.fa-user{
+      font-size: 4rem;
+      vertical-align: middle;
+      margin-left: 3rem;
+    }
+    .maintainer{
+      display: inline-block;
+      margin-top: 0.3rem;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+      a{
+        font-size: 1.4rem;
+        text-decoration: none;
+        border-bottom: none;
+      }
+      p{
+        -webkit-margin-before: 0rem;
+      }
+      i.fa.fa-envelope{
+        color: #3a3a3a;
+        font-size: 1.4rem;
+        margin-left: 0.3rem;
+      }
+    }
+    .downloads {
+      float: right;
+      vertical-align: middle;
+      margin-left: 1rem;
+      display: inline-block;
+      p{
+        -webkit-margin-before: -0.7em;
+        -webkit-margin-after: 0em;
+      }
+      i{
+        margin-left: 0.6rem;
+      }
+    }
   }
 
   #chart svg {
     height: 400px;
   }
 
+}
+.sliding {
+  display: none;
+}
+
+.slider {
+  font-size: 2.5rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
+.table-title{
+  display: inline-block;
+  margin-right: 1rem;
+  margin-left: auto;
+}
+
+.table-top{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#filter{
+  display:inline-block;
 }
 
 .package--readme img {
