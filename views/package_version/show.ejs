@@ -53,14 +53,22 @@
 
       <% } %>
 
+      <div class="downloads">
+        <span class="downloads-nr percentile-task" data-url="/api<%= path %>/percentile" >
+          <span class='percentile'>0th</span>
+        </span>
+        <p>Percentile</p>
+      </div>
+      <div class="downloads" id = "percentile-arrow">
+        <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
+      </div>
       <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
         <span class="downloads-nr" >
           <span class='indeps'>0</span>
-          <i class="fa fa-info-circle fa-3x" aria-hidden="false"></i>
+          <i class="fa fa-info-circle fa-2x" aria-hidden="false"></i>
         </span>
         <p>Monthly downloads</p>
       </div>
-
     </header>
 
     <section class="stats sliding">
@@ -113,7 +121,9 @@
       <svg></svg>
     </div>
 
+    <section id = "slider">
     <i class="slider fa fa-angle-down" aria-hidden="true"></i>
+    </section>
 
     <section class="package--info">
       <h4 itemprop="headline"><%- pkgVersion.title %></h4>
