@@ -56,11 +56,10 @@
       window.packageVersionControl=function(){
         var versions = $('#packageVersionSelect').find('option');
         if(versions.length>0){
-          var packageInfo=$('.versionCheck').text().trim();
+          var packageInfo=$('.versionCheck> p:eq(0)').text().trim();
           var packageName=packageInfo.split(',')[0];
           window.checkPackageVersion(packageName).then(function(installed){
             if(installed==false){
-              $('.versionCheck').text('');
               $('.versionCheck').append('<a href="NULL" id="js-install" class="btn btn-primary js-external">Install</a>');
             }
             else{
@@ -69,7 +68,6 @@
               var upToDate=true;
               for(var i=0;i<versions.length;i++){
                 if($(versions[i]).text().trim()!="@VERSION@"&& _versionCompare($(versions[i]).text().trim(),installedVersion)){
-                  $('.versionCheck').text('');
                   $('.versionCheck').append('<a href="NULL" id="js-install" class="btn btn-primary js-external">Update</a>');
                   upToDate=false
                 }
@@ -87,7 +85,7 @@
 
       window.installpackage=function(e){
         e.preventDefault();
-        var packageInfo=$('.versionCheck').text().trim();
+        var packageInfo=$('.versionCheck> p:eq(0)').text().trim();
         var packageName=packageInfo.split(',')[0];
         var packageSource=packageInfo.split(',')[1];
         _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
@@ -102,8 +100,6 @@
       window.bindGlobalClickHandler = function(){       
         $('a:not(.js-external)').unbind('click', window.asyncClickHandler);
         $('a:not(.js-external)').bind('click', window.asyncClickHandler);
-        console.log($('a:not(.js-external)'));
-        console.log($('#js-examples'));
         $('#js-examples').unbind('click',window.runExamples);
         $('#js-examples').bind('click',window.runExamples);
         $('#js-install').unbind('click',window.installpackage);
@@ -176,7 +172,6 @@
       ************************************************************************************************************************************************/
       window.runExamples=function(e){
         e.preventDefault();
-        console.log("running examples");
         var package="";
         $('a').attr('href',function(i,link){
           if(link.indexOf("/packages/")>=0 && link.indexOf("/versions/">0)){
