@@ -37,7 +37,7 @@ module.exports = {
     var topic = req.param("topic");
     //if topicNames and packageNames where found by the local help function, search for it in the specified packages (might be none)
     if(packageNames != null && topicNames != null){
-      return RStudioService.helpFindByTopicsAndPackages(topicNames,packageNames).then(function(json){
+      return RStudioService.helpFindByTopicsAndPackages(topic,topicNames,packageNames).then(function(json){
         if(json.length == 0){
           //with no results : fuzzy search
           return ElasticSearchService.helpSearchQuery(topic,['aliases'],true,2).then(function(json){
