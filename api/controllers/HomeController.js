@@ -9,7 +9,7 @@ module.exports = {
 
   index: function(req, res) {
     console.log('index');
-    sequelize.query("SELECT (SELECT COUNT(*) FROM Packages) as package_count, (SELECT COUNT(*) FROM PackageVersions) as topic_count, (SELECT COUNT(*) FROM Collaborators) as collaborator_count;")
+    sequelize.query("SELECT (SELECT COUNT(*) FROM Packages) as package_count, (SELECT COUNT(*) FROM PackageVersions) as topic_count, (SELECT COUNT(*) FROM (SELECT DISTINCT name from Collaborators) c) as collaborator_count;")
       .then(function(counts) {
         var json = counts[0].map(function(row) {
           return {nbPackages: row.package_count, nbPackageVersions: row.topic_count, nbCollaborators: row.collaborator_count};
