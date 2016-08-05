@@ -58,10 +58,10 @@
             float: right;
             color: $text-tertiary;
         }
-        &:hover {
-            text-decoration: none;
-            background-color: $primary-extra-light;
-        }
+    }
+    a.hover {
+        text-decoration: none;
+        background-color: $primary-extra-light;
     }
 
     .placeholder {

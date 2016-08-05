@@ -80,6 +80,7 @@ module.exports.routes = {
     'get /api/collaborators/:id': 'CollaboratorController.findById',
     // HTML
     'get /collaborators/:id': 'CollaboratorController.findById',
+    'get /collaborators/name/:name': 'CollaboratorController.findByName',
   //***** /Collaborator *****
 
   //***** Review *****

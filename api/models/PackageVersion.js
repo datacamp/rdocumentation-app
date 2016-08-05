@@ -135,6 +135,16 @@ module.exports = {
     },
 
     classMethods: {
+      getLatestVersion:function(packageName){
+        return PackageVersion.findOne({
+          where:{package_name:packageName},
+          order: [[sequelize.fn('ORDER_VERSION', sequelize.col('PackageVersion.version')), 'DESC' ]]
+        });
+      },
+
+      getAllVersions: function(){
+        return PackageVersion.findAll();
+      },
 
       upsertPackageVersion: function(packageVersion, opts) {
 
@@ -148,6 +158,54 @@ module.exports = {
             defaults: packageVersion,
           });
           return PackageVersion.findOrCreate(options);
+        });
+      },
+
+      getPackageVersionFromCondition:function(conditions){
+        return PackageVersion.findOne({
+          where: conditions,
+          include: [
+            { model: Collaborator, as: 'maintainer' },
+            { model: Collaborator, as: 'collaborators' },
+            { model: Package, as: 'dependencies' },
+            { model: Package, as: 'package', include: [
+                { model: PackageVersion, as: 'versions', attributes:['package_name', 'version'], separate: true },
+                { model: PackageVersion, as: 'latest_version', attributes:['package_name', 'version'] },
+                { model: TaskView, as: 'inViews', attributes:['name'] }
+              ],
+              attributes: ['name', 'latest_version_id']
+            },
+            { model: Topic, as: 'topics',
+              attributes: ['package_version_id', 'name', 'title', 'id'],
+              include:[{model: Review, as: 'reviews'}],
+              separate: true },
+            { model: Review, as: 'reviews', separate: true,
+              include: [{model: User, as: 'user', attributes: ['username', 'id']}]
+            }
+          ],
+          order: [[sequelize.fn('ORDER_VERSION', sequelize.col('PackageVersion.version')), 'DESC' ]]
+        })
+        .then(function(versionInstance) {
+          if(versionInstance === null) return null;
+          return Review.findOne({
+            attributes: [[sequelize.fn('AVG', sequelize.col('rating')), 'rating']],
+            where: {
+              reviewable_id: versionInstance.id,
+              reviewable: 'version'
+            },
+            group: ['reviewable_id']
+          }).then(function(ratingInstance) {
+            if (ratingInstance === null) return versionInstance.toJSON();
+            var version = versionInstance.toJSON();
+            version.rating = ratingInstance.getDataValue('rating');
+            return version;
+          }).then(function(version) {
+            if (version.url) version.url = version.url.autoLink({ target: "_blank", id: "1" });
+            return version;
+          });
+        })
+        .catch(function(err){
+          console.log(err.message);
         });
       },
 
@@ -173,14 +231,6 @@ module.exports = {
             });
           });
 
-          var maintainer = packageVersion.maintainer !== null ?
-            Collaborator.insertAuthor(packageVersion.maintainer, {transaction: t}) : null;
-
-
-          var authors = Promise.map(packageVersion.authors, function(author) {
-            return Collaborator.insertAuthor(author, {transaction: t});
-          });
-
           var dependencies = Package.bulkCreate(packageVersion.dependencies.map(function(dependency) {
             return {name: dependency.dependency_name};
           }), {
@@ -190,8 +240,8 @@ module.exports = {
           });
 
 
-          return Promise.join(package, maintainer, authors, dependencies,
-            function(packageInstance, maintainerInstance, authorInstances) {
+          return Promise.join(package, dependencies,
+            function(packageInstance) {
 
               return PackageVersion.findOrInitialize(
                 {
@@ -203,7 +253,6 @@ module.exports = {
               }).spread(function(packageVersionInstance, initialized) {
                 packageVersionInstance.set(packageVersion.fields);
                 packageVersionInstance.setPackage(packageVersion.package.name, {save: false});
-                if (maintainerInstance !== null) packageVersionInstance.setMaintainer(maintainerInstance, {save: false});
                 return packageVersionInstance.save({transaction: t});
               }).then(function(packageVersionInstance) {
                 var dependencies = packageVersion.dependencies.map(function(dependency) {
@@ -214,8 +263,7 @@ module.exports = {
                   ignoreDuplicates: true,
                   transaction: t
                 });
-                var auth = packageVersionInstance.setCollaborators(authorInstances, {transaction: t, ignoreDuplicates: true});
-                return Promise.join(dep, auth,
+                return Promise.join(dep, Collaborator.replaceAllAuthors(packageVersion.authors, packageVersionInstance, {transaction:t}),
                   function(dependencies, authors) {
                     return PackageVersion.findAll({
                       where: {

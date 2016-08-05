@@ -330,9 +330,9 @@ module.exports = {
 
     }).then(function(json) {
       if(json === null) {
-        return res.redirect(302, '/packages/' + fromPackageName + '/versions/' + fromPackageVersion);
+        return res.rstudio_redirect(302,'/packages/' + fromPackageName + '/versions/' + fromPackageVersion);
       } else {
-        return res.rstudio_redirect(json.uri);
+        return res.rstudio_redirect(301,json.uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);

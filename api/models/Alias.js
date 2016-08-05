@@ -54,53 +54,111 @@ module.exports = {
           where: { name: name }
         });
       },
-    orderedFindByAlias : function(alias) {
-      query = "SELECT SUM(direct_downloads) AS direct_downloads,aka.name AS alias,t.id,t.name,t.description,t.package_version_id,pv.package_name FROM Aliases aka,Topics t,PackageVersions pv,DownloadStatistics d WHERE d.package_name = pv.package_name AND aka.topic_id=t.id AND t.package_version_id=pv.id AND d.date >= current_date() - interval '1' month AND aka.name = ? ";
-      query = query.concat(" GROUP BY t.name ,t.package_version_id,t.id,aka.name ORDER BY SUM(direct_downloads) DESC;");
-      return sequelize.query(query,
-        { replacements: [alias], type: sequelize.QueryTypes.SELECT}).then(function(data){
+      orderedFindByAlias : function(alias) {
+        return Alias.findAll({
+          attributes: ['id',['name','alias']],
+          include:[{
+            model:Topic,
+            as:'topic',
+            attributes:['id','name','description'],
+            include:[{
+              model:PackageVersion,
+              as:'package_version',
+              attributes:['package_name'],
+              include:[{
+                model:Package,
+                as:'package',
+                required:true,
+                attributes:[],
+                include:[{
+                  model:DownloadStatistic,
+                  as:'last_month_stats',
+                  required:true,
+                  attributes:[],
+                  where:{date :{
+                    $gte: new Date(new Date() - 30*24 * 60 * 60 * 1000)
+                  }}
+                }],
+                where:{latest_version_id:Sequelize.col('topic.package_version.id')}
+              }]
+            }]
+          }],
+          where:{name:alias},
+          group:['topic.name','topic.package_version.id','topic.id','Alias.name','Alias.id'],
+          order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package.last_month_stats.direct_downloads'))]
+        }).then(function(data){
             allResults = _.map(data,function(record){
-              return {
-              id:record.id,
-              package_name:record.package_name,
-              function_name:record.name,
-              function_alias:record.alias,
-              function_description:record.description
+            return {
+              id:record.topic.id,
+              package_name:record.topic.package_version.package_name,
+              function_name:record.topic.name,
+              function_alias: alias,
+              function_description:record.topic.description
               };
           })
           return allResults; 
-       }).catch(function(err){
-        console.log(err.message);
-      });
-    },
-    orderedFindByTopicsAndPackages:function(topics,packageNames){
-      query = "SELECT SUM(direct_downloads) AS direct_downloads,aka.name AS alias,t.id,t.name,t.description,t.package_version_id,pv.package_name FROM Aliases aka,Topics t,PackageVersions pv,DownloadStatistics d WHERE d.package_name = pv.package_name AND aka.topic_id=t.id AND t.package_version_id=pv.id AND d.date >= current_date() - interval '1' month AND t.name IN(";
-      for(var i=0;i<packageNames.length-1;i++){
-          query = query.concat("?,");
-      }
-      query = query.concat("?) AND pv.package_name IN (")
-      for(var i=0;i<packageNames.length-1;i++){
-        query = query.concat("?,");
-      }
-      query = query.concat("?)");
-      var replace = topics.concat(packageNames);
-      query = query.concat(" GROUP BY t.name ,t.package_version_id,t.id,aka.name ORDER BY SUM(direct_downloads) DESC;");
-      return sequelize.query(query,
-        { replacements: replace, type: sequelize.QueryTypes.SELECT}).then(function(data){
+        }).catch(function(err){
+          console.log(err.message);
+        });
+      },
+      orderedFindByTopicsAndPackages:function(topics,packageNames){
+        return Alias.findAll({
+          attributes: ['id',['name','alias']],
+          include:[{
+            model:Topic,
+            as:'topic',
+            attributes:['id','name','description'],
+            include:[{
+              model:PackageVersion,
+              as:'package_version',
+              attributes:['package_name'],
+              include:[{
+                model:Package,
+                as:'package',
+                required:true,
+                attributes:[],
+                include:[{
+                  model:DownloadStatistic,
+                  as:'last_month_stats',
+                  required:true,
+                  attributes:[],
+                  where:{date :{
+                    $gte: new Date(new Date() - 30*24 * 60 * 60 * 1000)
+                  }}
+                }],
+                where:{
+                  latest_version_id:Sequelize.col('topic.package_version.id'),
+                }
+              }],
+              where:{
+                package_name:{
+                  $in:packageNames
+                }
+              }
+            }],
+            where:{
+              name:{
+                $in:topics
+              }
+            }
+          }],
+          group:['topic.name','topic.package_version.id','topic.id','Alias.name','Alias.id'],
+          order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package.last_month_stats.direct_downloads'))]
+        }).then(function(data){
             allResults = _.map(data,function(record){
               return {
-              id:record.id,
-              package_name:record.package_name,
-              function_name:record.name,
-              function_alias:record.alias,
-              function_description:record.description
+              id:record.topic.id,
+              package_name:record.topic.package_version.package_name,
+              function_name:record.topic.name,
+              function_alias: record.dataValues.alias,
+              function_description:record.topic.description
               };
           })
           return allResults; 
-       }).catch(function(err){
-        console.log(err.message);
-      });
-    }
+        }).catch(function(err){
+          console.log(err.message);
+        });
+      }
     }
   }
 };

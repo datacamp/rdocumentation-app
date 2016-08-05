@@ -39,6 +39,7 @@ window.searchHandler = function() {
     $.post('/api/quick_search', {token: token}, function(data){
       appendResults(data);
       showSearchResults();
+      hover();
     });
   }
 
@@ -85,8 +86,31 @@ window.searchHandler = function() {
     }    
   }
 
-  searchInput.keyup(debounce(function(){
+  function hover(){
+    var elements = $(".search--results li");
+    elements.each(function(i){
+      $(this).mouseenter(function(){
+        sethovering($(this).find("a"));
+      });
+      $(this).mouseleave(function(){
+        unsethovering($(this).find("a"));
+      });
+    });
+  }
+  function sethovering(element){
+    if($("li a.hover").length>0){
+      $("li a.hover").eq(0).removeClass("hover");
+    }
+    element.addClass("hover");
+  }
+  function unsethovering(element){
+    element.removeClass("hover");
+  }
+
+  searchInput.on("keyup",debounce(function(e){
+    if(e.keyCode !== 40&&e.keyCode!==38){
     search(searchInput.val());
+  }
   }, 100));
 
   $(document).click(function(event) {
@@ -100,8 +124,38 @@ window.searchHandler = function() {
 
   searchInput.bind('keydown', function(e) {
     // DOWN array (only works with keydown and not keypress)
-    if(e.keyCode == 40){
-
+    if(e.keyCode==13 && $("li a.hover").length>0){
+      e.preventDefault();
+      document.location =  $("li a.hover").attr('href');
+    }else if(e.keyCode == 40){
+      if($("li a.hover").length>0){
+        var next =($("li a.hover").parent().next("li"));
+        if(next.length > 0){
+          sethovering(next.find("a"));
+        }
+        else if($("li a.hover").parent().parent().hasClass("packages")){
+          if($(".search--results .topics li").length > 0){
+          sethovering($(".search--results .topics li").eq(0).find("a"));
+          }
+        }
+      }else{
+        sethovering($(".search--results li").eq(0).find("a"));
+      }
+    }else if(e.keyCode == 38){
+      if($("li a.hover").length>0){
+        e.preventDefault();
+        var next =($("li a.hover").parent().prev("li"));
+        if(next.length > 0){
+          sethovering(next.find("a"));
+        }
+        else if($("li a.hover").parent().parent().hasClass("topics")){
+          if($(".search--results .packages li").length>0){
+          sethovering($(".search--results .packages li").last().find("a"));
+          }
+        }
+      }else{
+        sethovering($(".search--results li").last().find("a"));
+      }
     }
   });
 };

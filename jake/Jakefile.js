@@ -19,6 +19,18 @@ task('recoverPackageVersions',['sails-load'], {async: true}, function(){
 });
 
 
+task('test-extraction',['sails-load'], function(){
+  var nlp = require('nlp_compromise');
+
+  var sanitized = AuthorService.authorsSanitizer("Luciano Souza <lcnsza@gmail.com>, Lucas Gallindo <lgallindo@gmail.com>, Luciano Serafim de Souza <lucianoserafimdesouza@gmail.com>");
+
+  console.log(sanitized);
+
+});
+
+
+
+
 
 
 desc('Call a fn in sails');
@@ -209,6 +221,15 @@ task('bootstrap-splitted-download-statistics', ['sails-load'], {async: true}, fu
 
 jake.addListener('complete', function () {
   process.exit();
+});
+
+task('parse-author', ['sails-load'], {async: true}, function () {
+  //console.log(AuthorService.recoverAuthorsR({"Package":"proxy","Type":"Package","Title":"Distance and Similarity Measures","Version":"0.4-14","Date":"2015-02-03","Authors@R":"c(person(given = \"David\", family = \"Meyer\", role = c(\"aut\", \"cre\"), email = \"David.Meyer@R-project.org\"),\n             person(given = \"Christian\", family = \"Buchta\", role = \"aut\"))","Description":"Provides an extensible framework for the efficient calculation of auto- and cross-proximities, along with implementations of the most popular ones. ","Depends":"R (>= 2.4.0)","Suggests":"cba","Collate":"registry.R database.R dist.R similarities.R dissimilarities.R\n        util.R seal.R","License":"GPL-2","Packaged":"2015-02-04 13:09:30 UTC; david","Author":"David Meyer [aut, cre],\n  Christian Buchta [aut]","Maintainer":"David Meyer <David.Meyer@R-project.org>","NeedsCompilation":"yes","Repository":"CRAN","Date/Publication":"2015-02-04 22:24:48","repoType":"cran"}));
+  AuthorService.parseAllAuthors().then(function(){
+    complete();
+  });
+  //console.log(AuthorService.authorsSanitizer("Yuan Tang <terrytangyuan@gmail.com> and Zachary Deane-Mayer with contributions from Nan Xiao."));
+  //complete();
 });
 
 

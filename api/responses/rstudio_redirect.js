@@ -14,7 +14,7 @@
  * This is for example the case when refering to topics, as topic/show.ejs has viewer_pane-specifid code.
  */
 
- module.exports = function rstudio_redirect(uri) {
+ module.exports = function rstudio_redirect(code,uri) {
 
 // Get access to `req`, `res`, & `sails`
   var req = this.req;
@@ -27,6 +27,5 @@
   }
 
   sails.log.silly('res.restudio_redirect() :: Sending 303 (redirect) response');
-
-  res.redirect(301, uri+urlParams);
+  res.redirect(code,uri+urlParams);
 };

@@ -57,12 +57,26 @@ module.exports = {
       .concat(dependencyArrayToRecords('Enhances'))
       .concat(dependencyArrayToRecords('LinkingTo'));
 
-    var authorArray = descriptionJSON.Author ? AuthorService.authorsSanitizer(descriptionJSON.Author) : [];
     var name = descriptionJSON.Package || descriptionJSON.Bundle || 'Undefined';
 
     var timestamp = descriptionJSON.Date ? Date.parse(descriptionJSON.Date) : null;
 
     var release_date = isNaN(timestamp) ? null : new Date(timestamp);
+
+    var authors = {contributors : []};
+
+    if(descriptionJSON["Authors@R"] && descriptionJSON["Authors@R"].indexOf("as.person(")==-1) {
+      authors = AuthorService.recoverAuthorsR(descriptionJSON);
+    }
+    else {
+      if(descriptionJSON.Author){
+        authors.contributors = AuthorService.authorsSanitizer(descriptionJSON.Author);
+      }
+      if(descriptionJSON.Maintainer) {
+        authors.maintainer = AuthorService.authorsSanitizer(descriptionJSON.Maintainer)[0];
+      }
+    }
+
 
     return {
       package: {
@@ -77,8 +91,7 @@ module.exports = {
         url: descriptionJSON.URL,
         copyright: descriptionJSON.Copyright
       },
-      authors: authorArray,
-      maintainer: descriptionJSON.Maintainer ? AuthorService.extractPersonInfo(descriptionJSON.Maintainer) : null,
+      authors: authors,
       dependencies: dependencies
     };
 
