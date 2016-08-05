@@ -251,7 +251,11 @@ module.exports = {
 
               }
             }
-            return Collaborator.replaceAllAuthors(auth, Result);
+            return Collaborator.replaceAllAuthors(auth, Result).then(function(r) {
+              key = 'view_package_version_' + Result.package_name + '_' + Result.version;
+              RedisClient.del(key);
+              return r;
+            });
           } else return;
         } catch(err) {
           return;
