@@ -25,30 +25,6 @@
     i.fa {
       display: inline-block;
     }
-    i.fa.fa-user{
-      font-size: 4rem;
-      vertical-align: middle;
-      margin-left: 3rem;
-    }
-    .maintainer{
-      display: inline-block;
-      margin-top: 0.3rem;
-      margin-left: 0.5rem;
-      vertical-align: middle;
-      a{
-        font-size: 1.4rem;
-        text-decoration: none;
-        border-bottom: none;
-      }
-      p{
-        -webkit-margin-before: 0rem;
-      }
-      i.fa.fa-envelope{
-        color: #3a3a3a;
-        font-size: 1.4rem;
-        margin-left: 0.3rem;
-      }
-    }
     .downloads {
       float: right;
       vertical-align: middle;
@@ -73,6 +49,54 @@
   }
 
 }
+
+i.fa.fa-user{
+  font-size: 4rem;
+  vertical-align: top;
+  margin-left: 3rem;
+}
+.maintainer{
+  display: inline-block;
+  margin-top: 0.3rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  a{
+    font-size: 1.4rem;
+    text-decoration: none;
+    border-bottom: none;
+  }
+  p{
+    -webkit-margin-before: 0rem;
+  }
+  i.fa.fa-envelope{
+    color: #3a3a3a;
+    font-size: 1.4rem;
+    margin-left: 0.3rem;
+  }
+  &.contributor{
+    margin-top:0.8rem;
+  }
+}
+.contributor{
+  dd{
+    -webkit-margin-start: 0px;
+  }
+  a{
+    font-size: 1.4rem;
+    display:block;
+  }
+  .listed{
+    display:inline-block;
+    margin-left:0.5rem;
+  }
+}
+
+#details{
+  .col-md-8{
+    width: initial;
+  }
+}
+
 .sliding {
   display: none;
 }
@@ -136,4 +160,27 @@
     color: #228B22;
     text-shadow: 1px 1px 1px #ccc;
     font-size: 1.5em;
+}
+
+#tabs { 
+    background: transparent; 
+    border: none; 
+} 
+#tabs .ui-widget-header { 
+    background: transparent; 
+    border: none; 
+    border-bottom: 1px solid #c0c0c0; 
+    -moz-border-radius: 0px; 
+    -webkit-border-radius: 0px; 
+    border-radius: 0px; 
+} 
+#tabs .ui-tabs-nav .ui-state-default { 
+    background: transparent; 
+    border: none; 
+}
+#tabs .ui-tabs-nav .ui-state-default a { 
+    color: #c0c0c0; 
+} 
+#tabs .ui-tabs-nav .ui-state-active a { 
+    color: $primary; 
 }

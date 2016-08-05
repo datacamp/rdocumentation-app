@@ -46,11 +46,10 @@ window.graphDownloadStatistics = function() {
         d3.select('#chart svg')
           .datum([serie])
           .call(chart);
-        $('#chart').hide();
       });
 
-
       nv.utils.windowResize(chart.update);
+
       return chart;
   });
 
@@ -63,6 +62,7 @@ window.makeSlider = function(){
       slider.removeClass("fa-angle-down");
       slider.addClass("fa-angle-up");
       $(".sliding").slideDown();
+      window.graphDownloadStatistics();
     }else{
       slider.removeClass("fa-angle-up");
       slider.addClass("fa-angle-down");
@@ -70,6 +70,7 @@ window.makeSlider = function(){
     }
   });
 };
+
 
 window.triggerIcon = function(){
   $("table").bind("sortEnd",function(){
@@ -99,7 +100,6 @@ window.triggerIcon = function(){
 
 $(document).ready(function() {
   window.packageVersionToggleHandler();
-  window.graphDownloadStatistics();
   window.makeSlider();
   // add parser through the tablesorter addParser method 
   $.tablesorter.addParser({ 
@@ -111,7 +111,6 @@ $(document).ready(function() {
       }, 
       format: function(s) { 
           // format your data for normalization 
-          console.log(parseFloat(s));
           return parseFloat(s);
       }, 
       // set type, either numeric or text 
@@ -141,4 +140,9 @@ $(document).ready(function() {
         }
     }); 
   window.triggerIcon();
+  $("#tabs").tabs();
+  $('#tabs').tabs({
+  active: 0
+  });
+
 });
