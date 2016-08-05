@@ -215,13 +215,19 @@ module.exports = {
 
   getLastMonthDownloadPerDay: function(req, res) {
     var packageName = req.param('name');
-    ElasticSearchService.lastMonthPerDay(packageName).then(function(data) {
+    DownloadStatistic.lastMonthSplittedDownloadsPerDay(packageName).then(function(data) {
       var serie = data.map(function(d) {
-        return {
-          timestamp: d.key,
-          count: d.doc_count
-        };
+        return [{
+          timestamp: d.date,
+          key:"direct_downloads",
+          count: d.direct_downloads,
+        },{
+          timestamp: d.date,
+          key:"indirect_downloads",
+          count:d.indirect_downloads
+        }];
       });
+      serie=[].concat.apply([],serie);
       return res.json(serie);
     });
   },

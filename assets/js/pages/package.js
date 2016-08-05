@@ -38,13 +38,21 @@ window.graphDownloadStatistics = function() {
 
       if($('#chart').data('url')) {
         getData($('#chart').data('url'), function(data) {
-          var serie = {
-            key: "Daily downloads",
-            values: data
+          var direct_serie = {
+            key: "Direct downloads",
+            values: data.filter(function(e){
+              return e.key=="direct_downloads";
+            })
+          };
+          var indirect_serie = {
+            key: "Indirect downloads",
+            values: data.filter(function(e){
+              return e.key=="indirect_downloads";
+            })
           };
           $('#chart').show();
           d3.select('#chart svg')
-            .datum([serie])
+            .datum([direct_serie,indirect_serie])
             .call(chart);
         });
         nv.utils.windowResize(chart.update);

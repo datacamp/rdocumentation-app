@@ -61,6 +61,16 @@ module.exports = {
 
       findLastIndexedDay: function() {
         return DownloadStatistic.max('date');
+      },
+      lastMonthSplittedDownloadsPerDay:function(package_name){
+        return DownloadStatistic.findAll({
+          where:{
+            package_name:package_name,
+            date:{
+              $gte:new Date(new Date()-30*24*60*60*1000)
+            }
+          },
+        })
       }
     }
   }
