@@ -91,11 +91,11 @@ module.exports = {
 
 
         return Promise.join(deleteMaintainerPromise, deleteContributors, function() {
-
           var collaboratorsPromise = Promise.mapSeries(json.contributors, function(contributor){
             return Collaborator.insertAuthor(contributor, options);
           }).then(function(collaboratorInstances) {
-            return version.setCollaborators(collaboratorInstances, options);
+            var collaborators = _.uniqBy(collaboratorInstances, 'id');
+            return version.setCollaborators(collaborators, options);
           });
 
           var maintainerPromise = json.maintainer ?

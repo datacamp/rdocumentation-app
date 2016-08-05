@@ -158,17 +158,16 @@ module.exports = {
     var mapped = trimmed.map(AuthorService.extractPersonInfo);
 
     var filtered = mapped.filter(function(item){if(item == undefined){return false;} return true;});
-
     return filtered;
 
   },
 
-  recoverAuthorsR: function(json){
-    if(json["Authors@R"].indexOf("as.person(")!==-1){
-      return AuthorService.authorsSanitizer(json["Authors@R"]);
+  recoverAuthorsR: function(str){
+    if(str.indexOf("as.person(")!==-1){
+      return AuthorService.authorsSanitizer(str);
     }
 
-    var person = json["Authors@R"].split("person(");
+    var person = str.split("person(");
     person.shift();
     var hasMaintainer = false;
     var result = {
@@ -179,6 +178,8 @@ module.exports = {
       var list = str.split(",");
       var name = "", middle ="", family = "", email, isMaintainer = false;
       var fullName;
+      // console.log("============");
+      // console.log(list);
 
       list.forEach(function(piece){
         if(piece.match(Utils.emailRegex)) {
@@ -228,15 +229,18 @@ module.exports = {
     }).then(function(Results) {
       return Promise.mapSeries(Results, function(Result) {
         try {
+          console.log(Result.package_name);
           if(Result.sourceJSON) {
             var json = JSON.parse(Result.sourceJSON);
             var auth = {contributors : []};
             if(json["Authors@R"] && json["Authors@R"].indexOf("as.person(")==-1) {
-              auth = AuthorService.recoverAuthorsR(json);
+              auth = AuthorService.recoverAuthorsR(json["Authors@R"]);
             }
             else {
               if(json.Author){
-                auth.contributors = AuthorService.authorsSanitizer(json.Author);
+                if(json.Author.indexOf("person(") !== -1) {
+                  auth.contributors = AuthorService.recoverAuthorsR(json.Author).contributors;
+                }
               }
               if(json.Maintainer) {
                 auth.maintainer = AuthorService.authorsSanitizer(json.Maintainer)[0];
