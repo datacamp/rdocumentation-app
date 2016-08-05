@@ -29,7 +29,6 @@ window.graphDownloadStatistics = function() {
           return d.count;
         })
       ;
-      console.log("test");
 
       window.chart.xAxis
           .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)); });
