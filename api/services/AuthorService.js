@@ -164,7 +164,9 @@ module.exports = {
 
   recoverAuthorsR: function(str){
     if(str.indexOf("as.person(")!==-1){
-      return AuthorService.authorsSanitizer(str);
+      return {
+        contributors: AuthorService.authorsSanitizer(str)
+      };
     }
 
     var person = str.split("person(");
