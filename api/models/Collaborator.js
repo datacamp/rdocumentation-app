@@ -77,42 +77,33 @@ module.exports = {
 
       replaceAllAuthors: function(json,version, options) {
 
-
-        var deleteMaintainerPromise = Collaborator.destroy(_.defaults({
-          where: {id: version.id},
-        }, options));
-
-        var deleteContributors = version.getCollaborators().then(function(contributors) {
-          var ids = _.map(contributors, 'id');
-          return Collaborator.destroy(_.defaults({
-            where: {id: {$in: ids}},
-          }, options));
+        var collaboratorsPromise = Promise.mapSeries(json.contributors, function(contributor){
+          return Collaborator.insertAuthor(contributor, options);
+        }).then(function(collaboratorInstances) {
+          var collaborators = _.uniqBy(collaboratorInstances, 'id');
+          return version.setCollaborators(collaborators, options);
         });
 
+        var maintainerPromise = json.maintainer ?
+          Collaborator.insertAuthor(json.maintainer, options).then(function(auth){
+            version.maintainer_id = auth.id;
+            return version.save(options).then(function(v) {
+              return auth;
+            });
+          }) : Promise.resolve(null);
 
-        return Promise.join(deleteMaintainerPromise, deleteContributors, function() {
-          var collaboratorsPromise = Promise.mapSeries(json.contributors, function(contributor){
-            return Collaborator.insertAuthor(contributor, options);
-          }).then(function(collaboratorInstances) {
-            var collaborators = _.uniqBy(collaboratorInstances, 'id');
-            return version.setCollaborators(collaborators, options);
-          });
-
-          var maintainerPromise = json.maintainer ?
-            Collaborator.insertAuthor(json.maintainer, options).then(function(auth){
-              version.maintainer_id = auth.id;
-              return version.save(options).then(function(v) {
-                return auth;
-              });
-            }) : Promise.resolve(null);
-
-          return Promise.join(collaboratorsPromise, maintainerPromise, function(collaborators, maintainer) {
+        return Promise.join(collaboratorsPromise, maintainerPromise, function(collaborators, maintainer) {
+          return Collaborator.deleteOrphans().then(function() {
             return collaborators.concat(maintainer);
           });
-
         });
 
+      },
 
+      deleteOrphans: function() {
+        var query = "DELETE FROM Collaborators o WHERE NOT EXISTS (SELECT * FROM Collaborations AS co WHERE co.author_id = o.id) AND NOT EXISTS (SELECT * FROM PackageVersions as p WHERE p.maintainer_id = o.id);";
+
+        return sequelize.query(query, {type: sequelize.QueryTypes.DELETE});
       }
 
     }
