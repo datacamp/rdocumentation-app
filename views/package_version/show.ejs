@@ -17,14 +17,15 @@
           <% } %>
         </select>
       </div>
-
-      <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>
         <% if(inViewerPane) { %>
           <div class="versionCheck">
+            <p hidden>
             <%=pkgVersion.package_name%>,
             <%=pkgVersion.package['type_id']%>
+            </p>
           </div>
-        <% } %>
+        <%}%>
+      <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>  
         <div class="rating" title=<%= pkgVersion.rating %>>
           <% if (pkgVersion.rating) { %>
             <% for(var i=1; i <= 5; i++) { %>
@@ -39,10 +40,12 @@
           (<span itemprop="reviewCount"><%= pkgVersion.reviews.length %> </span>votes)
         </div>
       </div>
-
-
       <div class="package--review pull-right" >
+        <% if(!inViewerPane) { %>
           <a href="<%= path + '#postReview' %>" class="btn btn-primary js-internal">Review Package</a>
+        <% } else { %>
+          <a href='#postReview' class="btn btn-primary js-internal">Review Package</a>
+        <% } %>
       </div>
     </header>
 
