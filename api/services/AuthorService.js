@@ -240,6 +240,8 @@ module.exports = {
               if(json.Author){
                 if(json.Author.indexOf("person(") !== -1) {
                   auth.contributors = AuthorService.recoverAuthorsR(json.Author).contributors;
+                } else {
+                  auth.contributors = AuthorService.authorsSanitizer(json.Author);
                 }
               }
               if(json.Maintainer) {
