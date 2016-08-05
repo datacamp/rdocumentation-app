@@ -69,7 +69,7 @@ var self = module.exports = {
           if (collaborators.length > 0) {
             latest.is_contributor = true;
           }
-          if(!json.email && latest.maintainer.email) {
+          if(!json.email && latest.is_maintainer && latest.maintainer.email) {
             json.email = latest.maintainer.email;
           }
           if(!json.email && collaborators.length > 0 && collaborators[0].email) {
