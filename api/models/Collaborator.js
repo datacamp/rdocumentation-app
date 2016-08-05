@@ -101,7 +101,7 @@ module.exports = {
       },
 
       deleteOrphans: function() {
-        var query = "DELETE FROM Collaborators o WHERE NOT EXISTS (SELECT * FROM Collaborations AS co WHERE co.author_id = o.id) AND NOT EXISTS (SELECT * FROM PackageVersions as p WHERE p.maintainer_id = o.id);";
+        var query = "DELETE o FROM Collaborators o LEFT JOIN Collaborations co ON o.id = co.author_id LEFT JOIN PackageVersions p ON p.maintainer_id = o.id WHERE co.author_id IS NULL AND p.maintainer_id IS NULL;";
 
         return sequelize.query(query, {type: sequelize.QueryTypes.DELETE});
       }
