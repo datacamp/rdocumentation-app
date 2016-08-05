@@ -181,7 +181,7 @@ module.exports = {
       var fullName;
 
       list.forEach(function(piece){
-        if(piece.indexOf("email")>=0) {
+        if(piece.match(Utils.emailRegex)) {
           email = piece.split("\"")[1];
         }
         if(piece.indexOf("cre")>=0&&!hasMaintainer) {
@@ -199,7 +199,11 @@ module.exports = {
       }
       else {
         family = list[1].split("\"")[1];
-        fullName = name+" "+family;
+        if (family.trim().match(/^(aut|com|ctb|cph|cre|ctr|dtc|ths|trl)$/))
+          fullName = name;
+        else
+          fullName = name+" "+family;
+
       }
       var author = {};
       author.name = fullName;
@@ -218,29 +222,32 @@ module.exports = {
   },
 
 
-  parseAllAuthors: function() {
-    return PackageVersion.getAllVersions().then(function(Results) {
+  parseAllAuthors: function(where) {
+    return PackageVersion.findAll({
+      where: where
+    }).then(function(Results) {
       return Promise.mapSeries(Results, function(Result) {
-
-        if(Result.sourceJSON) {
-          var json = JSON.parse(Result.sourceJSON);
-          var auth = {contributors : []};
-          if(json["Authors@R"] && json["Authors@R"].indexOf("as.person(")==-1) {
-            auth = AuthorService.recoverAuthorsR(json);
-          }
-          else {
-            if(json.Author){
-              auth.contributors = AuthorService.authorsSanitizer(json.Author);
+        try {
+          if(Result.sourceJSON) {
+            var json = JSON.parse(Result.sourceJSON);
+            var auth = {contributors : []};
+            if(json["Authors@R"] && json["Authors@R"].indexOf("as.person(")==-1) {
+              auth = AuthorService.recoverAuthorsR(json);
             }
-            if(json.Maintainer) {
-              auth.maintainer = AuthorService.authorsSanitizer(json.Maintainer)[0];
+            else {
+              if(json.Author){
+                auth.contributors = AuthorService.authorsSanitizer(json.Author);
+              }
+              if(json.Maintainer) {
+                auth.maintainer = AuthorService.authorsSanitizer(json.Maintainer)[0];
 
+              }
             }
-          }
-
-          return Collaborator.insertAllAuthors(auth, Result);
-        } else return;
-
+            return Collaborator.replaceAllAuthors(auth, Result);
+          } else return;
+        } catch(err) {
+          return;
+        }
       });
     });
   }

@@ -177,14 +177,6 @@ module.exports = {
             });
           });
 
-          var maintainer = packageVersion.maintainer !== null ?
-            Collaborator.insertAuthor(packageVersion.maintainer, {transaction: t}) : null;
-
-
-          var authors = Promise.map(packageVersion.authors, function(author) {
-            return Collaborator.insertAuthor(author, {transaction: t});
-          });
-
           var dependencies = Package.bulkCreate(packageVersion.dependencies.map(function(dependency) {
             return {name: dependency.dependency_name};
           }), {
@@ -194,8 +186,8 @@ module.exports = {
           });
 
 
-          return Promise.join(package, maintainer, authors, dependencies,
-            function(packageInstance, maintainerInstance, authorInstances) {
+          return Promise.join(package, dependencies,
+            function(packageInstance) {
 
               return PackageVersion.findOrInitialize(
                 {
@@ -207,7 +199,6 @@ module.exports = {
               }).spread(function(packageVersionInstance, initialized) {
                 packageVersionInstance.set(packageVersion.fields);
                 packageVersionInstance.setPackage(packageVersion.package.name, {save: false});
-                if (maintainerInstance !== null) packageVersionInstance.setMaintainer(maintainerInstance, {save: false});
                 return packageVersionInstance.save({transaction: t});
               }).then(function(packageVersionInstance) {
                 var dependencies = packageVersion.dependencies.map(function(dependency) {
@@ -218,8 +209,7 @@ module.exports = {
                   ignoreDuplicates: true,
                   transaction: t
                 });
-                var auth = packageVersionInstance.setCollaborators(authorInstances, {transaction: t, ignoreDuplicates: true});
-                return Promise.join(dep, auth,
+                return Promise.join(dep, Collaborator.replaceAllAuthors(packageVersion.authors, packageVersionInstance, {transaction:t}),
                   function(dependencies, authors) {
                     return PackageVersion.findAll({
                       where: {
