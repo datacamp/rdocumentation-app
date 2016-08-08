@@ -64,12 +64,12 @@ module.exports = {
             include:[{
               model:PackageVersion,
               as:'package_version',
-              attributes:['package_name'],
+              attributes:['id','package_name'],
               include:[{
                 model:Package,
-                as:'package',
+                as:'package_latest',
                 required:true,
-                attributes:[],
+                attributes:['latest_version_id'],
                 include:[{
                   model:DownloadStatistic,
                   as:'last_month_stats',
@@ -78,14 +78,13 @@ module.exports = {
                   where:{date :{
                     $gte: new Date(new Date() - 30*24 * 60 * 60 * 1000)
                   }}
-                }],
-                where:{latest_version_id:Sequelize.col('topic.package_version.id')}
+                }]
               }]
             }]
           }],
           where:{name:alias},
-          group:['topic.name','topic.package_version.id','topic.id','Alias.name','Alias.id'],
-          order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package.last_month_stats.direct_downloads'))]
+          group:['topic.name','topic.package_version.id','topic.id','Alias.id','topic.package_version.package_latest.name'],
+          order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package_latest.last_month_stats.direct_downloads'))]
         }).then(function(data){
             allResults = _.map(data,function(record){
             return {
@@ -101,22 +100,24 @@ module.exports = {
           console.log(err.message);
         });
       },
-      orderedFindByTopicsAndPackages:function(topics,packageNames){
+      orderedFindByTopicsAndPackages:function(alias,topics,packageNames){
         return Alias.findAll({
           attributes: ['id',['name','alias']],
           include:[{
             model:Topic,
             as:'topic',
+            required:true,
             attributes:['id','name','description'],
             include:[{
               model:PackageVersion,
               as:'package_version',
-              attributes:['package_name'],
+              required:true,
+              attributes:['package_name','id'],
               include:[{
                 model:Package,
-                as:'package',
+                as:'package_latest',
                 required:true,
-                attributes:[],
+                attributes:['latest_version_id'],
                 include:[{
                   model:DownloadStatistic,
                   as:'last_month_stats',
@@ -126,9 +127,6 @@ module.exports = {
                     $gte: new Date(new Date() - 30*24 * 60 * 60 * 1000)
                   }}
                 }],
-                where:{
-                  latest_version_id:Sequelize.col('topic.package_version.id'),
-                }
               }],
               where:{
                 package_name:{
@@ -142,8 +140,9 @@ module.exports = {
               }
             }
           }],
-          group:['topic.name','topic.package_version.id','topic.id','Alias.name','Alias.id'],
-          order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package.last_month_stats.direct_downloads'))]
+          where:{name:alias},
+          group:['topic.name','topic.package_version.id','topic.id','Alias.id','topic.package_version.package_latest.name'],
+          order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package_latest.last_month_stats.direct_downloads'))]
         }).then(function(data){
             allResults = _.map(data,function(record){
               return {
