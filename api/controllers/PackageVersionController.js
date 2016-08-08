@@ -269,6 +269,52 @@ module.exports = {
           });
         });
     });
+  },
+
+  getReverseDependencyGraph: function(req,res) {
+    var packageName = req.param('name');
+    var nodes = [packageName];
+    var nodelist =[{
+      name: packageName,
+      group: 0}];
+    return Dependency.findByDependingOn(packageName).then(function(deps){
+      console.log(deps);
+      var dependencies =[];
+      deps.forEach(function(dep,i){
+        nodes.push(dep.package_name);
+        nodelist.push({
+          name: dep.package_name,
+          group: i+1
+        });
+      dependencies.push({
+        source : nodes.indexOf(dep.package_name),
+        target : nodes.indexOf(packageName),
+        value  : 10
+      });
+      });
+      return Promise.map(deps,function(dep,i){
+        return Dependency.findByDependingOn(dep.package_name).then(function(deps2){
+          deps2.forEach(function(dep2){
+            if(nodes.indexOf(dep2.package_name)==-1){
+              nodes.push(dep2.package_name);
+              nodelist.push({
+                name: dep2.package_name,
+                group: i+1
+              });
+            }
+            dependencies.push({
+              source : nodes.indexOf(dep2.package_name),
+              target : nodes.indexOf(dep.package_name),
+            });
+          });
+        });
+      },{concurrency: 1}).then(function(){
+          return res.json({
+            nodes: nodelist,
+            links: dependencies
+          });
+        });
+    });
   }
 
 };

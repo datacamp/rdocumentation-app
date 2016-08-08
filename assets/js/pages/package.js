@@ -98,7 +98,58 @@ window.dependencyGraph = function(){
                 if (height < margin.top + margin.bottom + 20)
                     height = margin.top + margin.bottom + 20;
                 graph.width(width).height(height);
-                d3.select('#dependencygraph svg')
+                d3.select('#packagedependencygraph svg')
+                    .attr('width', width)
+                    .attr('height', height)
+                    .call(graph);
+            };
+        }
+    });
+}
+
+window.reverseDependencyGraph = function(){
+  var getData = function(data_url, callback) {
+    return $.get(data_url, callback);
+  };
+
+  nv.addGraph({
+        generate: function() {
+            var width = nv.utils.windowSize().width - 40,
+                height = nv.utils.windowSize().height - 40;
+            var d3Colors = d3.scale.category20();
+            var chart = nv.models.forceDirectedGraph()
+                .width(width)
+                .height(height)
+                .margin({top: 150, right: 150, bottom: 150, left: 150})
+                .color(function(d) { return d3Colors(d.group) })
+                .nodeExtras(function(node) {
+                  node
+                    .append("text")
+                    .attr("dx", 12)
+                    .attr("dy", ".35em")
+                    .text(function(d) { return d.name });
+                });
+              console.log(chart);
+             getData($('#packagereversedependencygraph').data('url'), function(data) {
+        $('#packagereversedependencygraph').show();
+        d3.select('#packagereversedependencygraph svg')
+              .datum(data)
+              .call(chart);
+      });
+            
+            return chart;
+    },
+        callback: function(graph) {
+            window.onresize = function() {
+                var width = nv.utils.windowSize().width - 40,
+                    height = nv.utils.windowSize().height - 40,
+                    margin = graph.margin();
+                if (width < margin.left + margin.right + 20)
+                    width = margin.left + margin.right + 20;
+                if (height < margin.top + margin.bottom + 20)
+                    height = margin.top + margin.bottom + 20;
+                graph.width(width).height(height);
+                d3.select('#packagereversedependencygraph svg')
                     .attr('width', width)
                     .attr('height', height)
                     .call(graph);
@@ -202,6 +253,11 @@ $(document).ready(function() {
   $("#tab1").click(function(){
     if(!$("#packagedependencygraph svg").hasClass("nvd3-svg")){
     window.dependencyGraph();
+  }
+  });
+  $("#tab2").click(function(){
+    if(!$("#packagereversedependencygraph svg").hasClass("nvd3-svg")){
+    window.reverseDependencyGraph();
   }
   });
 });
