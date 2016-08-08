@@ -86,7 +86,7 @@ module.exports = {
   findPackage:function(req,res){
     var package = req.param("packageName");
     return RStudioService.findLatestVersion(package).then(function(version){
-      if(version === null) return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName));
+      if(version === null) return res.ok([],'rStudio/package_not_found.ejs');
       else {
         return res.rstudio_redirect(301,'/packages/'+package+'/versions/'+version.version);
       }
