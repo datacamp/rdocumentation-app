@@ -224,6 +224,51 @@ module.exports = {
       });
       return res.json(serie);
     });
+  },
+
+  getDependencyGraph: function(req,res) {
+    var packageName = req.param('name');
+    var nodes = [packageName];
+    var nodelist =[{
+      name: packageName,
+      group: 0}];
+    return Dependency.findByDependant(packageName).then(function(deps){
+      var dependencies =[];
+      deps.forEach(function(dep,i){
+        nodes.push(dep.dependency_name);
+        nodelist.push({
+          name: dep.dependency_name,
+          group: i+1
+        });
+      dependencies.push({
+        source : nodes.indexOf(dep.dependency_name),
+        target : nodes.indexOf(packageName),
+        value  : 10
+      });
+      });
+      return Promise.map(deps,function(dep,i){
+        return Dependency.findByDependant(dep.dependency_name).then(function(deps2){
+          deps2.forEach(function(dep2){
+            if(nodes.indexOf(dep2.dependency_name)==-1){
+              nodes.push(dep2.dependency_name);
+              nodelist.push({
+                name: dep2.dependency_name,
+                group: i+1
+              });
+            }
+            dependencies.push({
+              source : nodes.indexOf(dep2.dependency_name),
+              target : nodes.indexOf(dep.dependency_name),
+            });
+          });
+        });
+      },{concurrency: 1}).then(function(){
+          return res.json({
+            nodes: nodelist,
+            links: dependencies
+          });
+        });
+    });
   }
 
 };

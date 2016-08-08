@@ -143,14 +143,14 @@
         <div id="tabs" class="col-sm-8">
           <ul>
             <li><a href="<%= path %>#chart"><%= pkgVersion.package_name %> downloads</a></li>
-            <li><a href="<%= path %>#menu1">Dependency graph</a></li>
+            <li><a id="tab1" href="<%= path %>#packagedependencygraph">Dependency graph</a></li>
             <li><a href="<%= path %>#menu2">Reverse dependency graph</a></li>
           </ul>
           <div id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
             <svg></svg>
           </div>
-          <div id="menu1">
-            <p>A chart will come here.</p>
+          <div id="packagedependencygraph" style="dislay:none" data-url="/api<%= path %>/dependencies">
+            <svg></svg>
           </div>
           <div id="menu2">
             <p>and here too</p>
@@ -164,7 +164,6 @@
 
 
     </section>
-
 
 
     <section id = "slider">
