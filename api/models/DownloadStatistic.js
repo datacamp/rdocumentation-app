@@ -71,6 +71,16 @@ module.exports = {
             }
           },
         })
+      },
+      lastDaysSplittedDownloadsPerDay:function(package_name,days){
+        return DownloadStatistic.findAll({
+          where:{
+            package_name:package_name,
+            date:{
+              $gte:new Date(new Date()-days*24*60*60*1000)
+            }
+          },
+        });
       }
     }
   }
