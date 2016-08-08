@@ -1,14 +1,17 @@
 <section class="bg bg-navigation home--background">
-  <div class="home--title">
-    <a href="/">
-      <div class="logo"></div>
-      <div class="logo-title">RDocumentation</div>
-    </a>
-  </div>
+  <nav class='navbar'>
+    <div class="home--title">
+      <a href="/">
+        <div class="logo"></div>
+        <div class="logo-title">RDocumentation</div>
+      </a>
+    </div>
 
   <% if(!inViewerPane) { %>
     <%- partial ('shared/_navigation.ejs') %>
   <% } %>
+    </nav>
+
   <div class="home--cta">
     <h1>Search all <%= data.nbPackages %> CRAN and BioC packages.</h1>
     <p><b><%= data.nbPackages %></b> packages, <b><%= data.nbPackageVersions %></b> package versions, <b><%= data.nbCollaborators %></b> collaborators</p>
