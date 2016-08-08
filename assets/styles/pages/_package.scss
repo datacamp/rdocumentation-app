@@ -42,6 +42,9 @@
       margin-left: 0rem;
       margin-top: 0.65rem;
     }
+    div{
+      display: inline-block;
+    }
   }
 
   #chart svg {
@@ -51,8 +54,8 @@
 }
 
 i.fa.fa-user{
-  font-size: 4rem;
-  vertical-align: top;
+  font-size: 3rem;
+  vertical-align: middle;
   margin-left: 3rem;
 }
 .maintainer{
@@ -91,9 +94,14 @@ i.fa.fa-user{
   }
 }
 
+.hidden{
+  display:none;
+}
+
 #details{
   .col-md-8{
     width: initial;
+    float: left;
   }
 }
 
@@ -113,7 +121,21 @@ i.fa.fa-user{
 .slider:hover {
   cursor: pointer;
 }
-
+#show:hover {
+  cursor: pointer;
+}
+#info.col-md-8 {
+  float:right;
+  dd{
+    margin-left: 0px;
+  }
+  dl{
+    -webkit-margin-after: 0.4em;
+  }
+  .links{
+    -webkit-margin-before: 0.2em;
+  }
+}
 
 .table-title{
   display: inline-block;
@@ -180,7 +202,13 @@ i.fa.fa-user{
 }
 #tabs .ui-tabs-nav .ui-state-default a { 
     color: #c0c0c0; 
+    border-bottom: none;
 } 
 #tabs .ui-tabs-nav .ui-state-active a { 
-    color: $primary; 
+    color: black; 
+    border-bottom: none;
+}
+
+.viewLinks {
+  display:block;
 }

@@ -41,6 +41,7 @@
         </div>
       </div>
       <% if(pkgVersion.maintainer) { %>
+      <div class="maintainer">
       <i class="fa fa-user" aria-hidden="true"></i>
       <div class="maintainer">
         <div class="data">
@@ -51,9 +52,11 @@
         </div>
         <p>Maintainer</p>
       </div>
+      </div>
 
       <% } %>
 
+      <div class="downloads">
       <div class="downloads">
         <span class="downloads-nr percentile-task" data-url="/api<%= path %>/percentile" >
           <span class='percentile'>0th</span>
@@ -69,6 +72,7 @@
           <i class="fa fa-info-circle fa-2x" aria-hidden="false"></i>
         </span>
         <p>Monthly downloads</p>
+      </div>
       </div>
     </header>
 
@@ -88,34 +92,52 @@
               <dt>Copyright</dt>
               <dd itemprop="copyrightHolder"><%= pkgVersion.copyright %></dd>
             <% } %>
-            <% if(pkgVersion.url) { %>
-              <dt>Package url</dt>
-              <dd itemprop="url"><%- pkgVersion.url %></dd>
-            <% } %>
             <% if(pkgVersion.package.inViews && pkgVersion.package.inViews.length > 0) { %>
               <dt>In Views:</dt>
               <% var views = pkgVersion.package.inViews.map(function(view) {
-                  return '<a href="/taskviews/' + encodeURIComponent(view.name) + '">' + view.name + '</a>';
+                  return '<div class=viewLinks><a href="/taskviews/' + encodeURIComponent(view.name) + '">' + view.name + '</a></div>';
                 }) -%>
-              <dd itemprop="isPartOf"><%- views.join(', ') %></dd>
+              <dd itemprop="isPartOf"><%- views.join('') %></dd>
             <% } %>
           </dl>
         </div>
         <div class="col-md-8">
         <% if(pkgVersion.collaborators.length > 0) { %>
-              <div class= "maintainer contributor">
-              <i class="fa fa-user" aria-hidden="true"></i>
+          <div class= "maintainer contributor">
               <div class="listed">
               <dt>Contributors:</dt>
-              <dd>
-              <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
-                <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
-              <% } %>
-              </dd>
+                <% if(pkgVersion.collaborators.length > 3) { %>
+                <dd>
+                  <% for(var i = 0; i < 3; i++) { %>
+                    <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
+                  <% } %>
+                <p id = "show">Show all</p>
+                  <% for(var i = 3; i < pkgVersion.collaborators.length; i++) { %>
+                      <a class="hidden" href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
+                  <% } %>
+                </dd>
+                <%} else{ %>
+                  <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
+                    <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
+                  <% } %>
+                <% } %>
               </div>
-              </div>
+          </div>
     <% } %>
         </div>
+        <% if(pkgVersion.url) { %>
+          <div id="info" class="col-md-8">
+            <dl>
+              <dt>More information:</dt>
+            </dl>
+            <% var urls = pkgVersion.url.match(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi); %>
+            <% for(var i=0;i<urls.length;i++){ %>
+            <dl class = "links">
+              <a href="<%- urls[i] %>"><%- urls[i] %></a>
+            </dl>
+            <% } %>
+          </div>
+        <% } %>
       </div>
     
     </section>

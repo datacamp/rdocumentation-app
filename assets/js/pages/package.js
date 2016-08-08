@@ -144,5 +144,9 @@ $(document).ready(function() {
   $('#tabs').tabs({
   active: 0
   });
+  $("#show").click(function(){
+    $("#show").hide();
+    $("#details").find(".hidden").removeClass("hidden");
+  });
 
 });
