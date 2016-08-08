@@ -14,6 +14,7 @@ module.exports = {
         var json = counts[0].map(function(row) {
           return {nbPackages: row.package_count, nbPackageVersions: row.topic_count, nbCollaborators: row.collaborator_count};
         })[0];
+        json.description = "Search current and past R documentation and R manuals from CRAN, GitHub and Bioconductor. Use the Rdocumentation package for easy access inside RStudio.";
         return res.ok(json, 'homepage.ejs');
       })
       .catch(function(err) {
