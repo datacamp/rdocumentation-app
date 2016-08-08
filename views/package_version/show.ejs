@@ -1,67 +1,97 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <% var pkgVersion = data; %>
 <section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>" class="package packageData" itemscope itemtype="http://schema.org/SoftwareApplication">
-  <div class="container">
-    <header>
-      <h1 itemprop="name"><%- pkgVersion.package_name %></h1>
-      <div class="select">
-        <select id="packageVersionSelect">
-          <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
-            <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
-              value="<%= pkgVersion.package.versions[i].version %>"
-              <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %>
-              <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
-              >
-              <%= pkgVersion.package.versions[i].version %>
-            </option>
-          <% } %>
-        </select>
-      </div>
-        <% if(inViewerPane) { %>
-          <div class="versionCheck">
+  <div class="container-fluid">
+    <header class='row'>
+
+      <div class='col-xs-4'>
+        <div class='row'>
+          <div class='col-sm-6'><h1 itemprop="name"><%- pkgVersion.package_name %></h1></div>
+          <div class='col-sm-3'>
+            <div class="select">
+              <select id="packageVersionSelect">
+                <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
+                  <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
+                    value="<%= pkgVersion.package.versions[i].version %>"
+                    <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %>
+                    <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
+                    >
+                    <%= pkgVersion.package.versions[i].version %>
+                  </option>
+                <% } %>
+              </select>
+            </div>
           </div>
-        <%}%>
-      <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>  
-        <div class="rating" title=<%= pkgVersion.rating %>>
-          <% if (pkgVersion.rating) { %>
-            <% for(var i=1; i <= 5; i++) { %>
-              <i class="fa fa-star<%=
-              pkgVersion.rating < i ?
-                pkgVersion.rating <= i - 0.5 ? "-o" : "-half-o"
-                : ""
-              %>" aria-hidden="true"></i>
-            <% } %>
-            <span itemprop="ratingValue" hidden>(<%= pkgVersion.rating %></span>
-          <% } %>
-          (<span itemprop="reviewCount"><%= pkgVersion.reviews.length %> </span>votes)
+
+          <% if(inViewerPane) { %>
+            <div class="col-sm-3">
+              <div class="versionCheck"></div>
+            </div>
+          <%}%>
+
+          <% if(pkgVersion.rating) { %>
+            <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>
+              <div class="rating" title=<%= pkgVersion.rating %>>
+                <% if (pkgVersion.rating) { %>
+                  <% for(var i=1; i <= 5; i++) { %>
+                    <i class="fa fa-star<%=
+                    pkgVersion.rating < i ?
+                      pkgVersion.rating <= i - 0.5 ? "-o" : "-half-o"
+                      : ""
+                    %>" aria-hidden="true"></i>
+                  <% } %>
+                  <span itemprop="ratingValue" hidden>(<%= pkgVersion.rating %></span>
+                <% } %>
+                (<span itemprop="reviewCount"><%= pkgVersion.reviews.length %> </span>votes)
+              </div>
+            </div>
+          <%}%>
         </div>
+
       </div>
-      <div class="package--review pull-right" >
-        <% if(!inViewerPane) { %>
-          <a href="<%= path + '#postReview' %>" class="btn btn-primary js-internal">Review Package</a>
-        <% } else { %>
-          <a href='#postReview' class="btn btn-primary js-internal">Review Package</a>
+
+
+      <div class='col-xs-4'>
+        <% if(pkgVersion.maintainer) { %>
+        <div class="maintainer">
+          <i class="fa fa-user" aria-hidden="true"></i>
+          <div class="maintainer">
+            <div class="data">
+            <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>">
+                  <%= pkgVersion.maintainer.name %></a>
+                  <a href="mailto:<%= pkgVersion.maintainer.email %>">
+                  <i class="fa fa-envelope" aria-hidden="true"></i></a>
+            </div>
+            <p>Maintainer</p>
+          </div>
+        </div>
         <% } %>
+      </div>
+
+      <div class="col-xs-4">
+        <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
+          <span class="downloads-nr" >
+            <span class='indeps'>0</span>
+            <i class="fa fa-info-circle fa-2x" aria-hidden="false"></i>
+          </span>
+          <p>Monthly downloads</p>
+        </div>
+        <div class="downloads" id = "percentile-arrow">
+          <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
+        </div>
+        <div class="downloads">
+          <span class="downloads-nr percentile-task" data-url="/api<%= path %>/percentile" >
+            <span class='percentile'>0th</span>
+          </span>
+          <p>Percentile</p>
+        </div>
       </div>
     </header>
 
-    <section class="stats">
+    <section id ="details" class="stats sliding">
       <div class="row">
         <div class="col-md-8">
           <dl>
-            <% if (pkgVersion.maintainer) { %>
-            <dt>Maintainer:</dt>
-            <dd><a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>">
-              <%= pkgVersion.maintainer.name %></a></dd>
-            <% } %>
-            <% if(pkgVersion.collaborators.length > 0) { %>
-              <dt>Contributors:</dt>
-              <dd>
-              <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
-                <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
-              <% } %>
-              </dd>
-            <% } %>
             <% if (pkgVersion.release_date) { %>
               <dt>Release date:</dt>
               <dd itemprop="datePublished"><%= dateformat(pkgVersion.release_date, "mediumDate") %></dd>
@@ -74,34 +104,75 @@
               <dt>Copyright</dt>
               <dd itemprop="copyrightHolder"><%= pkgVersion.copyright %></dd>
             <% } %>
-            <% if(pkgVersion.url) { %>
-              <dt>Package url</dt>
-              <dd itemprop="url"><%- pkgVersion.url %></dd>
-            <% } %>
             <% if(pkgVersion.package.inViews && pkgVersion.package.inViews.length > 0) { %>
               <dt>In Views:</dt>
               <% var views = pkgVersion.package.inViews.map(function(view) {
-                  return '<a href="/taskviews/' + encodeURIComponent(view.name) + '">' + view.name + '</a>';
+                  return '<div class=viewLinks><a href="/taskviews/' + encodeURIComponent(view.name) + '">' + view.name + '</a></div>';
                 }) -%>
-              <dd itemprop="isPartOf"><%- views.join(', ') %></dd>
+              <dd itemprop="isPartOf"><%- views.join('') %></dd>
             <% } %>
           </dl>
         </div>
-        <div class="col-md-4">
-          <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
-            <span class="downloads-nr" >
-              <span class='indeps'>0</span>
-              <span>Direct downloads this month</span>
-            </span>
-            <span class="downloads-nr small percentile-task" data-url="/api<%= path %>/percentile" >
-              <span class='percentile'>0th</span>
-              <span>Percentile</span>
-            </span>
-            <span class="downloads-ind">With another
-            <span class='deps'></span> indirect downloads, for a total of <span class='total'></span> downloads</span>
+        <div class="col-md-8">
+        <% if(pkgVersion.collaborators.length > 0) { %>
+          <div class= "maintainer contributor">
+              <div class="listed">
+              <dt>Contributors:</dt>
+                <% if(pkgVersion.collaborators.length > 3) { %>
+                <dd>
+                  <% for(var i = 0; i < 3; i++) { %>
+                    <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
+                  <% } %>
+                <p id = "show">Show all</p>
+                  <% for(var i = 3; i < pkgVersion.collaborators.length; i++) { %>
+                      <a class="hidden" href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
+                  <% } %>
+                </dd>
+                <%} else{ %>
+                  <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
+                    <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
+                  <% } %>
+                <% } %>
+              </div>
           </div>
+    <% } %>
         </div>
+        <% if(pkgVersion.url) { %>
+          <div id="info" class="col-md-8">
+            <dl>
+              <dt>More information:</dt>
+            </dl>
+            <% var urls = pkgVersion.url.match(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi); %>
+            <% for(var i=0;i<urls.length;i++){ %>
+            <dl class = "links">
+              <a href="<%- urls[i] %>"><%- urls[i] %></a>
+            </dl>
+            <% } %>
+          </div>
+        <% } %>
       </div>
+
+    </section>
+
+    <div id="tabs" class="sliding container">
+      <ul>
+        <li><a href="<%= path %>#chart"><%= pkgVersion.package_name %> downloads</a></li>
+        <li><a href="<%= path %>#menu1">Dependency graph</a></li>
+        <li><a href="<%= path %>#menu2">Reverse dependency graph</a></li>
+      </ul>
+      <div id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
+        <svg></svg>
+      </div>
+      <div id="menu1">
+        <p>A chart will come here.</p>
+      </div>
+      <div id="menu2">
+        <p>and here too</p>
+      </div>
+    </div>
+
+    <section id = "slider">
+    <i class="slider fa fa-angle-down" aria-hidden="true"></i>
     </section>
 
     <section class="package--info">
@@ -109,18 +180,15 @@
       <p itemprop="description"><%- pkgVersion.description %></p>
     </section>
 
-    <div id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
-      <svg></svg>
-    </div>
-
     <section class="table-list">
-      <input id="filter" type="text" placeholder="Filter list">
+      <h4 class="table-title">Functions in <%- pkgVersion.package_name %>  </h4>
+      <input id="filter" type="text" placeholder="Search">
       <table>
         <thead>
           <tr>
-            <td>Name</td>
-            <td>Description</td>
-            <td width="115">Rating</td>
+            <td>Name <i class="fa fa-sort" aria-hidden="true"></i></td>
+            <td>Description <i class="fa fa-sort" aria-hidden="true"></i></td>
+            <td width="115">Rating <i class="fa fa-sort" aria-hidden="true"></i></td>
           </tr>
         </thead>
         <tbody id="filterableItems">

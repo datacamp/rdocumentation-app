@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="<%= inViewerPane ? 'rstudio' : '' %>">
   <head>
     <% if( (typeof data == 'undefined') || (typeof data.pageTitle == 'undefined') ) { %>
       <title>RDocumentation</title>
@@ -25,6 +25,7 @@
     <!--STYLES END-->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href='https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css'>
+    <link href = "https://code.jquery.com/ui/1.12.0-rc.2/themes/smoothness/jquery-ui.css" rel = "stylesheet">
 
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
@@ -68,6 +69,8 @@
     <script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.2/js/jquery.tablesorter.js"></script>
+    <script src="http://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
     <!--SCRIPTS-->
     <script src="/js/dependencies/async_loader.js"></script>
     <script src="/js/dependencies/highlight.pack.js"></script>

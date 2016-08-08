@@ -2,22 +2,17 @@
 <% var topic = data; %>
 <section data-package-name="<%=topic.package_version.package_name%>" class="packageData" itemscope itemtype="http://schema.org/SoftwareApplication"></section>
 <section class="topic">
-  <div class="container">
+  <div class="container-fluid">
     <header>
       <h1><%- topic.name %><span>From <a href="<%- topic.package_version.uri %>"><%- topic.package_version.package_name %> v<%- topic.package_version.version %></a></span></h1>
-      <div class="package--review pull-right" >
-        <% if(!inViewerPane) { %>
-          <a href="javascript:;" onclick="document.location.hash='postReview';" class="btn btn-primary">Review Topic</a>
-        <% } else { %>
-          <a href='#postReview' class="btn btn-primary js-internal">Review Topic</a>
-        <% } %>
-      </div>
     </header>
 
     <section>
       <h4><%- topic.title %></h4>
       <p><%- topic.description %></p>
     </section>
+
+   <!--  <% if(topic.keywords && topic.keywords.length > 0) { %>
     <section class="topic--keywords">
       <dl>
         <dt>Keywords</dt>
@@ -27,6 +22,14 @@
         <dd><%- keywords.join(', ') %></dd>
       </dl>
     </section>
+    <% } %> -->
+
+   <% if(topic.usage) { %>
+    <section>
+      <h5 class="topic--title">Usage</h5>
+      <pre><code class="R"><%- topic.usage %></code></pre>
+    </section>
+  <% } %>
 
     <section class="topic--arguments">
       <h5 class="topic--title">Arguments</h5>
@@ -40,12 +43,7 @@
 
 
     <!-- Other info -->
-    <% if(topic.usage) { %>
-      <section>
-        <h5 class="topic--title">Usage</h5>
-        <pre><code class="R"><%- topic.usage %></code></pre>
-      </section>
-    <% } %>
+
 
     <% if(topic.details) { %>
       <section>
@@ -80,15 +78,13 @@
 
     <% } %>
 
-    <% if(topic.examples) { %>
+    <% if(topic.references) { %>
       <section>
-        <h5 class="topic--title">Examples</h5>
-        <pre><code class="R"><%- topic.examples %></code></pre>
+        <h5 class="topic--title">References</h5>
+        <p><%- topic.references %></p>
       </section>
-      <% if(inViewerPane){ %>
-        <button type="button" id="js-examples" class="btn btn-primary js-external">Run examples</button>
-      <% }%>
     <% } %>
+
 
     <% if(topic.seealso) { %>
       <section>
@@ -97,11 +93,18 @@
       </section>
     <% } %>
 
-    <% if(topic.references) { %>
+
+
+    <% if(topic.examples) { %>
       <section>
-        <h5 class="topic--title">References</h5>
-        <p><%- topic.references %></p>
+        <h5 class="topic--title">Examples</h5>
+        <pre><code class="R"><%- topic.examples %></code></pre>
       </section>
+      <% if(inViewerPane){ %>
+        <section>
+          <button type="button" id="js-examples" class="btn btn-primary js-external">Run examples</button>
+        </section>
+      <% }%>
     <% } %>
 
     <small>

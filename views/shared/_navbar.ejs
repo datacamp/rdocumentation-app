@@ -1,17 +1,28 @@
-<section class="bg bg-navigation">
+<section class="bg bg-navigation navbar">
   <nav class="clearfix">
     <div class="navbar--title">
       <a href="/">
         <div class="logo"></div>
-        <div class="logo-title">RDocumentation</div>
+        <div class="logo-title"><span>RDocumentation</span></div>
       </a>
     </div>
+
+
+    <% if(!inViewerPane) { %>
+      <%- partial ('_navigation.ejs') %>
+    <% } %>
+
+    <ul class="navbar--navigation largescreen">
+    <% if(!inViewerPane) { %>
+        <li><a href="https://github.com/datacamp/Rdocumentation" class="link">R package</a></li>
+    <% } %>
+        <li><a href="/trends" class="link">Leaderboard</a></li>
+    </ul>
     <div class="navbar--search">
       <form class="search" action="/search">
         <input name="q" type="text" placeholder="Search for packages, functions, etc" autocomplete="off">
         <div class="search--results"></div>
       </form>
     </div>
-    <%- partial ('_navigation.ejs') %>
   </nav>
 </section>

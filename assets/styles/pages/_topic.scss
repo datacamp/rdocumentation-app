@@ -1,7 +1,11 @@
 .topic {
-  min-height: 82%;
-  .container {
-    margin-top: $default-space;
+  min-height: 84%;
+  .container-fluid {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: $default-space / 2;
+    max-width: 850px;
+    min-width: 350px;
   }
 
   header {

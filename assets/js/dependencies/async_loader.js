@@ -8,7 +8,7 @@
         e.preventDefault();
         // Grab the url from the anchor tag
         var url = $(this).attr('href');
-        return window.replacePage(url);       
+        return window.replacePage(url);
       }
 
       function rerenderBody(html){
@@ -26,7 +26,7 @@
       rebinding and executing trough ajax requests
       ************************************************************************************************************************************************/
 
-      window.bindGlobalClickHandler = function(){     
+      window.bindGlobalClickHandler = function(){
         $('a:not(.js-external)').unbind('click').bind('click', window.asyncClickHandler);
         $('#js-examples').unbind('click').bind('click',window.runExamples);
         $('#js-install').unbind('click').bind('click',window.installpackage);
@@ -59,7 +59,7 @@
               }
               else{
                 rerenderBody(html);
-              }            
+              }
             });
         });
       };
@@ -94,7 +94,7 @@
           })
           .then(rerenderBody);
         }
-        
+
       };
 
             /************************************************************************************************************************************************
@@ -161,7 +161,7 @@
           var packageName = $(".packageData").data("package-name");
           window.checkPackageVersion(packageName).then(function(installed){
             if(installed==false){
-              $('.versionCheck').append('<button type="button" id="js-install" class="btn btn-primary js-external">Install</button>');
+              $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-primary js-external">Install</button>');
             }
             else{
               installedVersion=installed.split(/[´`'"’‘]+/)[1];
@@ -169,13 +169,13 @@
               var upToDate=true;
               for(var i=0;i<versions.length;i++){
                 if($(versions[i]).text().trim()!="@VERSION@"&& _versionCompare($(versions[i]).text().trim(),installedVersion)){
-                  $('.versionCheck').append('<button type="button" id="js-install" class="btn btn-primary js-external">Update</button>');
+                  $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-primary js-external">Update</button>');
                   upToDate=false
                 }
               }
               if(upToDate){
-                $('.versionCheck').text('you currently have the latest version  ');
-                $('.versionCheck').append('<i class="fa fa-check icon-green" aria-hidden="true"></i>')
+
+                $('.versionCheck').html('<i class="fa fa-check icon-green" aria-hidden="true"></i><span class="latest">You have the latest version<span>');
               }
             }
             $('#js-install').unbind('click',window.installpackage);
@@ -225,8 +225,8 @@ _rStudioRequest=function(url,method,shared_secret,port,params){
   });
 }
 _versionCompare = function (v1, v2) {
-    v1parts = v1.split(/[.-]+/); 
-    v2parts = v2.split(/[.-]+/); 
+    v1parts = v1.split(/[.-]+/);
+    v2parts = v2.split(/[.-]+/);
     while (v1parts.length < v2parts.length) v1parts.push("0");
     while (v2parts.length < v1parts.length) v2parts.push("0");
     v1parts = v1parts.map(Number);

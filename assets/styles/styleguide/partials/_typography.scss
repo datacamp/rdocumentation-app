@@ -6,7 +6,7 @@ url('//use.fontawesome.com/releases/v4.6.3/fonts/fontawesome-webfont.ttf') forma
 url('//use.fontawesome.com/releases/v4.6.3/fonts/fontawesome-webfont.svg#fontawesomeregular') format('svg');font-weight:normal;font-style:normal;}
 
 html {
-    font-size: 16px;
+    font-size: 14px;
 }
 
 body {
@@ -95,9 +95,10 @@ dl {
     dt {
         font-weight: bold;
         float: left;
+        margin-right: 15px;
     }
     dd {
-        margin-left: 130px;
+        margin-left: 15px;
         margin-bottom: 1rem;
     }
 }
