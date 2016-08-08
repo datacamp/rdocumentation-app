@@ -1,5 +1,6 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <% var topic = data; %>
+<section data-package-name="<%=topic.package_version.package_name%>" class="packageData" itemscope itemtype="http://schema.org/SoftwareApplication"></section>
 <section class="topic">
   <div class="container">
     <header>
@@ -17,7 +18,6 @@
       <h4><%- topic.title %></h4>
       <p><%- topic.description %></p>
     </section>
-
     <section class="topic--keywords">
       <dl>
         <dt>Keywords</dt>
