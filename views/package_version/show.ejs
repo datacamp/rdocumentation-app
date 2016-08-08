@@ -3,72 +3,88 @@
 <section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>" class="package packageData" itemscope itemtype="http://schema.org/SoftwareApplication">
   <div class="container-fluid">
     <header class='row'>
-      <h1 itemprop="name"><%- pkgVersion.package_name %></h1>
-      <div class="select">
-        <select id="packageVersionSelect">
-          <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
-            <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
-              value="<%= pkgVersion.package.versions[i].version %>"
-              <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %>
-              <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
-              >
-              <%= pkgVersion.package.versions[i].version %>
-            </option>
-          <% } %>
-        </select>
-      </div>
-        <% if(inViewerPane) { %>
-          <div class="versionCheck">
+
+      <div class='col-xs-4'>
+        <div class='row'>
+          <div class='col-sm-6'><h1 itemprop="name"><%- pkgVersion.package_name %></h1></div>
+          <div class='col-sm-3'>
+            <div class="select">
+              <select id="packageVersionSelect">
+                <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
+                  <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
+                    value="<%= pkgVersion.package.versions[i].version %>"
+                    <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %>
+                    <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
+                    >
+                    <%= pkgVersion.package.versions[i].version %>
+                  </option>
+                <% } %>
+              </select>
+            </div>
           </div>
-        <%}%>
-      <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>
-        <div class="rating" title=<%= pkgVersion.rating %>>
-          <% if (pkgVersion.rating) { %>
-            <% for(var i=1; i <= 5; i++) { %>
-              <i class="fa fa-star<%=
-              pkgVersion.rating < i ?
-                pkgVersion.rating <= i - 0.5 ? "-o" : "-half-o"
-                : ""
-              %>" aria-hidden="true"></i>
-            <% } %>
-            <span itemprop="ratingValue" hidden>(<%= pkgVersion.rating %></span>
-          <% } %>
-          (<span itemprop="reviewCount"><%= pkgVersion.reviews.length %> </span>votes)
+
+          <% if(inViewerPane) { %>
+            <div class="col-sm-3">
+              <div class="versionCheck"></div>
+            </div>
+          <%}%>
+
+          <% if(pkgVersion.rating) { %>
+            <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>
+              <div class="rating" title=<%= pkgVersion.rating %>>
+                <% if (pkgVersion.rating) { %>
+                  <% for(var i=1; i <= 5; i++) { %>
+                    <i class="fa fa-star<%=
+                    pkgVersion.rating < i ?
+                      pkgVersion.rating <= i - 0.5 ? "-o" : "-half-o"
+                      : ""
+                    %>" aria-hidden="true"></i>
+                  <% } %>
+                  <span itemprop="ratingValue" hidden>(<%= pkgVersion.rating %></span>
+                <% } %>
+                (<span itemprop="reviewCount"><%= pkgVersion.reviews.length %> </span>votes)
+              </div>
+            </div>
+          <%}%>
         </div>
-      </div>
-      <% if(pkgVersion.maintainer) { %>
-      <div class="maintainer">
-      <i class="fa fa-user" aria-hidden="true"></i>
-      <div class="maintainer">
-        <div class="data">
-        <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>">
-              <%= pkgVersion.maintainer.name %></a>
-              <a href="mailto:<%= pkgVersion.maintainer.email %>">
-              <i class="fa fa-envelope" aria-hidden="true"></i></a>
-        </div>
-        <p>Maintainer</p>
-      </div>
+
       </div>
 
-      <% } %>
 
-      <div class="downloads">
-      <div class="downloads">
-        <span class="downloads-nr percentile-task" data-url="/api<%= path %>/percentile" >
-          <span class='percentile'>0th</span>
-        </span>
-        <p>Percentile</p>
+      <div class='col-xs-4'>
+        <% if(pkgVersion.maintainer) { %>
+        <div class="maintainer">
+          <i class="fa fa-user" aria-hidden="true"></i>
+          <div class="maintainer">
+            <div class="data">
+            <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>">
+                  <%= pkgVersion.maintainer.name %></a>
+                  <a href="mailto:<%= pkgVersion.maintainer.email %>">
+                  <i class="fa fa-envelope" aria-hidden="true"></i></a>
+            </div>
+            <p>Maintainer</p>
+          </div>
+        </div>
+        <% } %>
       </div>
-      <div class="downloads" id = "percentile-arrow">
-        <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
-      </div>
-      <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
-        <span class="downloads-nr" >
-          <span class='indeps'>0</span>
-          <i class="fa fa-info-circle fa-2x" aria-hidden="false"></i>
-        </span>
-        <p>Monthly downloads</p>
-      </div>
+
+      <div class="col-xs-4">
+        <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
+          <span class="downloads-nr" >
+            <span class='indeps'>0</span>
+            <i class="fa fa-info-circle fa-2x" aria-hidden="false"></i>
+          </span>
+          <p>Monthly downloads</p>
+        </div>
+        <div class="downloads" id = "percentile-arrow">
+          <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
+        </div>
+        <div class="downloads">
+          <span class="downloads-nr percentile-task" data-url="/api<%= path %>/percentile" >
+            <span class='percentile'>0th</span>
+          </span>
+          <p>Percentile</p>
+        </div>
       </div>
     </header>
 

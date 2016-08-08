@@ -18,7 +18,6 @@
     }
 
     .select {
-      margin-left: 1rem;
       display: inline-block;
     }
 
@@ -29,7 +28,6 @@
       display: inline-block;
     }
     .downloads {
-      float: right;
       vertical-align: middle;
       margin-left: 0.2rem;
       display: inline-block;
@@ -45,8 +43,9 @@
       margin-left: 0rem;
       margin-top: 0.65rem;
     }
-    div{
-      display: inline-block;
+
+    .col-sm-3 {
+      margin-top: 0.5rem;
     }
   }
 
@@ -57,14 +56,11 @@
 }
 
 i.fa.fa-user{
-  font-size: 3rem;
+  font-size: 2rem;
   vertical-align: middle;
-  margin-left: 3rem;
 }
 .maintainer{
   display: inline-block;
-  margin-top: 0.3rem;
-  margin-left: 0.5rem;
   vertical-align: middle;
   a{
     font-size: 1.4rem;
@@ -182,9 +178,9 @@ i.fa.fa-user{
 }
 
 .icon-green {
-    color: #228B22;
-    text-shadow: 1px 1px 1px #ccc;
+    color: #00cc00;
     font-size: 1.5em;
+    margin-right: 0.5rem;
 }
 
 #tabs {
