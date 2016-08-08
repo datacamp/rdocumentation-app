@@ -18,11 +18,9 @@
         </select>
       </div>
         <% if(inViewerPane) { %>
+        <section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>" class="packageData" itemscope itemtype="http://schema.org/SoftwareApplication">
+        </section>
           <div class="versionCheck">
-            <p hidden>
-            <%=pkgVersion.package_name%>,
-            <%=pkgVersion.package['type_id']%>
-            </p>
           </div>
         <%}%>
       <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>  
