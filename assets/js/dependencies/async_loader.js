@@ -158,14 +158,14 @@
       window.packageVersionControl=function(){
         var versions = $('#packageVersionSelect').find('option');
         if(versions.length>0){
-          var packageName = $(".packageData").data("packageName");
+          var packageName = $(".packageData").data("package-name");
           window.checkPackageVersion(packageName).then(function(installed){
             if(installed==false){
               $('.versionCheck').append('<button type="button" id="js-install" class="btn btn-primary js-external">Install</button>');
             }
             else{
-              installedVersion=installed.split('‘')[1];
-              installedVersion=installedVersion.substring(0,installedVersion.length-2).replace('-','.');
+              installedVersion=installed.split(/[´`'"’‘]+/)[1];
+              installedVersion=installedVersion.replace('-','.');
               var upToDate=true;
               for(var i=0;i<versions.length;i++){
                 if($(versions[i]).text().trim()!="@VERSION@"&& _versionCompare($(versions[i]).text().trim(),installedVersion)){

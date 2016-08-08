@@ -1,6 +1,7 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <% var pkgVersion = data; %>
 <section class="package" itemscope itemtype="http://schema.org/SoftwareApplication">
+<section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>" class="packageData" itemscope itemtype="http://schema.org/SoftwareApplication"></section>
   <div class="container">
     <header>
       <h1 itemprop="name"><%- pkgVersion.package_name %></h1>
@@ -18,8 +19,6 @@
         </select>
       </div>
         <% if(inViewerPane) { %>
-        <section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>" class="packageData" itemscope itemtype="http://schema.org/SoftwareApplication">
-        </section>
           <div class="versionCheck">
           </div>
         <%}%>
