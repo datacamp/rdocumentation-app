@@ -140,7 +140,6 @@ module.exports = {
             return objValue.concat(srcValue);
           }
         }
-
         var options = _.mergeWith({
           where: criteria,
           include: [

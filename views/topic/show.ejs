@@ -5,24 +5,51 @@
   <div class="container-fluid">
     <header>
       <h1><%- topic.name %><span>From <a href="<%- topic.package_version.uri %>"><%- topic.package_version.package_name %> v<%- topic.package_version.version %></a></span></h1>
+      <div class="topic--package pull-right">
+        <div class="topic--package-maintainer">
+          <div class="topic--package-name">
+          <p>In package <a href="<%- topic.package_version.uri %>"><%- topic.package_version.package_name %> v<%- topic.package_version.version %></a></p>
+          </div>
+          <% if(topic.package_version.maintainer) { %>
+          <div class="maintainer pull-left">
+            By<i class="fa fa-user" aria-hidden="true"></i>
+            <div class="maintainer neg-top-margin pull-right">
+                <div class="data">
+                <a itemprop="creator" href="<%= topic.package_version.maintainer.uri %>">
+                      <%= topic.package_version.maintainer.name %></a>
+                      <a href="mailto:<%= topic.package_version.maintainer.email %>">
+                      <i class="fa fa-envelope" aria-hidden="true"></i></a>
+                </div>
+              <p>Maintainer</p>
+            </div>
+          </div>
+          <% } %>
+        </div>
+        <div class="downloads">
+          <span class="downloads-nr percentile-task" data-url="/api<%= path %>/percentile" >
+            <span class='percentile'>0th</span>
+          </span>
+          <p>Percentile</p>
+        </div>
+      </div>
     </header>
 
     <section>
-      <h4><%- topic.title %></h4>
+      <h5><%- topic.title %></h5>
       <p><%- topic.description %></p>
     </section>
 
-   <!--  <% if(topic.keywords && topic.keywords.length > 0) { %>
-    <section class="topic--keywords">
-      <dl>
-        <dt>Keywords</dt>
-        <% var keywords = topic.keywords.map(function(keyword) {
-          return '<a href="/search/keywords/' + encodeURIComponent(keyword.name) + '">' + keyword.name + '</a>';
-        }) -%>
-        <dd><%- keywords.join(', ') %></dd>
-      </dl>
-    </section>
-    <% } %> -->
+   <% if(topic.keywords && topic.keywords.length>0){ %>
+      <section class="topic--keywords">
+        <dl>
+          <dt>Keywords</dt>
+          <% var keywords = topic.keywords.map(function(keyword) {
+            return '<a href="/search/keywords/' + encodeURIComponent(keyword.name) + '">' + keyword.name + '</a>';
+          }) -%>
+          <dd><%- keywords.join(', ') %></dd>
+        </dl>
+      </section>
+    <%}%>
 
    <% if(topic.usage) { %>
     <section>
@@ -31,16 +58,17 @@
     </section>
   <% } %>
 
-    <section class="topic--arguments">
-      <h5 class="topic--title">Arguments</h5>
-      <dl>
-        <% for(var i = 0; i < topic.arguments.length; i++) { %>
-          <dt><%- topic.arguments[i].name %></dt>
-          <dd><%- topic.arguments[i].description %></dd>
-        <% } %>
-      </dl>
-    </section>
-
+    <%if(topic.arguments && topic.arguments.length>0){%>
+      <section class="topic--arguments">
+        <h5 class="topic--title">Arguments</h5>
+        <dl>
+          <% for(var i = 0; i < topic.arguments.length; i++) { %>
+            <dt><%- topic.arguments[i].name %></dt>
+            <dd><%- topic.arguments[i].description %></dd>
+          <% } %>
+        </dl>
+      </section>
+    <%}%>
 
     <!-- Other info -->
 

@@ -86,3 +86,46 @@
 
 }
 
+header {
+  .topic--package{
+    padding:5px;
+    margin-top:-10px;
+    div{
+      display:block;
+    }
+    .topic--package-maintainer{
+      float:left;
+      i.fa.fa-user{
+        font-size: 2rem;
+        vertical-align: middle;
+        margin-left: 1.5rem;
+      }
+    }
+    .downloads{
+      margin-top:25px;
+      margin-left:15px;
+      float:right;
+      p{
+        visibility:visible;
+        -webkit-margin-before: -0.7em;
+        -webkit-margin-after: 0em;
+      }
+    }
+  }
+  .topic--package-name{
+    margin-top:-20px;
+    font-size: 1.7rem;
+    margin-bottom:0px;
+  }
+  .neg-top-margin{
+    margin-top:-15px;
+    margin-bottom:0px;
+  }
+  .pull-left{
+    float:left;
+    margin-left:0px;
+    margin-top:-10px;
+  }
+}
+
+
