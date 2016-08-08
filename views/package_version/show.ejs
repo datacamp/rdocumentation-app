@@ -1,6 +1,6 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <% var pkgVersion = data; %>
-<section class="package" itemscope itemtype="http://schema.org/SoftwareApplication">
+<section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>" class="package packageData" itemscope itemtype="http://schema.org/SoftwareApplication">
   <div class="container-fluid">
     <header>
       <h1 itemprop="name"><%- pkgVersion.package_name %></h1>
@@ -19,10 +19,6 @@
       </div>
         <% if(inViewerPane) { %>
           <div class="versionCheck">
-            <p hidden>
-            <%=pkgVersion.package_name%>,
-            <%=pkgVersion.package['type_id']%>
-            </p>
           </div>
         <%}%>
       <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>
@@ -139,7 +135,7 @@
           </div>
         <% } %>
       </div>
-    
+
     </section>
 
     <div id="tabs" class="sliding container">

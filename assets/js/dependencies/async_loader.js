@@ -101,14 +101,8 @@
       button press functions (running examples, installing packages);
       ************************************************************************************************************************************************/
       window.runExamples=function(e){
-        console.log("called");
         e.preventDefault();
-        var package="";
-        $('a').attr('href',function(i,link){
-          if(typeof link != "undefined" && link.indexOf("/packages/")>=0 && link.indexOf("/versions/">0)){
-            package=link.substring(link.indexOf("/packages/")+10,link.indexOf("/versions/"))
-          }
-        });
+        var package = $(".packageData").data("package-name");
         window.checkPackageVersion(package).then(function(installed){
           if(installed!=false){
             var examples= $('.topic').find('.topic--title').filter(function(i,el){
@@ -164,15 +158,14 @@
       window.packageVersionControl=function(){
         var versions = $('#packageVersionSelect').find('option');
         if(versions.length>0){
-          var packageInfo=$('.versionCheck> p:eq(0)').text().trim();
-          var packageName=packageInfo.split(',')[0];
+          var packageName = $(".packageData").data("package-name");
           window.checkPackageVersion(packageName).then(function(installed){
             if(installed==false){
               $('.versionCheck').append('<button type="button" id="js-install" class="btn btn-primary js-external">Install</button>');
             }
             else{
-              installedVersion=installed.split('‘')[1];
-              installedVersion=installedVersion.substring(0,installedVersion.length-2).replace('-','.');
+              installedVersion=installed.split(/[´`'"’‘]+/)[1];
+              installedVersion=installedVersion.replace('-','.');
               var upToDate=true;
               for(var i=0;i<versions.length;i++){
                 if($(versions[i]).text().trim()!="@VERSION@"&& _versionCompare($(versions[i]).text().trim(),installedVersion)){
@@ -193,9 +186,8 @@
 
       window.installpackage=function(e){
         e.preventDefault();
-        var packageInfo=$('.versionCheck> p:eq(0)').text().trim();
-        var packageName=packageInfo.split(',')[0];
-        var packageSource=packageInfo.split(',')[1];
+        var packageName = $(".packageData").data("package-name");
+        var packageSource= $(".packageData").data("type-id");
         _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
                   ["install_package('"+packageName+"',"+packageSource+")"])
         return false;
