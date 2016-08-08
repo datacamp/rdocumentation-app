@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="<%= inViewerPane ? 'rstudio' : '' %>">
   <head>
     <% if( (typeof data == 'undefined') || (typeof data.pageTitle == 'undefined') ) { %>
       <title>RDocumentation</title>
