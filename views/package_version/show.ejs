@@ -157,25 +157,6 @@
           </div>
         </div>
 
-
-
-<<<<<<< a99d7d1834fcc1c2dcdf552cc20c3af686646f73
-=======
-    <div id="tabs" class="sliding container">
-      <ul>
-        <li><a href="<%= path %>#chart"><%= pkgVersion.package_name %> downloads</a></li>
-        <li><a id="tab1" href="<%= path %>#packagedependencygraph">Dependency graph</a></li>
-        <li><a id="tab2" href="<%= path %>#packagereversedependencygraph">Reverse dependency graph</a></li>
-      </ul>
-      <div id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
-        <svg></svg>
-      </div>
-      <div id="packagedependencygraph" style="dislay:none" data-url="/api<%= path %>/dependencies">
-        <svg></svg>
-      </div>
-      <div id="packagereversedependencygraph" style ="display:none" data-url="/api<%= path %>/reversedependencies" >
-        <svg></svg>
->>>>>>> reverse dependencies added
       </div>
 
 
@@ -229,7 +210,6 @@
     </section>
 
     <% if(pkgVersion.readmemd) { %>
-    <% console.log(pkgVersion.readmemd); %>
     <section class="package--readme">
       <h3> Readme </h3>
       <% if(pkgVersion.url) { %>

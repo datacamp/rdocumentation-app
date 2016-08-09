@@ -70,7 +70,6 @@ window.dependencyGraph = function(){
             var chart = nv.models.forceDirectedGraph()
                 .width(width)
                 .height(height)
-                .margin({top: 20, right: 20, bottom: 20, left: 20})
                 .color(function(d) { return d3Colors(d.group) })
                 .nodeExtras(function(node) {
                   node
@@ -120,7 +119,6 @@ window.reverseDependencyGraph = function(){
             var chart = nv.models.forceDirectedGraph()
                 .width(width)
                 .height(height)
-                .margin({top: 150, right: 150, bottom: 150, left: 150})
                 .color(function(d) { return d3Colors(d.group) })
                 .nodeExtras(function(node) {
                   node
@@ -129,7 +127,6 @@ window.reverseDependencyGraph = function(){
                     .attr("dy", ".35em")
                     .text(function(d) { return d.name });
                 });
-              console.log(chart);
              getData($('#packagereversedependencygraph').data('url'), function(data) {
         $('#packagereversedependencygraph').show();
         d3.select('#packagereversedependencygraph svg')
@@ -156,6 +153,7 @@ window.reverseDependencyGraph = function(){
             };
         }
     });
+
 }
 
 window.makeSlider = function(){
@@ -165,7 +163,9 @@ window.makeSlider = function(){
       slider.removeClass("fa-angle-down");
       slider.addClass("fa-angle-up");
       $(".sliding").slideDown();
+      if(!$("#chart svg").hasClass("nvd3-svg")){
       window.graphDownloadStatistics();
+    }
     }else{
       slider.removeClass("fa-angle-up");
       slider.addClass("fa-angle-down");

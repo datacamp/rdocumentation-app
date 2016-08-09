@@ -278,7 +278,6 @@ module.exports = {
       name: packageName,
       group: 0}];
     return Dependency.findByDependingOn(packageName).then(function(deps){
-      console.log(deps);
       var dependencies =[];
       deps.forEach(function(dep,i){
         nodes.push(dep.package_name);
