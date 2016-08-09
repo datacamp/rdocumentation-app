@@ -63,39 +63,34 @@ window.dependencyGraph = function(){
   };
 
   nv.addGraph({
-        generate: function() {
-            var width = nv.utils.windowSize().width - 40,
-                height = nv.utils.windowSize().height - 40;
-            var d3Colors = d3.scale.category20();
-            var chart = nv.models.forceDirectedGraph()
-                .width(width)
-                .height(height)
-                .color(function(d) { return d3Colors(d.group) })
-                .nodeExtras(function(node) {
-                  node
-                    .append("text")
-                    .attr("dx", 12)
-                    .attr("dy", ".35em")
-                    .text(function(d) { return d.name });
-                });
-             getData($('#packagedependencygraph').data('url'), function(data) {
+    generate: function() {
+      var width = $('#packagedependencygraph').innerWidth(),
+        height = $('#packagedependencygraph').innerHeight();
+      var d3Colors = d3.scale.category20();
+      var chart = nv.models.forceDirectedGraph()
+        .width(width)
+        .height(height)
+        .color(function(d) { return d3Colors(d.group); })
+        .nodeExtras(function(node) {
+          node
+            .append("text")
+            .attr("dx", 12)
+            .attr("dy", ".35em")
+            .text(function(d) { return d.name; });
+        });
+      getData($('#packagedependencygraph').data('url'), function(data) {
         $('#packagedependencygraph').show();
         d3.select('#packagedependencygraph svg')
-              .datum(data)
-              .call(chart);
+          .datum(data)
+          .call(chart);
       });
-            
-            return chart;
+
+      return chart;
     },
         callback: function(graph) {
             window.onresize = function() {
-                var width = nv.utils.windowSize().width - 40,
-                    height = nv.utils.windowSize().height - 40,
-                    margin = graph.margin();
-                if (width < margin.left + margin.right + 20)
-                    width = margin.left + margin.right + 20;
-                if (height < margin.top + margin.bottom + 20)
-                    height = margin.top + margin.bottom + 20;
+               var width = $('#packagedependencygraph').innerWidth(),
+                height = $('#packagedependencygraph').innerHeight();
                 graph.width(width).height(height);
                 d3.select('#packagedependencygraph svg')
                     .attr('width', width)
@@ -104,7 +99,7 @@ window.dependencyGraph = function(){
             };
         }
     });
-}
+};
 
 window.reverseDependencyGraph = function(){
   var getData = function(data_url, callback) {
@@ -112,49 +107,43 @@ window.reverseDependencyGraph = function(){
   };
 
   nv.addGraph({
-        generate: function() {
-            var width = nv.utils.windowSize().width - 40,
-                height = nv.utils.windowSize().height - 40;
-            var d3Colors = d3.scale.category20();
-            var chart = nv.models.forceDirectedGraph()
-                .width(width)
-                .height(height)
-                .color(function(d) { return d3Colors(d.group) })
-                .nodeExtras(function(node) {
-                  node
-                    .append("text")
-                    .attr("dx", 12)
-                    .attr("dy", ".35em")
-                    .text(function(d) { return d.name });
-                });
-             getData($('#packagereversedependencygraph').data('url'), function(data) {
+    generate: function() {
+      var width = $('#packagereversedependencygraph').innerWidth(),
+        height = $('#packagereversedependencygraph').innerHeight();
+      var d3Colors = d3.scale.category20();
+      var chart = nv.models.forceDirectedGraph()
+        .width(width)
+        .height(height)
+        .color(function(d) { return d3Colors(d.group) })
+        .nodeExtras(function(node) {
+          node.append("text")
+            .attr("dx", 12)
+            .attr("dy", ".35em")
+            .text(function(d) { return d.name });
+        });
+      getData($('#packagereversedependencygraph').data('url'), function(data) {
         $('#packagereversedependencygraph').show();
         d3.select('#packagereversedependencygraph svg')
-              .datum(data)
-              .call(chart);
+          .datum(data)
+          .call(chart);
       });
-            
-            return chart;
-    },
-        callback: function(graph) {
-            window.onresize = function() {
-                var width = nv.utils.windowSize().width - 40,
-                    height = nv.utils.windowSize().height - 40,
-                    margin = graph.margin();
-                if (width < margin.left + margin.right + 20)
-                    width = margin.left + margin.right + 20;
-                if (height < margin.top + margin.bottom + 20)
-                    height = margin.top + margin.bottom + 20;
-                graph.width(width).height(height);
-                d3.select('#packagereversedependencygraph svg')
-                    .attr('width', width)
-                    .attr('height', height)
-                    .call(graph);
-            };
-        }
-    });
 
-}
+      return chart;
+    },
+    callback: function(graph) {
+      window.onresize = function() {
+        var width = $('#packagereversedependencygraph').innerWidth(),
+          height = $('#packagereversedependencygraph').innerHeight();
+        graph.width(width).height(height);
+        d3.select('#packagereversedependencygraph svg')
+          .attr('width', width)
+          .attr('height', height)
+          .call(graph);
+      };
+    }
+  });
+
+};
 
 window.makeSlider = function(){
   $(".slider").click(function(){
