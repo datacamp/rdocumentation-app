@@ -1,6 +1,6 @@
 .package {
   min-height: 85%;
-  .container-fluid {
+  #package--container {
     margin-top: $default-space;
 
     margin-left: auto;
@@ -53,11 +53,14 @@
     height: 400px;
   }
 
+  .package--title {
+    font-size: 3vw;
+  }
+
 }
 
 i.fa.fa-user{
   font-size: 2rem;
-  vertical-align: middle;
 }
 .maintainer{
   display: inline-block;
@@ -110,12 +113,12 @@ i.fa.fa-user{
 
 .slider {
   font-size: 2.5rem;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  width: 100%;
+  text-align: center;
 }
 #slider{
-  display:inline-block;
+  border-top: 1px solid #eeeeee;
+  margin: 2rem;
 }
 .slider:hover {
   cursor: pointer;

@@ -1,51 +1,55 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <% var pkgVersion = data; %>
 <section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>" class="package packageData" itemscope itemtype="http://schema.org/SoftwareApplication">
-  <div class="container-fluid">
+  <div id="package--container" class="container-fluid">
     <header class='row'>
 
       <div class='col-xs-4'>
-        <div class='row'>
-          <div class='col-sm-6'><h1 itemprop="name"><%- pkgVersion.package_name %></h1></div>
-          <div class='col-sm-3'>
-            <div class="select">
-              <select id="packageVersionSelect">
-                <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
-                  <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
-                    value="<%= pkgVersion.package.versions[i].version %>"
-                    <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %>
-                    <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
-                    >
-                    <%= pkgVersion.package.versions[i].version %>
-                  </option>
-                <% } %>
-              </select>
-            </div>
+        <div class='container-fluid'>
+          <div class='row'>
+            <div class='col-sm-12'><h1 class= 'package--title' itemprop="name"><%- pkgVersion.package_name %></h1></div>
           </div>
-
-          <% if(inViewerPane) { %>
-            <div class="col-sm-3">
-              <div class="versionCheck"></div>
-            </div>
-          <%}%>
-
-          <% if(pkgVersion.rating) { %>
-            <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>
-              <div class="rating" title=<%= pkgVersion.rating %>>
-                <% if (pkgVersion.rating) { %>
-                  <% for(var i=1; i <= 5; i++) { %>
-                    <i class="fa fa-star<%=
-                    pkgVersion.rating < i ?
-                      pkgVersion.rating <= i - 0.5 ? "-o" : "-half-o"
-                      : ""
-                    %>" aria-hidden="true"></i>
+          <div class="row">
+            <div class='col-sm-6'>
+              <div class="select">
+                <select id="packageVersionSelect">
+                  <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
+                    <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
+                      value="<%= pkgVersion.package.versions[i].version %>"
+                      <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %>
+                      <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
+                      >
+                      <%= pkgVersion.package.versions[i].version %>
+                    </option>
                   <% } %>
-                  <span itemprop="ratingValue" hidden>(<%= pkgVersion.rating %></span>
-                <% } %>
-                (<span itemprop="reviewCount"><%= pkgVersion.reviews.length %> </span>votes)
+                </select>
               </div>
             </div>
-          <%}%>
+
+            <% if(inViewerPane) { %>
+              <div class="col-sm-6">
+                <div class="versionCheck"></div>
+              </div>
+            <%}%>
+
+            <% if(pkgVersion.rating) { %>
+              <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>
+                <div class="rating" title=<%= pkgVersion.rating %>>
+                  <% if (pkgVersion.rating) { %>
+                    <% for(var i=1; i <= 5; i++) { %>
+                      <i class="fa fa-star<%=
+                      pkgVersion.rating < i ?
+                        pkgVersion.rating <= i - 0.5 ? "-o" : "-half-o"
+                        : ""
+                      %>" aria-hidden="true"></i>
+                    <% } %>
+                    <span itemprop="ratingValue" hidden>(<%= pkgVersion.rating %></span>
+                  <% } %>
+                  (<span itemprop="reviewCount"><%= pkgVersion.reviews.length %> </span>votes)
+                </div>
+              </div>
+            <%}%>
+          </div>
         </div>
 
       </div>
