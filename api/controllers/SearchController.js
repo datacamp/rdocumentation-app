@@ -293,21 +293,7 @@ module.exports = {
 
   },
 
-
-  fullSearch: function(req, res) {
-    var query = req.param('q');
-    var page = parseInt(req.param('page')) || 1;
-    var perPage = parseInt(req.param('perPage')) || 10;
-    var offset = (page - 1) * perPage;
-
-    var nextPageQuery = _.clone(req.query);
-    nextPageQuery.page = page + 1;
-
-    var prevPageQuery = _.clone(req.query);
-    prevPageQuery.page = page - 1;
-
-
-
+  packageSearch: function(query,offset,perPage){
     var searchTopicQuery = {
       multi_match: {
         query: query,
@@ -322,8 +308,7 @@ module.exports = {
           'note', 'author']
       }
     };
-
-    es.search({
+    return es.search({
       index: 'rdoc',
       body: {
         query: {
@@ -386,7 +371,77 @@ module.exports = {
                   ],
                   minimum_should_match : 1,
                 }
-              },
+              }],
+            minimum_should_match : 1,
+          }
+        },
+        highlight : {
+          pre_tags : ["<mark>"],
+          post_tags : ["</mark>"],
+          "fields" : {
+            "title" : {highlight_query: {
+               match : {
+                  title : query
+              }
+            }},
+            "description": {highlight_query: {
+               match : {
+                  description : query
+              }
+            }},
+            "collaborators.name": {highlight_query: {
+               match : {
+                  "collaborators.name" : query
+              }
+            }},
+            "maintainer.name": {highlight_query: {
+               match : {
+                  "maintainer.name" : query
+              }
+            }},
+            "name": {highlight_query: searchTopicQuery},
+            "keywords": {highlight_query: searchTopicQuery},
+            "aliases": {highlight_query: searchTopicQuery},
+            "arguments.name": {highlight_query: searchTopicQuery},
+            "arguments.description": {highlight_query: searchTopicQuery},
+            "details": {highlight_query: searchTopicQuery},
+            "value": {highlight_query: searchTopicQuery},
+            "note": {highlight_query: searchTopicQuery},
+            "author": {highlight_query: searchTopicQuery},
+            "references": {highlight_query: searchTopicQuery},
+            "license": {highlight_query: searchTopicQuery},
+            "url": {highlight_query: searchTopicQuery},
+            "copyright": {highlight_query: searchTopicQuery}
+          }
+        },
+        from: offset,
+        size: perPage,
+        fields: ['package_name', 'version', 'name']
+      }
+    });
+  },
+
+  topicsSearch: function(query,offset,perPage){
+    var searchTopicQuery = {
+      multi_match: {
+        query: query,
+        type: "best_fields",
+        boost: 0.7,
+        fields: [
+          'aliases^6',
+          'name^2',
+          'title^2', 'description', 'keywords^2',
+          'arguments.name', 'arguments.description',
+          'details', 'value',
+          'note', 'author']
+      }
+    };
+    return es.search({
+      index: 'rdoc',
+      body: {
+        query: {
+          bool : {
+            should : [
               {
                 bool: {
                   filter:[
@@ -450,8 +505,7 @@ module.exports = {
                   ],
                   minimum_should_match : 1,
                 }
-              }
-            ],
+              }],
             minimum_should_match : 1,
           }
         },
@@ -498,13 +552,32 @@ module.exports = {
         size: perPage,
         fields: ['package_name', 'version', 'name']
       }
-    }).then(function(response) {
+    });
+  },
+
+
+  fullSearch: function(req, res) {
+    var query = req.param('q');
+    var ppage = parseInt(req.param('ppage')) || 1;
+    var fpage = parseInt(req.param('fpage')) || 1;
+    var perPage = parseInt(req.param('perPage')) || 10;
+    var poffset = (ppage - 1) * perPage;
+    var foffset = (fpage - 1) * perPage;
+    var prevPPage = _.clone(req.query);
+    prevPPage.ppage = ppage-1;
+    var nextPPage = _.clone(req.query);
+    nextPPage.ppage = ppage+1;
+    var prevFPage = _.clone(req.query);
+    prevFPage.fpage = fpage-1;
+    var nextFPage = _.clone(req.query);
+    nextFPage.fpage = fpage+1;
+    
+    return sails.controllers.search.packageSearch(query,poffset,perPage).then(function(response) {
        //return res.json(response);
       var topics = [];
       var packages  = [];
       response.hits.hits.forEach(function(hit) {
-        var fields = {};
-        if (hit._type === 'package_version') {
+          var fields = {};
           fields.package_name = hit.fields.package_name[0];
           fields.version = hit.fields.version[0];
           packages.push({
@@ -512,8 +585,11 @@ module.exports = {
             score: hit._score,
             highlight: hit.highlight
           });
-        } else if (hit._type === 'topic') {
-          var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
+        });
+      return sails.controllers.search.topicsSearch(query,foffset,perPage).then(function(response){
+        response.hits.hits.forEach(function(hit) {
+        var fields = {};
+        var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
           fields.package_name = inner_hits_fields.package_name[0];
           fields.version = inner_hits_fields.version[0];
           fields.name = hit.fields.name[0];
@@ -521,25 +597,26 @@ module.exports = {
             fields: fields,
             score: hit._score,
             highlight: hit.highlight
-          });
-        }
-      });
-      return res.ok({
-        total: numeral(response.hits.total).format('0,0'),
-        packages: packages,
-        topics: topics,
-        perPage: perPage,
-        currentPage: page,
-        prevPageUrl: req.path + '?' + querystring.stringify(prevPageQuery),
-        nextPageUrl: req.path + '?' + querystring.stringify(nextPageQuery),
-        striptags: striptags,
-        pageTitle: 'Search Results'
-      }, 'search/result.ejs');
-    }).catch(function(err) {
-      return res.negotiate(err);
-    });
-
-
+          });});
+          return res.ok({
+            total: numeral(response.hits.total).format('0,0'),
+            packages: packages,
+            topics: topics,
+            perPage: perPage,
+            params: req.query,
+            prevPPage: req.path +'?'+ querystring.stringify(prevPPage),
+            prevFPage: req.path +'?'+ querystring.stringify(prevFPage),
+            nextPPage: req.path +'?'+ querystring.stringify(nextPPage),
+            nextFPage: req.path +'?'+ querystring.stringify(nextFPage),
+            ppage: ppage,
+            fpage: fpage,
+            striptags: striptags,
+            pageTitle: 'Search Results'
+          }, 'search/result.ejs');
+        }).catch(function(err) {
+          return res.negotiate(err);
+        });
+  });
   }
 
 };
