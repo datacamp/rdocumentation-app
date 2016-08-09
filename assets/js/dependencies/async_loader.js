@@ -1,3 +1,4 @@
+  $.holdReady(true)
   $(function() {
     if(urlParam('viewer_pane') === '1'){
       console.log('*********************** AJAX MODE ***********************');
@@ -32,6 +33,11 @@
         $('#js-install').unbind('click').bind('click',window.installpackage);
         $('#js-hideviewer').unbind('click').bind('click',window.hideViewer);
         $('#js-makedefault').unbind('click').bind('click',window.setDefault);
+        $('#tabs').tabs({
+            'beforeLoad':function(event,ui){
+              window.setTab(event,ui);
+            }
+          });
         $( "form" ).submit(function( event ) {
             event.preventDefault();
             var action = $("form")[0].action;
@@ -67,8 +73,10 @@
       // Helper function to grab new HTML
       // and replace the content
       window.replacePage = function(url) {
-        if(url.indexOf('#')==0){
-          url = url.substring(1,url.length);
+        console.log("replacing " + url);
+        if(url.indexOf('#')>=0){
+          console.log(url);
+          url = url.substring(url.indexOf('#'),url.length);
           document.getElementById(url).scrollIntoView();
         }
         else{
@@ -192,12 +200,23 @@
                   ["install_package('"+packageName+"',"+packageSource+")"])
         return false;
       };
+
+      window.setTab=function(e,ui){
+        $('ul.tabs').find('a').each(function(){
+          $(this.hash).hide();
+        });
+        var link = ui.tab[0].innerHTML
+        link = link.substring(link.indexOf('#'),link.indexOf('" class'));
+        $(link).show();
+        e.preventDefault();
+      }
       //check the packageversion
       window.packageVersionControl();
       window.bindGlobalClickHandler();
       window.scrollTo(0,0);
     }
   });
+$.holdReady(false)
 
 _rStudioRequest=function(url,method,shared_secret,port,params){
   var data={}
