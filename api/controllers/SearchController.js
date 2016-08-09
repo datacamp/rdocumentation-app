@@ -500,27 +500,34 @@ module.exports = {
       }
     }).then(function(response) {
        //return res.json(response);
-      var hits = response.hits.hits.map(function(hit) {
+      var topics = [];
+      var packages  = [];
+      response.hits.hits.forEach(function(hit) {
         var fields = {};
         if (hit._type === 'package_version') {
           fields.package_name = hit.fields.package_name[0];
           fields.version = hit.fields.version[0];
+          packages.push({
+            fields: fields,
+            score: hit._score,
+            highlight: hit.highlight
+          });
         } else if (hit._type === 'topic') {
           var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
           fields.package_name = inner_hits_fields.package_name[0];
           fields.version = inner_hits_fields.version[0];
           fields.name = hit.fields.name[0];
+          topics.push({
+            fields: fields,
+            score: hit._score,
+            highlight: hit.highlight
+          });
         }
-        return {
-          fields: fields,
-          type: hit._type,
-          score: hit._score,
-          highlight: hit.highlight
-        };
       });
       return res.ok({
         total: numeral(response.hits.total).format('0,0'),
-        hits: hits,
+        packages: packages,
+        topics: topics,
         perPage: perPage,
         currentPage: page,
         prevPageUrl: req.path + '?' + querystring.stringify(prevPageQuery),
