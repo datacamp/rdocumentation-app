@@ -224,7 +224,7 @@
     <section class="package--readme">
       <h3> Readme </h3>
       <% if(pkgVersion.url) { %>
-         <%- md(pkgVersion.readmemd,pkgVersion.url) %>
+         <%- md(pkgVersion.readmemd,pkgVersion.url.autoLink({ target: "_blank", id: "1" })) %>
       <%} %>
       <% if(!pkgVersion.url) {%>
         <%-md(pkgVersion.readmemd,"") %>
