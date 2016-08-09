@@ -132,8 +132,8 @@
       <div id="tabs" class="row">
         <ul class="tabs">
           <li><a href="<%= path +'#chart'%>" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
-          <li><a href="<%= path +'#packagedependencygraph'%>" class= "js-external js-tab">Dependency graph</a></li>
-          <li><a href="<%= path +'#packagereversedependencygraph'%>" class= "js-external js-tab">Reverse dependency graph</a></li>
+          <li><a id="tab1" href="<%= path +'#packagedependencygraph'%>" class= "js-external js-tab">Dependency graph</a></li>
+          <li><a id="tab2" href="<%= path +'#packagereversedependencygraph'%>" class= "js-external js-tab">Reverse dependency graph</a></li>
         </ul>
         <div class='tabs--content' id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
           <svg></svg>
