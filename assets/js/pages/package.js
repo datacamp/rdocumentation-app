@@ -57,6 +57,94 @@ window.graphDownloadStatistics = function() {
 
 };
 
+window.dependencyGraph = function(){
+  var getData = function(data_url, callback) {
+    return $.get(data_url, callback);
+  };
+
+  nv.addGraph({
+    generate: function() {
+      var width = $('#packagedependencygraph').innerWidth(),
+        height = $('#packagedependencygraph').innerHeight();
+      var d3Colors = d3.scale.category20();
+      var chart = nv.models.forceDirectedGraph()
+        .width(width)
+        .height(height)
+        .color(function(d) { return d3Colors(d.group); })
+        .nodeExtras(function(node) {
+          node
+            .append("text")
+            .attr("dx", 12)
+            .attr("dy", ".35em")
+            .text(function(d) { return d.name; });
+        });
+      getData($('#packagedependencygraph').data('url'), function(data) {
+        $('#packagedependencygraph').show();
+        d3.select('#packagedependencygraph svg')
+          .datum(data)
+          .call(chart);
+      });
+
+      return chart;
+    },
+        callback: function(graph) {
+            window.onresize = function() {
+               var width = $('#packagedependencygraph').innerWidth(),
+                height = $('#packagedependencygraph').innerHeight();
+                graph.width(width).height(height);
+                d3.select('#packagedependencygraph svg')
+                    .attr('width', width)
+                    .attr('height', height)
+                    .call(graph);
+            };
+        }
+    });
+};
+
+window.reverseDependencyGraph = function(){
+  var getData = function(data_url, callback) {
+    return $.get(data_url, callback);
+  };
+
+  nv.addGraph({
+    generate: function() {
+      var width = $('#packagereversedependencygraph').innerWidth(),
+        height = $('#packagereversedependencygraph').innerHeight();
+      var d3Colors = d3.scale.category20();
+      var chart = nv.models.forceDirectedGraph()
+        .width(width)
+        .height(height)
+        .color(function(d) { return d3Colors(d.group) })
+        .nodeExtras(function(node) {
+          node.append("text")
+            .attr("dx", 12)
+            .attr("dy", ".35em")
+            .text(function(d) { return d.name });
+        });
+      getData($('#packagereversedependencygraph').data('url'), function(data) {
+        $('#packagereversedependencygraph').show();
+        d3.select('#packagereversedependencygraph svg')
+          .datum(data)
+          .call(chart);
+      });
+
+      return chart;
+    },
+    callback: function(graph) {
+      window.onresize = function() {
+        var width = $('#packagereversedependencygraph').innerWidth(),
+          height = $('#packagereversedependencygraph').innerHeight();
+        graph.width(width).height(height);
+        d3.select('#packagereversedependencygraph svg')
+          .attr('width', width)
+          .attr('height', height)
+          .call(graph);
+      };
+    }
+  });
+
+};
+
 window.makeSlider = function(){
   $(".slider").click(function(){
     var slider = $(".slider");
@@ -64,7 +152,9 @@ window.makeSlider = function(){
       slider.removeClass("fa-angle-down");
       slider.addClass("fa-angle-up");
       $(".sliding").slideDown();
+      if(!$("#chart svg").hasClass("nvd3-svg")){
       window.graphDownloadStatistics();
+    }
     }else{
       slider.removeClass("fa-angle-up");
       slider.addClass("fa-angle-down");
@@ -149,5 +239,14 @@ $(document).ready(function() {
     $("#show").hide();
     $("#details").find(".hidden").removeClass("hidden");
   });
-
+  $("#tab1").click(function(){
+    if(!$("#packagedependencygraph svg").hasClass("nvd3-svg")){
+    window.dependencyGraph();
+  }
+  });
+  $("#tab2").click(function(){
+    if(!$("#packagereversedependencygraph svg").hasClass("nvd3-svg")){
+    window.reverseDependencyGraph();
+  }
+  });
 });

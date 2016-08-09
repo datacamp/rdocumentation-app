@@ -92,34 +92,22 @@
       </div>
     </header>
 
-    <section id="details" class="container sliding">
+    <section id="details" class="container-fluid sliding">
       <div class="row">
 
-        <div class="col-sm-4 package--details">
+        <div class="col-sm-12 package--details">
 
           <div class='row'>
             <div class="col-sm-12">
             <% if(pkgVersion.collaborators.length > 0) { %>
-              <div class= "maintainer contributor">
+              <div class= "contributor">
                   <div class="listed">
                     <h5>Contributors:</h5>
-                    <% if(pkgVersion.collaborators.length > 3) { %>
-                      <ul>
-                        <% for(var i = 0; i < 3; i++) { %>
-                          <li><a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a></li>
-                        <% } %>
-                        <% for(var i = 3; i < pkgVersion.collaborators.length; i++) { %>
-                          <li><a class="hidden" href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a></li>
-                        <% } %>
-                      </ul>
-                      <a id="show">Show all</a>
-                    <%} else{ %>
                       <ul>
                         <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
                           <li><a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a></li>
                         <% } %>
                       </ul>
-                    <% } %>
                   </div>
               </div>
             <% } %>
@@ -132,39 +120,37 @@
                 <% for(prop in pkgVersion.sourceJSON) { %>
                   <tr>
                     <td><%= prop %></td>
-                    <td><%= pkgVersion.sourceJSON[prop] %></td>
+                    <td><%- pkgVersion.sourceJSON[prop].autoLink({ target: "_blank"}) %></td>
                   </tr>
                 <% } %>
               </table>
             </div>
           </div>
         </div>
+      </div>
 
-        <div id="tabs" class="col-sm-8">
-          <ul>
-            <li><a href="<%= path %>#chart"><%= pkgVersion.package_name %> downloads</a></li>
-            <li><a href="<%= path %>#menu1">Dependency graph</a></li>
-            <li><a href="<%= path %>#menu2">Reverse dependency graph</a></li>
-          </ul>
-          <div id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
-            <svg></svg>
-          </div>
-          <div id="menu1">
-            <p>A chart will come here.</p>
-          </div>
-          <div id="menu2">
-            <p>and here too</p>
-          </div>
+      <div id="tabs" class="row">
+        <ul>
+          <li><a href="<%= path %>#chart"><%= pkgVersion.package_name %> downloads</a></li>
+          <li><a id="tab1" href="<%= path %>#packagedependencygraph">Dependency graph</a></li>
+          <li><a id="tab2" href="<%= path %>#packagereversedependencygraph">Reverse dependency graph</a></li>
+        </ul>
+        <div class='tabs--content' id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
+          <svg></svg>
         </div>
-
-
-
+        <div class='tabs--content' id="packagedependencygraph" style="dislay:none" data-url="/api<%= path %>/dependencies">
+          <svg></svg>
+        </div>
+        <div class='tabs--content' id="packagereversedependencygraph" style ="display:none" data-url="/api<%= path %>/reversedependencies" >
+          <svg></svg>
+        </div>
       </div>
 
 
 
-    </section>
 
+
+    </section>
 
 
     <section id = "slider">
