@@ -231,7 +231,6 @@ $(document).ready(function() {
         }
     });
   window.triggerIcon();
-  $("#tabs").tabs();
   $('#tabs').tabs({
   active: 0
   });
