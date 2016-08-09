@@ -11,6 +11,7 @@
 
   header {
     @include clearfix;
+    margin-bottom: $default-space;
 
     h1 {
       display: inline-block;
@@ -55,6 +56,21 @@
 
   .package--title {
     font-size: 3vw;
+    margin-top: 0px;
+  }
+  .package--details {
+    margin-top: 1rem;
+    table {
+      table-layout: fixed;
+      overflow: hidden;
+      tr td:first-child {
+        width: 30%;
+      }
+    }
+  }
+
+  .tabs--content {
+    height: 600px;
   }
 
 }
@@ -87,24 +103,26 @@ i.fa.fa-user{
     -webkit-margin-start: 0px;
   }
   a{
-    font-size: 1.4rem;
-    display:block;
+    font-size: 1.2rem;
+  }
+  h5 {
+    display: inline;
+  }
+  ul {
+    padding-left: 0.5rem;
+    list-style: none;
+    display: inline;
+    li {
+      display: inline
+    }
   }
   .listed{
-    display:inline-block;
     margin-left:0.5rem;
   }
 }
 
 .hidden{
   display:none;
-}
-
-#details{
-  .col-md-8{
-    width: initial;
-    float: left;
-  }
 }
 
 .sliding {
@@ -189,6 +207,7 @@ i.fa.fa-user{
 #tabs {
     background: transparent;
     border: none;
+    margin-top: $default-space;
 }
 #tabs .ui-widget-header {
     background: transparent;

@@ -92,88 +92,65 @@
       </div>
     </header>
 
-    <section id ="details" class="stats sliding">
+    <section id="details" class="container-fluid sliding">
       <div class="row">
-        <div class="col-md-8">
-          <dl>
-            <% if (pkgVersion.release_date) { %>
-              <dt>Release date:</dt>
-              <dd itemprop="datePublished"><%= dateformat(pkgVersion.release_date, "mediumDate") %></dd>
-            <% } %>
-            <% if(pkgVersion.license) { %>
-              <dt>License</dt>
-              <dd itemprop="license"><%= pkgVersion.license %></dd>
-            <% } %>
-            <% if(pkgVersion.copyright) { %>
-              <dt>Copyright</dt>
-              <dd itemprop="copyrightHolder"><%= pkgVersion.copyright %></dd>
-            <% } %>
-            <% if(pkgVersion.package.inViews && pkgVersion.package.inViews.length > 0) { %>
-              <dt>In Views:</dt>
-              <% var views = pkgVersion.package.inViews.map(function(view) {
-                  return '<div class=viewLinks><a href="/taskviews/' + encodeURIComponent(view.name) + '">' + view.name + '</a></div>';
-                }) -%>
-              <dd itemprop="isPartOf"><%- views.join('') %></dd>
-            <% } %>
-          </dl>
-        </div>
-        <div class="col-md-8">
-        <% if(pkgVersion.collaborators.length > 0) { %>
-          <div class= "maintainer contributor">
-              <div class="listed">
-              <dt>Contributors:</dt>
-                <% if(pkgVersion.collaborators.length > 3) { %>
-                <dd>
-                  <% for(var i = 0; i < 3; i++) { %>
-                    <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
-                  <% } %>
-                <p id = "show">Show all</p>
-                  <% for(var i = 3; i < pkgVersion.collaborators.length; i++) { %>
-                      <a class="hidden" href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
-                  <% } %>
-                </dd>
-                <%} else{ %>
-                  <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
-                    <a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a>
-                  <% } %>
-                <% } %>
+
+        <div class="col-sm-12 package--details">
+
+          <div class='row'>
+            <div class="col-sm-12">
+            <% if(pkgVersion.collaborators.length > 0) { %>
+              <div class= "contributor">
+                  <div class="listed">
+                    <h5>Contributors:</h5>
+                      <ul>
+                        <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
+                          <li><a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a></li>
+                        <% } %>
+                      </ul>
+                  </div>
               </div>
-          </div>
-    <% } %>
-        </div>
-        <% if(pkgVersion.url) { %>
-          <div id="info" class="col-md-8">
-            <dl>
-              <dt>More information:</dt>
-            </dl>
-            <% var urls = pkgVersion.url.match(/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi); %>
-            <% for(var i=0;i<urls.length;i++){ %>
-            <dl class = "links">
-              <a href="<%- urls[i] %>"><%- urls[i] %></a>
-            </dl>
             <% } %>
+            </div>
           </div>
-        <% } %>
+
+          <div class='row'>
+            <div class='col-sm-12 package--details'>
+              <table>
+                <% for(prop in pkgVersion.sourceJSON) { %>
+                  <tr>
+                    <td><%= prop %></td>
+                    <td><%- pkgVersion.sourceJSON[prop].autoLink({ target: "_blank"}) %></td>
+                  </tr>
+                <% } %>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <div id="tabs" class="row">
+        <ul class="tabs">
+          <li><a href="<%= path +'#chart'%>" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
+          <li><a href="<%= path +'#menu1'%>" class= "js-external js-tab">Dependency graph</a></li>
+          <li><a href="<%= path +'#menu2'%>" class= "js-external js-tab">Reverse dependency graph</a></li>
+        </ul>
+        <div class='tabs--content' id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
+          <svg></svg>
+        </div>
+        <div class='tabs--content' id="packagedependencygraph" style="dislay:none" data-url="/api<%= path %>/dependencies">
+          <svg></svg>
+        </div>
+        <div class='tabs--content' id="packagereversedependencygraph" style ="display:none" data-url="/api<%= path %>/reversedependencies" >
+          <svg></svg>
+        </div>
+      </div>
+
+
+
+
 
     </section>
-
-    <div id="tabs" class="sliding container">
-      <ul class="tabs">
-        <li><a href="<%= path +'#chart'%>" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
-        <li><a href="<%= path +'#menu1'%>" class= "js-external js-tab">Dependency graph</a></li>
-        <li><a href="<%= path +'#menu2'%>" class= "js-external js-tab">Reverse dependency graph</a></li>
-      </ul>
-      <div id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
-        <svg></svg>
-      </div>
-      <div id="menu1">
-        <p>A chart will come here.</p>
-      </div>
-      <div id="menu2">
-        <p>and here too</p>
-      </div>
-    </div>
 
     <section id = "slider">
     <i class="slider fa fa-angle-down" aria-hidden="true"></i>
@@ -224,7 +201,7 @@
     <section class="package--readme">
       <h3> Readme </h3>
       <% if(pkgVersion.url) { %>
-         <%- md(pkgVersion.readmemd,pkgVersion.url) %>
+         <%- md(pkgVersion.readmemd,pkgVersion.url.autoLink({ target: "_blank", id: "1" })) %>
       <%} %>
       <% if(!pkgVersion.url) {%>
         <%-md(pkgVersion.readmemd,"") %>
