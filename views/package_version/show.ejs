@@ -159,10 +159,10 @@
     </section>
 
     <div id="tabs" class="sliding container">
-      <ul>
-        <li><a href="<%= path %>#chart"><%= pkgVersion.package_name %> downloads</a></li>
-        <li><a href="<%= path %>#menu1">Dependency graph</a></li>
-        <li><a href="<%= path %>#menu2">Reverse dependency graph</a></li>
+      <ul class="tabs">
+        <li><a href="<%= path +'#chart'%>" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
+        <li><a href="<%= path +'#menu1'%>" class= "js-external js-tab">Dependency graph</a></li>
+        <li><a href="<%= path +'#menu2'%>" class= "js-external js-tab">Reverse dependency graph</a></li>
       </ul>
       <div id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
         <svg></svg>
