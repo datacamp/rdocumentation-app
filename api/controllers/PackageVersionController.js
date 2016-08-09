@@ -102,6 +102,25 @@ module.exports = {
       if(version === null) return res.redirect(301, '/packages/' + encodeURIComponent(packageName));
       else {
         version.pageTitle = version.package_name + ' v' + version.version;
+        try {
+          version.sourceJSON = JSON.parse(version.sourceJSON);
+          version.sourceJSON = _.omit(version.sourceJSON, ['Package',
+            'Version',
+            'Title',
+            'Author',
+            'Authors@R',
+            'Maintainer',
+            'repoType',
+            'readme',
+            'Description',
+            'Depends',
+            'Imports',
+            'Suggests',
+            'Enhances']);
+        } catch(err) {
+          version.sourceJSON = {};
+        }
+        console.log(version.sourceJSON);
         return res.ok(version, 'package_version/show.ejs');
       }
     })
