@@ -39,5 +39,14 @@
 .search-result--index {
   color: $text-secondary;
 }
-
-.search-result--pagination {}
+#searchtabs {
+  display: none
+}
+@media(max-width:1000px){
+  .search-result--data{
+    display: none
+  }
+  #searchtabs{
+    display: block
+  }
+}

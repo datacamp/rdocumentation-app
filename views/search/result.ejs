@@ -58,6 +58,63 @@
       </div>
     </div>
 
+    <div id = "searchtabs" class="search-result--data col-md-8">
+      <ul>
+        <li><a href="<%= data.current %>#packages">Packages</a></li>
+        <li><a href="<%= data.current %>#functions">Functions</h4></li>
+      </ul>
+      <div id="packages">
+      <% for(var i = 0; i < data.packages.length; i++) { %>
+        <% var hit = data.packages[i] %>
+        <section class='search-result--item'>
+          <% var versionURI = '/packages/' + encodeURIComponent(hit.fields.package_name) + '/versions/' + encodeURIComponent(hit.fields.version) %>
+            <h5 class="search-result--item-header">
+              Package <a href='<%- versionURI %>'><%- hit.fields.package_name %>&nbsp;v<%- hit.fields.version %></a>
+            </h5>
+          <dl>
+            <% for(highlight in hit.highlight) { %>
+              <dt><%= highlight %></dt>
+              <dd><%- data.striptags(hit.highlight[highlight].toString(), '<mark>') %></dd>
+            <% } %>
+          </dl>
+
+        </section>
+      <% } %>
+        <div class="search-result--pagination">
+        <% if (data.ppage >= 2) { %>
+          <a href='<%= data.prevPPage %>' class='btn btn-primary m0'><i class="fa fa-chevron-left"></i>Previous <%= data.perPage %> Results </a>
+        <% } %>
+        <a  href='<%= data.nextPPage %>' class='btn btn-primary m0 pull-right'>Next <%= data.perPage %> Results <i class="fa fa-chevron-right"></i></a>
+        </div>
+      </div>
+      <div id="functions">
+      <% for(var i = 0; i < data.topics.length; i++) { %>
+        <% var hit = data.topics[i] %>
+        <section class='search-result--item'>
+          <% var versionURI = '/packages/' + encodeURIComponent(hit.fields.package_name) + '/versions/' + encodeURIComponent(hit.fields.version) %>
+            <h5 class="search-result--item-header">
+              Function <a href='<%- versionURI %>/topics/<%- encodeURIComponent(hit.fields.name) %>'><%- hit.fields.name %></a>
+              <span><a href='<%- versionURI %>'>[<%- hit.fields.package_name %>&nbsp;v<%- hit.fields.version %>]</a></span>
+            </h5>
+
+          <dl>
+            <% for(highlight in hit.highlight) { %>
+              <dt><%= highlight %></dt>
+              <dd><%- data.striptags(hit.highlight[highlight].toString(), '<mark>') %></dd>
+            <% } %>
+          </dl>
+
+        </section>
+      <% } %>
+        <div class="search-result--pagination">
+        <% if (data.fpage >= 2) { %>
+          <a href='<%= data.prevFPage %>#functions' class='btn btn-primary m0'><i class="fa fa-chevron-left"></i>Previous <%= data.perPage %> Results </a>
+        <% } %>
+        <a  href='<%= data.nextFPage %>#functions' class='btn btn-primary m0 pull-right'>Next <%= data.perPage %> Results <i class="fa fa-chevron-right"></i></a>
+        </div>
+      </div>
+    </div>
+
     
   </div>
 </div>
