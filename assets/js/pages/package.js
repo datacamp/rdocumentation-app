@@ -259,21 +259,21 @@ $(document).ready(function() {
       active: 0
       });
     }
-    $("#tab1").click(function(){
-      if(!$("#packagedependencygraph svg").hasClass("nvd3-svg")){
-      window.dependencyGraph();
-      }
-    });
-    $("#tab2").click(function(){
-      if(!$("#packagereversedependencygraph svg").hasClass("nvd3-svg")){
-      window.reverseDependencyGraph();
-      }
-    });
   });
   $.getScript("http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js",function(){
     $.getScript("http://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.min.js",function(){
       window.makeSlider();
-    })
+      $("#tab1").click(function(){
+        if(!$("#packagedependencygraph svg").hasClass("nvd3-svg")){
+        window.dependencyGraph();
+        }
+      });
+      $("#tab2").click(function(){
+        if(!$("#packagereversedependencygraph svg").hasClass("nvd3-svg")){
+        window.reverseDependencyGraph();
+        }
+      });
+    });
   });
   $.getScript("http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.2/js/jquery.tablesorter.js",function(){
     // add parser through the tablesorter addParser method
@@ -313,7 +313,6 @@ $(document).ready(function() {
             }
             return $(node).text();
           }
-      return $(node).text();
     });
   });
 });
