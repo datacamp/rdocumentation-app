@@ -293,7 +293,11 @@ module.exports = {
 
   },
 
-  packageSearch: function(query,offset,perPage){
+  packageSearch: function(req,res){
+    var query = req.param('q');
+    var page = parseInt(req.param('page')) || 1;
+    var perPage = parseInt(req.param('perPage')) || 10;
+    var offset = (page - 1) * perPage;
     var searchTopicQuery = {
       multi_match: {
         query: query,
@@ -418,10 +422,29 @@ module.exports = {
         size: perPage,
         fields: ['package_name', 'version', 'name']
       }
+    }).then(function(result){
+      var packages  = [];
+      result.hits.hits.forEach(function(hit) {
+          var fields = {};
+          fields.package_name = hit.fields.package_name[0];
+          fields.version = hit.fields.version[0];
+          packages.push({
+            fields: fields,
+            score: hit._score,
+            highlight: hit.highlight
+          });
+        });
+      return res.ok({packages: packages});
+    }).catch(function(err) {
+          return res.negotiate(err);
     });
   },
 
-  topicsSearch: function(query,offset,perPage){
+  functionSearch: function(req,res){
+    var query = req.param('q');
+    var page = parseInt(req.param('page')) || 1;
+    var perPage = parseInt(req.param('perPage')) || 10;
+    var offset = (page - 1) * perPage;
     var searchTopicQuery = {
       multi_match: {
         query: query,
@@ -552,73 +575,29 @@ module.exports = {
         size: perPage,
         fields: ['package_name', 'version', 'name']
       }
-    });
-  },
-
-
-  fullSearch: function(req, res) {
-    var query = req.param('q');
-    var ppage = parseInt(req.param('ppage')) || 1;
-    var fpage = parseInt(req.param('fpage')) || 1;
-    var perPage = parseInt(req.param('perPage')) || 10;
-    var poffset = (ppage - 1) * perPage;
-    var foffset = (fpage - 1) * perPage;
-    var current = _.clone(req.query);
-    var prevPPage = _.clone(req.query);
-    prevPPage.ppage = ppage-1;
-    var nextPPage = _.clone(req.query);
-    nextPPage.ppage = ppage+1;
-    var prevFPage = _.clone(req.query);
-    prevFPage.fpage = fpage-1;
-    var nextFPage = _.clone(req.query);
-    nextFPage.fpage = fpage+1;
-    
-    return sails.controllers.search.packageSearch(query,poffset,perPage).then(function(response) {
-       //return res.json(response);
-      var topics = [];
-      var packages  = [];
-      response.hits.hits.forEach(function(hit) {
+    }).then(function(result){
+      var functions  = [];
+      result.hits.hits.forEach(function(hit) {
           var fields = {};
-          fields.package_name = hit.fields.package_name[0];
-          fields.version = hit.fields.version[0];
-          packages.push({
+          var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
+          fields.package_name = inner_hits_fields.package_name[0];
+          fields.version = inner_hits_fields.version[0];
+          fields.name = hit.fields.name[0];
+          functions.push({
             fields: fields,
             score: hit._score,
             highlight: hit.highlight
           });
         });
-      return sails.controllers.search.topicsSearch(query,foffset,perPage).then(function(response2){
-        response2.hits.hits.forEach(function(hit) {
-        var fields = {};
-        var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
-          fields.package_name = inner_hits_fields.package_name[0];
-          fields.version = inner_hits_fields.version[0];
-          fields.name = hit.fields.name[0];
-          topics.push({
-            fields: fields,
-            score: hit._score,
-            highlight: hit.highlight
-          });});
-          return res.ok({
-            total: numeral(response.hits.total+response2.hits.total).format('0,0'),
-            packages: packages,
-            topics: topics,
-            perPage: perPage,
-            params: req.query,
-            current: req.path +'?'+ querystring.stringify(current),
-            prevPPage: req.path +'?'+ querystring.stringify(prevPPage),
-            prevFPage: req.path +'?'+ querystring.stringify(prevFPage),
-            nextPPage: req.path +'?'+ querystring.stringify(nextPPage),
-            nextFPage: req.path +'?'+ querystring.stringify(nextFPage),
-            ppage: ppage,
-            fpage: fpage,
-            striptags: striptags,
-            pageTitle: 'Search Results'
-          }, 'search/result.ejs');
-        }).catch(function(err) {
+      return res.ok({functions: functions});
+    }).catch(function(err) {
           return res.negotiate(err);
-        });
-  });
+    });
+  },
+
+
+  fullSearch: function(req, res) {
+    return res.ok({query: req.param('q')},'search/result.ejs');
   }
 
 };
