@@ -42,6 +42,38 @@
 #searchtabs {
   display: none
 }
+
+#searchtabs {
+    background: transparent;
+    border: none;
+}
+#searchtabs .ui-widget-header {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #c0c0c0;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+}
+#searchtabs .ui-tabs-nav .ui-state-default {
+    background: transparent;
+    border: none;
+}
+#searchtabs .ui-tabs-nav .ui-state-default a {
+    color: #c0c0c0;
+    border-bottom: none;
+}
+#searchtabs .ui-tabs-nav .ui-state-active a {
+    color: black;
+    border-bottom: none;
+}
+#searchtabs .ui-widget-content a{
+  color: $primary
+}
+
+#searchtabs .search-result--item-header span a{
+  color: #a3a3a3
+} 
 @media(max-width:1000px){
   .search-result--data{
     display: none
