@@ -12,6 +12,7 @@
       }
 
       function rerenderBody(html){
+        console.log(html);
         var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
         $pageBody.html(body);
         window.bindGlobalClickHandler();
@@ -85,16 +86,17 @@
             url=url+'?viewer_pane=1&Rstudio_XS_Secret=' + urlParam("Rstudio_XS_Secret")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           return $.ajax({
-            type: 'GET',
             url : url,
+            type: 'GET',
+            dataType:'html',
             cache: false,
-            dataType: 'html',
             xhrFields: {
               withCredentials: true
             },
             crossDomain:true
           })
-          .then(rerenderBody);
+          .then(rerenderBody)
+          .fail(function(error) {console.log(error.responseJSON) });
         }
 
       };
