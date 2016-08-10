@@ -1,5 +1,6 @@
   $(function() {
-    if(urlParam('viewer_pane') === '1'){
+    if(urlParam('viewer_pane') === '1' && !window.alreadyChecked==true){
+      window.alreadyChecked=true;
       console.log('*********************** AJAX MODE ***********************');
       var $pageBody = $('body');
       window.loggedIn = false;
@@ -12,15 +13,17 @@
       }
 
       function rerenderBody(html){
-        console.log(html);
         var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
+        //apparently the rule below refires document.ready after replacing, thus the alreadyChecked boolean
         $pageBody.html(body);
         window.bindGlobalClickHandler();
+        window.bindButtonAndForms();
         window.searchHandler(jQuery);
         window.packageVersionToggleHandler(jQuery);
+        window.packageVersionControl();
         window.scrollTo(0,0);
         MathJax.Hub.Queue(["Typeset",MathJax.Hub])
-        return false;
+        $('.search--results').hide();
       }
 
       /************************************************************************************************************************************************
@@ -28,18 +31,28 @@
       ************************************************************************************************************************************************/
 
       window.bindGlobalClickHandler = function(){
+        //unbinding seems to fail a lot in the Rstudio browser?!->be sure not to bind twice
         $('a:not(.js-external)').unbind('click').bind('click', window.asyncClickHandler);
+      };
+      window.bindSearchPaneClickHandler=function(){
+        $('.search--results').find('a:not(.js-external)').unbind('click').bind('click',window.asyncClickHandler);
+      }
+
+      window.bindButtonAndForms= function(){
         $('#js-examples').unbind('click').bind('click',window.runExamples);
         $('#js-install').unbind('click').bind('click',window.installpackage);
         $('#js-hideviewer').unbind('click').bind('click',window.hideViewer);
         $('#js-makedefault').unbind('click').bind('click',window.setDefault);
-        $( "form" ).submit(function( event ) {
+        $( "form" ).unbind('submit').bind('submit',function(event) {
             event.preventDefault();
             var action = $("form")[0].action;
             var type = "GET";
             if (typeof $("form")[1] != 'undefined'){
               action = $("form")[1].action;
               type = "POST";
+            }
+            else{
+              window.queryTime=new Date();
             }
             var dataToWrite= $(this).serialize();
             $.ajax({
@@ -50,6 +63,11 @@
               crossDomain:true,
               xhrFields: {
                 withCredentials: true
+              },
+              success: function(data, textStatus, xhr) {
+                if(xhr.status==200){
+                  return data;
+                }                
               }
             }).then(function(html,textData,xhr){
               if(action.indexOf("/login")>-1 && !window.loggedIn){
@@ -63,12 +81,11 @@
               }
             });
         });
-      };
+      }
 
       // Helper function to grab new HTML
       // and replace the content
       window.replacePage = function(url) {
-        console.log("replacing " + url);
         if(url.indexOf('#')>=0){
           url = url.substring(url.indexOf('#'),url.length);
           document.getElementById(url).scrollIntoView();
@@ -80,22 +97,28 @@
           }
           var base = $('base').attr('href');
           if(url.indexOf('?')>-1){
-            url = url + '&viewer_pane=1&Rstudio_XS_Secret=' + urlParam("Rstudio_XS_Secret")+"&Rstudio_port=" + urlParam("Rstudio_port");
+            url = url + '&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           else{
-            url=url+'?viewer_pane=1&Rstudio_XS_Secret=' + urlParam("Rstudio_XS_Secret")+"&Rstudio_port=" + urlParam("Rstudio_port");
+            url=url+'?viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           return $.ajax({
-            url : url,
+            url : base+url,
+            headers: {          
+              Accept: "text/html"
+            },   
+            contentType:"text/html",
             type: 'GET',
-            dataType:'html',
+            dataType:"html",
             cache: false,
             xhrFields: {
               withCredentials: true
             },
-            crossDomain:true
+            crossDomain:true,
+            success: function(data, textStatus, xhr) {
+              rerenderBody(data);
+            }
           })
-          .then(rerenderBody)
           .fail(function(error) {console.log(error.responseJSON) });
         }
 
@@ -209,6 +232,7 @@
       //check the packageversion
       window.packageVersionControl();
       window.bindGlobalClickHandler();
+      window.bindButtonAndForms();
       window.scrollTo(0,0);
     }
   });

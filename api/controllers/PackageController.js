@@ -45,7 +45,7 @@ module.exports = {
       order: [[sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'ASC' ]]
     }).then(function(package) {
       if(package === null) {
-        return res.redirect(302, '/search?q=' + encodeURIComponent(packageName));
+        return res.rstudio_redirect(302, '/search?q=' + encodeURIComponent(packageName));
       } else if(req.wantsJSON) {
         return res.json(package);
       } else {
@@ -59,7 +59,7 @@ module.exports = {
             package.pageTitle = packageInstance.name;
             return res.ok(package, 'package/show.ejs');
           });
-        else return res.redirect(301, package.versions[package.versions.length - 1].uri);
+        else return res.rstudio_redirect(301, package.versions[package.versions.length - 1].uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);
