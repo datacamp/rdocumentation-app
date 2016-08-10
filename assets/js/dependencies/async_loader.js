@@ -1,4 +1,3 @@
-  $.holdReady(true)
   $(function() {
     if(urlParam('viewer_pane') === '1'){
       console.log('*********************** AJAX MODE ***********************');
@@ -33,11 +32,6 @@
         $('#js-install').unbind('click').bind('click',window.installpackage);
         $('#js-hideviewer').unbind('click').bind('click',window.hideViewer);
         $('#js-makedefault').unbind('click').bind('click',window.setDefault);
-        $('#tabs').tabs({
-            'beforeLoad':function(event,ui){
-              window.setTab(event,ui);
-            }
-          });
         $( "form" ).submit(function( event ) {
             event.preventDefault();
             var action = $("form")[0].action;
@@ -75,7 +69,6 @@
       window.replacePage = function(url) {
         console.log("replacing " + url);
         if(url.indexOf('#')>=0){
-          console.log(url);
           url = url.substring(url.indexOf('#'),url.length);
           document.getElementById(url).scrollIntoView();
         }
@@ -217,7 +210,6 @@
       window.scrollTo(0,0);
     }
   });
-$.holdReady(false)
 
 _rStudioRequest=function(url,method,shared_secret,port,params){
   var data={}
