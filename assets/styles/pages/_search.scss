@@ -74,6 +74,16 @@
 #searchtabs .search-result--item-header span a{
   color: #a3a3a3
 } 
+#searchtabs .ui-widget-content a.resultarrow{
+  border-bottom: none;
+  color: black;
+  font-size: 1.5rem;
+}
+.resultarrow{
+  border-bottom: none;
+  color: black;
+  font-size: 1.5rem;
+}
 @media(max-width:1000px){
   .search-result--data{
     display: none
