@@ -563,6 +563,7 @@ module.exports = {
     var perPage = parseInt(req.param('perPage')) || 10;
     var poffset = (ppage - 1) * perPage;
     var foffset = (fpage - 1) * perPage;
+    var current = _.clone(req.query);
     var prevPPage = _.clone(req.query);
     prevPPage.ppage = ppage-1;
     var nextPPage = _.clone(req.query);
@@ -604,6 +605,7 @@ module.exports = {
             topics: topics,
             perPage: perPage,
             params: req.query,
+            current: req.path +'?'+ querystring.stringify(current),
             prevPPage: req.path +'?'+ querystring.stringify(prevPPage),
             prevFPage: req.path +'?'+ querystring.stringify(prevFPage),
             nextPPage: req.path +'?'+ querystring.stringify(nextPPage),
