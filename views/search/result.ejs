@@ -1,7 +1,7 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <div class='search-result'>
   <div class="container">
-    <h3>Search Results:</h3>
+    <h3>Search Results for <%- data.params.q %></h3>
     <hr>
     <div class="row search-result--data">
       <div class="col-md-6">
@@ -58,10 +58,10 @@
       </div>
     </div>
 
-    <div id = "searchtabs" class="search-result--data col-md-8">
+    <div id = "searchtabs" class="search-result--data">
       <ul>
-        <li><a href="<%= data.current %>#packages">Packages</a></li>
-        <li><a href="<%= data.current %>#functions">Functions</h4></li>
+        <li><a href="<%- data.current %>#packages">Packages</a></li>
+        <li><a href="<%- data.current %>#functions">Functions</a></li>
       </ul>
       <div id="packages">
       <% for(var i = 0; i < data.packages.length; i++) { %>
@@ -114,8 +114,6 @@
         </div>
       </div>
     </div>
-
-    
   </div>
 </div>
 

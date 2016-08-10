@@ -587,8 +587,8 @@ module.exports = {
             highlight: hit.highlight
           });
         });
-      return sails.controllers.search.topicsSearch(query,foffset,perPage).then(function(response){
-        response.hits.hits.forEach(function(hit) {
+      return sails.controllers.search.topicsSearch(query,foffset,perPage).then(function(response2){
+        response2.hits.hits.forEach(function(hit) {
         var fields = {};
         var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
           fields.package_name = inner_hits_fields.package_name[0];
@@ -600,7 +600,7 @@ module.exports = {
             highlight: hit.highlight
           });});
           return res.ok({
-            total: numeral(response.hits.total).format('0,0'),
+            total: numeral(response.hits.total+response2.hits.total).format('0,0'),
             packages: packages,
             topics: topics,
             perPage: perPage,
