@@ -7,7 +7,7 @@
   nav {
     height: 100%;
   }
-
+}
   .navbar--title {
     display: table;
     height: 100%;
@@ -49,6 +49,7 @@
         span {
           display: table-cell;
           vertical-align: middle;
+          line-height: 24px;
         }
     }
   }
@@ -71,6 +72,7 @@
         left: ($navbar-search-width - $navbar-search-results-width) / 2.0;
     }
   }
+
   @media (max-width: 950px){
     .navbar--search{
     top: 3px;
@@ -123,4 +125,4 @@
       padding: 0.4rem 0.875rem;
     }
   }
-}
+

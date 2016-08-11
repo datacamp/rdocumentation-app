@@ -54,6 +54,10 @@ module.exports.routes = {
     'post /api/versions': 'PackageVersion.postDescription',
     'get /api/packages/:name/versions/:version/downloads/splitted' : 'PackageVersion.getSplittedDownloadStatistics',
     'get /api/packages/:name/downloads/splitted': 'PackageVersionController.getSplittedDownloadStatistics',
+    'get /api/packages/:name/versions/:version/dependencies': 'PackageVersionController.getDependencyGraph',
+    'get /api/packages/:name/dependencies': 'PackageVersionController.getDependencyGraph',
+    'get /api/packages/:name/versions/:version/reversedependencies': 'PackageVersionController.getReverseDependencyGraph',
+    'get /api/packages/:name/reversedependencies': 'PackageVersionController.getReverseDependencyGraph',
     // HTML
     'get /packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
   //***** /PackageVersion *****
