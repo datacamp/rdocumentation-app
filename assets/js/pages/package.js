@@ -16,11 +16,12 @@ window.graphDownloadStatistics = function() {
   };
 
   nv.addGraph(function() {
-      var chart = nv.models.multiBarChart()
+      window.chart = nv.models.multiBarChart()
         .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
         .rotateLabels(0)      //Angle to rotate x-axis labels.
         .showControls(true)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
         .groupSpacing(0.1)    //Distance between each group of bars.
+        .stacked(true)
         .x(function (d){
           return d.timestamp;
         })
@@ -29,30 +30,37 @@ window.graphDownloadStatistics = function() {
         })
       ;
 
-      chart.xAxis
+      window.chart.xAxis
           .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)); });
 
-      chart.yAxis
+      window.chart.yAxis
           .tickFormat(d3.format(',.1f'));
-
 
       if($('#chart').data('url')) {
         getData($('#chart').data('url'), function(data) {
-          var serie = {
-            key: "Daily downloads",
-            values: data
+          var direct_serie = {
+            key: "Direct downloads",
+            values: data.filter(function(e){
+              return e.key=="direct_downloads";
+            })
+          };
+          var indirect_serie = {
+            key: "Indirect downloads",
+            values: data.filter(function(e){
+              return e.key=="indirect_downloads";
+            })
           };
           $('#chart').show();
           d3.select('#chart svg')
-            .datum([serie])
-            .call(chart);
+            .datum([direct_serie,indirect_serie])
+            .call(window.chart);
         });
-        nv.utils.windowResize(chart.update);
+        nv.utils.windowResize(window.chart.update);
       }
 
 
 
-      return chart;
+      return window.chart;
   });
 
 };
@@ -141,9 +149,51 @@ window.reverseDependencyGraph = function(){
           .call(graph);
       };
     }
+
   });
 
 };
+
+window.redrawChart = function(days){
+  var getData = function(data_url, callback) {
+    return $.get(data_url, callback);
+  };
+  var url = $('#chart').data('url');
+  url = url.substring(0,url.indexOf('/per_day_last_month'));
+  url = url+'/days/'+days+'/per_day'
+  if(days<30){
+    getData(url, function(data) {
+      var direct_serie = {
+        key: "Direct downloads",
+        values: data.filter(function(e){
+          return e.key=="direct_downloads";
+        })
+      };
+      var indirect_serie = {
+        key: "Indirect downloads",
+        values: data.filter(function(e){
+          return e.key=="indirect_downloads";
+        })
+      };
+      chartData = d3.select('#chart svg').datum(data);
+      chartData.datum([direct_serie,indirect_serie]).transition().duration(500).call(window.chart);
+    });
+  }
+  else{
+    getData(url, function(data) {
+      var total_serie = {
+        key: "Total downloads",
+        values: data.filter(function(e){
+          return e.key=="total_downloads";
+        })
+      };
+      chartData = d3.select('#chart svg').datum(data);
+      chartData.datum([total_serie]).transition().duration(500).call(window.chart);
+    });
+  }
+    nv.utils.windowResize(window.chart.update);
+};
+
 
 window.makeSlider = function(){
   $(".slider").click(function(){
