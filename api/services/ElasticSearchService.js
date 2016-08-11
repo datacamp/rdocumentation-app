@@ -36,12 +36,31 @@ module.exports = {
             {
               "range": {
                   "datetime":  {
-                      "gte" : "now-1M/d",
+                      "gte" : "now-1y/d",
                       "lt" :  "now/d"
                   }
               }
             }
           ]
+        }
+      },
+      lastDaysStats:function(day){
+        return {
+          "bool": {
+            "filter": [
+              {
+                  "term": { "_type": "stats" },
+              },
+              {
+                "range": {
+                    "datetime":  {
+                        "gte" : "now-"+day+"d/d",
+                        "lt" :  "now/d"
+                    }
+                }
+              }
+            ]
+          }
         }
       },
       lastMonthDownloads: function(n){
@@ -56,7 +75,7 @@ module.exports = {
             "bool": {
               "filter": [
                 {
-                  "term": { "_type": "stats" }
+                  "term": { "_type": "stats" },
                 },
                 {
                   "range": {
@@ -109,6 +128,25 @@ module.exports = {
       return response.aggregations.download_per_package.buckets;
     });
 
+  },
+  lastDaysPerDay: function(packageName,days) {
+    var lastMonthPackageFilter =  ElasticSearchService.queries.filters.lastDaysStats(days);
+    lastMonthPackageFilter.bool.filter.push({ "term": { "package": packageName } });
+    var body = {
+      "query": lastMonthPackageFilter,
+      "size": 0, // do not retrieve data, we are only interested in aggregation data
+      "aggs" : {
+        last_month_per_day: ElasticSearchService.queries.aggregations.last_month_per_day
+      }
+    };
+
+    return es.search({
+      index: 'stats',
+      requestCache: true, //cache the result,
+      body: body
+    }).then(function(response) {
+      return response.aggregations.last_month_per_day.buckets;
+    });
   },
 
   lastMonthPerDay: function(packageName) {
