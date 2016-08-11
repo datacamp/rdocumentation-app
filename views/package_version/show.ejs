@@ -136,6 +136,11 @@
           <li><a id="tab2" href="<%= path +'#packagereversedependencygraph'%>" class= "js-external js-tab">Reverse dependency graph</a></li>
         </ul>
         <div class='tabs--content' id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
+          <select onchange="window.redrawChart(this.value)">
+            <option value=7>Last week</option>
+            <option selected="selected" value=30>Last month</option>
+            <option value=365>Last year</option>
+          </select>
           <svg></svg>
         </div>
         <div class='tabs--content' id="packagedependencygraph" style="dislay:none" data-url="/api<%= path %>/dependencies">

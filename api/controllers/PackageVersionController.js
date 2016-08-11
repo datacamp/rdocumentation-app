@@ -215,13 +215,19 @@ module.exports = {
 
   getLastMonthDownloadPerDay: function(req, res) {
     var packageName = req.param('name');
-    ElasticSearchService.lastMonthPerDay(packageName).then(function(data) {
+    DownloadStatistic.lastMonthSplittedDownloadsPerDay(packageName).then(function(data) {
       var serie = data.map(function(d) {
-        return {
-          timestamp: d.key,
-          count: d.doc_count
-        };
+        return [{
+          timestamp: d.date,
+          key:"direct_downloads",
+          count: d.direct_downloads,
+        },{
+          timestamp: d.date,
+          key:"indirect_downloads",
+          count:d.indirect_downloads
+        }];
       });
+      serie=[].concat.apply([],serie);
       return res.json(serie);
     });
   },
@@ -326,6 +332,41 @@ module.exports = {
         links: links
       });
     });
+
+  },
+
+  getDownloadPerDayLastDays:function(req,res){
+    var packageName=req.param('name');
+    var days = parseInt(req.param('days'));
+    if(days>30){
+      return ElasticSearchService.lastDaysPerDay(packageName,days).then(function(data){
+        var serie=data.map(function(d){
+          return {
+            timestamp:d.key_as_string,
+            key:"total_downloads",
+            count:d.doc_count
+          };
+        });
+        return res.json(serie);
+      });
+    }
+    else{
+      return DownloadStatistic.lastDaysSplittedDownloadsPerDay(packageName,days).then(function(data){
+        var serie = data.map(function(d) {
+        return [{
+          timestamp: d.date,
+          key:"direct_downloads",
+          count: d.direct_downloads,
+        },{
+          timestamp: d.date,
+          key:"indirect_downloads",
+          count:d.indirect_downloads
+        }];
+      });
+      serie=[].concat.apply([],serie);
+      return res.json(serie);
+      });
+    }
   }
 
 };
