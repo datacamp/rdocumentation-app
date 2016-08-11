@@ -288,7 +288,7 @@ module.exports = {
         nextPageUrl: req.path + '?' + querystring.stringify(nextPageQuery),
         striptags: striptags,
         pageTitle: 'Search Results'
-      }, 'search/result.ejs');
+      }, 'search/keyword_result.ejs');
     });
 
   },
