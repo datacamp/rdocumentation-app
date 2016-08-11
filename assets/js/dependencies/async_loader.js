@@ -98,7 +98,8 @@
             dataType: 'html',
             xhrFields: {
               withCredentials: true
-            }
+            },
+            crossDomain:true
           })
           .then(rerenderBody);
         }
