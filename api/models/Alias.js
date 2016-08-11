@@ -99,6 +99,58 @@ module.exports = {
           })
           return allResults; 
         }).catch(function(err){
+          console.log("error in alias");
+          console.log(err.message);
+        });
+      },
+      orderedFindByAliasAndPackages : function(alias,packageNames) {
+        return Alias.findAll({
+          attributes: ['id',['name','alias']],
+          include:[{
+            model:Topic,
+            as:'topic',
+            attributes:['id','name','description'],
+            include:[{
+              model:PackageVersion,
+              as:'package_version',
+              attributes:['id','package_name'],
+              include:[{
+                model:Package,
+                as:'package_latest',
+                required:true,
+                attributes:['latest_version_id'],
+                include:[{
+                  model:DownloadStatistic,
+                  as:'last_month_stats',
+                  required:true,
+                  attributes:[],
+                  where:{date :{
+                    $gte: new Date(new Date() - 30*24 * 60 * 60 * 1000)
+                  }}
+                }]
+              }],
+              where:{
+                package_name:{
+                  $in : packageNames
+                }
+              }
+            }]
+          }],
+          where:{name:alias},
+          group:['topic.name','topic.package_version.id','topic.id','Alias.id','topic.package_version.package_latest.name'],
+          order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package_latest.last_month_stats.direct_downloads'))]
+        }).then(function(data){
+            allResults = _.map(data,function(record){
+            return {
+              id:record.topic.id,
+              package_name:record.topic.package_version.package_name,
+              function_name:record.topic.name,
+              function_alias: alias,
+              function_description:record.topic.description
+              };
+          })
+          return allResults; 
+        }).catch(function(err){
           console.log(err.message);
         });
       },
@@ -164,6 +216,7 @@ module.exports = {
             return results;
           });
         }).catch(function(err){
+          console.log("error in topic");
           console.log(err.message);
         });
       }

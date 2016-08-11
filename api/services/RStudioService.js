@@ -6,6 +6,9 @@ module.exports = {
 	helpFindByTopicsAndPackages :function(topicNames,packageNames){
 		return Alias.orderedFindByTopicsAndPackages(topicNames,packageNames).then(_processResults);
 	},
+	helpFindByAliasAndPackage : function(alias,packageNames){
+		return Alias.orderedFindByAliasAndPackages(alias,packageNames).then(_processResults);
+	},
 	helpFindByAlias:function(alias){
 		return Alias.orderedFindByAlias(alias).then(_processResults);
 	},
