@@ -164,6 +164,9 @@ module.exports = {
           //multiple results :show options
           return res.ok(json,'rStudio/list_options.ejs');
         }
+      })
+      .catch(function(err){
+        console.log(err.message);
       });
     }
     

@@ -3,8 +3,8 @@ var _ = require('lodash');
 cheerio = require('cheerio');
 
 module.exports = {
-	helpFindByTopicsAndPackages :function(alias,topicNames,packageNames){
-		return Alias.orderedFindByTopicsAndPackages(alias,topicNames,packageNames).then(_processResults);
+	helpFindByTopicsAndPackages :function(topicNames,packageNames){
+		return Alias.orderedFindByTopicsAndPackages(topicNames,packageNames).then(_processResults);
 	},
 	helpFindByAlias:function(alias){
 		return Alias.orderedFindByAlias(alias).then(_processResults);

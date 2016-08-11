@@ -5,6 +5,8 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 _ = require('lodash');
+var Promise = require('bluebird');
+
 module.exports = {
 
   attributes: {
@@ -100,60 +102,67 @@ module.exports = {
           console.log(err.message);
         });
       },
-      orderedFindByTopicsAndPackages:function(alias,topics,packageNames){
-        return Alias.findAll({
-          attributes: ['id',['name','alias']],
+      orderedFindByTopicsAndPackages:function(topics,packageNames){
+        return Topic.findAll({
+          attributes:['id','name','description'],
           include:[{
-            model:Topic,
-            as:'topic',
+            model:PackageVersion,
+            as:'package_version',
             required:true,
-            attributes:['id','name','description'],
+            attributes:['package_name','id'],
             include:[{
-              model:PackageVersion,
-              as:'package_version',
+              model:Package,
+              as:'package_latest',
               required:true,
-              attributes:['package_name','id'],
+              attributes:['latest_version_id'],
               include:[{
-                model:Package,
-                as:'package_latest',
+                model:DownloadStatistic,
+                as:'last_month_stats',
                 required:true,
-                attributes:['latest_version_id'],
-                include:[{
-                  model:DownloadStatistic,
-                  as:'last_month_stats',
-                  required:true,
-                  attributes:[],
-                  where:{date :{
-                    $gte: new Date(new Date() - 30*24 * 60 * 60 * 1000)
-                  }}
-                }],
+                attributes:[],
+                where:{date :{
+                  $gte: new Date(new Date() - 30*24 * 60 * 60 * 1000)
+                }}
               }],
-              where:{
-                package_name:{
-                  $in:packageNames
-                }
-              }
             }],
             where:{
-              name:{
-                $in:topics
+              package_name:{
+                $in:packageNames
               }
             }
           }],
-          where:{name:alias},
-          group:['topic.name','topic.package_version.id','topic.id','Alias.id','topic.package_version.package_latest.name'],
-          order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package_latest.last_month_stats.direct_downloads'))]
+          where:{
+            name:{
+              $in:topics
+            }
+          },
+          group:['name','package_version.id','id','package_version.package_latest.name'],
+          order:[sequelize.fn('SUM', sequelize.col('package_version.package_latest.last_month_stats.direct_downloads'))]
         }).then(function(data){
-            allResults = _.map(data,function(record){
-              return {
-              id:record.topic.id,
-              package_name:record.topic.package_version.package_name,
-              function_name:record.topic.name,
-              function_alias: record.dataValues.alias,
-              function_description:record.topic.description
-              };
+            allResults= _.map(data,function(record){
+              return Alias.findAll({
+                where: {topic_id:record.id}
+              }).then(function(aliases){
+                var all_aliases=""
+                _.map(aliases,function(alias){
+                  all_aliases=all_aliases+alias.name+",";
+                })
+                all_aliases=all_aliases.substring(0,all_aliases.length-1)
+                return {
+                  id:record.id,
+                  package_name:record.package_version.package_name,
+                  function_name:record.name,
+                  function_alias:all_aliases,
+                  function_description:record.description
+                };
+              })
+              .catch(function(err){
+                console.log(err.message);
+              })
           })
-          return allResults; 
+          return Promise.all(allResults).then(function(results){
+            return results;
+          });
         }).catch(function(err){
           console.log(err.message);
         });
