@@ -28,7 +28,7 @@ function reloadPackages(){
       	}
       	if(currentPackage>1){
   			$('.packagepages')
-  				.append("<a class=\'resultarrow left\'><i class=\"fa fa-chevron-left\"></i>Previous Results </a>");
+  				.append("<a class=\'resultarrow left\'><i class=\"fa fa-chevron-left\"></i> Previous Results </a>");
   			$('.packagepages .left').click(function(){
   				currentPackage--;
   				reloadPackages();
@@ -71,7 +71,7 @@ function reloadFunctions(){
       	}
       	if(currentFunction>1){
   			$('.functionpages')
-  				.append("<a class=\'resultarrow left\'><i class=\"fa fa-chevron-left\"></i>Previous Results </a>");
+  				.append("<a class=\'resultarrow left\'><i class=\"fa fa-chevron-left\"></i> Previous Results </a>");
   			$('.functionpages .left').click(function(){
   				currentFunction--;
   				reloadFunctions();
