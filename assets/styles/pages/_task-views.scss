@@ -39,3 +39,26 @@
 .view-item--packages {
   margin-top: 1rem;
 }
+
+.list-group-item{
+  position:relative;
+  display:block;
+  padding:10px 15px;
+  margin-bottom:-1px;
+  background-color:#fff;
+  border:1px solid #ddd
+}
+
+.task-views .row{
+  margin-right: 0;
+}
+
+a.list-group-item{
+  color: #666666;
+}
+
+.list-group{
+  padding-left:0;
+  overflow-y: scroll;
+  height : 80vh;
+}
