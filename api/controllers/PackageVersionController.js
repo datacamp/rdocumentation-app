@@ -99,7 +99,7 @@ module.exports = {
     })
     // The method above will be cached
     .then(function(version){
-      if(version === null) return res.rstudio_redirect(303, '/packages/' + encodeURIComponent(packageName));
+      if(version === null) return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName));
       else {
         version.pageTitle = version.package_name + ' v' + version.version;
         try {

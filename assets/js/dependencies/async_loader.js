@@ -16,6 +16,7 @@
         var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
         //apparently the rule below refires document.ready after replacing, thus the alreadyChecked boolean
         $pageBody.html(body);
+        window.classifyLinks();
         window.bindGlobalClickHandler();
         window.bindButtonAndForms();
         window.searchHandler(jQuery);
@@ -225,8 +226,18 @@
         $(link).show();
         e.preventDefault();
       }
+      window.classifyLinks=function(){
+        var base = $('base').attr('href');
+        $('a:not(.js-external)').map(function(){
+          var link =$(this).attr("href")
+          if(!link.indexOf(base)>-1 && (link.indexOf("www")==0  || link.indexOf("http://")==0 || link.indexOf("https://") == 0)){
+            $(this).addClass("js-external")
+          }
+        });
+      }
       //check the packageversion
       window.packageVersionControl();
+      window.classifyLinks();
       window.bindGlobalClickHandler();
       window.bindButtonAndForms();
       window.scrollTo(0,0);
