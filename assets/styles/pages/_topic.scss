@@ -65,9 +65,21 @@
 
   }
 
-}
+  .powered-by-datacamp {
+    a {
+      margin-left: 5px;
+    }
+  }
 
-.topic--title {
-  margin-top: $default-space;
+  .topic--title {
+    margin-top: $default-space;
+  }
+
+  .dcl-exercise-area{
+    *:before{
+      content : none;
+    }
+  }
+
 }
 
