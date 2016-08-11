@@ -29,29 +29,23 @@
 
 
 .footer--credits--title {
-    display: inline-block;
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+    width: 100%;
 
-    .footer--credits {
-    display: inline-block;
-    position: relative;
+  .footer--credits {
     font-size: $h5-size;
     font-weight: 500;
     margin: 0 0 0 3px;
-    display: block;
     line-height: $navbar-height - 10px;
-}
+  }
 
 }
 
 @media (min-width: 750px) and (max-width: 1180px){
 	.footer--credits--title {
-	position: relative;
-    display: inline-block;
-    float: right;
-    left: initial;
-    transform : initial;
+  	margin:auto;
 	}
 }
