@@ -21,6 +21,7 @@ window.graphDownloadStatistics = function() {
         .rotateLabels(0)      //Angle to rotate x-axis labels.
         .showControls(true)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
         .groupSpacing(0.1)    //Distance between each group of bars.
+        .stacked(true)
         .x(function (d){
           return d.timestamp;
         })
