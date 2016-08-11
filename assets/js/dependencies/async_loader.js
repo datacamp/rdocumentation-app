@@ -9,18 +9,19 @@
         e.preventDefault();
         // Grab the url from the anchor tag
         var url = $(this).attr('href');
-        return window.replacePage(url);
+        return window.replacePage(url,true);
       }
 
-      function rerenderBody(html){
+      function rerenderBody(html,rebind){
         var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
         //apparently the rule below refires document.ready after replacing, thus the alreadyChecked boolean
         $pageBody.html(body);
-        window.classifyLinks();
-        window.bindGlobalClickHandler();
+        if(rebind){
+          window.classifyLinks();
+          window.bindGlobalClickHandler();      
+        }
         window.bindButtonAndForms();
         window.searchHandler(jQuery);
-        window.packageVersionToggleHandler(jQuery);
         window.packageVersionControl();
         window.scrollTo(0,0);
         MathJax.Hub.Queue(["Typeset",MathJax.Hub])
@@ -31,8 +32,7 @@
       rebinding and executing trough ajax requests
       ************************************************************************************************************************************************/
 
-      window.bindGlobalClickHandler = function(){
-        //unbinding seems to fail a lot in the Rstudio browser?!->be sure not to bind twice
+      window.bindGlobalClickHandler = function(){        //unbinding seems to fail a lot in the Rstudio browser?!->be sure not to bind twice
         $('a:not(.js-external)').unbind('click').bind('click', window.asyncClickHandler);
       };
       window.bindSearchPaneClickHandler=function(){
@@ -75,10 +75,10 @@
                 window.loggedIn=true;
                 _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
                   ["write('"+dataToWrite+"', file = paste0(.libPaths()[1],'/Rdocumentation/config/creds.txt')) \n Rdocumentation::login()"])
-                .then(rerenderBody(html));
+                .then(rerenderBody(html,true));
               }
               else{
-                rerenderBody(html);
+                rerenderBody(html,true);
               }
             });
         });
@@ -86,7 +86,7 @@
 
       // Helper function to grab new HTML
       // and replace the content
-      window.replacePage = function(url) {
+      window.replacePage = function(url,rebind) {
         if(url.indexOf('#')>=0){
           url = url.substring(url.indexOf('#'),url.length);
           document.getElementById(url).scrollIntoView();
@@ -113,7 +113,7 @@
             },
             crossDomain:true,
             success: function(data, textStatus, xhr) {
-              rerenderBody(data);
+              rerenderBody(data,rebind);
             }
           })
           .fail(function(error) {console.log(error.responseJSON) });
