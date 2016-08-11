@@ -71,3 +71,8 @@
   margin-top: $default-space;
 }
 
+.dcl-exercise-area{
+  *:before{
+    content : none;
+  }
+}
