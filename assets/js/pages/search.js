@@ -39,7 +39,8 @@ function reloadPackages(){
   		$('.packagepages .right').click(function(){
 			currentPackage++;
 			reloadPackages();
-		});
+		  });
+      $("#packagetotal").html(result.hits+" results");
 	});
 };
 
@@ -83,13 +84,13 @@ function reloadFunctions(){
 			currentFunction++;
 			reloadFunctions();
 		});
+      $("#functiontotal").html(result.hits+" results");
 	});
 };
 
 $(document).ready(function() {
-	reloadPackages();
+	document.getElementById("searchbar").value = document.location.href.split("q=")[1].split("&")[0];
+  reloadPackages();
 	reloadFunctions();
-	$("#packagetab").attr("href",document.location.href+"#packages");
-	$("#functiontab").attr("href",document.location.href+"#functions");
 	$("#searchtabs").tabs();
 });

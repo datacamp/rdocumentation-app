@@ -5,14 +5,18 @@
     <hr>
     <div class="row search-result--data">
       <div class="col-md-6">
-      <h4>Packages</h4>
+      <h4>Packages
+      <span class="search-result--index" id="packagetotal"></span>
+      </h4>
         <div class = "packagedata">
         </div>
         <div class="search-result--pagination packagepages">
         </div>
       </div>
       <div class="col-md-6">
-      <h4>Functions</h4>
+      <h4>Functions
+      <span class="search-result--index" id="functiontotal"></span>
+      </h4>
         <div class = "functiondata">
         </div>
         <div class="search-result--pagination functionpages">
@@ -21,8 +25,8 @@
     </div>
     <div id = "searchtabs" class="search-result--data">
       <ul>
-        <li><a id = "packagetab">Packages</a></li>
-        <li><a id = "functiontab">Functions</a></li>
+        <li><a href="<%- data.current %>#packages" id = "packagetab">Packages</a></li>
+        <li><a href="<%- data.current %>#functions" id = "functiontab">Functions</a></li>
       </ul>
       <div id="packages">
         <div class="packagedata">

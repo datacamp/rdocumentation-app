@@ -428,13 +428,17 @@ module.exports = {
           var fields = {};
           fields.package_name = hit.fields.package_name[0];
           fields.version = hit.fields.version[0];
+          var stripped={};
+          for(highlight in hit.highlight){
+            stripped[highlight] = striptags(hit.highlight[highlight].toString(),'<mark>');
+          }
           packages.push({
             fields: fields,
             score: hit._score,
-            highlight: hit.highlight
+            highlight: stripped
           });
         });
-      return res.ok({packages: packages});
+      return res.ok({packages: packages, hits: numeral(result.hits.total).format('0,0')});
     }).catch(function(err) {
           return res.negotiate(err);
     });
@@ -583,13 +587,17 @@ module.exports = {
           fields.package_name = inner_hits_fields.package_name[0];
           fields.version = inner_hits_fields.version[0];
           fields.name = hit.fields.name[0];
+          var stripped={};
+          for(highlight in hit.highlight){
+            stripped[highlight] = striptags(hit.highlight[highlight].toString(),'<mark>');
+          }
           functions.push({
             fields: fields,
             score: hit._score,
-            highlight: hit.highlight
+            highlight: stripped
           });
         });
-      return res.ok({functions: functions});
+      return res.ok({functions: functions, hits: numeral(result.hits.total).format('0,0')});
     }).catch(function(err) {
           return res.negotiate(err);
     });
@@ -597,7 +605,7 @@ module.exports = {
 
 
   fullSearch: function(req, res) {
-    return res.ok({query: req.param('q')},'search/result.ejs');
+    return res.ok({query: req.param('q'),current: req.path+ '?' +querystring.stringify(req.query)},'search/result.ejs');
   }
 
 };
