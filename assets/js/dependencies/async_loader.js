@@ -104,10 +104,6 @@
           }
           return $.ajax({
             url : base+url,
-            headers: {          
-              Accept: "text/html"
-            },   
-            contentType:"text/html",
             type: 'GET',
             dataType:"html",
             cache: false,

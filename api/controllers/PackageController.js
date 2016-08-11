@@ -46,7 +46,9 @@ module.exports = {
     }).then(function(package) {
       if(package === null) {
         return res.rstudio_redirect(302, '/search?q=' + encodeURIComponent(packageName));
-      } else if(req.wantsJSON) {
+        //there seems to be a problem with redirected requests if text/html is set as contentype for the ajax request, so I just
+        //adapt this so Rstudio still gets the html
+      } else if(req.wantsJSON &&!req.param("viewer_pane")==1) {
         return res.json(package);
       } else {
         if (package.versions.length === 0)
