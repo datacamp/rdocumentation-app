@@ -161,7 +161,7 @@ window.redrawChart = function(days){
   var url = $('#chart').data('url');
   url = url.substring(0,url.indexOf('/per_day_last_month'));
   url = url+'/days/'+days+'/per_day'
-  if(days<30){
+  if(days<31){
     getData(url, function(data) {
       var direct_serie = {
         key: "Direct downloads",
