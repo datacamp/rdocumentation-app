@@ -287,5 +287,8 @@ window.triggerIcon = function(){
         current.find("i").addClass("fa-sort");
       }
     });
-  })
+  });
 };
+
+
+

@@ -1,17 +1,16 @@
 <section class="task-views">
-  <div class="row">
-    <div class="col-md-3">
-      <div id ="sidemenu">
-        <div class = "list-group">
-          <% for(var i = 0; i<data.length;i++){ %>
-            <a href="#" class = "list-group-item"><%- data[i].name %></a>
-          <% } %>
-        </div>
+    <div id ="sidemenu">
+      <div class = "list-group-item" id ="listtitle">
+        <h4>Task View</h4>
+      </div>
+      <div class = "list-group">
+        <% for(var i = 0; i<data.length;i++){ %>
+          <a class = "list-group-item"><%- data[i].name %></a>
+        <% } %>
       </div>
     </div>
-    <div class="col-md-9 view">
+    <div class="view">
       
     </div>
-  </div>
 </section>
 

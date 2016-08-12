@@ -50,7 +50,7 @@ $(document).ready(function() {
         // set type, either numeric or text
         type: 'numeric'
     });
-    $("table").tablesorter({
+    $("table.packagetable").tablesorter({
           headers: {
               2: {
                   sorter:'rating'
@@ -73,6 +73,7 @@ $(document).ready(function() {
             return $(node).text();
           }
     });
+    window.triggerIcon();
   });
   bindUpvoteButton();
   window.bootTopic();
