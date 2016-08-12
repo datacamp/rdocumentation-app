@@ -119,6 +119,7 @@ module.exports.routes = {
   'get /help/*':'RstudioController.redirect',
 
   //Badges
+  'get /badges/version/:packageName':'BadgeController.getLatestVersion',
   'get /badges/:downloadsKind/:packageName' :'BadgeController.getDownloadStatsBadge',
   'get /badges/:downloadsKind/:period/:packageName' :'BadgeController.getDownloadStatsPeriodBadge',
 

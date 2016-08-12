@@ -62,17 +62,19 @@ module.exports = {
       findLastIndexedDay: function() {
         return DownloadStatistic.max('date');
       },
-      totalStatsNDaysAgo:function(last_day,nb_days,package_name) {
-        console.log(last_day);
-        console.log(nb_days);
-        console.log(package_name);
-        return DownloadStatistic.sum("direct_downloads",{
+      AllStatsNDaysAgo:function(last_day,nb_days,package_name) {
+        return DownloadStatistic.findAll({
+          attributes:[[sequelize.fn('SUM', sequelize.col('direct_downloads')),"sum_direct"],[sequelize.fn('SUM', sequelize.col('indirect_downloads')),"sum_indirect"]],
           where:{
             package_name:package_name,
             date:{
               $gte:new Date(new Date(last_day)-nb_days*24*60*60*1000)
             }
           },
+          group:["package_name"]
+        }).then(function(stats){
+          if(stats.length==0) return null;
+          return stats[0].dataValues
         })
       },
       lastMonthSplittedDownloadsPerDay:function(package_name){
