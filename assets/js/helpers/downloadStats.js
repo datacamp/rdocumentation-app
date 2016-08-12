@@ -1,3 +1,18 @@
+window.getPercentiles = function() {
+  $('.percentile-task').each(function(elem) {
+    var $self = $(this);
+    var url = $self.data('url');
+    $.get(url, function(data){
+      if(data.percentile != null){
+      $self.find(".percentile").text(''+ data.percentile + 'th');
+      $('.percentile-task').css({'visibility': 'visible'});
+    } else{
+      $('.percentile-task').css({'display': 'none'});
+    }
+    });
+  });
+};
+
 $(document).ready(function() {
 
   $('.download-task').each(function(elem) {
@@ -12,20 +27,7 @@ $(document).ready(function() {
     });
   });
 
-
-  $('.percentile-task').each(function(elem) {
-    var $self = $(this);
-    var url = $self.data('url');
-    $.get(url, function(data){
-      if(data.percentile != null){
-      $self.find(".percentile").text(''+ data.percentile + 'th');
-      $('.percentile-task').css({'visibility': 'visible'});
-    } else{
-      $('.percentile-task').css({'display': 'none'});
-    }
-    });
-  });
-
+  window.getPercentiles();
   $('.js-rating-download').each(function(elem) {
     var $self = $(this);
     var url = $self.data('url');

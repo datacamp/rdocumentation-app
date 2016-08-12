@@ -1,25 +1,17 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <div class='search-result'>
-  <div class="container">
+  <div class="container-fluid">
     <h3>Search Results for <%- data.query %></h3>
     <hr>
     <div class="row search-result--data">
       <div class="col-md-6">
-      <h4>Packages
-      <span class="search-result--index" id="packagetotal"></span>
-      </h4>
+
         <div class = "packagedata">
         </div>
-        <div class="search-result--pagination packagepages">
-        </div>
+
       </div>
       <div class="col-md-6">
-      <h4>Functions
-      <span class="search-result--index" id="functiontotal"></span>
-      </h4>
         <div class = "functiondata">
-        </div>
-        <div class="search-result--pagination functionpages">
         </div>
       </div>
     </div>
@@ -31,13 +23,9 @@
       <div id="packages">
         <div class="packagedata">
         </div>
-        <div class="search-result--pagination packagepages">
-        </div>
       </div>
       <div id="functions">
         <div class = "functiondata">
-        </div>
-        <div class="search-result--pagination functionpages">
         </div>
       </div>
     </div>

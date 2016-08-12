@@ -298,101 +298,84 @@ module.exports = {
     var page = parseInt(req.param('page')) || 1;
     var perPage = parseInt(req.param('perPage')) || 10;
     var offset = (page - 1) * perPage;
-    var searchTopicQuery = {
-      multi_match: {
-        query: query,
-        type: "best_fields",
-        boost: 0.7,
-        fields: [
-          'aliases^6',
-          'name^2',
-          'title^2', 'description', 'keywords^2',
-          'arguments.name', 'arguments.description',
-          'details', 'value',
-          'note', 'author']
-      }
-    };
+
     return es.search({
       index: 'rdoc',
       body: {
         query: {
-          bool : {
-            should : [
+          bool: {
+            filter:[
               {
-                bool: {
-                  filter:[
-                    {
-                      type : {
-                        value : "package_version"
-                      }
-                    },
-                    { term: { latest_version: 1 } }
-                  ],
-                  should:[
-                    {
-                      multi_match: {
-                        query: query,
-                        type: "best_fields",
-                        fields: ['package_name^6', 'title^4', 'maintainer.name^4', 'collaborators.name^3', 'description^3', 'license', 'url', 'copyright']
-                      },
-                    },
-                    {
-                      "has_parent" : {
-                        "query" : {
-                          "function_score" : {
-                            "functions": [
-                              {
-                                "filter": { "missing" : { "field" : "part_of_r" } },
-                                "field_value_factor": {
-                                  "field":    "last_month_downloads",
-                                  "modifier": "log1p"
-                                }
-                              },
-                              {
-                                "filter": { "term" : { "part_of_r" : 0 } },
-                                "field_value_factor": {
-                                  "field":    "last_month_downloads",
-                                  "modifier": "log1p"
-                                }
-                              },
-                              {
-                                "filter": {  "term" : { "part_of_r" : 1 } },
-                                "field_value_factor": {
-                                  "field":    "part_of_r",
-                                  "modifier": "log1p",
-                                  "factor": 300000,
-                                }
-                              }
-                            ],
-                            "boost_mode": "replace"
+                type : {
+                  value : "package_version"
+                }
+              },
+              { term: { latest_version: 1 } }
+            ],
+            should:[
+              {
+                multi_match: {
+                  query: query,
+                  type: "best_fields",
+                  fields: ['package_name^6', 'title^4', 'maintainer.name^4', 'collaborators.name^3', 'description^3', 'license', 'url', 'copyright']
+                },
+              },
+              {
+                "has_parent" : {
+                  "query" : {
+                    "function_score" : {
+                      "functions": [
+                        {
+                          "filter": { "missing" : { "field" : "part_of_r" } },
+                          "field_value_factor": {
+                            "field":    "last_month_downloads",
+                            "modifier": "log1p"
                           }
                         },
-
-                        "parent_type" : "package",
-                        "score_mode" : "score"
-                      }
+                        {
+                          "filter": { "term" : { "part_of_r" : 0 } },
+                          "field_value_factor": {
+                            "field":    "last_month_downloads",
+                            "modifier": "log1p"
+                          }
+                        },
+                        {
+                          "filter": {  "term" : { "part_of_r" : 1 } },
+                          "field_value_factor": {
+                            "field":    "part_of_r",
+                            "modifier": "log1p",
+                            "factor": 300000,
+                          }
+                        }
+                      ],
+                      "boost_mode": "replace"
                     }
-                  ],
-                  minimum_should_match : 1,
+                  },
+
+                  "parent_type" : "package",
+                  "score_mode" : "score"
                 }
-              }],
+              }
+            ],
             minimum_should_match : 1,
           }
         },
         highlight : {
           pre_tags : ["<mark>"],
           post_tags : ["</mark>"],
+          "require_field_match": false,
           "fields" : {
             "title" : {highlight_query: {
                match : {
                   title : query
               }
             }},
-            "description": {highlight_query: {
-               match : {
-                  description : query
+            "description": {
+              "number_of_fragments" : 0,
+              highlight_query: {
+                match: { description: query }
               }
-            }},
+            },
             "collaborators.name": {highlight_query: {
                match : {
                   "collaborators.name" : query
@@ -402,45 +385,39 @@ module.exports = {
                match : {
                   "maintainer.name" : query
               }
-            }},
-            "name": {highlight_query: searchTopicQuery},
-            "keywords": {highlight_query: searchTopicQuery},
-            "aliases": {highlight_query: searchTopicQuery},
-            "arguments.name": {highlight_query: searchTopicQuery},
-            "arguments.description": {highlight_query: searchTopicQuery},
-            "details": {highlight_query: searchTopicQuery},
-            "value": {highlight_query: searchTopicQuery},
-            "note": {highlight_query: searchTopicQuery},
-            "author": {highlight_query: searchTopicQuery},
-            "references": {highlight_query: searchTopicQuery},
-            "license": {highlight_query: searchTopicQuery},
-            "url": {highlight_query: searchTopicQuery},
-            "copyright": {highlight_query: searchTopicQuery}
+            }}
           }
         },
         from: offset,
         size: perPage,
-        fields: ['package_name', 'version', 'name']
+        fields: ['package_name', 'version', 'description', 'maintainer.name']
       }
     }).then(function(result){
       var packages  = [];
       result.hits.hits.forEach(function(hit) {
+        console.log(hit);
           var fields = {};
           fields.package_name = hit.fields.package_name[0];
           fields.version = hit.fields.version[0];
-          var stripped={};
-          for(highlight in hit.highlight){
-            stripped[highlight] = striptags(hit.highlight[highlight].toString(),'<mark>');
-          }
+          fields.maintainer = hit.fields['maintainer.name'];
+          var highlights = _.mapValues(hit.highlight, function(highlight) {
+            return striptags(highlight.toString(),'<mark>');
+          });
+
+          var description = highlights.description || hit.fields.description[0];
+
+          highlights = _.omit(highlights, 'description');
+
           packages.push({
+            description: description,
             fields: fields,
             score: hit._score,
-            highlight: stripped
+            highlight: highlights
           });
         });
-      return res.ok({packages: packages, hits: numeral(result.hits.total).format('0,0')});
+      return res.view('search/package_results.ejs', { data: {packages: packages, hits: numeral(result.hits.total).format('0,0')}, layout:null});
     }).catch(function(err) {
-          return res.negotiate(err);
+      return res.negotiate(err);
     });
   },
 
@@ -526,7 +503,7 @@ module.exports = {
                             }
                           }
                         },
-                        inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
+                        inner_hits : { fields: ['package_name', 'version', 'latest_version', 'maintainer.name'] }
                       }
                     }
                   ],
@@ -540,55 +517,34 @@ module.exports = {
           pre_tags : ["<mark>"],
           post_tags : ["</mark>"],
           "fields" : {
-            "title" : {highlight_query: {
-               match : {
-                  title : query
-              }
-            }},
-            "description": {highlight_query: {
-               match : {
-                  description : query
-              }
-            }},
-            "collaborators.name": {highlight_query: {
-               match : {
-                  "collaborators.name" : query
-              }
-            }},
-            "maintainer.name": {highlight_query: {
-               match : {
-                  "maintainer.name" : query
-              }
-            }},
-            "name": {highlight_query: searchTopicQuery},
+            "note": {highlight_query: searchTopicQuery},
             "keywords": {highlight_query: searchTopicQuery},
             "aliases": {highlight_query: searchTopicQuery},
-            "arguments.name": {highlight_query: searchTopicQuery},
-            "arguments.description": {highlight_query: searchTopicQuery},
-            "details": {highlight_query: searchTopicQuery},
-            "value": {highlight_query: searchTopicQuery},
-            "note": {highlight_query: searchTopicQuery},
             "author": {highlight_query: searchTopicQuery},
             "references": {highlight_query: searchTopicQuery},
-            "license": {highlight_query: searchTopicQuery},
-            "url": {highlight_query: searchTopicQuery},
-            "copyright": {highlight_query: searchTopicQuery}
+            "value": {highlight_query: searchTopicQuery},
+            "details": {highlight_query: searchTopicQuery},
+            "description": {highlight_query: searchTopicQuery},
+            "title" : {highlight_query: searchTopicQuery},
+            "name": {highlight_query: searchTopicQuery},
           }
         },
         from: offset,
         size: perPage,
-        fields: ['package_name', 'version', 'name']
+        fields: ['package_name', 'version', 'name', 'maintainer.name']
       }
     }).then(function(result){
       var functions  = [];
       result.hits.hits.forEach(function(hit) {
           var fields = {};
           var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
+          console.log(inner_hits_fields);
           fields.package_name = inner_hits_fields.package_name[0];
           fields.version = inner_hits_fields.version[0];
           fields.name = hit.fields.name[0];
+          fields.maintainer = inner_hits_fields['maintainer.name'][0];
           var stripped={};
-          for(highlight in hit.highlight){
+          for(var highlight in hit.highlight){
             stripped[highlight] = striptags(hit.highlight[highlight].toString(),'<mark>');
           }
           functions.push({
@@ -597,9 +553,9 @@ module.exports = {
             highlight: stripped
           });
         });
-      return res.ok({functions: functions, hits: numeral(result.hits.total).format('0,0')});
+      return res.view('search/function_results.ejs', {data: {functions: functions, hits: numeral(result.hits.total).format('0,0')}, layout: null});
     }).catch(function(err) {
-          return res.negotiate(err);
+        return res.negotiate(err);
     });
   },
 
