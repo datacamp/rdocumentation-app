@@ -51,11 +51,12 @@
           format: function(s) {
               // format your data for normalization
               return parseFloat(s);
+
           },
           // set type, either numeric or text
           type: 'numeric'
       });
-      $("table").tablesorter({
+      $("table.packagetable").tablesorter({
             headers: {
                 2: {
                     sorter:'rating'
@@ -82,5 +83,6 @@
     bindUpvoteButton();
     window.bindFade();
     window.bootTopic();
+    window.triggerIcon();
   });
 })($jq);

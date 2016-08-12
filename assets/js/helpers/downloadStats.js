@@ -17,6 +17,7 @@
   $(document).ready(function() {
 
     window.getPercentiles();
+    window.downloadTask();
     $('.js-rating-download').each(function(elem) {
       var $self = $(this);
       var url = $self.data('url');
@@ -36,4 +37,25 @@
     });
 
   });
+
+  window.downloadTask = function(){
+    $('.download-task').each(function(elem) {
+      var $self = $(this);
+      var url = $self.data('url');
+      $.get(url, function(data){
+        $self.find(".total").text(data.totalStr);
+        $self.find(".deps").text(data.indirectDownloadsStr);
+        $self.find(".indeps").text(data.directDownloadsStr);
+        $(".fa-info-circle").attr("title","Monthly downloads are direct downloads. The package also had " + data.indirectDownloadsStr + " dependent downloads for a total of " + data.totalStr +".");
+        $(".fa-info-circle").tooltip({
+          placement: 'bottom'
+        });
+        $('.downloads').css({'visibility': 'visible'});
+      });
+    });
+  };
+
 })($jq);
+
+
+
