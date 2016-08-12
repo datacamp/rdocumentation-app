@@ -207,7 +207,7 @@ $(document).ready(function() {
       // set type, either numeric or text
       type: 'numeric'
   });
-  $("table").tablesorter({
+  $("table.packagetable").tablesorter({
         headers: {
             2: {
                 sorter:'rating'
