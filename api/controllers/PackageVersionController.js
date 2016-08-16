@@ -254,6 +254,26 @@ module.exports = {
     });
   },
 
+  getBiocPerMonthLastYears: function(req, res) {
+    var packageName = req.param('name');
+    var years = req.param('years');
+    BiocDownloadStatistics.lastYearsSplittedDownloadsPerMonth(packageName,years).then(function(data) {
+      var serie = data.map(function(d) {
+        return [{
+          timestamp: d.date,
+          key:"distinct ip's",
+          count: d.distinct_ips,
+        },{
+          timestamp: d.date,
+          key:"downloads",
+          count:d.downloads-d.distinct_ips
+        }];
+      });
+      serie=[].concat.apply([],serie);
+      return res.json(serie);
+    });
+  },
+
   getDependencyGraph: function(req,res) {
     var packageName = req.param('name');
     var nodes = [packageName];

@@ -51,7 +51,19 @@ module.exports = {
         type: 'UNIQUE',
         fields: ['package_name', 'date' ]
       }
-    ]
+    ],
+    classMethods:{
+      lastYearsSplittedDownloadsPerMonth:function(package_name,years){
+        return BiocDownloadStatistics.findAll({
+          where:{
+            package_name:package_name,
+            date:{
+              $gte:new Date(new Date()-years*365*24*60*60*1000)
+            }
+          },
+        });
+      }
+    }
   }
 };
 
