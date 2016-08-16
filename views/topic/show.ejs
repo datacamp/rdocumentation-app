@@ -98,7 +98,7 @@
     <% if(topic.examples) { %>
       <section>
         <h5 class="topic--title">Examples</h5>
-        <pre><code class="R"><%- topic.examples %></code></pre>
+        <pre><code class="nohighlight R exampleR" data-package-name = <%- topic.package_version.package_name %>><%- topic.examples %></code></pre>
       </section>
       <% if(inViewerPane){ %>
         <section>

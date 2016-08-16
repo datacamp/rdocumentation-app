@@ -1,7 +1,6 @@
 <ul class="navbar--navigation">
   <% if(typeof(user) === 'undefined') { %>
-    <li><a href="/register" class="link">Create account</a></li>
-    <li><a href="/login" class="link">Sign in</a></li>
+    <li><a href="/login" class="btn btn-primary">Sign in</a></li>
   <% } else { %>
     <li><a href="/users/me" class="link"><%= user.username %></a></li>
     <li><a href="/logout" class="link">Log out</a></li>

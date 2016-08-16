@@ -44,7 +44,10 @@ window.searchHandler = function() {
   }
 
   function showSearchResults(){
-    if(!searchResultsPane.is(":visible")) {
+    //window.queryTime is to ensure that the searchResultsPane does not appear in the full search results in Rstudio due to late execution.
+    //(this is because Rstudio executes javascript about a thousand times slower than chrome)
+    //thus quicksearch will be disabled for one second after the full search
+    if(!searchResultsPane.is(":visible") && (typeof window.queryTime=="undefined"|| (new Date()).getTime()>window.queryTime.getTime()+1000)) {
       searchResultsPane.show();
       $('body').append(searchResultsPane.detach());
       var eOffset = searchContainer.offset();
@@ -81,8 +84,8 @@ window.searchHandler = function() {
       object += '</ul>';
     }
     searchResultsPane.html(object);
-    if(window.bindGlobalClickHandler){
-      window.bindGlobalClickHandler();
+    if(window.bindSearchPaneClickHandler){
+      window.bindSearchPaneClickHandler();
     }    
   }
 
@@ -121,7 +124,6 @@ window.searchHandler = function() {
         }
     }
   });
-
   searchInput.bind('keydown', function(e) {
     // DOWN array (only works with keydown and not keypress)
     if(e.keyCode==13 && $("li a.hover").length>0){
