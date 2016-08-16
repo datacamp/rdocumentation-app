@@ -63,20 +63,19 @@ function updateHistory(newFunctionPage, newPackagePage) {
    history.pushState({packagePage: newPackagePage, functionPage: newFunctionPage}, jQuery(document).find('title').text(), url);
 }
 
-$(document).ready(function() {
-  var currentPage = parseInt(urlParam("page")) || 1;
-  var currentPackagePage = parseInt(urlParam("packagePage")) || currentPage;
-  var currentFunctionPage = parseInt(urlParam("functionPage")) || currentPage;
-	document.getElementById("searchbar").value = urlParam('q');
-  reloadPackages(currentFunctionPage, currentPackagePage);
-	reloadFunctions(currentFunctionPage, currentPackagePage);
-	$("#searchtabs").tabs();
-});
-
-window.onpopstate = function(event) {
-  console.log(event.state);
-  reloadPackages(event.state.functionPage, event.state.packagePage);
-  reloadFunctions(event.state.functionPage, event.state.packagePage);
+window.launchFullSearch = function() {
+  if(getPath() === 'search') {
+    var currentPage = parseInt(urlParam("page")) || 1;
+    var currentPackagePage = parseInt(urlParam("packagePage")) || currentPage;
+    var currentFunctionPage = parseInt(urlParam("functionPage")) || currentPage;
+    $("#searchbar").val(urlParam('q'));
+    reloadPackages(currentFunctionPage, currentPackagePage);
+    reloadFunctions(currentFunctionPage, currentPackagePage);
+    $("#searchtabs").tabs();
+    window.onpopstate = function(event) {
+      reloadPackages(event.state.functionPage, event.state.packagePage);
+      reloadFunctions(event.state.functionPage, event.state.packagePage);
+    };
+  }
 };
-
 
