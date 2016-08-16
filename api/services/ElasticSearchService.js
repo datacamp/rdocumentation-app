@@ -25,7 +25,7 @@ module.exports = {
               "interval" : "day"
           }
       },
-       lastWeekTrends: function(n){
+       lastMonthTrends: function(n){
         return {
             "query": {
               "filtered": {
@@ -49,7 +49,7 @@ module.exports = {
                       {
                         "range": {
                           "datetime": {
-                            "gte": "now-"+(7+n)+"d/d",
+                            "gte": "now-"+(30+n)+"d/d",
                             "lte": "now-"+(1+n)+"d/d"
                           }
                         }
@@ -67,7 +67,7 @@ module.exports = {
                   "interval": "1d",
                   "min_doc_count": 1,
                   "extended_bounds": {
-                    "min": "now-"+(7+n)+"d/d",
+                    "min": "now-"+(30+n)+"d/d",
                     "max": "now-"+(1+n)+"d/d"
                   }
                 },
@@ -124,7 +124,47 @@ module.exports = {
               }
             }
           }
+        },
+      lastMonthMostDownloaded: {
+        "query": {
+          "filtered": {
+            "query": {
+              "query_string": {
+                "query": "*",
+                "analyze_wildcard": true
+              }
+            },
+            "filter": {
+              "bool": {
+                "must": [
+                  {
+                    "range": {
+                      "datetime": {
+                        "gte": "now-1M",
+                        "lte": "now",
+                        "format": "epoch_millis"
+                      }
+                    }
+                  }
+                ],
+                "must_not": []
+              }
+            }
+          }
+        },
+        "size": 0,
+        "aggs": {
+          "package": {
+            "terms": {
+              "field": "package",
+              "size": 10,
+              "order": {
+                "_count": "desc"
+              }
+            }
+          }
         }
+      }
     },
     filters: {
       lastMonthStats: {
@@ -191,6 +231,16 @@ module.exports = {
         };
       }
     }
+  },
+
+  lastMonthMostDownloaded: function() {
+    var body = ElasticSearchService.queries.aggregations.lastMonthMostDownloaded;    
+    return es.search({
+      index: 'stats',
+      body: body
+    }).then(function(result){
+      return result.aggregations.package.buckets;
+    });
   },
 
   lastMonthPercentiles: function() {
@@ -268,7 +318,7 @@ module.exports = {
     });
   },
 
-  lastWeekPerDayTrending: function() {
+  lastMonthPerDayTrending: function() {
     var query = {
       "query": ElasticSearchService.queries.filters.lastDaysStats(1),
       size: 0
@@ -279,10 +329,10 @@ module.exports = {
     }).then(function(lastDay){
       var body;
       if(lastDay.hits.total ==0){
-        body = ElasticSearchService.queries.aggregations.lastWeekTrends(1);
+        body = ElasticSearchService.queries.aggregations.lastMonthTrends(1);
       }
       else{
-        body = ElasticSearchService.queries.aggregations.lastWeekTrends(0);
+        body = ElasticSearchService.queries.aggregations.lastMonthTrends(0);
       }
       return es.search({
         body: body

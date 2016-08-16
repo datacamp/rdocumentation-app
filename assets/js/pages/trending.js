@@ -90,7 +90,7 @@ dependencyGraph = function(){
             var chart = nv.models.forceDirectedGraph()
                 .width(width)
                 .height(height)
-                .margin({top: 20, right: 20, bottom: 20, left: 20})
+                .margin({top: 60, right: 150, bottom: 60, left: 60})
                 .color(function(d) { return d3Colors(d.group) })
                 .nodeExtras(function(node) {
                   node
@@ -127,8 +127,58 @@ dependencyGraph = function(){
     });
 }
 
+top10Downloads = function(){
+  $this1 = $("#top10downloads");
+  $.get($this1.data('url'),function(data){
+    data.results.forEach(function(piece,i){
+      var j = i+1;
+      $this1.find(".data").append("<tr><td>"+j+". <a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a></tr></td>");
+    });
+    $this1.show();
+  });
+}
+
+top10Maintainers = function(){
+  $this2 = $("#top10maintainers");
+  $.get($this2.data('url'),function(data){
+    data.results.forEach(function(piece,i){
+      var j = i+1;
+      $this2.find(".data").append("<tr><td>"+j+". <a href='/collaborators/name/"+piece.name+"'>"+piece.name+"</a></tr></td>");
+    });
+    $this2.show();
+  });
+}
+
+top10new = function(){
+  $this3 = $("#top10new");
+  $.get($this3.data('url'),function(data){
+    data.newArrivals.forEach(function(piece){
+      var release = new Date(piece.rel);
+      $this3.find(".data").append("<tr><td><a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a><p class='info'>"+release.toDateString()+"</p></tr></td>");
+    });
+    $this3.show();
+  });
+}
+
+top10renewed = function(){
+  $this4 = $("#top10renew");
+  $.get($this4.data('url'),function(data){
+    data.newVersions.forEach(function(piece){
+      var release = new Date(piece.rel);
+      $this4.find(".data").append("<tr><td><a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a><p class='info'>"+release.toDateString()+"</p></tr></td>");
+    });
+    $this4.show();
+  });
+}
+
+
+
 $(document).ready(function(){
-	trendingPackagesLastWeek();
+	top10Downloads();
+  top10renewed();
+  top10new();
+  top10Maintainers();
+  trendingPackagesLastWeek();
 	trendingKeywords();
 	dependencyGraph();
 });

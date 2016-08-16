@@ -104,6 +104,12 @@ module.exports = {
         var query = "DELETE o FROM Collaborators o LEFT JOIN Collaborations co ON o.id = co.author_id LEFT JOIN PackageVersions p ON p.maintainer_id = o.id WHERE co.author_id IS NULL AND p.maintainer_id IS NULL;";
 
         return sequelize.query(query, {type: sequelize.QueryTypes.DELETE});
+      },
+
+      topCollaborators: function(){
+        var query = "SELECT coll.name, Sum(direct_downloads) as total From Collaborators coll, PackageVersions pack, DownloadStatistics downloads Where pack.package_name=downloads.package_name "+
+          "and pack.release_date = (SELECT Max(release_date) From PackageVersions where package_name=pack.package_name) and coll.id=pack.maintainer_id group by maintainer_id order by total desc limit 0,10";
+        return sequelize.query(query, {type: sequelize.QueryTypes.SELECT});
       }
 
     }

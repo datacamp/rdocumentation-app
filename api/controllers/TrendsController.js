@@ -4,7 +4,7 @@ var _ = require('lodash');
 module.exports = {
 
 	mostDownloaded: function (req,res){
-		ElasticSearchService.lastWeekPerDayTrending().then(function(data){
+		ElasticSearchService.lastMonthPerDayTrending().then(function(data){
 			var dict = {};
 	      	var days = [];
 	        data.forEach(function(day,i){
@@ -66,7 +66,7 @@ module.exports = {
 				var deps  = [];
 				var promises = [];
 				var nodelist =[];
-				results[0].forEach(
+				results.forEach(
 					function(result,i){
 						nodes.push(result["package_name"]);
 						nodelist.push({
@@ -99,5 +99,33 @@ module.exports = {
 				
 			}
 			);
+	},
+	newPackages: function(req,res){
+		PackageVersion.getNewestPackages().then(function(results){
+			return res.json({
+				newArrivals: results
+			});
+		});
+	},
+	newVersions: function(req,res){
+		PackageVersion.getLatestUpdates().then(function(results){
+			return res.json({
+				newVersions: results
+			});
+		});
+	},
+	lastMonthMostDownloaded: function(req,res){
+		DownloadStatistic.getMostPopular().then(function(results){
+			return res.json({
+				results: results
+			});
+		});
+	},
+	topCollaborators: function(req,res){
+		Collaborator.topCollaborators().then(function(result){
+			return res.json({
+				results: result
+			});
+		});
 	}
-	}
+}
