@@ -23,9 +23,8 @@
 
   var urlParams="";
   if(req.param("viewer_pane")==1){
-	urlParams='?viewer_pane=1&Rstudio_port='+req.param('Rstudio_port')+"&RS_SHARED_SECRET="+req.param('RS_SHARED_SECRET');
+	urlParams='?viewer_pane=1&Rstudio_port='+encodeURIComponent(req.param('Rstudio_port'))+"&RS_SHARED_SECRET="+encodeURIComponent(req.param('RS_SHARED_SECRET'));
   }
-
-  sails.log.silly('res.restudio_redirect() :: Sending 303 (redirect) response');
-  res.redirect(code,uri+urlParams);
+  sails.log.silly('res.restudio_redirect() :: Sending '+code+ ' (redirect) response');
+  res.redirect(code,uri+urlParams);	
 };
