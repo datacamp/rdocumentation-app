@@ -1,7 +1,11 @@
 function reloadPackages(currentFunctionPage, currentPackagePage){
   $('html, body').animate({ scrollTop: 0 }, 'slow');
 	$.ajax({
-		url: "/search_packages?"+window.location.href.slice(window.location.href.indexOf('?') + 1)+ "&page=" + currentPackagePage,
+		url: "/search_packages?q="+urlParam('q') + "&page=" + currentPackagePage,
+    crossDomain:true,
+    xhrFields: {
+      withCredentials: true
+    }
 	}).done(function(result){
     $('.packagedata').html(result);
     window.getPercentiles();
@@ -12,8 +16,11 @@ function reloadPackages(currentFunctionPage, currentPackagePage){
 function reloadFunctions(currentFunctionPage, currentPackagePage){
   $('html, body').animate({ scrollTop: 0 }, 'slow');
 	$.ajax({
-		url: "/api/searchfunctions?"+window.location.href.slice(window.location.href.indexOf('?') + 1)+ "&page=" + currentFunctionPage,
-  		context: document.body
+		url: "/search_functions?q="+ urlParam('q') + "&page=" + currentFunctionPage,
+  	crossDomain:true,
+    xhrFields: {
+      withCredentials: true
+    }
 	}).done(function(result){
 		$('.functiondata').html(result);
     rebind(currentFunctionPage, currentPackagePage);
@@ -64,14 +71,14 @@ function updateHistory(newFunctionPage, newPackagePage) {
 }
 
 window.launchFullSearch = function() {
-  if(getPath() === 'search') {
+  if(getCurrentPath().startsWith('search')) { // check if we're on the right page
     var currentPage = parseInt(urlParam("page")) || 1;
     var currentPackagePage = parseInt(urlParam("packagePage")) || currentPage;
     var currentFunctionPage = parseInt(urlParam("functionPage")) || currentPage;
     $("#searchbar").val(urlParam('q'));
+    window.activateTabs("#searchtabs");
     reloadPackages(currentFunctionPage, currentPackagePage);
     reloadFunctions(currentFunctionPage, currentPackagePage);
-    $("#searchtabs").tabs();
     window.onpopstate = function(event) {
       reloadPackages(event.state.functionPage, event.state.packagePage);
       reloadFunctions(event.state.functionPage, event.state.packagePage);

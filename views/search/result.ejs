@@ -2,7 +2,6 @@
 <div class='search-result'>
   <div class="container-fluid">
     <h3>Search Results for <%- data.query %></h3>
-    <hr>
     <div class="row search-result--data">
       <div class="col-md-6">
 
@@ -15,10 +14,11 @@
         </div>
       </div>
     </div>
+
     <div id = "searchtabs" class="search-result--data">
       <ul>
-        <li><a href="<%- data.current %>#packages" id = "packagetab">Packages</a></li>
-        <li><a href="<%- data.current %>#functions" id = "functiontab">Functions</a></li>
+        <li><a href="#packages" id = "packagetab" class="js-external js-tabs">Packages</a></li>
+        <li><a href="#functions" id = "functiontab" class="js-external js-tabs">Functions</a></li>
       </ul>
       <div id="packages">
         <div class="packagedata">
@@ -29,6 +29,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 

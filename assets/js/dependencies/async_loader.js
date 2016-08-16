@@ -10,23 +10,25 @@
         // Grab the url from the anchor tag
         var url = $(this).attr('href');
         return window.replacePage(url,true);
-      }
+      };
 
-      function rerenderBody(html,rebind){
+      var rerenderBody = function(html,rebind, url){
         var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
         //apparently the rule below refires document.ready after replacing, thus the alreadyChecked boolean
+        $('body').attr("url", url);
         $pageBody.html(body);
         if(rebind){
           window.classifyLinks();
-          window.bindGlobalClickHandler();      
+          window.bindGlobalClickHandler();
         }
         window.bindButtonAndForms();
         window.searchHandler(jQuery);
         window.packageVersionControl();
+        window.launchFullSearch();
         window.scrollTo(0,0);
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub])
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         $('.search--results').hide();
-      }
+      };
 
       /************************************************************************************************************************************************
       rebinding and executing trough ajax requests
@@ -37,7 +39,7 @@
       };
       window.bindSearchPaneClickHandler=function(){
         $('.search--results').find('a:not(.js-external)').unbind('click').bind('click',window.asyncClickHandler);
-      }
+      };
 
       window.bindButtonAndForms= function(){
         $('#js-examples').unbind('click').bind('click',window.runExamples);
@@ -68,17 +70,18 @@
               success: function(data, textStatus, xhr) {
                 if(xhr.status==200){
                   return data;
-                }                
+                }
               }
             }).then(function(html,textData,xhr){
+              var url = type === 'GET' ? action + '?' + dataToWrite : action;
               if(action.indexOf("/login")>-1 && !window.loggedIn){
                 window.loggedIn=true;
                 _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
                   ["write('"+dataToWrite+"', file = paste0(.libPaths()[1],'/Rdocumentation/config/creds.txt')) \n Rdocumentation::login()"])
-                .then(rerenderBody(html,true));
+                .then(rerenderBody(html,true, url));
               }
               else{
-                rerenderBody(html,true);
+                rerenderBody(html,true, url);
               }
             });
         });
@@ -113,7 +116,7 @@
             },
             crossDomain:true,
             success: function(data, textStatus, xhr) {
-              rerenderBody(data,rebind);
+              rerenderBody(data,rebind, url);
             }
           })
           .fail(function(error) {console.log(error.responseJSON) });
@@ -225,7 +228,8 @@
         link = link.substring(link.indexOf('#'),link.indexOf('" class'));
         $(link).show();
         e.preventDefault();
-      }
+      };
+
       window.classifyLinks=function(){
         var base = $('base').attr('href');
         $('a:not(.js-external)').map(function(){
@@ -245,7 +249,7 @@
   });
 
 _rStudioRequest=function(url,method,shared_secret,port,params){
-  var data={}
+  var data={};
   data["method"]=method;
   //data["params"]=[$('.R').text()];
   data["params"]=params;
@@ -268,7 +272,8 @@ _rStudioRequest=function(url,method,shared_secret,port,params){
       withCredentials: true
     }
   });
-}
+};
+
 _versionCompare = function (v1, v2) {
     v1parts = v1.split(/[.-]+/);
     v2parts = v2.split(/[.-]+/);

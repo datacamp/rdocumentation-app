@@ -6,18 +6,7 @@ $(document).ready(function() {
       $("#details").find(".hidden").removeClass("hidden");
     });
     window.packageVersionToggleHandler();
-    if(urlParam('viewer_pane') === '1'){
-      $('#tabs').tabs({
-        'beforeLoad':function(event,ui){
-          window.setTab(event,ui);
-        }
-      });
-    }
-    else{
-      $('#tabs').tabs({
-      active: 0
-      });
-    }
+    window.activateTabs("#tabs");
     window.launchFullSearch();
   });
   $.getScript("http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js",function(){
