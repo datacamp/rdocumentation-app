@@ -395,7 +395,6 @@ module.exports = {
     }).then(function(result){
       var packages  = [];
       result.hits.hits.forEach(function(hit) {
-        console.log(hit);
           var fields = {};
           fields.package_name = hit.fields.package_name[0];
           fields.version = hit.fields.version[0];
@@ -538,7 +537,6 @@ module.exports = {
       result.hits.hits.forEach(function(hit) {
           var fields = {};
           var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
-          console.log(inner_hits_fields);
           fields.package_name = inner_hits_fields.package_name[0];
           fields.version = inner_hits_fields.version[0];
           fields.name = hit.fields.name[0];
