@@ -1,41 +1,33 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <div class='search-result'>
-  <div class="container">
-    <h3>Search Results:</h3>
-    <p class="search-result--index">Showing results <%= ((data.currentPage - 1) * data.perPage) + 1%> to <%= data.currentPage * data.perPage %> of <%= data.total %>.</p>
+  <div class="container-fluid">
+    <h3>Search Results for <%- data.query %></h3>
     <hr>
-    <div class="search-result--data">
-      <% for(var i = 0; i < data.hits.length; i++) { %>
-        <% var hit = data.hits[i] %>
-        <section class='search-result--item'>
-          <% var versionURI = '/packages/' + encodeURIComponent(hit.fields.package_name) + '/versions/' + encodeURIComponent(hit.fields.version) %>
-          <% if (hit.type === 'topic') { %>
-            <h5 class="search-result--item-header">
-              Function <a href='<%- versionURI %>/topics/<%- encodeURIComponent(hit.fields.name) %>'><%- hit.fields.name %></a>
-              <span><a href='<%- versionURI %>'>[<%- hit.fields.package_name %>&nbsp;v<%- hit.fields.version %>]</a></span>
-            </h5>
-          <% } else if (hit.type === 'package_version') { %>
-            <h5 class="search-result--item-header">
-              Package <a href='<%- versionURI %>'><%- hit.fields.package_name %>&nbsp;v<%- hit.fields.version %></a>
-            </h5>
-          <% } %>
+    <div class="row search-result--data">
+      <div class="col-md-6">
 
-          <dl>
-            <% for(highlight in hit.highlight) { %>
-              <dt><%= highlight %></dt>
-              <dd><%- data.striptags(hit.highlight[highlight].toString(), '<mark>') %></dd>
-            <% } %>
-          </dl>
+        <div class = "packagedata">
+        </div>
 
-        </section>
-      <% } %>
+      </div>
+      <div class="col-md-6">
+        <div class = "functiondata">
+        </div>
+      </div>
     </div>
-
-    <div class="search-result--pagination">
-      <% if (data.currentPage >= 2) { %>
-        <a href='<%= data.prevPageUrl %>' class='btn btn-primary m0'><i class="fa fa-chevron-left"></i>Previous <%= data.perPage %> Results </a>
-      <% } %>
-      <a  href='<%= data.nextPageUrl %>' class='btn btn-primary m0 pull-right'>Next <%= data.perPage %> Results <i class="fa fa-chevron-right"></i></a>
+    <div id = "searchtabs" class="search-result--data">
+      <ul>
+        <li><a href="<%- data.current %>#packages" id = "packagetab">Packages</a></li>
+        <li><a href="<%- data.current %>#functions" id = "functiontab">Functions</a></li>
+      </ul>
+      <div id="packages">
+        <div class="packagedata">
+        </div>
+      </div>
+      <div id="functions">
+        <div class = "functiondata">
+        </div>
+      </div>
     </div>
   </div>
 </div>
