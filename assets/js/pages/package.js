@@ -235,7 +235,7 @@ window.redrawBiocChart = function(years){
     chartData = d3.select('#bioc_chart svg').datum(data);
     chartData.datum([direct_serie,indirect_serie]).transition().duration(500).call(window.chart);
   });
-  v.utils.windowResize(window.chart.update);
+  nv.utils.windowResize(window.chart.update);
 };
 
 
