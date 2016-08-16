@@ -17,6 +17,11 @@ module.exports = {
     url: {
       type: Sequelize.STRING,
       allowNull: false
+    },
+
+    in_view: {
+      type: Sequelize.STRING,
+      allowNull : true
     }
 
   },

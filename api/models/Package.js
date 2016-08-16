@@ -105,8 +105,8 @@ module.exports = {
         }).then(function(packages){
           return _.map(packages,function(package){
             return package.dataValues.name;
-          })
-        })
+          });
+        });
       }
     }
   }

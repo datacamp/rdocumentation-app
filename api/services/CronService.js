@@ -8,7 +8,6 @@ var _ = require('lodash');
 var Promise = require('bluebird');
 var http = require('http');
 
-
 module.exports = {
 
   //We need aggregated download stats in elasticsearch to be able to rescore the search result based on popularity
@@ -51,6 +50,7 @@ module.exports = {
     console.log('Started splitted aggregated download count');
     return Promise.promisify(ElasticSearchService.dailyDownloadsBulk)(days);
   },
+
   biocSplittedAggregatedDownloadstats :function(months,callback){
     console.log('Started Bioconuctor splitted aggregated download count');
     //stats from n months ago
@@ -102,11 +102,113 @@ module.exports = {
         })
       })
     })
+  },
+  scrapeBiocTaskViews:function(){
+    url = "http://www.bioconductor.org/packages/json/3.3/tree.js"
+    return Package.getAllNamesOfType(2).then(function(packages){
+      return new Promise((resolve, reject) => {
+        http.get(url, response => {
+          var body = ""
+          response.on('data', function (chunk) {
+            body = body + chunk;
+          });
+          response.on('end',function(){
+            body = body.substring(14,body.length-1);
+            json = JSON.parse(body)
+            softwarePackages = _.filter(json.data,function(child){
+              return child.attr.id == "Software"
+            })
+            softwarePackages[0].attr.id = "BioConductor"
+            records = _processRecursive(softwarePackages,null,packages);
+            console.log(records[0]);
+            return TaskView.findOrCreate({
+              where: {name:"BioConductor"},
+              defaults:{url:"https://www.bioconductor.org/packages/release/BiocViews.html",in_view:null},
+            }).then(function(){
+              _writeData(records,1,resolve,reject)
+            })
+          }).on('error', err => {
+            reject(err)
+          })
+        });
+      })
+    });
   }
 };
+          
 
 _getIndexOfMonth= function(month){
   return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].indexOf(month);
+}
+
+_processRecursive= function(json,inview,packages){
+  var processData = new Array(0)
+  for (var i=0;i<json.length;i++){
+    child = json[i]
+    if(child.attr){
+      var viewName = child.attr.id;
+      thisPackages= child.attr.packageList.split(",");
+      childData = _processRecursive(child.children,viewName,packages);
+      childPackages = _getAllPackages(childData)
+      childPackages = _.filter(thisPackages,function(package){
+        return (packages.indexOf(package)>-1 && !(childPackages.indexOf(package)>-1))
+      })
+      if(typeof processData[0] == "undefined"){
+        processData[0] = [{viewName:viewName,inView:inview,packages:childPackages}]
+      }
+      else{
+        processData[0] = processData[0].concat([{viewName:viewName,inView:inview,packages:childPackages}])
+      }
+      childData.forEach(function(child,j){
+        if(typeof processData[j+1] == "undefined"){
+          processData[j+1] = child
+        }
+        else{
+          processData[j+1] = processData[j+1].concat(child)
+        }
+      })
+    }
+  }
+  return processData;
+}
+
+_getAllPackages = function(arrayOfArrays){
+  allPackages = []
+  for(var i =0;i<arrayOfArrays.length;i++){
+    for(var j =0;j<arrayOfArrays[i].length;j++){
+      allPackages = allPackages.concat(arrayOfArrays[i][j].packages)
+    }
+  }
+  return allPackages
+}
+
+_writeData = function(records,layer,resolve,reject){
+  if(layer>=records.length){
+    console.log("resolving")
+    resolve();
+  }
+  else{
+    Promise.map(records[layer],function(record){
+      return TaskView.findOrCreate({
+        where: {name:record.viewName},
+        defaults:{url:"https://www.bioconductor.org/packages/release/BiocViews.html#___"+record.viewName,in_view:record.inView},
+      }).spread(function(instance, created) {
+        var filtered = record.packages
+        return Package.bulkCreate(filtered.map(function(packageName) {
+          return {name: packageName};
+        }), {
+          fields: ['name'],
+          ignoreDuplicates: true
+        }).then(function(created) {
+          return instance.setPackages(filtered).then(function(packagesInstance) {
+            return instance;
+          });
+        });
+      })
+    }).then(function(){
+        _writeData(records,layer+1,resolve,reject)
+    })
+  }
 }
 
 

@@ -1,0 +1,5 @@
+
+ALTER TABLE TaskViews ADD `in_view` VARCHAR(100) DEFAULT NULL;
+
+ALTER TABLE TaskViews ADD CONSTRAINT `TaskViews_ibfk_2` FOREIGN KEY (`in_view`)
+            REFERENCES `TaskViews` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
