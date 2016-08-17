@@ -4,33 +4,43 @@
   <div id="package--container" class="container-fluid">
     <header class='row'>
 
-      <div class='col-xs-4'>
-        <div class='container-fluid'>
+      <div class='col-md-<%= inViewerPane ? '6' : '8'%> col-sm-8 col-xs-9'>
           <div class='row'>
-            <div class='col-sm-12'><h1 class= 'package--title' itemprop="name"><%- pkgVersion.package_name %></h1></div>
-          </div>
-          <div class="row">
-            <div class='col-sm-6'>
-              <div class="select">
-                <select id="packageVersionSelect">
-                  <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
-                    <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
-                      value="<%= pkgVersion.package.versions[i].version %>"
-                      <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %>
-                      <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
-                      >
-                      <%= pkgVersion.package.versions[i].version %>
-                    </option>
-                  <% } %>
-                </select>
+            <div class='col-sm-12'>
+              <div class='package--title--container'>
+                <h1 class= 'package--title' itemprop="name"><%- pkgVersion.package_name %></h1>
+
+                <div class="package--version--select">
+                  <span class='package--version--v'>v. </span>
+                  <select id="packageVersionSelect">
+                    <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
+                      <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
+                        value="<%= pkgVersion.package.versions[i].version %>"
+                        <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %>
+                        <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
+                        >
+                        <%= pkgVersion.package.versions[i].version %>
+                      </option>
+                    <% } %>
+                  </select>
+                </div>
+
+                <span class='package--maintainer'>
+                  by
+                  <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>">
+                    <%= pkgVersion.maintainer.name %>
+                  </a>
+                </span>
+
+
+
+
               </div>
             </div>
+          </div>
 
-            <% if(inViewerPane) { %>
-              <div class="col-sm-6">
-                <div class="versionCheck"></div>
-              </div>
-            <%}%>
+          <div class="row">
+
 
             <% if(pkgVersion.rating) { %>
               <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="rating" title=<%= pkgVersion.rating %>>
@@ -50,33 +60,20 @@
               </div>
             <%}%>
           </div>
-        </div>
 
       </div>
 
-
-      <div class='col-xs-4'>
-        <% if(pkgVersion.maintainer) { %>
-        <div class="maintainer">
-          <i class="fa fa-user" aria-hidden="true"></i>
-          <div class="maintainer">
-            <div class="data">
-            <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>">
-                  <%= pkgVersion.maintainer.name %></a>
-                  <a href="mailto:<%= pkgVersion.maintainer.email %>">
-                  <i class="fa fa-envelope" aria-hidden="true"></i></a>
-            </div>
-            <p>Maintainer</p>
-          </div>
+      <% if(inViewerPane) { %>
+        <div class='col-md-2 col-sm-4 col-xs-3'>
+          <div class="versionCheck"></div>
         </div>
-        <% } %>
-      </div>
+      <%}%>
 
-      <div class="col-xs-4">
+      <div class="col-md-4 col-sm-<%= inViewerPane ? '8' : '4'%> col-xs-12">
         <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
           <span class="downloads-nr" >
             <span class='indeps'>0</span>
-            <i class="fa fa-info-circle fa-2x" aria-hidden="false"></i>
+            <i class="fa fa-info-circle" aria-hidden="false"></i>
           </span>
           <p>Monthly downloads</p>
         </div>
@@ -93,6 +90,31 @@
     </header>
 
     <section id="details" class="container-fluid sliding">
+
+      <div id="tabs" class="row">
+        <ul class="tabs">
+          <li><a href="#chart" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
+            <li><a id="tab1" href="#packagedependencygraph" class="js-external js-tab">Dependency graph</a></li>
+            <li><a id="tab2" href="#packagereversedependencygraph" class="js-external js-tab">Reverse dependency graph</a></li>
+        </ul>
+        <div class='tabs--content' id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
+          <select onchange="window.redrawChart(this.value)">
+            <option value=7>Last week</option>
+            <option selected="selected" value=30>Last month</option>
+            <option value=365>Last year</option>
+          </select>
+          <svg></svg>
+        </div>
+
+          <div class='tabs--content' id="packagedependencygraph" style="dislay:none" data-url="/api<%= path %>/dependencies">
+            <svg></svg>
+          </div>
+          <div class='tabs--content' id="packagereversedependencygraph" style ="display:none" data-url="/api<%= path %>/reversedependencies" >
+            <svg></svg>
+          </div>
+
+      </div>
+
       <div class="row">
 
         <div class="col-sm-12 package--details">
@@ -128,36 +150,6 @@
           </div>
         </div>
       </div>
-
-      <div id="tabs" class="row">
-        <ul class="tabs">
-          <li><a href="#chart" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
-          <% if (!inViewerPane){%>
-            <li><a id="tab1" href="#packagedependencygraph" class="js-external js-tab">Dependency graph</a></li>
-            <li><a id="tab2" href="#packagereversedependencygraph" class="js-external js-tab">Reverse dependency graph</a></li>
-          <%}%>
-        </ul>
-        <div class='tabs--content' id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
-          <select onchange="window.redrawChart(this.value)">
-            <option value=7>Last week</option>
-            <option selected="selected" value=30>Last month</option>
-            <option value=365>Last year</option>
-          </select>
-          <svg></svg>
-        </div>
-        <%if(!inViewerPane){%>
-          <div class='tabs--content' id="packagedependencygraph" style="dislay:none" data-url="/api<%= path %>/dependencies">
-            <svg></svg>
-          </div>
-          <div class='tabs--content' id="packagereversedependencygraph" style ="display:none" data-url="/api<%= path %>/reversedependencies" >
-            <svg></svg>
-          </div>
-        <%}%>
-      </div>
-
-
-
-
 
     </section>
 
