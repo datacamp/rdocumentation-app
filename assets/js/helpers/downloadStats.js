@@ -23,6 +23,9 @@ $(document).ready(function() {
       $self.find(".deps").text(data.indirectDownloadsStr);
       $self.find(".indeps").text(data.directDownloadsStr);
       $(".fa-info-circle").attr("title","Monthly downloads are direct downloads. The package also had " + data.indirectDownloadsStr + " dependent downloads for a total of " + data.totalStr +".");
+      $(".fa-info-circle").tooltip({
+        placement: 'bottom'
+      });
       $('.downloads').css({'visibility': 'visible'});
     });
   });
