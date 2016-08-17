@@ -6,11 +6,29 @@ $(document).ready(function() {
   $(".list-group .list-group-item").each(function(){
   	$(this).click(function(event){
   		event.preventDefault();
-  		getView($(this).html());
+      $(this).find(".fa").each(function(){
+        elemClass = $(this).attr("class")
+        if(elemClass=="fa fa-angle-right"){
+          $(this).attr("class","fa fa-angle-down")
+        }
+        else if(elemClass =="fa fa-angle-down"){
+          $(this).attr("class","fa fa-angle-right")
+        }
+      })
+  		getView($(this).text().trim());
   		$(".highlight").removeClass("highlight");
   		$(this).addClass("highlight");
+      $(this).parent().children("ul").each(function(){
+        if($(this).is(":visible")){
+          $(this).hide()
+        }
+        else{
+          $(this).show()
+        }
+      })
   	});
   });
+  $(".sublist-group").hide();
 });
 
 getView = function(view){
@@ -21,26 +39,45 @@ getView = function(view){
   	$(".view").html($($.parseHTML(response)).filter(".content").html());
   	resetFilter();
     percentileTaskView();
+    pagination();
   });
 }
 
-sortTable = function(){
-  $("table.taskviewtable").tablesorter({
-          headers: {
-            3: {
-                sorter:'rating'
-            }
-        },
-        textExtraction: function (node){
-          if($(node).find(".rating").length>0){
-            return ($(node).find(".rating").data('rating'));
-          }else if($(node).find(".percentile-task".length>0)){
-            return $(node).find(".percentile-task").data('percentile');
-          }
-          return $(node).text();
-        },
-        sortList: [[2,1]]
+pagination = function(){
+  $(".taskview-page-button").each(function(){
+    $(this).click(function(event){
+      event.preventDefault();
+      $.ajax({
+        url: $(this).attr("href")
+      }).done(function(response){
+        $(".view").html($($.parseHTML(response)).filter(".content").html());
+        resetFilter();
+        percentileTaskView();
+        pagination();
+      })
     });
+  })
+}
+
+sortTable = function(){
+  $.getScript("http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.2/js/jquery.tablesorter.js",function(){
+    $("table.taskviewtable").tablesorter({
+            headers: {
+              3: {
+                  sorter:'rating'
+              }
+          },
+          textExtraction: function (node){
+            if($(node).find(".rating").length>0){
+              return ($(node).find(".rating").data('rating'));
+            }else if($(node).find(".percentile-task".length>0)){
+              return $(node).find(".percentile-task").data('percentile');
+            }
+            return $(node).text();
+          },
+          sortList: [[2,1]]
+      });
+  });
 }
 
 aggregatePercentile = function(){

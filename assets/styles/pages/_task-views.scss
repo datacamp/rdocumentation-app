@@ -15,6 +15,16 @@
   }
 }
 
+ul .list-group
+{
+  list-style-type: none;
+}
+
+ul .sublist-group
+{
+  list-style-type:none;
+}
+
 .task-views--header {
   font-size: $h3-size;
   margin-bottom: $default-space;
@@ -58,9 +68,14 @@ a.list-group-item{
 }
 
 .list-group{
+  margin-top: 0em;
   padding-left:0;
   overflow-y: scroll;
   height: calc(100vh - 6em);
+}
+
+.sublist-group{
+  margin-left:-7px;
 }
 
 .list-group-item.highlight{
@@ -73,6 +88,10 @@ a.list-group-item{
 
 .percentile-number{
   font-size:1.5rem;
+}
+
+.taskview-page-button{
+  margin-top:1.5em;
 }
 
 #sidemenu{

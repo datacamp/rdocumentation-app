@@ -189,26 +189,43 @@ _writeData = function(records,layer,resolve,reject){
   }
   else{
     Promise.map(records[layer],function(record){
-      return TaskView.findOrCreate({
-        where: {name:record.viewName},
-        defaults:{url:"https://www.bioconductor.org/packages/release/BiocViews.html#___"+record.viewName,in_view:record.inView},
-      }).spread(function(instance, created) {
-        var filtered = record.packages
-        return Package.bulkCreate(filtered.map(function(packageName) {
-          return {name: packageName};
-        }), {
-          fields: ['name'],
-          ignoreDuplicates: true
-        }).then(function(created) {
-          return instance.setPackages(filtered).then(function(packagesInstance) {
-            return instance;
-          });
-        });
-      })
+      if(record.inView != null){
+        return TaskView.findOne({
+          where:{name:record.inView}
+        }).then(function(inView){
+          if(inView==null){
+            console.log("in view")
+            console.log(record.inView);
+          }
+          record.inView = inView.id
+          return _writeRecord(record)
+        })
+      }
+      else{
+        _writeRecord(record)
+      }
     }).then(function(){
-        _writeData(records,layer+1,resolve,reject)
+      _writeData(records,layer+1,resolve,reject)
     })
   }
+}
+_writeRecord = function(record){
+  return TaskView.findOrCreate({
+    where: {name:record.viewName},
+    defaults:{url:"https://www.bioconductor.org/packages/release/BiocViews.html#___"+record.viewName,in_view:record.inView},
+  }).spread(function(instance, created) {
+    var filtered = record.packages
+    return Package.bulkCreate(filtered.map(function(packageName) {
+      return {name: packageName};
+    }), {
+      fields: ['name'],
+      ignoreDuplicates: true
+    }).then(function(created) {
+      return instance.setPackages(filtered).then(function(packagesInstance) {
+        return instance;
+      });
+    });
+  })
 }
 
 

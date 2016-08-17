@@ -3,11 +3,50 @@
       <div class = "list-group-item" id ="listtitle">
         <h4>Task View</h4>
       </div>
-      <div class = "list-group">
+      <ul class = "list-group level0">
         <% for(var i = 0; i<data.length;i++){ %>
-          <a class = "list-group-item"><%- data[i].name %></a>
+          <li>
+            <a class = "list-group-item level0">
+            <%if(data[i].subviews.length>0){%>
+              <i class="fa fa-angle-right" aria-hidden="true"></i>
+            <%}%><%- data[i].name %>
+            </a>
+            <%if(data[i].subviews.length>0){%>
+              <ul class="sublist-group level1">
+                <% for(var j = 0; j<data[i].subviews.length;j++){ %>
+                  <li>
+                    <a class = "list-group-item level1">
+                    <%if(data[i].subviews[j].subviews.length>0){%>
+                      <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    <%}%><%- data[i].subviews[j].name %>
+                    </a>
+                    <%if(data[i].subviews.length>0){%>
+                      <ul class="sublist-group level2">
+                        <% for(var k = 0; k<data[i].subviews[j].subviews.length;k++){ %>
+                          <li>
+                            <a class = "list-group-item level2">
+                            <%if(data[i].subviews[j].subviews[k].subviews.length>0){%>
+                              <i class="fa fa-angle-right" aria-hidden="true"></i>
+                            <%}%><%- data[i].subviews[j].subviews[k].name %>
+                            </a>
+                            <%if(data[i].subviews.length>0){%>
+                              <ul class="sublist-group level3">
+                                <% for(var l = 0; l<data[i].subviews[j].subviews[k].subviews.length;l++){ %>
+                                  <li><a class = "list-group-item level3"><%- data[i].subviews[j].subviews[k].subviews[l].name %></a></li>
+                                <%}%>
+                              </ul>
+                             <%}%>
+                          </li>
+                        <%}%>
+                      </ul>
+                    <%}%>
+                  </li>
+                <%}%>
+              </ul>
+            <%}%>
+          </li>
         <% } %>
-      </div>
+      </ul>
     </div>
     <div class="view">
       

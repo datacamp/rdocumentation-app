@@ -3,17 +3,24 @@
     <div class="row">
       <div class="col-md-8">
         <h1><%- view.name %></h1>
-        <a href='<%= view.url %>' target='_blank'>More info on CRAN <i class="fa fa-external-link" aria-hidden="true"></i></a>
+        <a href='<%= view.url %>' target='_blank'>
+          <%if(!view.url.indexOf("bioconductor")>-1){ %>
+            More info on CRAN <i class="fa fa-external-link" aria-hidden="true"></i></a>
+          <%} else { %>
+            More info on BioConductor <i class="fa fa-external-link" aria-hidden="true"></i></a>
+          <%}%>
       </div>
       <div class="col-md-4">
-        <section class="stats-aggregate">
-          <div class="percentile">
-            <span class="percentile-nr">
-              <span class='percentile' id = aggpercentile>0th</span>
-            </span>
-            <p>Average Percentile</p>
-          </div>
-        </section>
+        <%if(view.packages.length<21){ %>
+          <section class="stats-aggregate">
+            <div class="percentile">
+              <span class="percentile-nr">
+                <span class='percentile' id = aggpercentile>0th</span>
+              </span>
+              <p>Average Percentile</p>
+            </div>
+          </section>
+        <%}%>
       </div>
     </div>
     <section class="table-list">
@@ -28,7 +35,7 @@
           </tr>
         </thead>
         <tbody id="filterableItems">
-          <% for(var i = 0; i < view.packages.length; i++) { %>
+          <% for(var i = 0; i < Math.min(view.packages.length,20); i++) { %>
             <% var package = view.packages[i]; %>
             <tr>
               <td><a href="<%= package.uri %>"><%= package.name %></a></td>
@@ -56,4 +63,12 @@
         </tbody>
       </table>
     </section>
+    <div class="search-result--pagination">
+      <% if (data.prevPageUrl) { %>
+        <a href='<%= data.prevPageUrl %>' class='btn btn-secondary-light ry taskview-page-button'><i class="fa fa-chevron-left"></i>Previous 20 Packages </a>
+      <% } %>
+      <% if(data.nextPageUrl){ %>
+        <a  href='<%= data.nextPageUrl %>' class='btn btn-secondary-light pull-right taskview-page-button'>Next 20 Packages <i class="fa fa-chevron-right"></i></a>
+      <%}%>
+    </div>
   </div>
