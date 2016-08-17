@@ -7,7 +7,7 @@ function getPath(loc) {
 
 function urlParam(name){
   var url;
-  if(name === 'viewer_pane') {
+  if(name === 'viewer_pane' || name === 'RS_SHARED_SECRET' || name === 'Rstudio_port') {
     url = window.location.href;
   } else if ( urlParam('viewer_pane') !== '1') {
     url = window.location.href;
@@ -31,7 +31,6 @@ function getCurrentPath() {
 
 window.activateTabs = function(id) {
   $(id).find('a').prop('href', function(){
-    console.log($(this));
     return window.location.href + $(this).attr('href');
   }).end().tabs({
     'beforeLoad':function(event,ui){
