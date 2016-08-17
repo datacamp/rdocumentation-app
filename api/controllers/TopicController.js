@@ -120,14 +120,14 @@ module.exports = {
         if(t === null) return null;
         return t.uri;
       });
-
       var topicPromise = Topic.findOnePopulated({name: topic}, {
         include: [{
           model: PackageVersion,
           as: 'package_version',
           where: { package_name: packageName, version: packageVersion },
-          include: { model: Package, as: 'package', attributes: ['name', 'latest_version_id']}
-        }]
+          include: [{ model: Package, as: 'package', attributes: ['name', 'latest_version_id']},
+          { model: Collaborator, as: 'maintainer'}]
+        },]
       }).then(function(topicInstance) {
         if(topicInstance === null) {
           return Topic.findByAliasInPackage(packageName, topic, packageVersion).then(function(topicInstance) {
