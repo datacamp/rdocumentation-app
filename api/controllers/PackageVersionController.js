@@ -131,6 +131,27 @@ module.exports = {
 
   },
 
+  readmePage: function(req, res) {
+    var packageName = req.param('name'),
+      packageVersion = req.param('version'),
+      key = 'view_package_version_' + packageName + '_' + packageVersion;
+
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+      return PackageVersion.getPackageVersionFromCondition({package_name:packageName, version:packageVersion});
+    })
+     .then(function(version){
+      if(version === null) return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName));
+      else {
+        version.pageTitle = version.package_name + ' v' + version.version + ' Readme';
+        return res.ok(version, 'package_version/readme.ejs');
+      }
+    })
+    .catch(function(err) {
+      console.log(err.message);
+      return res.negotiate(err);
+    });
+  },
+
   _getDownloadStatistics: function (res, packageName) {
     key = 'rdocs_download_stats_' + packageName;
 

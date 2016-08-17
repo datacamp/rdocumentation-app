@@ -168,6 +168,11 @@
     <section class="package--info">
       <h4 itemprop="headline"><%- pkgVersion.title %></h4>
       <p itemprop="description"><%- pkgVersion.description %></p>
+      <h4 class='package--reade'>
+        <% if(pkgVersion.readmemd) { %>
+          <a href="<%= path + '/readme'%>">Readme</a>
+        <% } %>
+      </h4>
     </section>
 
     <section class="table-list">
@@ -205,19 +210,6 @@
         </tbody>
       </table>
     </section>
-
-    <% if(pkgVersion.readmemd) { %>
-    <section class="package--readme">
-      <h3> Readme </h3>
-      <% if(pkgVersion.url) { %>
-         <%- md(pkgVersion.readmemd,pkgVersion.url.autoLink({ target: "_blank", id: "1" })) %>
-      <%} %>
-      <% if(!pkgVersion.url) {%>
-        <%-md(pkgVersion.readmemd,"") %>
-      <% }%>
-
-    </section>
-    <% } %>
 
     <section class="package--dependencies">
       <h4>Dependencies</h4>
