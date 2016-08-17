@@ -3,35 +3,23 @@
 <section data-package-name="<%=topic.package_version.package_name%>" class="packageData" itemscope itemtype="http://schema.org/SoftwareApplication"></section>
 <section class="topic">
   <div class="container-fluid">
-    <header>
-      <h1><%- topic.name %><span>From <a href="<%- topic.package_version.uri %>"><%- topic.package_version.package_name %> v<%- topic.package_version.version %></a></span></h1>
-      <div class="topic--package pull-right">
-        <div class="topic--package-maintainer">
-          <div class="topic--package-name">
-          <p>In package <a href="<%- topic.package_version.uri %>"><%- topic.package_version.package_name %> v<%- topic.package_version.version %></a></p>
-          </div>
-          <% if(topic.package_version.maintainer) { %>
-          <div class="maintainer pull-left">
-            By<i class="fa fa-user" aria-hidden="true"></i>
-            <div class="maintainer neg-top-margin pull-right">
-                <div class="data">
-                <a itemprop="creator" href="<%= topic.package_version.maintainer.uri %>">
-                      <%= topic.package_version.maintainer.name %></a>
-                      <a href="mailto:<%= topic.package_version.maintainer.email %>">
-                      <i class="fa fa-envelope" aria-hidden="true"></i></a>
-                </div>
-              <p>Maintainer</p>
-            </div>
-          </div>
-          <% } %>
-        </div>
-        <div class="downloads">
-          <span class="downloads-nr percentile-task" data-url="/api<%= path %>/percentile" >
-            <span class='percentile'>0th</span>
+    <header class='topic--header'>
+      <h1>
+        <%- topic.name %>
+        <span>From
+          <a href="<%- topic.package_version.uri %>">
+            <%- topic.package_version.package_name %> v<%- topic.package_version.version %>
+          </a>
+          by <a href="/collaborators/name/<%- topic.package_version.maintainer.name %>">
+            <%- topic.package_version.maintainer.name %>
+          </a>
+        </span>
+        <span class="topic--package--percentile percentile-task" data-url="/api/packages/<%=topic.package_version.package_name%>/percentile" >
+            <span class='percentile topic--package--percentile'>0th</span> perc. popularity
           </span>
-          <p>Percentile</p>
-        </div>
-      </div>
+      </h1>
+
+
     </header>
 
     <section>
