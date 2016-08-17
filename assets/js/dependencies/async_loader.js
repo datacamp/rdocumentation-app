@@ -76,7 +76,7 @@
               var url = type === 'GET' ? action + '?' + dataToWrite : action;
               if(action.indexOf("/login")>-1 && !window.loggedIn){
                 window.loggedIn=true;
-                _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
+                _rStudioRequest('/rpc/execute_code','execute_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
                   ["write('"+dataToWrite+"', file = paste0(.libPaths()[1],'/Rdocumentation/config/creds.txt')) \n Rdocumentation::login()"])
                 .then(rerenderBody(html,true, url));
               }
@@ -143,12 +143,12 @@
 
       window.setDefault=function(e){
         e.preventDefault();
-        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::makeDefault()"]);
+        _rStudioRequest('/rpc/execute_code','execute_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::makeDefault()"]);
         return false;
       };
       window.hideViewer=function(e){
         e.preventDefault();
-        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::hideViewer()"]);
+        _rStudioRequest('/rpc/execute_code','execute_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::hideViewer()"]);
         return false;
       };
       /************************************************************************************************************************************************
@@ -158,7 +158,7 @@
       window.checkPackageVersion=function(package){
         var installed =true;
         var found=false;
-        return _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["check_package('"+package+"')"])
+        return _rStudioRequest('/rpc/execute_code','execute_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["check_package('"+package+"')"])
         .then(function(){
           return _rStudioRequest('/events/get_events','get_events',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),[0])
           .then(function(result){
