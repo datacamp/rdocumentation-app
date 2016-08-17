@@ -18,8 +18,15 @@
       vertical-align: middle;
     }
 
-    .select {
+    .package--version--select {
+      font-size: 1.2rem;
       display: inline-block;
+      select {
+        padding: 0.4rem;
+      }
+      .package--version--v {
+        font-weight: bold;
+      }
     }
 
     .rating {
@@ -37,6 +44,7 @@
         -webkit-margin-after: 0em;
       }
       i{
+        font-size: 1.4rem;
         margin-left: 0.6rem;
       }
     }
@@ -54,10 +62,26 @@
     height: 400px;
   }
 
-  .package--title {
-    font-size: 3vw;
-    margin-top: 0px;
+  .package--title--container {
+    margin-bottom: $default-space;
+    vertical-align: bottom;
+    a {
+      vertical-align: bottom;
+    }
   }
+
+  .package--title {
+    margin: 0px 5px 0px 0px;
+    font-size: 5rem;
+    vertical-align: bottom;
+  }
+
+  .package--maintainer {
+    font-size: 2rem;
+    display: inline-block;
+    vertical-align: bottom;
+  }
+
   .package--details {
     margin-top: 1rem;
     table {
@@ -70,7 +94,7 @@
   }
 
   .tabs--content {
-    height: 600px;
+    height: 450px;
   }
 
 }
@@ -203,6 +227,9 @@ i.fa.fa-user{
 
 .package--info {
   margin-top: $default-space;
+  .package--readme {
+    font-size: 1.3rem;
+  }
 }
 
 .package--dependencies {

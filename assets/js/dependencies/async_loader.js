@@ -188,7 +188,7 @@
           var packageName = $(".packageData").data("package-name");
           window.checkPackageVersion(packageName).then(function(installed){
             if(installed==false){
-              $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-primary js-external">Install</button>');
+              $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-large pull-right btn-primary js-external">Install</button>');
             }
             else{
               installedVersion=installed.split(/[´`'"’‘]+/)[1];
@@ -196,7 +196,7 @@
               var upToDate=true;
               for(var i=0;i<versions.length;i++){
                 if($(versions[i]).text().trim()!="@VERSION@"&& _versionCompare($(versions[i]).text().trim(),installedVersion)){
-                  $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-primary js-external">Update</button>');
+                  $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-large pull-right btn-primary js-external">Update</button>');
                   upToDate=false
                 }
               }
@@ -235,10 +235,10 @@
         $('a:not(.js-external)').map(function(){
           var link =$(this).attr("href")
           if(!link.indexOf(base)>-1 && (link.indexOf("www")==0  || link.indexOf("http://")==0 || link.indexOf("https://") == 0)){
-            $(this).addClass("js-external")
+            $(this).addClass("js-external");
           }
         });
-      }
+      };
       //check the packageversion
       window.packageVersionControl();
       window.classifyLinks();
@@ -250,11 +250,12 @@
 
 _rStudioRequest=function(url,method,shared_secret,port,params){
   var data={};
-  data["method"]=method;
-  //data["params"]=[$('.R').text()];
-  data["params"]=params;
-  data["clientId"]='33e600bb-c1b1-46bf-b562-ab5cba070b0e';
-  data["clientVersion"]="";
+  data.method = method;
+  //data.params = [$('.R').text()];
+  data.params = params;
+  data.clientId = '33e600bb-c1b1-46bf-b562-ab5cba070b0e';
+  data.clientVersion = "";
+
   return $.ajax({
     url: 'http://127.0.0.1:'+port+url,
     headers:
