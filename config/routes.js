@@ -118,6 +118,11 @@ module.exports.routes = {
   'get /rstudio/make_default':'RstudioController.makeDefault',
   'get /help/*':'RstudioController.redirect',
 
+  //Badges
+  'get /badges/version/:packageName':'BadgeController.getLatestVersion',
+  'get /badges/:downloadsKind/:packageName' :'BadgeController.getDownloadStatsBadge',
+  'get /badges/:downloadsKind/:period/:packageName' :'BadgeController.getDownloadStatsPeriodBadge',
+
   // Search
   'post /api/quick_search': 'SearchController.quickSearch',
   'get /search/keywords/:keyword': 'SearchController.keywordSearch',

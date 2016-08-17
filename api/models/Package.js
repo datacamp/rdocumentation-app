@@ -75,7 +75,22 @@ module.exports = {
           .replace(':name', encodeURIComponent(this.getDataValue('name')));
       }
     },
-    underscored: true
+    underscored: true,
+    classMethods: {
+      getLatestVersionNumber :function(package_name){
+        return Package.findOne({
+          include:[{
+            model:PackageVersion,
+            as:'latest_version',
+            attributes:['version'],
+            required:true
+          }],
+          where:{
+            name:package_name
+          }
+        })
+      }
+    }
   }
 };
 
