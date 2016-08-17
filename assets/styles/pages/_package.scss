@@ -134,8 +134,23 @@ i.fa.fa-user{
   width: 100%;
   text-align: center;
 }
-#slider{
+
+.slider-icon {
+  position: relative;
+  left: 48%;
+  font-size: 2.5rem !important;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: white;
+}
+
+.slider-border {
+  position:relative;
+  top:17px;
   border-top: 1px solid #eeeeee;
+}
+
+#slider{
   margin: 2rem;
 }
 .slider:hover {
