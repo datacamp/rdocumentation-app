@@ -60,8 +60,10 @@ module.exports.routes = {
     'get /api/packages/:name/dependencies': 'PackageVersionController.getDependencyGraph',
     'get /api/packages/:name/versions/:version/reversedependencies': 'PackageVersionController.getReverseDependencyGraph',
     'get /api/packages/:name/reversedependencies': 'PackageVersionController.getReverseDependencyGraph',
+
     // HTML
     'get /packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
+    'get /packages/:name/versions/:version/readme': 'PackageVersion.readmePage',
   //***** /PackageVersion *****
 
   //***** Topic *****
@@ -126,6 +128,11 @@ module.exports.routes = {
   // Search
   'post /api/quick_search': 'SearchController.quickSearch',
   'get /search/keywords/:keyword': 'SearchController.keywordSearch',
-  'get /search': 'SearchController.fullSearch'
+  'get /search': 'SearchController.fullSearch',
+
+  'get /api/searchpackages' : 'SearchController.packageSearch',
+  'get /api/searchfunctions' : 'SearchController.functionSearch',
+  'get /search_packages' : 'SearchController.packageSearch',
+  'get /search_functions' : 'SearchController.functionSearch'
 
 };

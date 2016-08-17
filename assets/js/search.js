@@ -18,15 +18,6 @@ function debounce(func, wait, immediate) {
   };
 };
 
-function urlParam(name){
-    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-    if (results==null){
-       return null;
-    }
-    else{
-       return results[1] || 0;
-    }
-}
 
 
 window.searchHandler = function() {
@@ -86,7 +77,7 @@ window.searchHandler = function() {
     searchResultsPane.html(object);
     if(window.bindSearchPaneClickHandler){
       window.bindSearchPaneClickHandler();
-    }    
+    }
   }
 
   function hover(){
