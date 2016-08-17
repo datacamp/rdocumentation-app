@@ -14,7 +14,7 @@
             <%if(data[i].subviews.length>0){%>
               <ul class="sublist-group level1">
                 <% for(var j = 0; j<data[i].subviews.length;j++){ %>
-                  <li>
+                  <li class="sublist-item">
                     <a class = "list-group-item level1">
                     <%if(data[i].subviews[j].subviews.length>0){%>
                       <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -23,7 +23,7 @@
                     <%if(data[i].subviews.length>0){%>
                       <ul class="sublist-group level2">
                         <% for(var k = 0; k<data[i].subviews[j].subviews.length;k++){ %>
-                          <li>
+                          <li class="sublist-item">
                             <a class = "list-group-item level2">
                             <%if(data[i].subviews[j].subviews[k].subviews.length>0){%>
                               <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -32,7 +32,7 @@
                             <%if(data[i].subviews.length>0){%>
                               <ul class="sublist-group level3">
                                 <% for(var l = 0; l<data[i].subviews[j].subviews[k].subviews.length;l++){ %>
-                                  <li><a class = "list-group-item level3"><%- data[i].subviews[j].subviews[k].subviews[l].name %></a></li>
+                                  <li class="sublist-item"><a class = "list-group-item level3"><%- data[i].subviews[j].subviews[k].subviews[l].name %></a></li>
                                 <%}%>
                               </ul>
                              <%}%>
