@@ -4,14 +4,14 @@
       <div class="col-md-8">
         <h1><%- view.name %></h1>
         <a href='<%= view.url %>' target='_blank'>
-          <%if(!view.url.indexOf("bioconductor")>-1){ %>
+          <%if(!(view.url.indexOf("bioconductor")>-1)){ %>
             More info on CRAN <i class="fa fa-external-link" aria-hidden="true"></i></a>
           <%} else { %>
             More info on BioConductor <i class="fa fa-external-link" aria-hidden="true"></i></a>
           <%}%>
       </div>
       <div class="col-md-4">
-        <%if(view.packages.length<21){ %>
+        <%if(!data.nextPageUrl){ %>
           <section class="stats-aggregate">
             <div class="percentile">
               <span class="percentile-nr">
