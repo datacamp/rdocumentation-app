@@ -8,6 +8,9 @@ function reloadPackages(currentFunctionPage, currentPackagePage){
     }
 	}).done(function(result){
     $('.packagedata').html(result);
+    if(urlParam('viewer_pane') === '1'){
+      window.bindGlobalClickHandler();
+    }
     window.getPercentiles();
     rebind(currentFunctionPage, currentPackagePage);
 	});
@@ -23,6 +26,9 @@ function reloadFunctions(currentFunctionPage, currentPackagePage){
     }
 	}).done(function(result){
 		$('.functiondata').html(result);
+    if(urlParam('viewer_pane') === '1'){
+      window.bindGlobalClickHandler();
+    }
     rebind(currentFunctionPage, currentPackagePage);
 	});
 }
@@ -71,7 +77,7 @@ function updateHistory(newFunctionPage, newPackagePage) {
 }
 
 window.launchFullSearch = function() {
-  if(getCurrentPath().startsWith('search')) { // check if we're on the right page
+  if(getCurrentPath().indexOf('search')==0) { // check if we're on the right page
     var currentPage = parseInt(urlParam("page")) || 1;
     var currentPackagePage = parseInt(urlParam("packagePage")) || currentPage;
     var currentFunctionPage = parseInt(urlParam("functionPage")) || currentPage;

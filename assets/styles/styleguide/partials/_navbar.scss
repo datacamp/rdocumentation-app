@@ -84,6 +84,11 @@
         left: ($navbar-search-width - $navbar-search-results-width) / 2.0;
     }
   }
+  button.rstudio-navbutton{
+      padding:5px;
+      padding-bottom:0px;
+      background-color:$primary
+  }
 
   @media (max-width: 950px){
     .navbar--search{

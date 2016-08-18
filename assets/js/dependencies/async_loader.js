@@ -9,8 +9,8 @@
         e.preventDefault();
         // Grab the url from the anchor tag
         var url = $(this).attr('href');
-        return window.replacePage(url,true);
-      };
+        return window.replacePage(url,true,true);
+      }
 
       var rerenderBody = function(html,rebind, url){
         var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
@@ -25,6 +25,7 @@
         window.searchHandler(jQuery);
         window.packageVersionControl();
         window.launchFullSearch();
+        window.bindHistoryNavigation();
         window.scrollTo(0,0);
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         $('.search--results').hide();
@@ -35,7 +36,9 @@
       ************************************************************************************************************************************************/
 
       window.bindGlobalClickHandler = function(){        //unbinding seems to fail a lot in the Rstudio browser?!->be sure not to bind twice
-        $('a:not(.js-external)').unbind('click').bind('click', window.asyncClickHandler);
+        $('a:not(.js-external)').each(function(){
+          $(this).unbind('click').bind('click', window.asyncClickHandler);
+        })
       };
       window.bindSearchPaneClickHandler=function(){
         $('.search--results').find('a:not(.js-external)').unbind('click').bind('click',window.asyncClickHandler);
@@ -46,18 +49,23 @@
         $('#js-install').unbind('click').bind('click',window.installpackage);
         $('#js-hideviewer').unbind('click').bind('click',window.hideViewer);
         $('#js-makedefault').unbind('click').bind('click',window.setDefault);
-        $( "form" ).unbind('submit').bind('submit',function(event) {
+        $( "form" ).each(function(){
+          $(this).unbind('submit').bind('submit',function(event) {
             event.preventDefault();
-            var action = $("form")[0].action;
+            var action = $(this)[0].action;
+            var dataToWrite= $(this).serialize();
             var type = "GET";
-            if (typeof $("form")[1] != 'undefined'){
-              action = $("form")[1].action;
+            var history = action + "?"+dataToWrite
+            if (!(action.indexOf("search")>-1)){
+              action = $(this)[1].action;
               type = "POST";
+              var history=action
             }
             else{
               window.queryTime=new Date();
+              dataToWrite= dataToWrite+'&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
             }
-            var dataToWrite= $(this).serialize();
+            window.pushHistory(history)
             $.ajax({
               type: type,
               url: action,
@@ -75,7 +83,6 @@
             }).then(function(html,textData,xhr){
               var url = type === 'GET' ? action + '?' + dataToWrite : action;
               if(action.indexOf("/login")>-1 && !window.loggedIn){
-                window.loggedIn=true;
                 _rStudioRequest('/rpc/execute_code','execute_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
                   ["write('"+dataToWrite+"', file = paste0(.libPaths()[1],'/Rdocumentation/config/creds.txt')) \n Rdocumentation::login()"])
                 .then(rerenderBody(html,true, url));
@@ -84,12 +91,16 @@
                 rerenderBody(html,true, url);
               }
             });
+          });
         });
       }
 
       // Helper function to grab new HTML
       // and replace the content
-      window.replacePage = function(url,rebind) {
+      window.replacePage = function(url,rebind,addToHistory) {
+        if(addToHistory){
+          window.pushHistory(url)
+        }
         if(url.indexOf('#')>=0){
           url = url.substring(url.indexOf('#'),url.length);
           document.getElementById(url).scrollIntoView();
@@ -107,7 +118,7 @@
             url=url+'?viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           return $.ajax({
-            url : base+url,
+            url : base +url,
             type: 'GET',
             dataType:"html",
             cache: false,
