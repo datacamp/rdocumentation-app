@@ -1,6 +1,6 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <% var topic = data; %>
-<section data-package-name="<%=topic.package_version.package_name%>" class="packageData" itemscope itemtype="http://schema.org/SoftwareApplication"></section>
+<section data-package-name="<%=topic.package_version.package_name%>" data-latest-version="<%=topic.package_version.version%>" class="packageData" itemscope itemtype="http://schema.org/SoftwareApplication"></section>
 <section class="topic">
   <div class="container-fluid">
     <header class='topic--header'>
