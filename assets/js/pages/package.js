@@ -196,8 +196,8 @@ window.redrawChart = function(days){
 
 
 window.makeSlider = function(){
-  $(".slider").click(function(){
-    var slider = $(".slider");
+  $(".slider-icon").click(function(){
+    var slider = $(".slider-icon");
     if(slider.hasClass("fa-angle-down")){
       slider.removeClass("fa-angle-down");
       slider.addClass("fa-angle-up");
