@@ -9,8 +9,12 @@
         <h1><%- collaborator.name %></h1>
       </span>
       <div class="collaborator-details">
-          <span class="downloads-nr">
-            <span id="impactnr" class='percentile'><%= Math.round(collaborator.impact*100)+"th" %></span>
+          <span class="depsy" style = "display: none" data-url="/api/collaborators/name/<%- collaborator.name %>/depsy">
+            <span id="impactnr" class='percentile'></span>
+            <p id="impact">percentile impact</p>
+          </span>
+          <span class="downloads-nr" style = "display: none" data-url="/api/collaborators/name/<% console.log(collaborator) %>/depsy">
+            <span id="impactnr" class='percentile'></span>
             <p id="impact">percentile impact</p>
           </span>
       </div>

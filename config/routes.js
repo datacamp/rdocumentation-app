@@ -105,6 +105,7 @@ module.exports.routes = {
     // API
     'get /api/collaborators/:id': 'CollaboratorController.findById',
     'get /api/collaborators/:id/downloads': 'CollaboratorController.getNumberOfDirectDownloads',
+    'get /api/collaborators/name/:name/depsy' : 'CollaboratorController.getDepsyData',
     // HTML
     'get /collaborators/:id': 'CollaboratorController.findById',
     'get /collaborators/name/:name': 'CollaboratorController.findByName',

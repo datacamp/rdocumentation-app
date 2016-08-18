@@ -69,9 +69,15 @@
 
 #impact{
   width:60px;
+  line-height: 100%;
 }
 
 #impactnr{
   margin-top : 0em;
   font-size  : 2em;
+}
+
+.depsy{
+  display: flex;
+  align-items: center;
 }

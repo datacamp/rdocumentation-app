@@ -89,17 +89,7 @@ var self = module.exports = {
         json.gravatar_url = 'https://www.gravatar.com/avatar/' + md5(_.trim(json.email).toLowerCase());
         json.packages = _.sortBy(json.packages, ['is_maintainer']);
         json.repositories = repositories;
-        request("http://depsy.org/api/search/"+name,function(error,response,body){
-          var resjson = JSON.parse(body);
-          if(resjson.count>0){
-            var id = resjson.list[0].id;
-            request("http://depsy.org/api/person/"+id,function(error,response,body){
-              var resjson = JSON.parse(body);
-              json.impact = resjson.impact_percentile;
-              return res.ok(json,"collaborator/show.ejs");
-            });
-          }
-        });
+        return res.ok(json,"collaborator/show.ejs");
       }
     });
   },
@@ -109,6 +99,21 @@ var self = module.exports = {
       res.json({
         total:results[0]
       });
+    });
+  },
+  getDepsyData: function(req,res){
+    var name = req.param('name');
+    request("http://depsy.org/api/search/"+name,function(error,response,body){
+      var resjson = JSON.parse(body);
+      if(resjson.count>0){
+        var id = resjson.list[0].id;
+        request("http://depsy.org/api/person/"+id,function(error,response,body){
+          var json = JSON.parse(body);
+          return res.json(json);
+        });
+      }else{
+        return res.json({});
+      }
     });
   }
 };
