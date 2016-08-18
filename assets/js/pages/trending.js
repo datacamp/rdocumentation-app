@@ -1,4 +1,4 @@
-trendingPackagesLastWeek = function(){
+window.trendingPackagesLastWeek = function(){
 	var getData = function(data_url, callback) {
     return $.get(data_url, callback);
   };

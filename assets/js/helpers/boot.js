@@ -13,7 +13,7 @@ $(document).ready(function() {
     $.getScript("http://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.min.js",function(){
       window.makeSlider();
       window.bindTabs();
-      trendingPackagesLastWeek();
+      window.trendingPackagesLastWeek();
       trendingKeywords();
       dependencyGraph();
     });
