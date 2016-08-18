@@ -84,8 +84,8 @@ dependencyGraph = function(){
   };
 	nv.addGraph({
         generate: function() {
-            var width = nv.utils.windowSize().width - 40,
-                height = nv.utils.windowSize().height - 40;
+            var width = nv.utils.windowSize().width,
+                height = nv.utils.windowSize().height;
             var d3Colors = d3.scale.category20();
             var chart = nv.models.forceDirectedGraph()
                 .width(width)
@@ -105,18 +105,14 @@ dependencyGraph = function(){
               .datum(data)
               .call(chart);
       });
-            
+
             return chart;
     },
         callback: function(graph) {
             window.onresize = function() {
-                var width = nv.utils.windowSize().width - 40,
-                    height = nv.utils.windowSize().height - 40,
+                var width = nv.utils.windowSize().width,
+                    height = nv.utils.windowSize().height,
                     margin = graph.margin();
-                if (width < margin.left + margin.right + 20)
-                    width = margin.left + margin.right + 20;
-                if (height < margin.top + margin.bottom + 20)
-                    height = margin.top + margin.bottom + 20;
                 graph.width(width).height(height);
                 d3.select('#dependencygraph svg')
                     .attr('width', width)
