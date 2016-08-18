@@ -232,6 +232,7 @@ module.exports = {
 
 
   getPercentile: function(req, res) {
+
     var packageName = req.param('name');
 
     var lastMonthPercentiles = ElasticSearchService.cachedLastMonthPercentiles(res);

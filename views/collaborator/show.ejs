@@ -10,13 +10,15 @@
       </span>
       <div class="collaborator-details">
           <span class="depsy" style = "display: none" data-url="/api/collaborators/name/<%- collaborator.name %>/depsy">
-            <span id="impactnr" class='percentile'></span>
-            <p id="impact">percentile impact</p>
+            <span id ='impactnr' class='percentile infonr'></span>
+            <p class="info">percentile impact</p>
           </span>
-          <span class="downloads-nr" style = "display: none" data-url="/api/collaborators/name/<% console.log(collaborator) %>/depsy">
-            <span id="impactnr" class='percentile'></span>
-            <p id="impact">percentile impact</p>
+          <span class="direct-downloads" style = "display: none" data-url="/api/collaborators/name/<%- collaborator.name %>/downloads">
+            <span id ='direct-downloadsnr' class='infonr'></span>
+            <p class="info">direct downloads</p>
           </span>
+          <div class="top-collab-list">
+          </div>
       </div>
     </div>
 
@@ -26,22 +28,13 @@
           <% for(var i = 0; i < collaborator.packages.length; i++) { %>
             <% var maintained = collaborator.packages[i]; %>
             <div class='maintained-package'>
-              <a href='/packages/<%= maintained.package_name %>'><h4><%= maintained.package_name %></h4></a>
-              <p><%= maintained.description %></p>
-              <dl>
-                <% if (maintained.release_date) { %>
-                <dt>Release date</dt>
-                <dd><%=: maintained.release_date | formatDate %></dd>
-                <% } %>
-                <% if (maintained.license) { %>
-                <dt>License</dt>
-                <dd><%= maintained.license %></dd>
-                <% } %>
-                <% if (maintained.url) { %>
-                <dt>Url</dt>
-                <dd><%- maintained.url.autoLink({target:'_blank'}) %></dd>
-                <% } %>
-              </dl>
+              <h4><a href='/packages/<%= maintained.package_name %>'><%= maintained.package_name %></a> 
+              <span class="percentile-task" data-url="/api/packages/<%- maintained.package_name %>/percentile" >
+                &nbsp;  &nbsp; <span class='percentile'>0th</span>
+                Percentile
+              </span>
+              </h4>
+              <p><b>Description: </b><%= maintained.description %></p>
             </div>
           <% } %>
       </div>

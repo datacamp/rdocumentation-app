@@ -21,7 +21,7 @@
   margin-top: 0em;
 
   .maintained-package {
-    margin-top: 2em;
+    margin-top: 3em;
     select {
       display: inline-block;
       font-size: 0.7rem;
@@ -67,12 +67,13 @@
   vertical-align: top;
 }
 
-#impact{
+.info{
   width:60px;
   line-height: 100%;
+  display: inline-block
 }
 
-#impactnr{
+.infonr{
   margin-top : 0em;
   font-size  : 2em;
 }
@@ -80,4 +81,16 @@
 .depsy{
   display: flex;
   align-items: center;
+  margin-bottom: -1em;
+}
+
+.top-collab-list{
+margin-top: 3em;
+margin-bottom: 2em;
+  a{
+    display: block;
+    font-size: 1.25em;
+    text-decoration: none;
+    border-bottom: none;
+  }
 }

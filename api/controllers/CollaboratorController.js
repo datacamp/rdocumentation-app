@@ -94,11 +94,9 @@ var self = module.exports = {
     });
   },
   getNumberOfDirectDownloads: function(req,res){
-    var id = req.param('id');
-    DownloadStatistic.getNumberOfDirectDownloads(id).then(function(results){
-      res.json({
-        total:results[0]
-      });
+    var name = req.param('name');
+    DownloadStatistic.getNumberOfDirectDownloads(name).then(function(results){
+      res.json(results[0]);
     });
   },
   getDepsyData: function(req,res){
