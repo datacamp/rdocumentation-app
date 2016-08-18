@@ -1,0 +1,47 @@
+<%- partial ('../shared/_navbar.ejs') %>
+<section class="trends">
+  <div class="container">
+    <div class="row top10">
+      <div class="col-md-3" id="top10downloads" style="display: none" data-url="/api/trends/mostpopular">
+        <h4>Top 10 - downloads</h4>
+        <table class = "data"></table>
+      </div>
+      <div class="col-md-3" id="top10maintainers" style="display: none" data-url="/api/trends/topcollaborators">
+        <h4>Top 10 - Maintainers</h4>
+        <table class = "data"></table>
+      </div>
+      <div class="col-md-3" id="top10new" style="display: none" data-url="/api/trends/newpackages">
+        <h4>New packages</h4>
+        <table class = "data"></table>
+      </div>
+      <div class="col-md-3" id="top10renew" style="display: none" data-url="/api/trends/newversions">
+        <h4>Last updated packages</h4>
+        <table class = "data"></table>
+      </div>
+    </div>
+
+    <div id="trendingdownloads" style="display: none" data-url="/api/trends/download">
+    <section>
+      <h4>Top 10 downloads per day</h4>
+    </section>
+      <svg></svg>
+    </div>
+
+    <div id="topkeywords" style="display: none" data-url="/api/trends/keyword">
+    <section>
+      <h4>Top RDocumentation keywords</h4>
+    </section>
+      <svg></svg>
+    </div>
+
+    <div id="dependencygraph" style="display: none" data-url="/api/trends/graph">
+    <section>
+      <h4>Dependency graph for top 10 direct downloads</h4>
+    </section>
+      <svg></svg>
+    </div>
+
+  </div>
+</section>
+
+<%- partial ('../shared/_footer.ejs') %>

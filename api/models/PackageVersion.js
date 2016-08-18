@@ -298,6 +298,14 @@ module.exports = {
           });
 
         });
+      },
+
+      getNewestPackages: function(){
+        return sequelize.query("SELECT package_name, min(release_date) as rel FROM PackageVersions where release_date < now() group by package_name order by rel Desc Limit 0,10",{type: sequelize.QueryTypes.SELECT });
+      },
+
+      getLatestUpdates: function(){
+        return sequelize.query("SELECT package_name, max(release_date) as rel FROM PackageVersions where release_date < now() group by package_name order by rel Desc Limit 0,10;",{type: sequelize.QueryTypes.SELECT });
       }
 
 

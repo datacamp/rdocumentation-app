@@ -42,6 +42,19 @@ module.exports.routes = {
     'get /packages/:name': 'PackageController.findByName',
   //***** /Package *****
 
+  //***** Trends *****
+    // startpage
+    'get /trends': {view: 'trends/show'},
+    // API
+    'get /api/trends/download': 'TrendsController.mostDownloaded',
+    'get /api/trends/keyword': 'TrendsController.topKeywords',
+    'get /api/trends/graph': 'TrendsController.dependencyGraph',
+    'get /api/trends/newpackages' : 'TrendsController.newPackages',
+    'get /api/trends/newversions' : 'TrendsController.newVersions',
+    'get /api/trends/mostpopular' : 'TrendsController.lastMonthMostDownloaded',
+    'get /api/trends/topcollaborators' : 'TrendsController.topCollaborators',
+  //***** /Trends *****
+
   //***** PackageVersion *****
     // API
     'get /api/packages/:name/versions/:version/downloads' : 'PackageVersion.getDownloadStatistics',

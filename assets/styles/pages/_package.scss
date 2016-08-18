@@ -58,9 +58,13 @@
     }
   }
 
-  #chart svg {
+  #chart svg, #trendingdownloads svg, #topkeywords svg{
     height: 400px;
   }
+  #dependencygraph svg{
+    height: 600px;
+  }
+
 
   .package--title--container {
     margin-bottom: $default-space;

@@ -24,6 +24,146 @@ module.exports = {
               "field" : "datetime",
               "interval" : "day"
           }
+      },
+       lastMonthTrends: function(n){
+        return {
+            "query": {
+              "filtered": {
+                "query": {
+                  "query_string": {
+                    "query": "*",
+                    "analyze_wildcard": true
+                  }
+                },
+                "filter": {
+                  "bool": {
+                    "must": [
+                      {
+                        "query": {
+                          "query_string": {
+                            "analyze_wildcard": true,
+                            "query": "*"
+                          }
+                        }
+                      },
+                      {
+                        "range": {
+                          "datetime": {
+                            "gte": "now-"+(30+n)+"d/d",
+                            "lte": "now-"+(1+n)+"d/d"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "size": 0,
+            "aggs": {
+              "lastweek": {
+                "date_histogram": {
+                  "field": "datetime",
+                  "interval": "1d",
+                  "min_doc_count": 1,
+                  "extended_bounds": {
+                    "min": "now-"+(30+n)+"d/d",
+                    "max": "now-"+(1+n)+"d/d"
+                  }
+                },
+                "aggs": {
+                  "day": {
+                    "terms": {
+                      "field": "package",
+                      "size": 10,
+                      "order": {
+                        "_count": "desc"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          };
+        },
+        topKeywords: {
+          "query": {
+            "filtered": {
+              "query": {
+                "query_string": {
+                  "analyze_wildcard": true,
+                  "query": "*"
+                }
+              },
+              "filter": {
+                "bool": {
+                  "must": [
+                    {
+                      "query": {
+                        "query_string": {
+                          "query": "*",
+                          "analyze_wildcard": true
+                        }
+                      }
+                    }
+                  ],
+                  "must_not": []
+                }
+              }
+            }
+          },
+          "size": 0,
+          "aggs": {
+            "top": {
+              "terms": {
+                "field": "keywords",
+                "size": 20,
+                "order": {
+                  "_count": "desc"
+                }
+              }
+            }
+          }
+        },
+      lastMonthMostDownloaded: {
+        "query": {
+          "filtered": {
+            "query": {
+              "query_string": {
+                "query": "*",
+                "analyze_wildcard": true
+              }
+            },
+            "filter": {
+              "bool": {
+                "must": [
+                  {
+                    "range": {
+                      "datetime": {
+                        "gte": "now-1M",
+                        "lte": "now",
+                        "format": "epoch_millis"
+                      }
+                    }
+                  }
+                ],
+                "must_not": []
+              }
+            }
+          }
+        },
+        "size": 0,
+        "aggs": {
+          "package": {
+            "terms": {
+              "field": "package",
+              "size": 10,
+              "order": {
+                "_count": "desc"
+              }
+            }
+          }
+        }
       }
     },
     filters: {
@@ -88,10 +228,19 @@ module.exports = {
               ]
             }
           }
-
         };
       }
     }
+  },
+
+  lastMonthMostDownloaded: function() {
+    var body = ElasticSearchService.queries.aggregations.lastMonthMostDownloaded;    
+    return es.search({
+      index: 'stats',
+      body: body
+    }).then(function(result){
+      return result.aggregations.package.buckets;
+    });
   },
 
   lastMonthPercentiles: function() {
@@ -166,6 +315,39 @@ module.exports = {
       body: body
     }).then(function(response) {
       return response.aggregations.last_month_per_day.buckets;
+    });
+  },
+
+  lastMonthPerDayTrending: function() {
+    var query = {
+      "query": ElasticSearchService.queries.filters.lastDaysStats(1),
+      size: 0
+    };
+    return es.search({
+      index: "stats",
+      body: query
+    }).then(function(lastDay){
+      var body;
+      if(lastDay.hits.total ==0){
+        body = ElasticSearchService.queries.aggregations.lastMonthTrends(1);
+      }
+      else{
+        body = ElasticSearchService.queries.aggregations.lastMonthTrends(0);
+      }
+      return es.search({
+        body: body
+      }).then(function(response) {
+        return response.aggregations.lastweek.buckets;
+      });
+
+    });
+  },
+  topKeywords: function() {
+    return es.search({
+      index: "rdoc",
+      body: ElasticSearchService.queries.aggregations.topKeywords
+    }).then(function(keywords){
+      return keywords.aggregations.top.buckets;
     });
   },
 
