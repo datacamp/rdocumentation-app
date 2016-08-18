@@ -17,6 +17,7 @@ module.exports = {
   *
   * @apiParam {String} packages the list of packages that the local help function of rstudio found a hit in
   * @apiParam {String} topic_names the list of topicnames that the local help function found a hit for
+  * @apiParam {String} aliases the alias query
   */
   normalHelp : function(req,res){
     //parse parameters
@@ -26,6 +27,13 @@ module.exports = {
     }
     else{
       packageNames =null;
+    }
+    var aliases = req.param('aliases');
+    if(typeof aliases != "undefined" && aliases.length>0){
+      aliases= aliases.split(",");
+    }
+    else{
+      aliases =null;
     }    
     var topicName = req.param('topic_names');
     if(typeof topicName != "undefined" && topicName.length>0){
@@ -34,10 +42,10 @@ module.exports = {
     else{
       topicNames =null;
     }
-    var topic = req.param("topic");
+    var topic = req.param("topic"); 
     //if topicNames and packageNames where found by the local help function, search for it in the specified packages (might be none)
     if(packageNames != null && topicNames != null){
-      return RStudioService.helpFindByTopicsAndPackages(topic,topicNames,packageNames).then(function(json){
+      return RStudioService.helpFindByTopicsAndPackages(topicNames,packageNames).then(function(json){
         if(json.length == 0){
           //with no results : fuzzy search
           return ElasticSearchService.helpSearchQuery(topic,['aliases'],true,2).then(function(json){
@@ -54,9 +62,29 @@ module.exports = {
         }
       });
     }
-    //if no results where found by the local help function
-    else{
+    //if no results where found by the local help function, if there was no problem with a package not found in the local library:
+    else if(packageNames==null){
       return RStudioService.helpFindByAlias(topic).then(function(json){
+        if(json.length == 0){
+          //with no results : fuzzy search
+          return ElasticSearchService.helpSearchQuery(topic,['aliases'],true,2).then(function(json){
+            return res.ok(json,'rStudio/topic_not_found.ejs');
+          });
+        }
+        //1 result : redirect to result
+        if(json.length == 1){
+          return res.ok(json[0],'topic/show.ejs');
+        }
+        else{
+          //multiple results :show options
+          return res.ok(json,'rStudio/list_options.ejs');
+        }
+      });
+    }
+    //if there was a problem with a package not found in the local library:
+        //if no results where found by the local help function, if there was no problem with a package not found in the local library:
+    else {
+      return RStudioService.helpFindByAliasAndPackage(topic,packageNames).then(function(json){
         if(json.length == 0){
           //with no results : fuzzy search
           return ElasticSearchService.helpSearchQuery(topic,['aliases'],true,2).then(function(json){
@@ -164,6 +192,9 @@ module.exports = {
           //multiple results :show options
           return res.ok(json,'rStudio/list_options.ejs');
         }
+      })
+      .catch(function(err){
+        console.log(err.message);
       });
     }
     

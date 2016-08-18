@@ -1,0 +1,26 @@
+<h4>Topics</h4>
+<span class="search-result--index pull-right" id="functiontotal"><%= data.hits %> results</span>
+<div class="search-result--results">
+<% for (var i = 0; i < data.functions.length; i++) { %>
+    <% var hit = data.functions[i]; %>
+    <% var versionURI = '/packages/' + encodeURIComponent(hit.fields.package_name) + '/versions/' + encodeURIComponent(hit.fields.version); %>
+    <section class='search-result--item'>
+        <h5 class="search-result--item-header">
+            <a href="<%= versionURI + '/topics/' + encodeURIComponent(hit.fields.name)%>" >
+                <%= hit.fields.name %>
+            </a>
+        </h5>
+        <span class="margin-left">in <a href="<%=versionURI%>"> <%=hit.fields.package_name%> v<%=hit.fields.version %></a> by <a href="/collaborators/name/<%=hit.fields.maintainer%>"><%= hit.fields.maintainer %></a></span>
+        <dl>
+            <% for (var highlight in hit.highlight) { %>
+              <dt><%= highlight %> </dt>
+              <dd><%- hit.highlight[highlight].toString() %></dd>
+            <% } %>
+        </dl>
+    </section>
+<% } %>
+</div>
+<div class="search-result--pagination functionpages">
+  <a class='resultarrow left prec-function-page'><i class="fa fa-chevron-left"></i> Previous Results </a>
+  <a class='resultarrow pull-right right next-function-page'>Next Results <i class="fa fa-chevron-right"></i></a>
+</div>

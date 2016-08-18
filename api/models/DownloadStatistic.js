@@ -62,6 +62,21 @@ module.exports = {
       findLastIndexedDay: function() {
         return DownloadStatistic.max('date');
       },
+      AllStatsNDaysAgo:function(last_day,nb_days,package_name) {
+        return DownloadStatistic.findAll({
+          attributes:[[sequelize.fn('SUM', sequelize.col('direct_downloads')),"sum_direct"],[sequelize.fn('SUM', sequelize.col('indirect_downloads')),"sum_indirect"]],
+          where:{
+            package_name:package_name,
+            date:{
+              $gte:new Date(new Date(last_day)-nb_days*24*60*60*1000)
+            }
+          },
+          group:["package_name"]
+        }).then(function(stats){
+          if(stats.length==0) return null;
+          return stats[0].dataValues
+        })
+      },
       lastMonthSplittedDownloadsPerDay:function(package_name){
         return DownloadStatistic.findAll({
           where:{
@@ -81,6 +96,10 @@ module.exports = {
             }
           },
         });
+      },
+
+      getMostPopular: function(){
+        return sequelize.query("SELECT package_name, SUM(direct_downloads) AS total FROM DownloadStatistics WHERE date >= current_date() - interval '1' month group by package_name order by total DESC limit 0,10",{type:sequelize.QueryTypes.SELECT});
       }
     }
   }

@@ -8,6 +8,19 @@
     height: 100%;
   }
 }
+
+.navbar-fixed-top {
+  top: 0;
+  position: fixed;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+}
+
+.navbar-fixed-placeholder {
+  height: 30px;
+}
+
   .navbar--title {
     display: table;
     height: 100%;
@@ -60,7 +73,6 @@
     width: $navbar-search-width;
     position: absolute;
     left: 50%;
-    top: 3px;
     transform: translateX(-50%);
 
     input {
@@ -75,7 +87,6 @@
 
   @media (max-width: 950px){
     .navbar--search{
-    top: 3px;
     float: right;
     left : initial;
     transform: initial;

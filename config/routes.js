@@ -42,11 +42,25 @@ module.exports.routes = {
     'get /packages/:name': 'PackageController.findByName',
   //***** /Package *****
 
+  //***** Trends *****
+    // startpage
+    'get /trends': {view: 'trends/show'},
+    // API
+    'get /api/trends/download': 'TrendsController.mostDownloaded',
+    'get /api/trends/keyword': 'TrendsController.topKeywords',
+    'get /api/trends/graph': 'TrendsController.dependencyGraph',
+    'get /api/trends/newpackages' : 'TrendsController.newPackages',
+    'get /api/trends/newversions' : 'TrendsController.newVersions',
+    'get /api/trends/mostpopular' : 'TrendsController.lastMonthMostDownloaded',
+    'get /api/trends/topcollaborators' : 'TrendsController.topCollaborators',
+  //***** /Trends *****
+
   //***** PackageVersion *****
     // API
     'get /api/packages/:name/versions/:version/downloads' : 'PackageVersion.getDownloadStatistics',
     'get /api/packages/:name/downloads' : 'PackageVersion.getDownloadStatistics',
     'get /api/packages/:name/versions/:version/percentile' : 'PackageVersion.getPercentile',
+    'get /api/packages/:name/versions/:version/topics/:topic/percentile' : 'PackageVersion.getPercentile',
     'get /api/packages/:name/percentile' : 'PackageVersion.getPercentile',
     'get /api/packages/:name/versions/:version/downloads/per_day_last_month' : 'PackageVersion.getLastMonthDownloadPerDay',
     'get /api/packages/:name/versions/:version/downloads/days/:days/per_day' : 'PackageVersion.getDownloadPerDayLastDays',
@@ -60,8 +74,10 @@ module.exports.routes = {
     'get /api/packages/:name/dependencies': 'PackageVersionController.getDependencyGraph',
     'get /api/packages/:name/versions/:version/reversedependencies': 'PackageVersionController.getReverseDependencyGraph',
     'get /api/packages/:name/reversedependencies': 'PackageVersionController.getReverseDependencyGraph',
+
     // HTML
     'get /packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
+    'get /packages/:name/versions/:version/readme': 'PackageVersion.readmePage',
   //***** /PackageVersion *****
 
   //***** Topic *****
@@ -118,9 +134,19 @@ module.exports.routes = {
   'get /rstudio/make_default':'RstudioController.makeDefault',
   'get /help/*':'RstudioController.redirect',
 
+  //Badges
+  'get /badges/version/:packageName':'BadgeController.getLatestVersion',
+  'get /badges/:downloadsKind/:packageName' :'BadgeController.getDownloadStatsBadge',
+  'get /badges/:downloadsKind/:period/:packageName' :'BadgeController.getDownloadStatsPeriodBadge',
+
   // Search
   'post /api/quick_search': 'SearchController.quickSearch',
   'get /search/keywords/:keyword': 'SearchController.keywordSearch',
-  'get /search': 'SearchController.fullSearch'
+  'get /search': 'SearchController.fullSearch',
+
+  'get /api/searchpackages' : 'SearchController.packageSearch',
+  'get /api/searchfunctions' : 'SearchController.functionSearch',
+  'get /search_packages' : 'SearchController.packageSearch',
+  'get /search_functions' : 'SearchController.functionSearch'
 
 };

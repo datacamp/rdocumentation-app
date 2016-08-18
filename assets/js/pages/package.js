@@ -2,7 +2,7 @@ window.packageVersionToggleHandler = function() {
   $('#packageVersionSelect').change(function(){
     var url = $(this).find('option:selected').data('uri');
     if(urlParam('viewer_pane') === '1'){
-      window.replacePage(url);
+      window.replacePage(url,true);
     } else {
       window.location.href = url;
     }
@@ -161,7 +161,7 @@ window.redrawChart = function(days){
   var url = $('#chart').data('url');
   url = url.substring(0,url.indexOf('/per_day_last_month'));
   url = url+'/days/'+days+'/per_day'
-  if(days<30){
+  if(days<31){
     getData(url, function(data) {
       var direct_serie = {
         key: "Direct downloads",
@@ -196,8 +196,8 @@ window.redrawChart = function(days){
 
 
 window.makeSlider = function(){
-  $(".slider").click(function(){
-    var slider = $(".slider");
+  $(".slider-icon").click(function(){
+    var slider = $(".slider-icon");
     if(slider.hasClass("fa-angle-down")){
       slider.removeClass("fa-angle-down");
       slider.addClass("fa-angle-up");
@@ -213,6 +213,19 @@ window.makeSlider = function(){
   });
 };
 
+window.bindTabs = function() {
+  $("#tab1").click(function(){
+    if(!$("#packagedependencygraph svg").hasClass("nvd3-svg")){
+      console.log('deps');
+      window.dependencyGraph();
+    }
+  });
+  $("#tab2").click(function(){
+    if(!$("#packagereversedependencygraph svg").hasClass("nvd3-svg")){
+      window.reverseDependencyGraph();
+    }
+  });
+};
 
 window.triggerIcon = function(){
   $("table").bind("sortEnd",function(){
@@ -235,67 +248,4 @@ window.triggerIcon = function(){
       }
     });
   })
-}
-
-
-
-$(document).ready(function() {
-  window.packageVersionToggleHandler();
-  window.makeSlider();
-  // add parser through the tablesorter addParser method
-  $.tablesorter.addParser({
-      // set a unique id
-      id: 'rating',
-      is: function(s) {
-          // return false so this parser is not auto detected
-          return false;
-      },
-      format: function(s) {
-          // format your data for normalization
-          return parseFloat(s);
-      },
-      // set type, either numeric or text
-      type: 'numeric'
-  });
-  $("table").tablesorter({
-        headers: {
-            2: {
-                sorter:'rating'
-            }
-        },
-        textExtraction: function (node){
-          if($(node).find("i").length>0){
-            var stars = $(node).find("i");
-            //console.log(stars);
-            var count = 0.0;
-            stars.each(function(i){
-              if($(this).hasClass("fa-star")){
-                count += 1.0;
-              }else if($(this).hasClass("fa-star-half-o")){
-                count += 0.5;
-              }
-            });
-            return ""+count;
-          }
-          return $(node).text();
-        }
-    });
-  window.triggerIcon();
-  $('#tabs').tabs({
-  active: 0
-  });
-  $("#show").click(function(){
-    $("#show").hide();
-    $("#details").find(".hidden").removeClass("hidden");
-  });
-  $("#tab1").click(function(){
-    if(!$("#packagedependencygraph svg").hasClass("nvd3-svg")){
-    window.dependencyGraph();
-  }
-  });
-  $("#tab2").click(function(){
-    if(!$("#packagereversedependencygraph svg").hasClass("nvd3-svg")){
-    window.reverseDependencyGraph();
-  }
-  });
-});
+};
