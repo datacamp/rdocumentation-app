@@ -29,10 +29,6 @@ task('test-extraction',['sails-load'], function(){
 });
 
 
-
-
-
-
 desc('Call a fn in sails');
 task('sitemap', ['sails-load'], {async: true}, function () {
 
@@ -201,7 +197,15 @@ task('download-statistics', ['sails-load'], {async: true}, function () {
   });
 });
 
-
+task('bioc-download-statistics', ['sails-load'], {async: true}, function () {
+  CronService.biocSplittedAggregatedDownloadstats(36).then(function(resp) {
+    console.log("Done !");
+    complete();
+  }).catch({message: "empty"}, function() {
+    console.log("No stats for this time range yet");
+    complete();
+  });
+});
 
 task('bootstrap-splitted-download-statistics', ['sails-load'], {async: true}, function () {
   var lastMonth = _.range(3, 28);

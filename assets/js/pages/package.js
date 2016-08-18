@@ -57,9 +57,19 @@ window.graphDownloadStatistics = function() {
         });
         nv.utils.windowResize(window.chart.update);
       }
-
-
-
+      else if($('#bioc_chart').data('url')) {
+        getData($('#bioc_chart').data('url'), function(data) {
+          var serie = {
+            key: "Downloads",
+            values: data
+          };
+          $('#bioc_chart').show();
+          d3.select('#bioc_chart svg')
+            .datum([serie])
+            .call(window.chart);
+        });
+        nv.utils.windowResize(window.chart.update);
+      }
       return window.chart;
   });
 
@@ -192,6 +202,24 @@ window.redrawChart = function(days){
     });
   }
     nv.utils.windowResize(window.chart.update);
+};
+
+window.redrawBiocChart = function(years){
+  var getData = function(data_url, callback) {
+    return $.get(data_url, callback);
+  };
+  var url = $('#bioc_chart').data('url');
+  url = url.substring(0,url.indexOf('/per_month_last_years')-1);
+  url = url+years+'/per_month_last_years'
+  getData(url, function(data) {
+    var serie = {
+      key: "Downloads",
+      values: data
+    };
+    chartData = d3.select('#bioc_chart svg').datum(data);
+    chartData.datum([serie]).transition().duration(500).call(window.chart);
+  });
+  nv.utils.windowResize(window.chart.update);
 };
 
 

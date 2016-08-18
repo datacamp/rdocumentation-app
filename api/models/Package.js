@@ -76,6 +76,7 @@ module.exports = {
       }
     },
     underscored: true,
+
     classMethods: {
       getLatestVersionNumber :function(package_name){
         return Package.findOne({
@@ -88,6 +89,16 @@ module.exports = {
           where:{
             name:package_name
           }
+        });
+      },
+
+      getAllNamesOfType:function(type){
+        return Package.findAll({
+          where:{type_id:type}
+        }).then(function(packages){
+          return _.map(packages,function(package){
+            return package.dataValues.name;
+          })
         })
       }
     }

@@ -71,13 +71,22 @@
       <%}%>
 
       <div class="col-md-4 col-sm-<%= inViewerPane ? '8' : '4'%> col-xs-12">
-        <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
+        <%if(pkgVersion.package['type_id'] == 2){ %>
+          <div class="downloads download-task" data-url="/api<%= path %>/bioc/downloads/splitted">
           <span class="downloads-nr" >
-            <span class='indeps'>0</span>
-            <i class="fa fa-info-circle" aria-hidden="false"></i>
+          <span class='indeps'>0</span>
+            <i class="fa fa-info-circle distinct-ip-downloads" aria-hidden="false"></i>
           </span>
+        <%} else {%>
+          <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
+          <span class="downloads-nr" >
+          <span class='indeps'>0</span>
+            <i class="fa fa-info-circle direct-downloads" aria-hidden="false"></i>
+          </span>
+        <%}%>
           <p>Monthly downloads</p>
         </div>
+        <%if(pkgVersion.package['type_id'] == 1){ %>
         <div class="downloads" id = "percentile-arrow">
           <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
         </div>
@@ -87,6 +96,7 @@
           </span>
           <p>Percentile</p>
         </div>
+        <%}%>
       </div>
     </header>
 
@@ -94,11 +104,16 @@
 
       <div id="tabs" class="row">
         <ul class="tabs">
-          <li><a href="#chart" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
-            <li><a id="tab1" href="#packagedependencygraph" class="js-external js-tab">Dependency graph</a></li>
-            <li><a id="tab2" href="#packagereversedependencygraph" class="js-external js-tab">Reverse dependency graph</a></li>
+          <% if(pkgVersion.package['type_id'] == 1){%>
+            <li><a href="#chart" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
+          <%} else if(pkgVersion.package['type_id']==2){%>
+            <li><a href="#bioc_chart" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
+          <%}%>
+          <li><a id="tab1" href="#packagedependencygraph" class="js-external js-tab">Dependency graph</a></li>
+          <li><a id="tab2" href="#packagereversedependencygraph" class="js-external js-tab">Reverse dependency graph</a></li>
         </ul>
-        <div class='tabs--content' id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
+        <% if(pkgVersion.package['type_id'] == 1){%>
+          <div class='tabs--content' id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
           <select onchange="window.redrawChart(this.value)">
             <option value=7>Last week</option>
             <option selected="selected" value=30>Last month</option>
@@ -106,6 +121,15 @@
           </select>
           <svg></svg>
         </div>
+        <%} else if(pkgVersion.package['type_id']==2){%>
+          <div class='tabs--content' id="bioc_chart" style="display: none" data-url="/api<%= path %>/downloads/bioc/years/1/per_month_last_years">
+          <select onchange="window.redrawBiocChart(this.value)">
+            <option selected="selected" value=1>Last year</option>
+            <option value=2>Last 2 years</option>
+            <option value=3>Last 3 years</option>
+          </select>
+          <svg></svg>
+        <%}%>
 
           <div class='tabs--content' id="packagedependencygraph" style="dislay:none" data-url="/api<%= path %>/dependencies">
             <svg></svg>
