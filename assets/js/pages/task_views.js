@@ -62,15 +62,10 @@ pagination = function(){
 sortTable = function(){
   $.getScript("http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.2/js/jquery.tablesorter.js",function(){
     $("table.taskviewtable").tablesorter({
-            headers: {
-              3: {
-                  sorter:'rating'
-              }
-          },
           textExtraction: function (node){
             if($(node).find(".rating").length>0){
               return ($(node).find(".rating").data('rating'));
-            }else if($(node).find(".percentile-task".length>0)){
+            }else if($(node).find(".percentile-task").length>0){
               return $(node).find(".percentile-task").data('percentile');
             }
             return $(node).text();
