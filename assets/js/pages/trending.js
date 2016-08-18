@@ -124,48 +124,56 @@ dependencyGraph = function(){
 }
 
 top10Downloads = function(){
-  $this1 = $("#top10downloads");
-  $.get($this1.data('url'),function(data){
-    data.results.forEach(function(piece,i){
-      var j = i+1;
-      $this1.find(".data").append("<tr><td>"+j+". <a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a></tr></td>");
+  var $this = $("#top10downloads");
+  if ($this.length > 0) {
+    $.get($this.data('url'),function(data){
+      data.results.forEach(function(piece,i){
+        var j = i+1;
+        $this.find(".data").append("<tr><td>"+j+". <a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a></tr></td>");
+      });
+      $this.show();
     });
-    $this1.show();
-  });
-}
+  }
+};
 
 top10Maintainers = function(){
-  $this2 = $("#top10maintainers");
-  $.get($this2.data('url'),function(data){
-    data.results.forEach(function(piece,i){
-      var j = i+1;
-      $this2.find(".data").append("<tr><td>"+j+". <a href='/collaborators/name/"+piece.name+"'>"+piece.name+"</a></tr></td>");
+  var $this = $("#top10maintainers");
+  if ($this.length > 0) {
+    $.get($this.data('url'),function(data){
+      data.results.forEach(function(piece,i){
+        var j = i+1;
+        $this.find(".data").append("<tr><td>"+j+". <a href='/collaborators/name/"+piece.name+"'>"+piece.name+"</a></tr></td>");
+      });
+      $this.show();
     });
-    $this2.show();
-  });
-}
+  }
+};
 
 top10new = function(){
-  $this3 = $("#top10new");
-  $.get($this3.data('url'),function(data){
-    data.newArrivals.forEach(function(piece){
-      var release = new Date(piece.rel);
-      $this3.find(".data").append("<tr><td><a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a><p class='info'>"+release.toDateString()+"</p></tr></td>");
+  var $this = $("#top10new");
+  if ($this.length > 0) {
+    $.get($this.data('url'),function(data){
+      data.newArrivals.forEach(function(piece){
+        var release = new Date(piece.rel);
+        $this.find(".data").append("<tr><td><a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a><p class='info'>"+release.toDateString()+"</p></tr></td>");
+      });
+      $this.show();
     });
-    $this3.show();
-  });
-}
+  }
+};
 
 top10renewed = function(){
-  $this4 = $("#top10renew");
-  $.get($this4.data('url'),function(data){
-    data.newVersions.forEach(function(piece){
-      var release = new Date(piece.rel);
-      $this4.find(".data").append("<tr><td><a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a><p class='info'>"+release.toDateString()+"</p></tr></td>");
+  var $this = $("#top10renew");
+  if ($this.length > 0) {
+    $.get($this.data('url'),function(data){
+      data.newVersions.forEach(function(piece){
+        var release = new Date(piece.rel);
+        $this.find(".data").append("<tr><td><a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a><p class='info'>"+release.toDateString()+"</p></tr></td>");
+      });
+      $this.show();
     });
-    $this4.show();
-  });
-}
+  }
+};
 
 
 
