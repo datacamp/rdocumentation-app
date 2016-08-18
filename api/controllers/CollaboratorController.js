@@ -102,14 +102,23 @@ var self = module.exports = {
   getDepsyData: function(req,res){
     var name = req.param('name');
     request("http://depsy.org/api/search/"+name,function(error,response,body){
-      var resjson = JSON.parse(body);
-      if(resjson.count>0){
-        var id = resjson.list[0].id;
-        request("http://depsy.org/api/person/"+id,function(error,response,body){
-          var json = JSON.parse(body);
-          return res.json(json);
-        });
-      }else{
+      if(!error && response.statusCode == 200){
+        var resjson = JSON.parse(body);
+        if(resjson.count>0){
+          var id = resjson.list[0].id;
+          request("http://depsy.org/api/person/"+id,function(error,response,body){
+          if(!error && response.statusCode == 200){
+            var json = JSON.parse(body);
+            return res.json(json);
+          }else{
+            return res.json({});
+          }
+          });
+        }else{
+          return res.json({});
+        }
+      }
+      else{
         return res.json({});
       }
     });

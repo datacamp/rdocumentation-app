@@ -2,7 +2,6 @@ window.getPercentiles = function() {
   $('.percentile-task').each(function(elem) {
     var $self = $(this);
     var url = $self.data('url');
-    console.log(url);
     $.get(url, function(data){
       if(data.percentile != null){
       $self.find(".percentile").text(''+ data.percentile + 'th');
