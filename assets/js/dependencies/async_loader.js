@@ -36,7 +36,9 @@
       ************************************************************************************************************************************************/
 
       window.bindGlobalClickHandler = function(){        //unbinding seems to fail a lot in the Rstudio browser?!->be sure not to bind twice
-        $('a:not(.js-external)').unbind('click').bind('click', window.asyncClickHandler);
+        $('a:not(.js-external)').each(function(){
+          $(this).unbind('click').bind('click', window.asyncClickHandler);
+        })
       };
       window.bindSearchPaneClickHandler=function(){
         $('.search--results').find('a:not(.js-external)').unbind('click').bind('click',window.asyncClickHandler);
@@ -81,7 +83,6 @@
             }).then(function(html,textData,xhr){
               var url = type === 'GET' ? action + '?' + dataToWrite : action;
               if(action.indexOf("/login")>-1 && !window.loggedIn){
-                window.loggedIn=true;
                 _rStudioRequest('/rpc/execute_code','execute_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
                   ["write('"+dataToWrite+"', file = paste0(.libPaths()[1],'/Rdocumentation/config/creds.txt')) \n Rdocumentation::login()"])
                 .then(rerenderBody(html,true, url));
