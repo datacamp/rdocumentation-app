@@ -2,6 +2,11 @@
   min-height: 82%;
   .container {
     margin-top: $default-space;
+    margin-left: 5em;
+  }
+  .contributions{
+    margin-top: 0em;
+    margin-left: 0em;
   }
 
   header img,
@@ -13,10 +18,10 @@
 
 .collaborator--maintainer {
   @include clearfix;
-  margin-top: $default-space;
+  margin-top: 0em;
 
   .maintained-package {
-    height: 270px;
+    margin-top: 2em;
     select {
       display: inline-block;
       font-size: 0.7rem;
@@ -51,4 +56,22 @@
       }
     }
   }
+}
+
+.name{
+  h1{
+    font-size: 30px;
+  }
+  display: inline-block;
+  width: 200px;
+  vertical-align: top;
+}
+
+#impact{
+  width:60px;
+}
+
+#impactnr{
+  margin-top : 0em;
+  font-size  : 2em;
 }

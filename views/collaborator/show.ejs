@@ -2,22 +2,28 @@
 <% var collaborator = data; %>
 <section class="collaborator">
   <div class="container">
-    <header>
+    <div class = "row">
+    <div class ="col-md-4 name--block">
       <img src="<%- collaborator.gravatar_url + '?d=' + encodeURIComponent(process.env.BASE_URL + '/images/placeholder.png') %>" alt="<%- collaborator.name %>" width="80" height="80">
-      <h1><%- collaborator.name %></h1>
-    </header>
+      <span class="name">
+        <h1><%- collaborator.name %></h1>
+      </span>
+      <div class="collaborator-details">
+          <span class="downloads-nr">
+            <span id="impactnr" class='percentile'><%= Math.round(collaborator.impact*100)+"th" %></span>
+            <p id="impact">percentile impact</p>
+          </span>
+      </div>
+    </div>
 
-    <section class="collaborator--maintainer">
-      <h3>Contributed to</h3>
-      <div class="container">
-        <div class='row'>
+    <div class="col-md-8 collaborator--maintainer">
+      <div class="contributions">
+        <h3><%= collaborator.repositories.cran %> packages on Cran, <%= collaborator.repositories.github %> on github and <%= collaborator.repositories.bioconductor %> on bioconductor</h3>
           <% for(var i = 0; i < collaborator.packages.length; i++) { %>
             <% var maintained = collaborator.packages[i]; %>
-            <div class='maintained-package col-md-4'>
+            <div class='maintained-package'>
               <a href='/packages/<%= maintained.package_name %>'><h4><%= maintained.package_name %></h4></a>
-
-
-              <p><%= maintained.title %></p>
+              <p><%= maintained.description %></p>
               <dl>
                 <% if (maintained.release_date) { %>
                 <dt>Release date</dt>
@@ -34,9 +40,9 @@
               </dl>
             </div>
           <% } %>
-        </div>
       </div>
-    </section>
+    </div>
+    </div>
 
   </div>
 </section>
