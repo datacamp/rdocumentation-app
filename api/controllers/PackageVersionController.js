@@ -222,10 +222,8 @@ module.exports = {
     BiocDownloadStatistics.getMonthlySplittedDownloads(packageName).then(function(stats){
       return res.json({
         directDownloadsStr: numeral(stats[0].distinct_ips).format('0,0'),
-        indirectDownloadsStr: numeral(stats[0].downloads - stats[0].distinct_ips).format('0,0'),
         totalStr: numeral(stats[0].downloads).format('0,0'),
         directDownloads: stats[0].distinct_ips,
-        indirectDownloads: stats[0].downloads - stats[0].distinct_ips,
         total: stats[0].downloads
       });
     });
@@ -279,7 +277,7 @@ module.exports = {
         return {
           timestamp: d.date,
           key:"downloads",
-          count:d.downloads
+          count:d.distinct_ips
         };
       });
       return res.json(serie);

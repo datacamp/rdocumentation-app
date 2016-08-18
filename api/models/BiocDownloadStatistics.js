@@ -69,7 +69,7 @@ module.exports = {
           where:{
             package_name:package_name,
             date:{
-              $eq:new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
+              $gte: sequelize.literal("current_date() - interval '1' month")
             }
           },
         });
