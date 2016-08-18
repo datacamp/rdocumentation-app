@@ -216,6 +216,23 @@ module.exports = {
 
   },
 
+    getSplittedBiocDownloadStatistics : function(req,res){
+    var packageName = req.param('name');
+
+    BiocDownloadStatistics.getMonthlySplittedDownloads(packageName).then(function(stats){
+      return res.json({
+        directDownloadsStr: numeral(stats[0].distinct_ips).format('0,0'),
+        indirectDownloadsStr: numeral(stats[0].downloads - stats[0].distinct_ips).format('0,0'),
+        totalStr: numeral(stats[0].downloads).format('0,0'),
+        directDownloads: stats[0].distinct_ips,
+        indirectDownloads: stats[0].downloads - stats[0].distinct_ips,
+        total: stats[0].downloads
+      });
+    });
+
+  },
+
+
   getPercentile: function(req, res) {
     var packageName = req.param('name');
 
@@ -259,17 +276,12 @@ module.exports = {
     var years = req.param('years');
     BiocDownloadStatistics.lastYearsSplittedDownloadsPerMonth(packageName,years).then(function(data) {
       var serie = data.map(function(d) {
-        return [{
-          timestamp: d.date,
-          key:"distinct ip's",
-          count: d.distinct_ips,
-        },{
+        return {
           timestamp: d.date,
           key:"downloads",
-          count:d.downloads-d.distinct_ips
-        }];
+          count:d.downloads
+        };
       });
-      serie=[].concat.apply([],serie);
       return res.json(serie);
     });
   },

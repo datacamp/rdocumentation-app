@@ -58,7 +58,18 @@ module.exports = {
           where:{
             package_name:package_name,
             date:{
-              $gte:new Date(new Date()-years*365*24*60*60*1000)
+              $gte:new Date(new Date()-years*365*24*60*60*1000),
+              $lt:new Date()
+            }
+          },
+        });
+      },
+      getMonthlySplittedDownloads:function(package_name){
+        return BiocDownloadStatistics.findAll({
+          where:{
+            package_name:package_name,
+            date:{
+              $eq:new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
             }
           },
         });

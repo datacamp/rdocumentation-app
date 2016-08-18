@@ -59,21 +59,13 @@ window.graphDownloadStatistics = function() {
       }
       else if($('#bioc_chart').data('url')) {
         getData($('#bioc_chart').data('url'), function(data) {
-          var direct_serie = {
-            key: "Distinct ip's",
-            values: data.filter(function(e){
-              return e.key=="distinct ip's";
-            })
-          };
-          var indirect_serie = {
-            key: "Double ip's",
-            values: data.filter(function(e){
-              return e.key=="downloads";
-            })
+          var serie = {
+            key: "Downloads",
+            values: data
           };
           $('#bioc_chart').show();
           d3.select('#bioc_chart svg')
-            .datum([direct_serie,indirect_serie])
+            .datum([serie])
             .call(window.chart);
         });
         nv.utils.windowResize(window.chart.update);
@@ -220,20 +212,12 @@ window.redrawBiocChart = function(years){
   url = url.substring(0,url.indexOf('/per_month_last_years')-1);
   url = url+years+'/per_month_last_years'
   getData(url, function(data) {
-    var direct_serie = {
-      key: "Distinct ip's",
-      values: data.filter(function(e){
-        return e.key=="distinct ip's";
-      })
-    };
-    var indirect_serie = {
-      key: "Double ip's",
-      values: data.filter(function(e){
-        return e.key=="downloads";
-      })
+    var serie = {
+      key: "Downloads",
+      values: data
     };
     chartData = d3.select('#bioc_chart svg').datum(data);
-    chartData.datum([direct_serie,indirect_serie]).transition().duration(500).call(window.chart);
+    chartData.datum([serie]).transition().duration(500).call(window.chart);
   });
   nv.utils.windowResize(window.chart.update);
 };
