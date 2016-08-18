@@ -178,7 +178,4 @@ $(document).ready(function(){
   top10renewed();
   top10new();
   top10Maintainers();
-  trendingPackagesLastWeek();
-	trendingKeywords();
-	dependencyGraph();
 });
