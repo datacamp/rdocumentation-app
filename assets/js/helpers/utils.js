@@ -33,6 +33,7 @@ window.activateTabs = function(id) {
   $(id).find('a').prop('href', function(){
     return window.location.href + $(this).attr('href');
   }).end().tabs({
+    active:0,
     'beforeLoad':function(event,ui){
       event.preventDefault();
     }

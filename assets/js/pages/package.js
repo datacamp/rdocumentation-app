@@ -230,9 +230,10 @@ window.makeSlider = function(){
       slider.removeClass("fa-angle-down");
       slider.addClass("fa-angle-up");
       $(".sliding").slideDown();
+      $( '#tab0' ).click();
       if(!$("#chart svg").hasClass("nvd3-svg")){
-      window.graphDownloadStatistics();
-    }
+        window.graphDownloadStatistics();
+      }
     }else{
       slider.removeClass("fa-angle-up");
       slider.addClass("fa-angle-down");
