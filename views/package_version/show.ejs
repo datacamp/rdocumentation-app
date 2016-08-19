@@ -1,4 +1,3 @@
-<%- partial ('../shared/_navbar.ejs') %>
 <% var pkgVersion = data; %>
 <section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>" class="package packageData" itemscope itemtype="http://schema.org/SoftwareApplication">
   <div id="package--container" class="container-fluid">
@@ -245,5 +244,3 @@
 
   </div>
 </section>
-
-<%- partial ('../shared/_footer.ejs') %>

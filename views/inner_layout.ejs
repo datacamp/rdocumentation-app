@@ -1,0 +1,11 @@
+<% if (path === '/') { %>
+  <%- body %>
+<% } else { %>
+
+  <div class="page-wrap">
+      <%- partial ('shared/_navbar.ejs') %>
+    <%- body %>
+  </div>
+
+  <%- partial ('shared/_footer.ejs') %>
+<% } %>
