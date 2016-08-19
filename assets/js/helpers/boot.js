@@ -14,6 +14,7 @@ $(document).ready(function() {
         $('.downloads').css({'visibility': 'visible'});
       });
   });
+  $(".top10").find(".fa-info-circle").tooltip({placement: "bottom"});
   $.getScript("http://code.jquery.com/ui/1.12.0/jquery-ui.js", function(){
     window.triggerIcon();
     $("#show").click(function(){

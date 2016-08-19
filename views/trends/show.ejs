@@ -1,13 +1,14 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <section class="trends">
   <div class="container">
+  <h1> Leaderboard </h4>
     <div class="row top10">
       <div class="col-md-3" id="top10downloads" style="display: none" data-url="/api/trends/mostpopular">
-        <h4>Top 10 - downloads</h4>
+        <h4>Top 10 - downloads  <i class="fa fa-info-circle" aria-hidden="false" title="Ranking based on the direct downloads of last month."></i></h4>
         <table class = "data"></table>
       </div>
       <div class="col-md-3" id="top10maintainers" style="display: none" data-url="/api/trends/topcollaborators">
-        <h4>Top 10 - Maintainers</h4>
+        <h4>Top 10 - Maintainers  <i class="fa fa-info-circle" aria-hidden="false" title="Ranking based on the direct downloads in the last month of the packages maintained by the given person."></i></h4>
         <table class = "data"></table>
       </div>
       <div class="col-md-3" id="top10new" style="display: none" data-url="/api/trends/newpackages">
@@ -20,21 +21,21 @@
       </div>
     </div>
 
-    <div id="trendingdownloads" style="display: none" data-url="/api/trends/download">
+    <div id="trendingdownloads" class= "graph" style="display: none" data-url="/api/trends/download">
     <section>
       <h4>Top 10 downloads per day</h4>
     </section>
       <svg></svg>
     </div>
 
-    <div id="topkeywords" style="display: none" data-url="/api/trends/keyword">
+    <div id="topkeywords" class = "graph" style="display: none" data-url="/api/trends/keyword">
     <section>
       <h4>Top RDocumentation keywords</h4>
     </section>
       <svg></svg>
     </div>
 
-    <div id="dependencygraph" style="display: none" data-url="/api/trends/graph">
+    <div id="dependencygraph" class = "graph" style="display: none" data-url="/api/trends/graph">
     <section>
       <h4>Dependency graph for top 10 direct downloads</h4>
     </section>

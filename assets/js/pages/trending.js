@@ -129,7 +129,7 @@ top10Downloads = function(){
     $.get($this.data('url'),function(data){
       data.results.forEach(function(piece,i){
         var j = i+1;
-        $this.find(".data").append("<tr><td>"+j+". <a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a></tr></td>");
+        $this.find(".data").append("<tr><td>"+j+". <a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a><p class ='info'>" + piece.total + "</p></tr></td>");
       });
       $this.show();
     });
@@ -142,7 +142,7 @@ top10Maintainers = function(){
     $.get($this.data('url'),function(data){
       data.results.forEach(function(piece,i){
         var j = i+1;
-        $this.find(".data").append("<tr><td>"+j+". <a href='/collaborators/name/"+piece.name+"'>"+piece.name+"</a></tr></td>");
+        $this.find(".data").append("<tr><td>"+j+". <a href='/collaborators/name/"+piece.name+"'>"+piece.name+"</a><p class ='info'>" + piece.total + "</p></tr></td>");
       });
       $this.show();
     });
