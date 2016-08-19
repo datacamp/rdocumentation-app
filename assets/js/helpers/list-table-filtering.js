@@ -9,7 +9,7 @@ $(document).ready(function() {
     };
     var indexColumn = 0, // Search for values in the first column
     searchWords = this.value.split(" "),
-    rows = $("#filterableItems").find("tr");
+    rows = $("#filterableItems").find("tr").not(".no-results");
 
     rows.hide();
     //Recusively filter the jquery object to get results.
@@ -39,7 +39,7 @@ $(document).ready(function() {
     };
     var indexColumn = 1, // Search for values in the second  column
     searchWords = this.value.split(" "),
-    rows = $("#filterableItems").find("tr");
+    rows = $("#filterableItems").find("tr").not(".no-results");
 
     rows.hide();
     //Recusively filter the jquery object to get results.
