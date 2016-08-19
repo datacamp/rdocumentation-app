@@ -66,11 +66,16 @@ module.exports = {
     var authors = {contributors : []};
 
     if(descriptionJSON["Authors@R"] && descriptionJSON["Authors@R"].indexOf("as.person(")==-1) {
-      authors = AuthorService.recoverAuthorsR(descriptionJSON);
+      authors = AuthorService.recoverAuthorsR(descriptionJSON["Authors@R"]);
     }
     else {
       if(descriptionJSON.Author){
-        authors.contributors = AuthorService.authorsSanitizer(descriptionJSON.Author);
+        if(descriptionJSON.Author.indexOf("person(") !== -1) {
+          authors.contributors = AuthorService.recoverAuthorsR(json.Author).contributors;
+        }
+        else {
+          authors.contributors = AuthorService.authorsSanitizer(descriptionJSON.Author);
+        }
       }
       if(descriptionJSON.Maintainer) {
         authors.maintainer = AuthorService.authorsSanitizer(descriptionJSON.Maintainer)[0];
