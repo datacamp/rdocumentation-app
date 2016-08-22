@@ -213,6 +213,18 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
             <tr>
               <td><a href="<%= path + '/topics/' + encodeURIComponent(topic.name) %>"><%= topic.name %></a></td>
               <td><%= striptags(topic.title) %></td>
+              <td>
+                  <% var rating = topic.reviews.length > 0 ? lodash.meanBy(topic.reviews, 'rating') : 0; %>
+                  <div class="rating" data-rating= "<%- rating %>">
+                  <% for(var j=1; j <= 5; j++) { %>
+                    <i class="fa fa-star<%=
+                     rating < j ?
+                      rating <= j - 0.5 ? "-o" : "-half-o"
+                      : ""
+                    %>" aria-hidden="true"></i>
+                  <% } %>
+                </div>
+              </td>
             </tr>
           <% } %>
           <tr class="no-results"><td colspan="3">No Results!</td></tr>
