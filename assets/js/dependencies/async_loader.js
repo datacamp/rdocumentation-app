@@ -14,9 +14,8 @@
             },
             crossDomain:true,
             success: function(data, textStatus, xhr) {
-              if(xhr.status== 200){
-                window.loggedIn = true
-              }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
             }
         })
       }
