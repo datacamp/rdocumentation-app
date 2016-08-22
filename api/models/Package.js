@@ -62,6 +62,13 @@ module.exports = {
         }
       }
     );
+
+    Package.hasMany(Star,
+      {
+        as: 'stars',
+        foreignKey: 'package_name'
+      }
+    );
   },
 
   options: {
