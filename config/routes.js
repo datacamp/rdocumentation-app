@@ -116,6 +116,11 @@ module.exports.routes = {
     'post /api/topics/:topicId/reviews': 'ReviewController.postReviewToTopic',
     'post /api/packages/:name/versions/:version/reviews': 'ReviewController.postReviewToVersion',
 
+  //***** Example *****
+    // API
+    'get /api/topics/:topicId/examples': 'ExampleController.findByTopic',
+    'post /api/topics/:topicId/examples': 'ExampleController.postExampleToTopic',
+
   //***** TaskViews *****
     // API
     'post /api/taskviews': 'TaskViewController.postView',

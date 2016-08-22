@@ -74,4 +74,5 @@ $(document).ready(function() {
           }
     });
   });
+  window.bootTopic();
 });

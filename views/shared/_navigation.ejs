@@ -1,4 +1,10 @@
-<ul class="navbar--navigation">
+<ul class="navbar--navigation largescreen">
+  <% if(!inViewerPane) { %>
+    <li><a href="https://github.com/datacamp/Rdocumentation" class="btn btn-secondary">R package</a></li>
+  <% } %>
+
+  <li><a href="/trends" class="btn btn-secondary">Leaderboard</a></li>
+
   <% if(typeof(user) === 'undefined') { %>
     <li><a href="/login" class="btn btn-primary">Sign in</a></li>
   <% } else { %>

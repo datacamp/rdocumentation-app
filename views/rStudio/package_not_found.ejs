@@ -1,4 +1,3 @@
-<%- partial ('../shared/_navbar.ejs') %>
 <% var packages = data; %>
 <section class="package">
   <div class="container">
@@ -17,7 +16,7 @@
           </thead>
           <tbody id="filterableItems">
             <% for(var i = 0; i < packages.length; ++i) { %>
-              <%var package = package[i];%>            
+              <%var package = package[i];%>
               <tr>
                 <td><a href="<%= '/packages/' + package.name +'/versions/'+package.version %>"><%= package.name %></td>
                 <td><%-package.description%></td>
@@ -26,9 +25,8 @@
             <tr class="no-results"><td colspan="3">No Results!</td></tr>
           </tbody>
         </table>
-      </section>  
+      </section>
       <%}%>
-    </header>    
+    </header>
   </div>
 </section>
-<%- partial ('../shared/_footer.ejs') %>

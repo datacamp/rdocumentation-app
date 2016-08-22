@@ -1,4 +1,3 @@
-<%- partial ('../shared/_navbar.ejs') %>
 <% var pkgVersion = data; %>
 <section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>" 
 data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="package packageData" itemscope itemtype="http://schema.org/SoftwareApplication">
@@ -203,7 +202,6 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
           <tr>
             <td>Name <i class="fa fa-sort" aria-hidden="true"></i></td>
             <td>Description <i class="fa fa-sort" aria-hidden="true"></i></td>
-            <td width="115">Rating <i class="fa fa-sort" aria-hidden="true"></i></td>
           </tr>
         </thead>
         <tbody id="filterableItems">
@@ -212,18 +210,6 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
             <tr>
               <td><a href="<%= path + '/topics/' + encodeURIComponent(topic.name) %>"><%= topic.name %></a></td>
               <td><%= striptags(topic.title) %></td>
-              <td>
-                <div class="rating">
-                  <% var rating = topic.reviews.length > 0 ? lodash.meanBy(topic.reviews, 'rating') : 0; %>
-                  <% for(var j=1; j <= 5; j++) { %>
-                    <i class="fa fa-star<%=
-                     rating < j ?
-                      rating <= j - 0.5 ? "-o" : "-half-o"
-                      : ""
-                    %>" aria-hidden="true"></i>
-                  <% } %>
-                </div>
-              </td>
             </tr>
           <% } %>
           <tr class="no-results"><td colspan="3">No Results!</td></tr>
@@ -240,11 +226,6 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
       </ul>
     </section>
 
-    <% var reviewPostAction = data.api_uri + '/reviews' %>
-    <%- include ../shared/_post_review.ejs %>
-
 
   </div>
 </section>
-
-<%- partial ('../shared/_footer.ejs') %>

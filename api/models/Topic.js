@@ -92,6 +92,8 @@ module.exports = {
       }
     });
 
+    Topic.hasMany(Example, { as: 'user_examples', foreignKey: 'topic_id' });
+
     Topic.belongsToMany(Tag, {as: 'keywords', through: 'TopicTags', foreignKey: 'topic_id', timestamps: false});
   },
 
@@ -147,7 +149,7 @@ module.exports = {
             {model: Section, as: 'sections', attributes: ['name', 'description', 'topic_id'], separate:true },
             {model: Tag, as: 'keywords', attributes: ['name']},
             {model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], separate: true },
-            {model: Review, as: 'reviews',
+            {model: Example, as: 'user_examples',
               include: [{model: User, as: 'user', attributes: ['username']}]
             },
             { model: PackageVersion,

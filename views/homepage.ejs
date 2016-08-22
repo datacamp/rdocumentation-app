@@ -7,10 +7,10 @@
       </a>
     </div>
 
-  <% if(!inViewerPane) { %>
-    <%- partial ('shared/_navigation.ejs') %>
-  <% } %>
-    </nav>
+    <% if(!inViewerPane) { %>
+      <%- partial ('shared/_navigation.ejs') %>
+    <% } %>
+  </nav>
 
   <div class="home--cta">
     <h1>Search all <%= data.nbPackages %> CRAN, BioConductor and Github packages.</h1>
