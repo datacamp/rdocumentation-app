@@ -1,6 +1,7 @@
 <%- partial ('../shared/_navbar.ejs') %>
 <% var pkgVersion = data; %>
-<section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>" class="package packageData" itemscope itemtype="http://schema.org/SoftwareApplication">
+<section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>" 
+data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="package packageData" itemscope itemtype="http://schema.org/SoftwareApplication">
   <div id="package--container" class="container-fluid">
     <header class='row'>
 

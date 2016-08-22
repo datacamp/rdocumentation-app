@@ -1,7 +1,13 @@
 $(function() {
   if(urlParam('viewer_pane') === '1' && !window.rstudioHistory){
-    window.rstudioHistory = [];
-    window.nextHistoryState = 0;
+    if(typeof(getUrlVars()["history"])=="undefined"){
+      window.rstudioHistory = [];
+      window.nextHistoryState = 0;
+    }
+    else{
+      window.rstudioHistory=decodeURIComponent(getUrlVars()["history"]).split(",")
+      window.nextHistoryState = 0;
+    }
     window.pushHistory = function(url){
       if(window.nextHistoryState == window.rstudioHistory.length){
         window.rstudioHistory.push(url)
@@ -35,13 +41,26 @@ $(function() {
         window.replacePage(url,true,false)
         window.nextHistoryState -=1;
       }
+      else if(window.nextHistoryState == 1){
+        historyParam=""
+        window.rstudioHistory.forEach(function(state,index){
+          if(index<rstudioHistory.length-1){
+            historyParam += encodeURIComponent(state+",")
+          }
+          else{
+            historyParam +=encodeURIComponent(state)
+          }
+        })
+        window.location.replace(window.location.href+"&history="+historyParam);
+        window.nextHistoryState-=1
+      }
     }
     window.bindHistoryNavigation = function(){
       $(".rstudio-back").bind("click",function(e){
         e.preventDefault();
         window.navigateBackward();
       })
-      if(!(window.nextHistoryState>1)){
+      if(!(window.nextHistoryState>0)){
         $(".rstudio-back-arrow").css("opacity","0.5")
       }
       $(".rstudio-forward").bind("click",function(e){
@@ -55,3 +74,17 @@ $(function() {
     window.bindHistoryNavigation();
   }      
 })
+
+// Read a page's GET URL variables and return them as an associative array.
+getUrlVars = function()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
