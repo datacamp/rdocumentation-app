@@ -34,7 +34,7 @@ module.exports = {
       if(req.wantsJSON && !(req.param('viewer_pane')==1)) {
         return res.created(instance.toJSON());
       } else {
-        FlashService.success(req, 'Review successfully added.');
+        FlashService.success(req, 'Example successfully added.');
         return res.redirect(sails.getUrlFor({ target: 'Topic.findById' })
           .replace(':id', topicId)
           .replace('/api/', '/')
