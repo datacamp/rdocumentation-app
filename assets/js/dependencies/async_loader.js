@@ -81,11 +81,8 @@
             }
             else{
               window.queryTime=new Date();
-              dataToWrite= dataToWrite+'&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
             }
-            if(action.indexOf("/reviews")>-1){
-              dataToWrite= dataToWrite+'&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
-            }
+            dataToWrite= dataToWrite+'&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
             window.pushHistory(history)
             $.ajax({
               type: type,
