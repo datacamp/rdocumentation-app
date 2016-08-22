@@ -3,21 +3,39 @@
   <div class="container">
   <h1> Leaderboard </h1>
     <div class="row top10">
-      <div class="col-md-3" id="top10downloads" style="display: none" data-url="/api/trends/mostpopular">
+      <div class="col-md-3" id="top10downloads" data-url="/api/trends/mostpopular">
         <h4>Top 10 - downloads  <i class="fa fa-info-circle" aria-hidden="false" title="Ranking based on the direct downloads of last month."></i></h4>
-        <table class = "data"></table>
+        <table class = "data">
+        <% data.mostPopular.forEach(function(package,j){ %>
+        <tr><td><%- j+1 %>. <a href='/packages/<%- package.package_name %>'><%- package.package_name %></a><p class ='info'><%- package.total %></p></tr></td>
+        <% }); %>
+        </table>
       </div>
-      <div class="col-md-3" id="top10maintainers" style="display: none" data-url="/api/trends/topcollaborators">
+      <div class="col-md-3" id="top10maintainers" data-url="/api/trends/topcollaborators">
         <h4>Top 10 - Maintainers  <i class="fa fa-info-circle" aria-hidden="false" title="Ranking based on the direct downloads in the last month of the packages maintained by the given person."></i></h4>
-        <table class = "data"></table>
+        <table class = "data">
+        <% data.topCollaborators.forEach(function(collaborator,j){ %>
+        <tr><td><%- j+1 %>. <a href='/collaborators/<%- collaborator.name %>'><%- collaborator.name %></a><p class ='info'><%- collaborator.total %></p></tr></td>
+        <% }); %>
+        </table>
       </div>
-      <div class="col-md-3" id="top10new" style="display: none" data-url="/api/trends/newpackages">
+      <div class="col-md-3" id="top10new" data-url="/api/trends/newpackages">
         <h4>New packages</h4>
-        <table class = "data"></table>
+        <table class = "data">
+        <% data.newPackages.forEach(function(package,j){ %>
+        <% var release = new Date(package.rel); %>
+        <tr><td><a href='/packages/<%- package.package_name %>'><%- package.package_name %></a><p class='info'><%- release.toDateString() %></p></tr></td>
+        <% }); %>
+        </table>
       </div>
-      <div class="col-md-3" id="top10renew" style="display: none" data-url="/api/trends/newversions">
+      <div class="col-md-3" id="top10renew" data-url="/api/trends/newversions">
         <h4>Last updated packages</h4>
-        <table class = "data"></table>
+        <table class = "data">
+        <% data.newVersions.forEach(function(package,j){ %>
+        <% var release = new Date(package.rel); %>
+        <tr><td><a href='/packages/<%- package.package_name %>'><%- package.package_name %></a><p class='info'><%- release.toDateString() %></p></tr></td>
+        <% }); %>
+        </table>
       </div>
     </div>
 
