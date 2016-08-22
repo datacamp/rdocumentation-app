@@ -1,9 +1,11 @@
 <% if (path === '/') { %>
+  <%- partial ('shared/_flash.ejs') %>
   <%- body %>
 <% } else { %>
 
   <div class="page-wrap">
       <%- partial ('shared/_navbar.ejs') %>
+    <%- partial ('shared/_flash.ejs') %>
     <%- body %>
   </div>
 

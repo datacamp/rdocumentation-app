@@ -178,28 +178,13 @@ module.exports = {
             { model: Topic, as: 'topics',
               attributes: ['package_version_id', 'name', 'title', 'id'],
               include:[{model: Review, as: 'reviews'}],
-              separate: true },
-            { model: Review, as: 'reviews', separate: true,
-              include: [{model: User, as: 'user', attributes: ['username', 'id']}]
-            }
+              separate: true }
           ],
           order: [[sequelize.fn('ORDER_VERSION', sequelize.col('PackageVersion.version')), 'DESC' ]]
         })
         .then(function(versionInstance) {
           if(versionInstance === null) return null;
-          return Review.findOne({
-            attributes: [[sequelize.fn('AVG', sequelize.col('rating')), 'rating']],
-            where: {
-              reviewable_id: versionInstance.id,
-              reviewable: 'version'
-            },
-            group: ['reviewable_id']
-          }).then(function(ratingInstance) {
-            if (ratingInstance === null) return versionInstance.toJSON();
-            var version = versionInstance.toJSON();
-            version.rating = ratingInstance.getDataValue('rating');
-            return version;
-          });
+          return versionInstance.toJSON();
         })
         .catch(function(err){
           console.log(err.message);

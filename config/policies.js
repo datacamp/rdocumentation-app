@@ -67,6 +67,10 @@ module.exports.policies = {
     '*': ['sessionAuth', 'flash']
   },
 
+  ExampleController: {
+    '*': ['sessionAuth', 'flash']
+  },
+
   UserController: {
     'me': ['sessionAuth', 'flash'],
     'create': ['flash'],
