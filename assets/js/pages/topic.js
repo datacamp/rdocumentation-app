@@ -22,7 +22,7 @@ window.bootTopic = function () {
   };
 
 
-  if ($("#postExampleText").length >= 1) {
+  if ($("#postExampleText").length >= 1 && !(urlParam("viewer_pane")==1)) {
     var simplemde = new SimpleMDE({
       element: $("#postExampleText")[0],
       previewRender: function(plainText, preview) {
@@ -42,7 +42,18 @@ window.bootTopic = function () {
     var markdown = $(this).html();
     var rendered =  marked(markdown, {renderer: renderer});
     $(this).html(rendered);
-    bootstrapDCL();
   });
+  if(urlParam("viewer_pane")==1){
+    $('[data-datacamp-exercise]').each(function(){
+      var r= $('<button type="button" class="visible-installed btn btn-primary js-external pull-right">Run codeblock </button>');
+      r.bind('click',function(){
+        window.executePackageCode($(this).prev().text())
+      })
+      $(this).append(r);
+    })
+  }
+  else{
+    bootstrapDCL();
+  }
 
 };
