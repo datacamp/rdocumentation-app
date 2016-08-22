@@ -1,6 +1,25 @@
   $(function() {
+    //extra login with ajax request is needed
     if(urlParam('viewer_pane') === '1' && !window.alreadyChecked==true){
       window.alreadyChecked=true;
+      var creds = "username="+decodeURIComponent(getUrlVars()['username'])+"&password=" + decodeURIComponent(getUrlVars()["password"])
+      if(getUrlVars()["username"]!=null && !window.loggedIn){
+        $.ajax({
+            type: 'POST',
+            url: '/login',
+            data: creds,
+            contentType:"application/x-www-form-urlencoded",
+            xhrFields: {
+              withCredentials: true
+            },
+            crossDomain:true,
+            success: function(data, textStatus, xhr) {
+              if(xhr.status== 200){
+                window.loggedIn = true
+              }
+            }
+        })
+      }
       console.log('*********************** AJAX MODE ***********************');
       var $pageBody = $('body');
       window.loggedIn = false;
@@ -13,7 +32,8 @@
       }
 
       var rerenderBody = function(html,rebind, url){
-        var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "").replace(/<\/body[\S\s]*$/i, "");
+        var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "");
+        body = body.replace(/<\/body[\S\s]*$/i, "");
         //apparently the rule below refires document.ready after replacing, thus the alreadyChecked boolean
         $('body').attr("url", url);
         $pageBody.html(body);
@@ -57,12 +77,14 @@
             var type = "GET";
             var history = action + "?"+dataToWrite
             if (!(action.indexOf("search")>-1)){
-              action = $(this)[1].action;
               type = "POST";
               var history=action
             }
             else{
               window.queryTime=new Date();
+              dataToWrite= dataToWrite+'&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
+            }
+            if(action.indexOf("/reviews")>-1){
               dataToWrite= dataToWrite+'&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
             }
             window.pushHistory(history)
@@ -71,10 +93,10 @@
               url: action,
               data: dataToWrite,
               contentType:"application/x-www-form-urlencoded",
-              crossDomain:true,
               xhrFields: {
                 withCredentials: true
               },
+              crossDomain:true,
               success: function(data, textStatus, xhr) {
                 if(xhr.status==200){
                   return data;
@@ -83,8 +105,8 @@
             }).then(function(html,textData,xhr){
               var url = type === 'GET' ? action + '?' + dataToWrite : action;
               if(action.indexOf("/login")>-1 && !window.loggedIn){
-                _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
-                  ["write('"+dataToWrite+"', file = paste0(.libPaths()[1],'/Rdocumentation/config/creds.txt')) \n Rdocumentation::login()"])
+                _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
+                  ["write('"+dataToWrite+"', file = paste0(find.package('Rdocumentation'),'/config/creds.txt')) \n Rdocumentation::login()"])
                 .then(rerenderBody(html,true, url));
               }
               else{
@@ -256,3 +278,17 @@ _rStudioRequest=function(url,method,shared_secret,port,params){
     }
   });
 };
+
+// Read a page's GET URL variables and return them as an associative array.
+getUrlVars = function()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}

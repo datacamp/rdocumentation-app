@@ -188,7 +188,7 @@ module.exports = {
         reviewable_id: packageVersionInstance.id
       }).then(function(instance) {
         RedisClient.del('view_package_version_' + packageName + '_' + packageVersion);
-        if(req.wantsJSON) {
+        if(req.wantsJSON && !req.param("viewer_pane")==1) {
           return res.created(instance.toJSON());
         } else {
           FlashService.success(req, 'Review successfully added.');
