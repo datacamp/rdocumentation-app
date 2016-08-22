@@ -105,9 +105,9 @@
       <div id="tabs" class="row">
         <ul class="tabs">
           <% if(pkgVersion.package['type_id'] == 1){%>
-            <li><a href="#chart" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
+            <li><a id="tab0" href="#chart" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
           <%} else if(pkgVersion.package['type_id']==2){%>
-            <li><a href="#bioc_chart" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
+            <li><a id ="tab0" href="#bioc_chart" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
           <%}%>
           <li><a id="tab1" href="#packagedependencygraph" class="js-external js-tab">Dependency graph</a></li>
           <li><a id="tab2" href="#packagereversedependencygraph" class="js-external js-tab">Reverse dependency graph</a></li>

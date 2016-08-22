@@ -11,8 +11,8 @@ $(document).ready(function() {
   });
   $.getScript("http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js",function(){
     $.getScript("http://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.min.js",function(){
-      window.makeSlider();
       window.bindTabs();
+      window.makeSlider();
       window.trendingPackagesLastWeek();
       trendingKeywords();
       dependencyGraph();
