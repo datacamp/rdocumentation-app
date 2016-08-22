@@ -74,18 +74,4 @@ $(document).ready(function() {
           }
     });
   });
-  var addExpr = function(){
-    // Make :eq case insensitive
-    jQuery.expr[':'].containsRaw = function(a, i, m) {
-      return jQuery(a).text().toUpperCase()
-          .indexOf(m[3].toUpperCase()) >= 0;
-    };
-  };
-  if(urlParam('viewer_pane') === '1'){
-    addExpr();
-  }else {
-    $.getScript("https://cdn.datacamp.com/datacamp-light-latest.min.js",function(){
-      addExpr();
-    });
-  }
 });
