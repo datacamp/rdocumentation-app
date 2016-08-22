@@ -107,8 +107,8 @@ module.exports = {
       },
 
       topCollaborators: function(){
-        var query = "SELECT coll.name, Sum(direct_downloads) as total From Collaborators coll, PackageVersions pack, DownloadStatistics downloads Where pack.package_name=downloads.package_name "+
-          "and pack.release_date = (SELECT Max(release_date) From PackageVersions where package_name=pack.package_name) and coll.id=pack.maintainer_id group by maintainer_id order by total desc limit 0,10";
+        var query = "SELECT coll.name, Sum(direct_downloads) as total From Packages pack INNER JOIN PackageVersions versions ON pack.latest_version_id=versions.id INNER JOIN Collaborators coll ON versions.maintainer_id = coll.id INNER JOIN DownloadStatistics downloads ON pack.name=downloads.package_name WHERE "+
+          "downloads.date >= current_date() - interval '1' month group by coll.name order by total desc limit 0,10";
         return sequelize.query(query, {type: sequelize.QueryTypes.SELECT});
       }
 
