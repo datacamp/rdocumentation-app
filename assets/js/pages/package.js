@@ -75,7 +75,7 @@ window.graphDownloadStatistics = function() {
 
 };
 
-window.dependencyGraph = function(){
+window.dependencyGraphPackage = function(){
   var getData = function(data_url, callback) {
     return $.get(data_url, callback);
   };
@@ -245,8 +245,7 @@ window.makeSlider = function(){
 window.bindTabs = function() {
   $("#tab1").click(function(){
     if(!$("#packagedependencygraph svg").hasClass("nvd3-svg")){
-      console.log('deps');
-      window.dependencyGraph();
+      window.dependencyGraphPackage();
     }
   });
   $("#tab2").click(function(){
