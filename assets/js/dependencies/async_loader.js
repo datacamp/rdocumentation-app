@@ -23,7 +23,6 @@
         }
         window.bindButtonAndForms();
         window.searchHandler(jQuery);
-        console.log("checking version")
         window.packageVersionControl();
         window.launchFullSearch();
         window.bindHistoryNavigation();
