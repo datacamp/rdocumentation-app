@@ -256,6 +256,18 @@ window.bindTabs = function() {
   });
 };
 
+window.bindUpvoteButton = function() {
+  $('#upvotePackage').click(function(e) {
+    e.preventDefault();
+    var $this = $(this);
+    var actionUrl = $(this).data('action');
+    $.post(actionUrl, function(response) {
+      $('.star-count').html(response.newCount);
+      $this.attr('upvoted', response.star !== 'deleted');
+    });
+  });
+};
+
 window.triggerIcon = function(){
   $("table").bind("sortEnd",function(){
     $("thead td").each(function(){

@@ -6,12 +6,14 @@ module.exports = {
 
     user_id: {
       type: Sequelize.INTEGER,
-      allowNull: false
+      allowNull: false,
+      primaryKey: true
     },
 
     package_name: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
+      primaryKey: true
     }
 
   },

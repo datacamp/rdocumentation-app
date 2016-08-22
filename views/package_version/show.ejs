@@ -1,5 +1,5 @@
 <% var pkgVersion = data; %>
-<section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>" 
+<section data-package-name="<%=pkgVersion.package_name%>" data-type-id="<%=pkgVersion.package['type_id']%>"
 data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="package packageData" itemscope itemtype="http://schema.org/SoftwareApplication">
   <div id="package--container" class="container-fluid">
     <header class='row'>
@@ -90,13 +90,16 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
         <div class="downloads" id = "percentile-arrow">
           <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
         </div>
-        <div class="downloads">
-          <span class="downloads-nr percentile-task" data-url="/api<%= path %>/percentile" >
-            <span class='percentile'>0th</span>
-          </span>
-          <p>Percentile</p>
-        </div>
+        <% var percentilePath = "/api" + path + "/percentile" %>
+        <%- include ../shared/_percentile.ejs %>
         <%}%>
+
+        <div class="">
+          <span id="upvotePackage" upvoted="<%= pkgVersion.package.upvoted ? true : false %>" data-action="/api/packages/<%= pkgVersion.package_name %>/toggleStar">
+            <i class="fa fa-heart" aria-hidden="true"></i>
+          </span>
+          <span class='star-count'><%= pkgVersion.package.stars.length %></span>
+        </div>
       </div>
     </header>
 

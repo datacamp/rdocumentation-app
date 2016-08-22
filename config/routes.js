@@ -38,6 +38,7 @@ module.exports.routes = {
   //***** Package *****
     // API
     'get /api/packages/:name': 'PackageController.findByName',
+    'post /api/packages/:name/toggleStar': 'PackageController.toggleStar',
     // HTML
     'get /packages/:name': 'PackageController.findByName',
   //***** /Package *****

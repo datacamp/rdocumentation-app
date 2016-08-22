@@ -74,5 +74,6 @@ $(document).ready(function() {
           }
     });
   });
+  bindUpvoteButton();
   window.bootTopic();
 });
