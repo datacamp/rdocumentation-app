@@ -285,47 +285,61 @@ module.exports = {
   },
 
   getDependencyGraph: function(req,res) {
-    var packageName = req.param('name');
-    var nodes = [packageName];
-    var nodelist =[{
-      name: packageName,
-      group: 0}];
-    return Dependency.findByDependant(packageName).then(function(deps){
-      var dependencies =[];
-      deps.forEach(function(dep,i){
-        nodes.push(dep.dependency_name);
-        nodelist.push({
-          name: dep.dependency_name,
-          group: i+1
+    var rootPackage = req.param('name');
+
+    return Dependency.findIndirectDependencies(rootPackage).then(function(deps){
+      var rootIndex = 0;
+      var firstLevel = _.groupBy(deps, 'direct_dependencies');
+      var firstLevelPackages = _.keys(firstLevel);
+      var nodes = _.map(firstLevelPackages, function(name, i) {
+        return {
+          name: name,
+          group: i + 1
+        };
+      });
+
+      //prepend the root
+      nodes.unshift({
+        name: rootPackage,
+        group: 0
+      });
+
+      var nodeIndices = _.reduce(nodes, function(acc, node) {
+        acc[node.name] = node.group;
+        return acc;
+      }, {});
+
+      var links = [];
+      _.forEach(firstLevelPackages, function(name, i) {
+        var idx = i + 1;
+        links.push({
+          source: idx,
+          target: rootIndex,
+          value: 10
         });
-      dependencies.push({
-        source : nodes.indexOf(dep.dependency_name),
-        target : nodes.indexOf(packageName),
-        value  : 10
-      });
-      });
-      return Promise.map(deps,function(dep,i){
-        return Dependency.findByDependant(dep.dependency_name).then(function(deps2){
-          deps2.forEach(function(dep2){
-            if(nodes.indexOf(dep2.dependency_name)==-1){
-              nodes.push(dep2.dependency_name);
-              nodelist.push({
-                name: dep2.dependency_name,
-                group: i+1
+        var secondLevel = _.map(firstLevel[name], 'indirect_dependencies');
+        _.forEach(secondLevel, function(name, i) {
+          if(name != null){
+            if(typeof nodeIndices[name] === 'undefined') {
+              var newLength = nodes.push({
+                name: name,
+                group: idx
               });
+              nodeIndices[name] = newLength - 1;
             }
-            dependencies.push({
-              source : nodes.indexOf(dep2.dependency_name),
-              target : nodes.indexOf(dep.dependency_name),
+
+            links.push({
+              source: nodeIndices[name],
+              target: idx
             });
-          });
+          }
         });
-      },{concurrency: 1}).then(function(){
-          return res.json({
-            nodes: nodelist,
-            links: dependencies
-          });
-        });
+      });
+
+      return res.json({
+        nodes: nodes,
+        links: links
+      });
     });
   },
 
@@ -364,18 +378,20 @@ module.exports = {
         });
         var secondLevel = _.map(firstLevel[name], 'indirect_reverse_dependencies');
         _.forEach(secondLevel, function(name, i) {
-          if(typeof nodeIndices[name] === 'undefined') {
-            var newLength = nodes.push({
-              name: name,
-              group: idx
-            });
-            nodeIndices[name] = newLength - 1;
-          }
+          if(name != null){
+            if(typeof nodeIndices[name] === 'undefined') {
+              var newLength = nodes.push({
+                name: name,
+                group: idx
+              });
+              nodeIndices[name] = newLength - 1;
+            }
 
-          links.push({
-            source: nodeIndices[name],
-            target: idx
-          });
+            links.push({
+              source: nodeIndices[name],
+              target: idx
+            });
+          }
         });
       });
 
