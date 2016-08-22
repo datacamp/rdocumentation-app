@@ -13,13 +13,7 @@
         <span class="margin-left search-result--item-percentile percentile-task" data-url="/api/packages/<%=hit.fields.package_name%>/percentile" >
             <span class='percentile'>0th</span> perc. popularity
         </span>
-        <p class="search-result--description"><%- hit.description %> </p>
-        <dl>
-            <% for (var highlight in hit.highlight) { %>
-              <dt><%= highlight %> </dt>
-              <dd><%- hit.highlight[highlight].toString() %></dd>
-            <% } %>
-        </dl>
+        <p class="search-result--description fade"><%- hit.description %> </p>
     </section>
 <% } %>
 </div>

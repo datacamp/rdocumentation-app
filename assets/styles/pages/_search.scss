@@ -63,14 +63,31 @@ span.margin-left {
   font-weight: 600;
   text-overflow: ellipsis;
   font-size: 1.2rem;
+  cursor: pointer;
 }
 
 .search-result--description {
-  display: -webkit-box;
-  -webkit-line-clamp: 7;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.5rem;
+  min-height: 4.5rem;
+  overflow:hidden;
+  cursor: pointer;
+}
+
+.fade {
+  line-height: 1.5rem;
+  position: relative;
+  height: 4.5rem;
+}
+
+.fade:after {
+  content: "";
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 70%;
+  height: 1.5rem;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
 .search-result--index {
