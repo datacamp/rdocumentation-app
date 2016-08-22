@@ -73,13 +73,13 @@ span.margin-left {
   cursor: pointer;
 }
 
-.fade {
+.fade:not(.tooltip) {
   line-height: 1.5rem;
   position: relative;
   height: 4.5rem;
 }
 
-.fade:after {
+.fade:after:not(.tooltip) {
   content: "";
   text-align: right;
   position: absolute;
