@@ -1,11 +1,11 @@
 $(function() {
   if(urlParam('viewer_pane') === '1' && !window.rstudioHistory){
-    if(typeof(getUrlVars()["history"])=="undefined"){
+    if(typeof(urlParam("history"))=="undefined"){
       window.rstudioHistory = [];
       window.nextHistoryState = 0;
     }
     else{
-      window.rstudioHistory=decodeURIComponent(getUrlVars()["history"]).split(",")
+      window.rstudioHistory=decodeURIComponent(urlParam("history")).split(",")
       window.nextHistoryState = 0;
     }
     window.pushHistory = function(url){
@@ -51,7 +51,12 @@ $(function() {
             historyParam +=encodeURIComponent(state)
           }
         })
-        window.location.replace(window.location.href+"&history="+historyParam);
+        if(window.location.href.indexOf("&history")>-1){
+           window.location.replace(window.location.href.substring(0,window.location.href.indexOf("&history"))+"&history="+historyParam);
+        }
+        else{
+          window.location.replace(window.location.href+"&history="+historyParam);
+        }       
         window.nextHistoryState-=1
       }
     }
@@ -74,17 +79,3 @@ $(function() {
     window.bindHistoryNavigation();
   }      
 })
-
-// Read a page's GET URL variables and return them as an associative array.
-getUrlVars = function()
-{
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
-}
