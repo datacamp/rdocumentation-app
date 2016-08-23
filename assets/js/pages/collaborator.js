@@ -6,7 +6,7 @@ $(document).ready(function(){
 		if(data["top_collabs"]){
 		$(".top-collab-list").append("<h4>Top collaborators</h4>");
 			data["top_collabs"].forEach(function(collab){
-				$(".top-collab-list").append("<a href = '/collaborators/name/"+collab.name+"'>"+collab.name+"</a>");
+				$(".top-collab-list").append("<a href = '/collaborators/name/"+encodeURIComponent(collab.name)+"'>"+collab.name+"</a>");
 			});
 		}
 	});
