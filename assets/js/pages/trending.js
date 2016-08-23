@@ -22,14 +22,14 @@ window.trendingPackagesLastWeek = function(){
 
       chart.yAxis
           .tickFormat(d3.format(',.1f'));
-
-      getData($('#trendingdownloads').data('url'), function(data) {
-        $('#trendingdownloads').show();
-        d3.select('#trendingdownloads svg')
-          .datum(data)
-          .call(chart);
-      });
-
+      if($('#trendingdownloads').data('url')){
+        getData($('#trendingdownloads').data('url'), function(data) {
+          $('#trendingdownloads').show();
+          d3.select('#trendingdownloads svg')
+            .datum(data)
+            .call(chart);
+        });
+      }
 		chart.multibar.dispatch.on("elementClick", function(e) {
 		    var url = "/packages/"+e.data.key;
 		    document.location = url;
@@ -99,13 +99,14 @@ dependencyGraph = function(){
                     .attr("dy", ".35em")
                     .text(function(d) { return d.name });
                 });
-             getData($('#dependencygraph').data('url'), function(data) {
-        $('#dependencygraph').show();
-        d3.select('#dependencygraph svg')
-              .datum(data)
-              .call(chart);
-      });
-
+            if($('#dependencygraph').data('url')){
+              getData($('#dependencygraph').data('url'), function(data) {
+                $('#dependencygraph').show();
+                d3.select('#dependencygraph svg')
+                      .datum(data)
+                      .call(chart);
+              });
+            }
             return chart;
     },
         callback: function(graph) {
