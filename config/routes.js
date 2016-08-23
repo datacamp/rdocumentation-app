@@ -28,6 +28,7 @@ module.exports.routes = {
   'get /login': 'AuthController.login',
   'get /register': 'AuthController.register',
   'post /login': 'AuthController.process',
+  'post /rstudio_login': 'AuthController.rstudioProcess',
   'get /logout': 'AuthController.logout',
 
 

@@ -2,24 +2,27 @@
     //extra login with ajax request is needed
     if(urlParam('viewer_pane') === '1' && !window.alreadyChecked==true){
       window.alreadyChecked=true;
-      var creds = "username="+decodeURIComponent(urlParam('username'))+"&password=" + decodeURIComponent(urlParam("password"))
-      if(urlParam("username")!=null && !window.loggedIn){
-        $.ajax({
-            type: 'POST',
-            url: '/login',
-            data: creds,
-            contentType:"application/x-www-form-urlencoded",
-            xhrFields: {
-              withCredentials: true
-            },
-            crossDomain:true,
-            success: function(data, textStatus, xhr) {
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-            }
-        })
-      }
       console.log('*********************** AJAX MODE ***********************');
+      window.stayLoggedIn = function(){
+        var creds = "username="+decodeURIComponent(urlParam('username'))+"&password=" + decodeURIComponent(urlParam("password"))
+        if(urlParam("username")!=null && !window.loggedIn){
+          return $.ajax({
+              type: 'POST',
+              url: '/rstudio_login',
+              data: creds,
+              contentType:"application/x-www-form-urlencoded",
+              xhrFields: {
+                withCredentials: true
+              },
+              crossDomain:true,
+              success: function(data, textStatus, xhr) {
+              },
+              error: function(jqXHR, textStatus, errorThrown) {
+              }
+          })
+        }
+      }
+      window.stayLoggedIn()
       var $pageBody = $('body');
       window.loggedIn = false;
       // Intercept all link clicks
@@ -103,7 +106,11 @@
               if(action.indexOf("/login")>-1 && !window.loggedIn){
                 _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
                   ["write('"+dataToWrite+"', file = paste0(find.package('Rdocumentation'),'/config/creds.txt')) \n Rdocumentation::login()"])
-                .then(rerenderBody(html,true, url));
+                .then(function(){
+                  window.stayLoggedIn().then(function(){
+                     rerenderBody(html,true, url)
+                  })
+                })                 
               }
               else{
                 rerenderBody(html,true, url);
