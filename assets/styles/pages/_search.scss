@@ -9,6 +9,24 @@
     margin-top : 0em;
     display: inline-block;
   }
+
+  .fade {
+    line-height: 1.5rem;
+    position: relative;
+    height: 4.5rem;
+  }
+
+  .fade:after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 70%;
+    height: 1.5rem;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+  }
+
 }
 
 .search-result--item {
@@ -94,22 +112,6 @@ span.margin-left {
   cursor: pointer;
 }
 
-.fade:not(.tooltip) {
-  line-height: 1.5rem;
-  position: relative;
-  height: 4.5rem;
-}
-
-.fade:after:not(.tooltip) {
-  content: "";
-  text-align: right;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 70%;
-  height: 1.5rem;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
-}
 
 .search-result--index {
   color: $text-secondary;
