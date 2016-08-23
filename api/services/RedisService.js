@@ -14,7 +14,8 @@ module.exports = {
   // missFn must be a function that return either a json or a Promise resolving to a json
   // it will be executed if nothing is found in cache
   getJSONFromCache: function(key, res, expire, missFn) {
-
+    var env = process.env.AWS_ENV || 'dev';
+    key = env + '_' + key;
     return RedisClient.getAsync(key).then(function(response){
       res.set('Cache-Control', 'max-age=' + expire);
       if(response) {
