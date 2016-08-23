@@ -67,7 +67,7 @@ window.searchHandler = function() {
     }
 
     if(results.topics.length > 0){
-      object += '<p class="header">Topics</p>';
+      object += '<p class="header">Functions</p>';
       object += '<ul class="topics">';
       results.topics.forEach(function(topic){
         object += "<li><a href=" + topic.uri + ">" + topic.name + "<em> ("+ topic.package_name + " - " + topic.package_version + ") </em>" + "</a></li>";
