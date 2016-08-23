@@ -1,6 +1,5 @@
-<%- partial ('../shared/_navbar.ejs') %>
 <% var topic = data; %>
-<section data-package-name="<%=topic.package_version.package_name%>" class="packageData" itemscope itemtype="http://schema.org/SoftwareApplication"></section>
+<section data-package-name="<%=topic.package_version.package_name%>" data-latest-version="<%=topic.package_version.version%>" class="packageData" itemscope itemtype="http://schema.org/SoftwareApplication"></section>
 <section class="topic">
   <div class="container-fluid">
     <header class='topic--header'>
@@ -132,8 +131,7 @@
       </i>
     </small>
 
-    <% var reviewPostAction = '/api/topics/' + data.id + '/reviews' %>
-    <%- include ../shared/_post_review.ejs %>
+    <% var examplePostAction = '/api/topics/' + data.id + '/examples' %>
+    <%- include ../shared/_post_example.ejs %>
   </div>
 </section>
-<%- partial ('../shared/_footer.ejs') %>

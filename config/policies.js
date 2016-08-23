@@ -67,6 +67,14 @@ module.exports.policies = {
     '*': ['sessionAuth', 'flash']
   },
 
+  ExampleController: {
+    '*': ['sessionAuth', 'flash']
+  },
+
+  PackageController: {
+    'toggleStar': ['sessionAuth', 'flash']
+  },
+
   UserController: {
     'me': ['sessionAuth', 'flash'],
     'create': ['flash'],

@@ -127,5 +127,14 @@ module.exports = {
 				results: result
 			});
 		});
+	},
+	startPage: function(req,res){
+		var promises = [];
+		var json = {};
+		promises.push(PackageVersion.getNewestPackages().then(function(data){json.newPackages = data}));
+		promises.push(PackageVersion.getLatestUpdates().then(function(data){json.newVersions = data}));
+		promises.push(Collaborator.topCollaborators().then(function(data){json.topCollaborators = data}));
+		promises.push(DownloadStatistic.getMostPopular().then(function(data){json.mostPopular = data}));
+		Promise.all(promises).then(function(){return res.ok(json,"trends/show.ejs")});
 	}
 }

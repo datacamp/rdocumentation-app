@@ -1,9 +1,8 @@
-<%- partial ('../shared/_navbar.ejs') %>
 <% var topics = data; %>
 <section class="package">
   <div class="container">
     <header>
-      <h4>There where no topics found matching your search term</h4>
+      <h4>There where no functions found matching your search term</h4>
       <%if(topics.length>0){ %>
         Perhaps you meant one of these:
         <section class="table-list">
@@ -18,7 +17,7 @@
           </thead>
           <tbody id="filterableItems">
             <% for(var i = 0; i < topics.length; ++i) { %>
-              <%var topic = topics[i];%>            
+              <%var topic = topics[i];%>
               <tr>
                 <td><a href="<%= '/packages/' + topic.package_name +'/versions/'+topic.package_version+'/topics/'+topic.function_name %>"><%= topic.function_name %> (alias:<%=topic.function_alias%>)</a></td>
                 <td><%- topic.package_name %></td>
@@ -28,9 +27,8 @@
             <tr class="no-results"><td colspan="3">No Results!</td></tr>
           </tbody>
         </table>
-      </section>  
+      </section>
       <%}%>
-    </header>    
+    </header>
   </div>
 </section>
-<%- partial ('../shared/_footer.ejs') %>

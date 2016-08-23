@@ -4,22 +4,17 @@
 <% for (var i = 0; i < data.packages.length; i++) { %>
     <% var hit = data.packages[i]; %>
     <section class='search-result--item'>
-        <h5 class="search-result--item-header">
+        <div>
+            <h5 class="search-result--item-header">
             <a href="<%= '/packages/' + encodeURIComponent(hit.fields.package_name) + '/versions/' + encodeURIComponent(hit.fields.version) %>" >
                 <%= hit.fields.package_name + ' v' + hit.fields.version %>
             </a>
-        </h5>
-        <span class="margin-left">by</span><span class="search-result--item-maintainer" > <a href="/collaborators/name/<%=hit.fields.maintainer%>"><%= hit.fields.maintainer %></a> </span>
-        <span class="margin-left search-result--item-percentile percentile-task" data-url="/api/packages/<%=hit.fields.package_name%>/percentile" >
-            <span class='percentile'>0th</span> perc. popularity
-        </span>
-        <p class="search-result--description"><%- hit.description %> </p>
-        <dl>
-            <% for (var highlight in hit.highlight) { %>
-              <dt><%= highlight %> </dt>
-              <dd><%- hit.highlight[highlight].toString() %></dd>
-            <% } %>
-        </dl>
+            </h5>
+            <span class="margin-left">by</span><span class="search-result--item-maintainer" > <a href="/collaborators/name/<%=hit.fields.maintainer%>"><%= hit.fields.maintainer %></a> </span>
+        </div>
+        <% var percentilePath = "/api/packages/" + hit.fields.package_name + "/percentile" %>
+        <div class="search-result--percentile pull-right"><%- include ../shared/_percentile.ejs %></div>
+        <p class="search-result--description fade"><%- hit.description %> </p>
     </section>
 <% } %>
 </div>

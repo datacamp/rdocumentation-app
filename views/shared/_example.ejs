@@ -1,0 +1,14 @@
+<div class="example">
+  <div class='example--title'>
+    <span>
+      <% if(exampleUser !== null) { %>
+        <strong><%= exampleUser.username %></strong>
+      <% } %>
+
+      at <%= dateformat(user_examples[i].created_at, "mediumDate") %>
+    </span>
+  </div>
+  <div class='example--body'>
+    <p class='example--text'><%= user_examples[i].example %></p>
+  </div>
+</div>

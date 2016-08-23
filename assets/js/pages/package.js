@@ -75,7 +75,7 @@ window.graphDownloadStatistics = function() {
 
 };
 
-window.dependencyGraph = function(){
+window.dependencyGraphPackage = function(){
   var getData = function(data_url, callback) {
     return $.get(data_url, callback);
   };
@@ -230,9 +230,10 @@ window.makeSlider = function(){
       slider.removeClass("fa-angle-down");
       slider.addClass("fa-angle-up");
       $(".sliding").slideDown();
+      $( '#tab0' ).click();
       if(!$("#chart svg").hasClass("nvd3-svg")){
-      window.graphDownloadStatistics();
-    }
+        window.graphDownloadStatistics();
+      }
     }else{
       slider.removeClass("fa-angle-up");
       slider.addClass("fa-angle-down");
@@ -244,14 +245,25 @@ window.makeSlider = function(){
 window.bindTabs = function() {
   $("#tab1").click(function(){
     if(!$("#packagedependencygraph svg").hasClass("nvd3-svg")){
-      console.log('deps');
-      window.dependencyGraph();
+      window.dependencyGraphPackage();
     }
   });
   $("#tab2").click(function(){
     if(!$("#packagereversedependencygraph svg").hasClass("nvd3-svg")){
       window.reverseDependencyGraph();
     }
+  });
+};
+
+window.bindUpvoteButton = function() {
+  $('#upvotePackage').click(function(e) {
+    e.preventDefault();
+    var $this = $(this);
+    var actionUrl = $(this).data('action');
+    $.post(actionUrl, function(response) {
+      $('.star-count').html(response.newCount);
+      $this.attr('upvoted', response.star !== 'deleted');
+    });
   });
 };
 

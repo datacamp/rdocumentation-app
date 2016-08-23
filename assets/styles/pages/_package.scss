@@ -35,19 +35,7 @@
     i.fa {
       display: inline-block;
     }
-    .downloads {
-      vertical-align: middle;
-      margin-left: 0.2rem;
-      display: inline-block;
-      p{
-        -webkit-margin-before: -0.7em;
-        -webkit-margin-after: 0em;
-      }
-      i{
-        font-size: 1.4rem;
-        margin-left: 0.6rem;
-      }
-    }
+
     #percentile-arrow{
       margin-left: 0rem;
       margin-top: 0.65rem;
@@ -101,6 +89,20 @@
     height: 450px;
   }
 
+}
+
+.downloads {
+  vertical-align: middle;
+  margin-left: 0.2rem;
+  display: inline-block;
+  p{
+    -webkit-margin-before: -0.7em;
+    -webkit-margin-after: 0em;
+  }
+  i{
+    font-size: 1.4rem;
+    margin-left: 0.6rem;
+  }
 }
 
 i.fa.fa-user{
@@ -217,8 +219,30 @@ i.fa.fa-user{
   display:inline-block;
 }
 
-.package--readme img {
+.package--readme {
+  img {
     max-width: 100%;
+  }
+  a {
+    border-bottom: none;
+  }
+}
+
+span#upvotePackage {
+  cursor: pointer;
+  padding: 5px;
+  font-size: 2rem;
+  &[upvoted="false"]:hover, &[upvoted="true"] {
+    color: $primary;
+  }
+  &[upvoted="true"]:hover, &[upvoted="false"] {
+    color: inherit;
+  }
+
+}
+
+.star-count {
+  font-size: 2rem;
 }
 
 .package--stats {

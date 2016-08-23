@@ -22,14 +22,14 @@ window.trendingPackagesLastWeek = function(){
 
       chart.yAxis
           .tickFormat(d3.format(',.1f'));
-
-      getData($('#trendingdownloads').data('url'), function(data) {
-        $('#trendingdownloads').show();
-        d3.select('#trendingdownloads svg')
-          .datum(data)
-          .call(chart);
-      });
-
+      if($('#trendingdownloads').data('url')){
+        getData($('#trendingdownloads').data('url'), function(data) {
+          $('#trendingdownloads').show();
+          d3.select('#trendingdownloads svg')
+            .datum(data)
+            .call(chart);
+        });
+      }
 		chart.multibar.dispatch.on("elementClick", function(e) {
 		    var url = "/packages/"+e.data.key;
 		    document.location = url;
@@ -99,13 +99,14 @@ dependencyGraph = function(){
                     .attr("dy", ".35em")
                     .text(function(d) { return d.name });
                 });
-             getData($('#dependencygraph').data('url'), function(data) {
-        $('#dependencygraph').show();
-        d3.select('#dependencygraph svg')
-              .datum(data)
-              .call(chart);
-      });
-
+            if($('#dependencygraph').data('url')){
+              getData($('#dependencygraph').data('url'), function(data) {
+                $('#dependencygraph').show();
+                d3.select('#dependencygraph svg')
+                      .datum(data)
+                      .call(chart);
+              });
+            }
             return chart;
     },
         callback: function(graph) {
@@ -122,64 +123,3 @@ dependencyGraph = function(){
         }
     });
 }
-
-top10Downloads = function(){
-  var $this = $("#top10downloads");
-  if ($this.length > 0) {
-    $.get($this.data('url'),function(data){
-      data.results.forEach(function(piece,i){
-        var j = i+1;
-        $this.find(".data").append("<tr><td>"+j+". <a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a></tr></td>");
-      });
-      $this.show();
-    });
-  }
-};
-
-top10Maintainers = function(){
-  var $this = $("#top10maintainers");
-  if ($this.length > 0) {
-    $.get($this.data('url'),function(data){
-      data.results.forEach(function(piece,i){
-        var j = i+1;
-        $this.find(".data").append("<tr><td>"+j+". <a href='/collaborators/name/"+piece.name+"'>"+piece.name+"</a></tr></td>");
-      });
-      $this.show();
-    });
-  }
-};
-
-top10new = function(){
-  var $this = $("#top10new");
-  if ($this.length > 0) {
-    $.get($this.data('url'),function(data){
-      data.newArrivals.forEach(function(piece){
-        var release = new Date(piece.rel);
-        $this.find(".data").append("<tr><td><a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a><p class='info'>"+release.toDateString()+"</p></tr></td>");
-      });
-      $this.show();
-    });
-  }
-};
-
-top10renewed = function(){
-  var $this = $("#top10renew");
-  if ($this.length > 0) {
-    $.get($this.data('url'),function(data){
-      data.newVersions.forEach(function(piece){
-        var release = new Date(piece.rel);
-        $this.find(".data").append("<tr><td><a href='/packages/"+piece.package_name+"'>"+piece.package_name+"</a><p class='info'>"+release.toDateString()+"</p></tr></td>");
-      });
-      $this.show();
-    });
-  }
-};
-
-
-
-$(document).ready(function(){
-	top10Downloads();
-  top10renewed();
-  top10new();
-  top10Maintainers();
-});

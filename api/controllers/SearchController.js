@@ -365,27 +365,12 @@ module.exports = {
           post_tags : ["</mark>"],
           "require_field_match": false,
           "fields" : {
-            "title" : {highlight_query: {
-               match : {
-                  title : query
-              }
-            }},
             "description": {
               "number_of_fragments" : 0,
               highlight_query: {
                 match: { description: query }
               }
-            },
-            "collaborators.name": {highlight_query: {
-               match : {
-                  "collaborators.name" : query
-              }
-            }},
-            "maintainer.name": {highlight_query: {
-               match : {
-                  "maintainer.name" : query
-              }
-            }}
+            }
           }
         },
         from: offset,
@@ -405,13 +390,10 @@ module.exports = {
 
           var description = highlights.description || hit.fields.description[0];
 
-          highlights = _.omit(highlights, 'description');
-
           packages.push({
             description: description,
             fields: fields,
-            score: hit._score,
-            highlight: highlights
+            score: hit._score
           });
         });
       return res.view('search/package_results.ejs', { data: {packages: packages, hits: numeral(result.hits.total).format('0,0')}, layout:null});
@@ -516,21 +498,18 @@ module.exports = {
           pre_tags : ["<mark>"],
           post_tags : ["</mark>"],
           "fields" : {
-            "note": {highlight_query: searchTopicQuery},
-            "keywords": {highlight_query: searchTopicQuery},
-            "aliases": {highlight_query: searchTopicQuery},
-            "author": {highlight_query: searchTopicQuery},
-            "references": {highlight_query: searchTopicQuery},
-            "value": {highlight_query: searchTopicQuery},
-            "details": {highlight_query: searchTopicQuery},
-            "description": {highlight_query: searchTopicQuery},
-            "title" : {highlight_query: searchTopicQuery},
-            "name": {highlight_query: searchTopicQuery},
+            "description": {
+               "number_of_fragments" : 0,
+               highlight_query: searchTopicQuery
+             },
+            "title" : {
+               "number_of_fragments" : 0,
+               highlight_query: searchTopicQuery},
           }
         },
         from: offset,
         size: perPage,
-        fields: ['package_name', 'version', 'name', 'maintainer.name']
+        fields: ['package_name', 'version', 'name', 'maintainer.name', 'description', 'title']
       }
     }).then(function(result){
       var functions  = [];
@@ -541,14 +520,19 @@ module.exports = {
           fields.version = inner_hits_fields.version[0];
           fields.name = hit.fields.name[0];
           fields.maintainer = inner_hits_fields['maintainer.name'][0];
-          var stripped={};
-          for(var highlight in hit.highlight){
-            stripped[highlight] = striptags(hit.highlight[highlight].toString(),'<mark>');
-          }
+
+          var highlights = _.mapValues(hit.highlight, function(highlight) {
+            return striptags(highlight.toString(),'<mark>');
+          });
+
+          var description = highlights.description || hit.fields.description[0];
+          var title = highlights.title || hit.fields.title[0];
+
           functions.push({
             fields: fields,
             score: hit._score,
-            highlight: stripped
+            description: description,
+            title: title
           });
         });
       return res.view('search/function_results.ejs', {data: {functions: functions, hits: numeral(result.hits.total).format('0,0')}, layout: null});

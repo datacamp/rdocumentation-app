@@ -24,20 +24,24 @@
     <link rel="stylesheet" href="/styles/widgets/mono-blue.css">
     <!--STYLES END-->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
     <link rel="stylesheet" href='/css/nv.d3.min.css'>
     <link href = "http://code.jquery.com/ui/1.12.0-rc.2/themes/smoothness/jquery-ui.css" rel = "stylesheet">
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
-      tex2jax: {inlineMath: [['$','$']]}
+        jax: ["input/TeX","input/MathML","input/AsciiMath","output/CommonHTML"],
+  extensions: ["tex2jax.js","mml2jax.js","asciimath2jax.js","MathMenu.js","MathZoom.js","AssistiveMML.js"],
+  TeX: {
+    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+  }
       });
     </script>
-    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   </head>
 
   <body>
-    <%- partial ('shared/_flash.ejs') %>
-    <%- body %>
+    <%- partial ('inner_layout.ejs') %>
 
 
     <!--
@@ -66,6 +70,7 @@
     <!--TEMPLATES END-->
 
     <script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
     <% if(!inViewerPane) { %>
     <script src="https://cdn.datacamp.com/datacamp-light-latest.min.js"></script>
     <% } %>
@@ -79,10 +84,13 @@
     <script src="/js/helpers/run-example.js"></script>
     <script src="/js/helpers/toggle.js"></script>
     <script src="/js/helpers/utils.js"></script>
+    <script src="/js/libs/marked.min.js"></script>
     <script src="/js/libs/tooltip.js"></script>
+    <script src="/js/pages/collaborator.js"></script>
     <script src="/js/pages/package.js"></script>
     <script src="/js/pages/search.js"></script>
     <script src="/js/pages/task_views.js"></script>
+    <script src="/js/pages/topic.js"></script>
     <script src="/js/pages/trending.js"></script>
     <script src="/js/search.js"></script>
     <!--SCRIPTS END-->

@@ -7,6 +7,7 @@
 
 var _ = require('lodash');
 var md5 = require('md5');
+var request = require('request');
 
 var self = module.exports = {
 
@@ -37,9 +38,12 @@ var self = module.exports = {
 
     Package.findAll({
       include: [
+        { model: Repository,
+          as: 'repository'
+        },
         { model: PackageVersion,
           as: 'latest_version',
-          attributes:['id', 'package_name', 'version', 'title', 'release_date', 'license', 'url', 'maintainer_id'],
+          attributes:['id', 'package_name', 'version', 'title', 'description', 'release_date', 'license', 'url', 'maintainer_id'],
           include: [
             { model: Collaborator, as: 'maintainer' },
             { model: Collaborator, as: 'collaborators'},
@@ -56,7 +60,11 @@ var self = module.exports = {
       if(packages === null) return res.notFound();
       else {
         var json = {name: name };
-
+        repositories = {
+          cran: 0,
+          bioconductor: 0,
+          github: 0
+        };
         json.packages = _.map(packages, function(package) {
           var latest = package.latest_version;
           if (latest.maintainer.name === name) {
@@ -75,16 +83,45 @@ var self = module.exports = {
           if(!json.email && collaborators.length > 0 && collaborators[0].email) {
             json.email = collaborators[0].email;
           }
+          repositories[package.repository.name] = repositories[package.repository.name]+1 || 1;
           return latest;
         });
         json.gravatar_url = 'https://www.gravatar.com/avatar/' + md5(_.trim(json.email).toLowerCase());
         json.packages = _.sortBy(json.packages, ['is_maintainer']);
-
-        return res.ok(json, 'collaborator/show.ejs');
+        json.repositories = repositories;
+        return res.ok(json,"collaborator/show.ejs");
       }
     });
-
-
+  },
+  getNumberOfDirectDownloads: function(req,res){
+    var name = req.param('name');
+    DownloadStatistic.getNumberOfDirectDownloads(name).then(function(results){
+      res.json(results[0]);
+    });
+  },
+  getDepsyData: function(req,res){
+    var name = req.param('name');
+    request("http://depsy.org/api/search/"+name,function(error,response,body){
+      if(!error && response.statusCode == 200){
+        var resjson = JSON.parse(body);
+        if(resjson.count>0){
+          var id = resjson.list[0].id;
+          request("http://depsy.org/api/person/"+id,function(error,response,body){
+          if(!error && response.statusCode == 200){
+            var json = JSON.parse(body);
+            return res.json(json);
+          }else{
+            return res.json({});
+          }
+          });
+        }else{
+          return res.json({});
+        }
+      }
+      else{
+        return res.json({});
+      }
+    });
   }
 };
 

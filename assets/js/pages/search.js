@@ -1,5 +1,6 @@
 function reloadPackages(currentFunctionPage, currentPackagePage){
   $('html, body').animate({ scrollTop: 0 }, 'slow');
+  $('.packagedata').fadeOut('slow');
 	$.ajax({
 		url: "/search_packages?q="+urlParam('q') + "&page=" + currentPackagePage,
     crossDomain:true,
@@ -8,16 +9,31 @@ function reloadPackages(currentFunctionPage, currentPackagePage){
     }
 	}).done(function(result){
     $('.packagedata').html(result);
+    $('.packagedata').fadeIn('fast');
     if(urlParam('viewer_pane') === '1'){
       window.bindGlobalClickHandler();
     }
     window.getPercentiles();
+    var bindFade = function () {
+      $('.search-result--description.fade').unbind().click(function() {
+        var $this = $(this);
+        $this.removeClass('fade');
+        $this.addClass('expanded');
+        $this.unbind().click(function() {
+          $this.addClass('fade');
+          $this.removeClass('expanded');
+          bindFade();
+        });
+      });
+    };
+    bindFade();
     rebind(currentFunctionPage, currentPackagePage);
 	});
 }
 
 function reloadFunctions(currentFunctionPage, currentPackagePage){
   $('html, body').animate({ scrollTop: 0 }, 'slow');
+  $('.functiondata').fadeOut('slow');
 	$.ajax({
 		url: "/search_functions?q="+ urlParam('q') + "&page=" + currentFunctionPage,
   	crossDomain:true,
@@ -26,6 +42,7 @@ function reloadFunctions(currentFunctionPage, currentPackagePage){
     }
 	}).done(function(result){
 		$('.functiondata').html(result);
+    $('.functiondata').fadeIn('fast');
     if(urlParam('viewer_pane') === '1'){
       window.bindGlobalClickHandler();
     }

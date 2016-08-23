@@ -1,9 +1,8 @@
-<%- partial ('../shared/_navbar.ejs') %>
 <% var topics = data; %>
 <section class="package">
   <div class="container">
     <header>
-      <h4>Multiple matching topics</h4>
+      <h4>Multiple matching functions</h4>
     </header>
     <section class="table-list">
       <input id="packagefilter" type="text" placeholder="Filter packages">
@@ -27,7 +26,6 @@
           <tr class="no-results"><td colspan="3">No Results!</td></tr>
         </tbody>
       </table>
-    </section>  
+    </section>
   </div>
 </section>
-<%- partial ('../shared/_footer.ejs') %>

@@ -1,16 +1,18 @@
 $(document).ready(function() {
 
-  // Make :eq case insensitive
-  jQuery.expr[':'].containsRaw = function(a, i, m) {
-    return jQuery(a).text().toUpperCase()
-        .indexOf(m[3].toUpperCase()) >= 0;
+  var addExpr = function(){
+    // Make :eq case insensitive
+    jQuery.expr[':'].containsRaw = function(a, i, m) {
+      return jQuery(a).text().toUpperCase()
+          .indexOf(m[3].toUpperCase()) >= 0;
+    };
   };
 
-
   $('#filter').keyup(function () {
+    addExpr();
     var indexColumn = 0, // Search for values in the first column
     searchWords = this.value.split(" "),
-    rows = $("#filterableItems").find("tr");
+    rows = $("#filterableItems").find("tr").not(".no-results");
 
     rows.hide();
     //Recusively filter the jquery object to get results.
@@ -33,9 +35,10 @@ $(document).ready(function() {
     }
   });
   $('#packagefilter').keyup(function () {
+    addExpr();
     var indexColumn = 1, // Search for values in the second  column
     searchWords = this.value.split(" "),
-    rows = $("#filterableItems").find("tr");
+    rows = $("#filterableItems").find("tr").not(".no-results");
 
     rows.hide();
     //Recusively filter the jquery object to get results.

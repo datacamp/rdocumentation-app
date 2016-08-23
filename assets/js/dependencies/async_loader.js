@@ -142,7 +142,7 @@
         e.preventDefault();
         var package = $(".packageData").data("package-name");
         window.checkPackageVersion(package).then(function(installed){
-          if(installed!=false){
+          if(installed==0|| installed==-1){
             var examples= $('.topic').find('.topic--title').filter(function(i,el){
               return $(this).text()=="Examples";
             }).parent().find('.R').text();
@@ -165,60 +165,31 @@
       /************************************************************************************************************************************************
       checking installation of package and package version
       ************************************************************************************************************************************************/
-
-      window.checkPackageVersion=function(package){
-        var installed =true;
-        var found=false;
-        return _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["check_package('"+package+"')"])
-        .then(function(){
-          return _rStudioRequest('/events/get_events','get_events',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),[0])
-          .then(function(result){
-            for(var i=0;i<result.result.length;i++){
-              if(typeof result.result[i] != "undefined" && result.result[i].type=="console_output"){
-                if(result.result[i].data.indexOf("FALSE\n")>0){
-                  installed = false;
-                }
-                else{
-                  installed=result.result[i].data;
-                }
-                found=true;
-              }
-            }
-            //Rstudio runs the get_events request periodically. It could happen that we accidently missed the response(small chance), so run it again then
-            if(!found){
-              installed = window.checkPackageVersion(package);
-            }
-            return installed;
-          })
+      window.checkPackageVersion=function(package,version){
+        return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["check_package('"+package+"','"+version+"')"])
+        .then(function(result){
+            return parseInt(result.result)
         });
       };
 
       window.packageVersionControl=function(){
-        var versions = $('#packageVersionSelect').find('option');
-        if(versions.length>0){
-          var packageName = $(".packageData").data("package-name");
-          window.checkPackageVersion(packageName).then(function(installed){
-            if(installed==false){
+        var packageName = $(".packageData").data("package-name");
+        var version = $(".packageData").data("latest-version");
+        if(packageName){
+          window.checkPackageVersion(packageName,version).then(function(installed){
+            if(installed==1){
               $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-large pull-right btn-primary js-external">Install</button>');
+              $('#js-examples').hide()
+            }
+            else if(installed==-1){
+              $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-large pull-right btn-primary js-external">Update</button>');
             }
             else{
-              installedVersion=installed.split(/[´`'"’‘]+/)[1];
-              installedVersion=installedVersion.replace('-','.');
-              var upToDate=true;
-              for(var i=0;i<versions.length;i++){
-                if($(versions[i]).text().trim()!="@VERSION@"&& _versionCompare($(versions[i]).text().trim(),installedVersion)){
-                  $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-large pull-right btn-primary js-external">Update</button>');
-                  upToDate=false
-                }
-              }
-              if(upToDate){
-
-                $('.versionCheck').html('<i class="fa fa-check icon-green" aria-hidden="true"></i><span class="latest">You have the latest version<span>');
-              }
+              $('.versionCheck').html('<i class="fa fa-check icon-green" aria-hidden="true"></i><span class="latest">You have the latest version<span>');
             }
             $('#js-install').unbind('click',window.installpackage);
             $('#js-install').bind('click',window.installpackage);
-          });
+          });          
         }
       };
 
@@ -285,33 +256,3 @@ _rStudioRequest=function(url,method,shared_secret,port,params){
     }
   });
 };
-
-_versionCompare = function (v1, v2) {
-    v1parts = v1.split(/[.-]+/);
-    v2parts = v2.split(/[.-]+/);
-    while (v1parts.length < v2parts.length) v1parts.push("0");
-    while (v2parts.length < v1parts.length) v2parts.push("0");
-    v1parts = v1parts.map(Number);
-    v2parts = v2parts.map(Number);
-    for (var i = 0; i < v1parts.length; ++i) {
-        if (v2parts.length == i) {
-            return true;
-        }
-
-        if (v1parts[i] == v2parts[i]) {
-            continue;
-        }
-        else if (v1parts[i] > v2parts[i]) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    if (v1parts.length != v2parts.length) {
-        return false;
-    }
-
-    return 0;
-}

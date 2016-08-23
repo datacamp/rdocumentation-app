@@ -38,13 +38,14 @@ module.exports.routes = {
   //***** Package *****
     // API
     'get /api/packages/:name': 'PackageController.findByName',
+    'post /api/packages/:name/toggleStar': 'PackageController.toggleStar',
     // HTML
     'get /packages/:name': 'PackageController.findByName',
   //***** /Package *****
 
   //***** Trends *****
     // startpage
-    'get /trends': {view: 'trends/show'},
+    'get /trends': 'TrendsController.startPage',
     // API
     'get /api/trends/download': 'TrendsController.mostDownloaded',
     'get /api/trends/keyword': 'TrendsController.topKeywords',
@@ -104,6 +105,8 @@ module.exports.routes = {
   //***** Collaborator *****
     // API
     'get /api/collaborators/:id': 'CollaboratorController.findById',
+    'get /api/collaborators/name/:name/downloads': 'CollaboratorController.getNumberOfDirectDownloads',
+    'get /api/collaborators/name/:name/depsy' : 'CollaboratorController.getDepsyData',
     // HTML
     'get /collaborators/:id': 'CollaboratorController.findById',
     'get /collaborators/name/:name': 'CollaboratorController.findByName',
@@ -115,6 +118,11 @@ module.exports.routes = {
     'get /api/packages/:name/versions/:version/reviews': 'ReviewController.findByVersion',
     'post /api/topics/:topicId/reviews': 'ReviewController.postReviewToTopic',
     'post /api/packages/:name/versions/:version/reviews': 'ReviewController.postReviewToVersion',
+
+  //***** Example *****
+    // API
+    'get /api/topics/:topicId/examples': 'ExampleController.findByTopic',
+    'post /api/topics/:topicId/examples': 'ExampleController.postExampleToTopic',
 
   //***** TaskViews *****
     // API
