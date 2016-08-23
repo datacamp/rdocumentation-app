@@ -1,41 +1,44 @@
 <% var collaborator = data; %>
 <section class="collaborator">
   <div class="container">
-    <header>
+    <div class = "row">
+    <div class ="col-md-4 name--block">
       <img src="<%- collaborator.gravatar_url + '?d=' + encodeURIComponent(process.env.BASE_URL + '/images/placeholder.png') %>" alt="<%- collaborator.name %>" width="80" height="80">
-      <h1><%- collaborator.name %></h1>
-    </header>
+      <span class="name">
+        <h1><%- collaborator.name %></h1>
+      </span>
+      <div class="collaborator-details">
+          <span class="depsy details" style = "display: none" data-url="/api/collaborators/name/<%- collaborator.name %>/depsy">
+            <span id ='impactnr' class='percentile infonr'></span>
+            <p class="info">percentile impact</p>
+          </span>
+          <span class="direct-downloads details" style = "display: none" data-url="/api/collaborators/name/<%- collaborator.name %>/downloads">
+            <span id ='direct-downloadsnr' class='infonr'></span>
+            <p class="info">direct downloads</p>
+          </span>
+          <div class="top-collab-list">
+          </div>
+      </div>
+    </div>
 
-    <section class="collaborator--maintainer">
-      <h3>Contributed to</h3>
-      <div class="container">
-        <div class='row'>
+    <div class="col-md-8 collaborator--maintainer">
+      <div class="contributions">
+        <h3><%= collaborator.repositories.cran %> packages on Cran, <%= collaborator.repositories.github %> on github and <%= collaborator.repositories.bioconductor %> on bioconductor</h3>
           <% for(var i = 0; i < collaborator.packages.length; i++) { %>
             <% var maintained = collaborator.packages[i]; %>
-            <div class='maintained-package col-md-4'>
-              <a href='/packages/<%= maintained.package_name %>'><h4><%= maintained.package_name %></h4></a>
-
-
-              <p><%= maintained.title %></p>
-              <dl>
-                <% if (maintained.release_date) { %>
-                <dt>Release date</dt>
-                <dd><%=: maintained.release_date | formatDate %></dd>
-                <% } %>
-                <% if (maintained.license) { %>
-                <dt>License</dt>
-                <dd><%= maintained.license %></dd>
-                <% } %>
-                <% if (maintained.url) { %>
-                <dt>Url</dt>
-                <dd><%- maintained.url.autoLink({target:'_blank'}) %></dd>
-                <% } %>
-              </dl>
+            <div class='maintained-package'>
+              <h4><a href='/packages/<%= maintained.package_name %>'><%= maintained.package_name %></a> 
+              <span class="percentile-task" data-url="/api/packages/<%- maintained.package_name %>/percentile" >
+                &nbsp;  &nbsp; <span class='percentile'>0th</span>
+                Percentile
+              </span>
+              </h4>
+              <p><b>Description: </b><%= maintained.description %></p>
             </div>
           <% } %>
-        </div>
       </div>
-    </section>
+    </div>
+    </div>
 
   </div>
 </section>

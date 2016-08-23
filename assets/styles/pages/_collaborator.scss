@@ -2,6 +2,11 @@
   min-height: 82%;
   .container {
     margin-top: $default-space;
+    margin-left: 5em;
+  }
+  .contributions{
+    margin-top: 0em;
+    margin-left: 0em;
   }
 
   header img,
@@ -13,10 +18,10 @@
 
 .collaborator--maintainer {
   @include clearfix;
-  margin-top: $default-space;
+  margin-top: 0em;
 
   .maintained-package {
-    height: 270px;
+    margin-top: 3em;
     select {
       display: inline-block;
       font-size: 0.7rem;
@@ -50,5 +55,41 @@
         overflow: hidden;
       }
     }
+  }
+}
+
+.name{
+  h1{
+    font-size: 30px;
+  }
+  display: inline-block;
+  width: 200px;
+  vertical-align: top;
+}
+
+.info{
+  width:60px;
+  line-height: 100%;
+  display: inline-block
+}
+
+.infonr{
+  margin-top : 0em;
+  font-size  : 2em;
+}
+
+.details{
+  display: flex;
+  align-items: center;
+}
+
+.top-collab-list{
+margin-top: 3em;
+margin-bottom: 2em;
+  a{
+    display: block;
+    font-size: 1.25em;
+    text-decoration: none;
+    border-bottom: none;
   }
 }
