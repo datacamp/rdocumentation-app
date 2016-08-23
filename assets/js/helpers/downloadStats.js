@@ -5,9 +5,9 @@ window.getPercentiles = function() {
     $.get(url, function(data){
       if(data.percentile != null){
       $self.find(".percentile").text(''+ data.percentile + 'th');
-      $('.percentile-task').css({'visibility': 'visible'});
+      $self.css({'visibility': 'visible'});
     } else{
-      $('.percentile-task').css({'display': 'none'});
+      $self.css({'display': 'none'});
     }
     });
   });
