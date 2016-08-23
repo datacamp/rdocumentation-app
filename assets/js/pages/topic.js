@@ -29,7 +29,9 @@ window.bootTopic = function () {
         setTimeout(function() {
           var rendered = marked(plainText, {renderer: renderer});
           $(preview).html(rendered);
-          bootstrapDCL();
+          if(!(urlParam("viewer_pane")==1)){
+            bootstrapDCL();
+          }
         }, 0);
         return "Loading...";
       },
@@ -42,7 +44,18 @@ window.bootTopic = function () {
     var markdown = $(this).html();
     var rendered =  marked(markdown, {renderer: renderer});
     $(this).html(rendered);
-    bootstrapDCL();
   });
+  if(urlParam("viewer_pane")==1){
+    $('[data-datacamp-exercise]').each(function(){
+      var r= $('<button type="button" class="visible-installed btn btn-primary js-external pull-right">Run codeblock </button>');
+      r.bind('click',function(){
+        window.executePackageCode($(this).prev().text())
+      })
+      $(this).append(r);
+    })
+  }
+  else{
+    bootstrapDCL();
+  }
 
 };

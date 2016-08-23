@@ -141,7 +141,8 @@
       window.runExamples=function(e){
         e.preventDefault();
         var package = $(".packageData").data("package-name");
-        window.checkPackageVersion(package).then(function(installed){
+        var version = $(".packageData").data("latest-version");
+        window.checkPackageVersion(package,version).then(function(installed){
           if(installed==0|| installed==-1){
             var examples= $('.topic').find('.topic--title').filter(function(i,el){
               return $(this).text()=="Examples";
@@ -179,7 +180,7 @@
           window.checkPackageVersion(packageName,version).then(function(installed){
             if(installed==1){
               $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-large pull-right btn-primary js-external">Install</button>');
-              $('#js-examples').hide()
+              $('.visible-installed').hide()
             }
             else if(installed==-1){
               $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-large pull-right btn-primary js-external">Update</button>');
@@ -221,6 +222,16 @@
           }
         });
       };
+
+      window.executePackageCode=function(code){
+        var package = $(".packageData").data("package-name");
+        var version = $(".packageData").data("latest-version");
+        window.checkPackageVersion(package,version).then(function(installed){
+          if(installed==0|| installed==-1){
+            _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["require("+package+")\n"+code])
+          }
+        });
+      }
       //check the packageversion
       window.packageVersionControl();
       window.classifyLinks();
