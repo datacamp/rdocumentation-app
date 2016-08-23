@@ -58,15 +58,17 @@ trendingKeywords = function(){
         .color(['#33aacc'])
       ;
 
-      getData($('#topkeywords').data('url'), function(data) {
-        $('#topkeywords').show();
-        d3.select('#topkeywords svg')
-          .datum([{
-          	key: "Top keywords",
-          	values: data
-          }])
-          .call(chart);
-      });
+      if($('#topkeywords').data('url')){
+        getData($('#topkeywords').data('url'), function(data) {
+          $('#topkeywords').show();
+          d3.select('#topkeywords svg')
+            .datum([{
+            	key: "Top keywords",
+            	values: data
+            }])
+            .call(chart);
+        });
+      }
 
       chart.discretebar.dispatch.on("elementClick", function(e) {
 		    var url = "/search?q="+e.data.key;
