@@ -102,8 +102,41 @@ module.exports = {
       return res.negotiate(err);
     });
 
-  }
+  },
 
+  toggleStar: function(req, res) {
+    var packageName = req.param('name');
+    var user = req.user;
+
+    Star.findOrCreate({
+      where: {
+        user_id: user.id,
+        package_name: packageName
+      }
+    }).spread(function(instance, created) {
+      var destroyPromise = created ? Promise.resolve() : instance.destroy();
+      destroyPromise.then(function() {
+        return Star.findAll({
+          where: { package_name: packageName }
+        }).then(function(stars) {
+          var newCount = stars.length;
+          if (created) {
+            res.created({
+              newCount: newCount,
+              star: instance
+            });
+          } else
+            return res.send(200, {
+              newCount: newCount,
+              star: 'deleted'
+            });
+        });
+
+      });
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
+  }
 
   /**
   * @api {post} /packages Create a new package

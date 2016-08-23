@@ -93,6 +93,7 @@ module.exports = {
     var packageName = req.param('name'),
         packageVersion = req.param('version'),
         key = 'view_package_version_' + packageName + '_' + packageVersion;
+    var user = req.user;
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       return PackageVersion.getPackageVersionFromCondition({package_name:packageName, version:packageVersion});
@@ -120,6 +121,11 @@ module.exports = {
         } catch(err) {
           console.log(err.message);
           version.sourceJSON = {};
+        }
+        if(user){
+          version.package.upvoted = _.includes(_.map(version.package.stars, 'user_id'), user.id);
+        } else {
+          version.package.upvoted = false;
         }
         return res.ok(version, 'package_version/show.ejs');
       }

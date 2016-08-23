@@ -14,6 +14,7 @@
 .search-result--item {
   border-bottom: 1px solid $primary-extra-light;
   margin-bottom: 1.5 * $default-space;
+  position: relative;
 
   dl {
     margin-top: $default-space / 2.0;
@@ -33,6 +34,18 @@
     text-decoration: none;
   }
 }
+
+.package-column {
+  border-right: 1px solid #ebf4f7;
+  .search-result--description {
+    margin-right: 70px;
+  }
+}
+
+.topic-column {
+  border-left: 1px solid #ebf4f7;
+}
+
 
 .search-result--results {
   max-height:200%;
@@ -59,17 +72,25 @@ span.margin-left {
   font-size: 1.2rem;
 }
 
-.search-result--item-percentile {
-  font-weight: 600;
-  text-overflow: ellipsis;
-  font-size: 1.2rem;
-  cursor: pointer;
+
+.search-result--percentile {
+  display: inline-block;
+  position:absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+  .downloads {
+    p {
+      visibility: visible;
+    }
+  }
 }
 
 .search-result--description {
   line-height: 1.5rem;
   min-height: 4.5rem;
   overflow:hidden;
+  display: inline-block;
   cursor: pointer;
 }
 

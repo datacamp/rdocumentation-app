@@ -6,7 +6,7 @@
   <li><a href="/trends" class="btn btn-secondary">Leaderboard</a></li>
 
   <% if(typeof(user) === 'undefined') { %>
-    <li><a href="/login" class="btn btn-primary">Sign in</a></li>
+    <li><a href="/login?rdr=<%= encodeURIComponent(path)%>" class="btn btn-primary">Sign in</a></li>
   <% } else { %>
     <li><a href="/users/me" class="link"><%= user.username %></a></li>
     <li><a href="/logout" class="link">Log out</a></li>
