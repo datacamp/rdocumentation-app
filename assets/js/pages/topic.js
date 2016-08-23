@@ -22,14 +22,16 @@ window.bootTopic = function () {
   };
 
 
-  if ($("#postExampleText").length >= 1 && !(urlParam("viewer_pane")==1)) {
+  if ($("#postExampleText").length >= 1) {
     var simplemde = new SimpleMDE({
       element: $("#postExampleText")[0],
       previewRender: function(plainText, preview) {
         setTimeout(function() {
           var rendered = marked(plainText, {renderer: renderer});
           $(preview).html(rendered);
-          bootstrapDCL();
+          if(!(urlParam("viewer_pane")==1)){
+            bootstrapDCL();
+          }
         }, 0);
         return "Loading...";
       },
