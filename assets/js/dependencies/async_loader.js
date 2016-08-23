@@ -2,8 +2,8 @@
     //extra login with ajax request is needed
     if(urlParam('viewer_pane') === '1' && !window.alreadyChecked==true){
       window.alreadyChecked=true;
-      var creds = "username="+decodeURIComponent(getUrlVars()['username'])+"&password=" + decodeURIComponent(getUrlVars()["password"])
-      if(getUrlVars()["username"]!=null && !window.loggedIn){
+      var creds = "username="+decodeURIComponent(urlParam('username'))+"&password=" + decodeURIComponent(urlParam("password"))
+      if(urlParam("username")!=null && !window.loggedIn){
         $.ajax({
             type: 'POST',
             url: '/login',
@@ -274,17 +274,3 @@ _rStudioRequest=function(url,method,shared_secret,port,params){
     }
   });
 };
-
-// Read a page's GET URL variables and return them as an associative array.
-getUrlVars = function()
-{
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
-}
