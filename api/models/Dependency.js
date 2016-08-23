@@ -69,10 +69,10 @@ module.exports = {
            "   secondlevel.package_name as indirect_reverse_dependencies  " +
            "   FROM " +
            "   (SELECT DISTINCT v.package_name, SUM(s.direct_downloads) as total FROM Dependencies d INNER JOIN PackageVersions v ON d.dependant_version_id = v.id INNER JOIN DownloadStatistics s ON s.package_name = v.package_name" +
-           "    WHERE d.dependency_name = ? Group BY v.package_name ORDER BY total DESC LIMIT 100) firstlevel " +
+           "    WHERE d.dependency_name = ? AND s.date >= current_date() - interval '1' month Group BY v.package_name ORDER BY total DESC LIMIT 100) firstlevel " +
            "   LEFT OUTER JOIN  " +
            "   (SELECT DISTINCT d.dependency_name, v.package_name,SUM(s.`direct_downloads`) as total FROM Dependencies d INNER JOIN PackageVersions v ON d.`dependant_version_id` = v.id INNER JOIN DownloadStatistics s ON s.package_name = v.package_name WHERE d.dependency_name IN  " +
-           "     (SELECT DISTINCT v.package_name FROM Dependencies d INNER JOIN PackageVersions v ON d.`dependant_version_id` = v.id WHERE d.`dependency_name` = ?) Group BY d.dependency_name, v.package_name ORDER BY total DESC LIMIT 300) secondlevel " +
+           "     (SELECT DISTINCT v.package_name FROM Dependencies d INNER JOIN PackageVersions v ON d.`dependant_version_id` = v.id WHERE d.`dependency_name` = ?) and s.date >= current_date() - interval '1' month Group BY d.dependency_name, v.package_name ORDER BY total DESC LIMIT 300) secondlevel " +
            "   ON secondlevel.`dependency_name` = firstlevel.package_name; ";
         return sequelize.query(query,{
           replacements: [package,package],
