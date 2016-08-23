@@ -139,6 +139,7 @@
             url : base +url,
             type: 'GET',
             dataType:"html",
+            Accept:'text/html',
             cache: false,
             xhrFields: {
               withCredentials: true

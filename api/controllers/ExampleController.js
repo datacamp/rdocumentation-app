@@ -31,7 +31,7 @@ module.exports = {
       topic_id: topicId
     }).then(function(instance) {
       RedisClient.del('view_topic_' + topicId);
-      if(req.wantsJSON && !(req.param('viewer_pane')==1)) {
+      if(req.wantsJSON) {
         return res.created(instance.toJSON());
       } else {
         FlashService.success(req, 'Example successfully added.');
