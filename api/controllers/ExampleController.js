@@ -30,7 +30,7 @@ module.exports = {
       user_id: user.id,
       topic_id: topicId
     }).then(function(instance) {
-      RedisClient.del('view_topic_' + topicId);
+      RedisService.del('view_topic_' + topicId);
       if(req.wantsJSON) {
         return res.created(instance.toJSON());
       } else {
