@@ -136,9 +136,11 @@ module.exports = {
 
     classMethods: {
       getLatestVersion:function(packageName){
-        return PackageVersion.findOne({
-          where:{package_name:packageName},
-          order: [[sequelize.fn('ORDER_VERSION', sequelize.col('PackageVersion.version')), 'DESC' ]]
+        return PackageVersion.findAll({
+          where:{package_name:packageName}
+        }).then(function(result){
+          result.sort(PackageVersion.compareVersions);
+          return result[result.length-1];
         });
       },
 
@@ -180,11 +182,11 @@ module.exports = {
               attributes: ['package_version_id', 'name', 'title', 'id'],
               include:[{model: Review, as: 'reviews'}],
               separate: true }
-          ],
-          order: [[sequelize.fn('ORDER_VERSION', sequelize.col('PackageVersion.version')), 'DESC' ]]
+          ]
         })
         .then(function(versionInstance) {
           if(versionInstance === null) return null;
+          versionInstance.package.versions.sort(PackageVersion.compareVersions);
           return versionInstance.toJSON();
         })
         .catch(function(err){
@@ -292,9 +294,28 @@ module.exports = {
 
       getLatestUpdates: function(page){
         return sequelize.query("SELECT package_name, max(release_date) as rel FROM PackageVersions where release_date < now() group by package_name order by rel Desc Limit ?,10;",{replacements: [(page-1)*10], type: sequelize.QueryTypes.SELECT });
+      },
+
+      compareVersions: function(v1,v2){
+        var version1 = v1.version.replace('-','.').split('.');
+        var version2 = v2.version.replace('-','.').split('.');
+        var done = false;
+        var cur1 = 0;
+        var cur2 = 0;
+        while(!done&&version1.length>0&&version2.length>0){
+          cur1 = version1.shift();
+          cur2 = version2.shift();
+          if(cur1!==cur2){
+            done = true;
+          }
+        }
+        if(!done && version1.shift()){
+          return 1;
+        }else if(!done && version2.shift()){
+          return -1;
+        }
+        return cur1-cur2;
       }
-
-
 
     },
 

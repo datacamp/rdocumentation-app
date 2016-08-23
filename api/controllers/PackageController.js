@@ -41,9 +41,9 @@ module.exports = {
       },
       include: [
         { model: PackageVersion, as: 'versions' },
-      ],
-      order: [[sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'ASC' ]]
+      ]
     }).then(function(package) {
+      package.versions.sort(PackageVersion.compareVersion);
       if(package === null) {
         return res.rstudio_redirect(301, '/search?q=' + encodeURIComponent(packageName));
         //there seems to be a problem with redirected requests if text/html is set as contentype for the ajax request, so I just
