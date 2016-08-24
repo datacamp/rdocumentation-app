@@ -1,4 +1,5 @@
 (function($) {
+
   $(document).ready(function() {
     $( ".js-display-list" ).click(function(e) {
       e.preventDefault();
@@ -13,15 +14,24 @@
         $(this).addClass("highlight");
       });
     });
+
+    if(window.location.hash) {
+      getView(window.location.hash.slice(1));
+    } else {
+      var v = $('.list-group .list-group-item:first-child').text();
+      getView(v);
+    }
+
   });
 
   window.getView = function(view){
+    location.hash = view;
     $.ajax({
     	url: "/taskviews/"+view,
       cache: false
     }).done(function(response){
-    	$(".view").html($($.parseHTML(response)).filter(".content").html());
-    	resetFilter();
+    	$(".view").html(response);
+    	window.bindFilter();
       percentileTaskView();
     });
   };
@@ -81,3 +91,4 @@
   };
 
 })($jq);
+

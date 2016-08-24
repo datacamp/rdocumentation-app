@@ -24,7 +24,7 @@
             <td>Name <i class="fa fa-sort" aria-hidden="true"></i></td>
             <td>Description <i class="fa fa-sort" aria-hidden="true"></i></td>
             <td>Percentile <i class="fa fa-sort" aria-hidden="true"></i></td>
-            <td width="115">Rating <i class="fa fa-sort" aria-hidden="true"></i></td>
+            <td width="115">Stars <i class="fa fa-sort" aria-hidden="true"></i></td>
           </tr>
         </thead>
         <tbody id="filterableItems">
@@ -40,14 +40,8 @@
               </td>
               <td>
 
-                <div class="rating" data-rating="<%= package.rating %>">
-                  <% for(var j=1; j <= 5; j++) { %>
-                    <i class="fa fa-star<%=
-                    package.rating < j ?
-                      package.rating <= j - 0.5 ? "-o" : "-half-o"
-                      : ""
-                    %>" aria-hidden="true"></i>
-                  <% } %>
+                <div class="rating">
+                  <%= package.stars.length %> <i class="fa fa-star" aria-hidden="true"></i>
                 </div>
               </td>
             </tr>
