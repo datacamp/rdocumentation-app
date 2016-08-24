@@ -62,31 +62,31 @@
 
 
   };
-})($jq);
-$(document).ready(function(){
-  $("#openModalExample").bind('modal:ajax:complete',function(){
-    var callback = function(){
-      $.post("/modalLogin",$(".authentication--form").serialize(),function(json){
-        var status = json.status;
-        if(status === "success"){
-          $(".example--form form").submit();
-        }else if(status === "invalid"){
-          if($(".modal").find(".flash-error").length === 0){
-          $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+  $(document).ready(function(){
+    $("#openModalExample").bind('modal:ajax:complete',function(){
+      var callback = function(){
+        $.post("/modalLogin",$(".authentication--form").serialize(),function(json){
+          var status = json.status;
+          if(status === "success"){
+            $(".example--form form").submit();
+          }else if(status === "invalid"){
+            if($(".modal").find(".flash-error").length === 0){
+            $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+            }
           }
+        });
+      };
+      $("#modalLoginButton").click(callback);
+      $("#username").keypress(function(e){
+        if(e.which == 13){
+          callback();
         }
       });
-    };
-    $("#modalLoginButton").click(callback);
-    $("#username").keypress(function(e){
-      if(e.which == 13){
-        callback();
-      }
-    });
-    $("#password").keypress(function(e){
-      if(e.which == 13){
-        callback();
-      }
+      $("#password").keypress(function(e){
+        if(e.which == 13){
+          callback();
+        }
+      });
     });
   });
-});
+})($jq);
