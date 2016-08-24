@@ -273,7 +273,7 @@ module.exports = {
     .then(function(view){
       if(view === null) return res.notFound();
       else {
-        return res.ok(view, 'task_view/show.ejs');
+        return res.view('task_view/show.ejs',{data:view,layout:'badges/layout.ejs'});
       }
     });
 

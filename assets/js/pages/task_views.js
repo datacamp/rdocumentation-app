@@ -36,7 +36,7 @@ getView = function(view){
   	url: "/taskviews/"+view,
     cache: false
   }).done(function(response){
-  	$(".view").html($($.parseHTML(response)).filter(".content").html());
+  	$(".view").html($.parseHTML(response));
   	resetFilter();
     percentileTaskView();
     pagination();
@@ -50,7 +50,7 @@ pagination = function(){
       $.ajax({
         url: $(this).attr("href")
       }).done(function(response){
-        $(".view").html($($.parseHTML(response)).filter(".content").html());
+        $(".view").html($.parseHTML(response));
         resetFilter();
         percentileTaskView();
         pagination();
