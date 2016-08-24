@@ -42,6 +42,11 @@
     margin-right: 70px;
   }
 }
+.packagedata {
+  .search-result--description {
+    margin-right: 70px;
+  }
+}
 
 .topic-column {
   border-left: 1px solid #ebf4f7;
@@ -174,6 +179,12 @@ span.margin-left {
   color: black;
   font-size: 1.5rem;
 }
+
+#searchtabs.ui-widget {
+  font-size: inherit !important;
+  font-family: inherit !important;
+}
+
 .resultarrow{
   border-bottom: none;
   color: black;
