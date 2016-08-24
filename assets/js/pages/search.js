@@ -1,6 +1,5 @@
 function reloadPackages(currentFunctionPage, currentPackagePage){
   $('html, body').animate({ scrollTop: 0 }, 'slow');
-  $('.packagedata').fadeOut('slow');
 	$.ajax({
 		url: "/search_packages?q="+urlParam('q') + "&page=" + currentPackagePage,
     crossDomain:true,
@@ -8,6 +7,7 @@ function reloadPackages(currentFunctionPage, currentPackagePage){
       withCredentials: true
     }
 	}).done(function(result){
+    $('.packagedata').hide();
     $('.packagedata').html(result);
     $('.packagedata').fadeIn('fast');
     if(urlParam('viewer_pane') === '1'){
@@ -21,7 +21,6 @@ function reloadPackages(currentFunctionPage, currentPackagePage){
 
 function reloadFunctions(currentFunctionPage, currentPackagePage){
   $('html, body').animate({ scrollTop: 0 }, 'slow');
-  $('.functiondata').fadeOut('slow');
 	$.ajax({
 		url: "/search_functions?q="+ urlParam('q') + "&page=" + currentFunctionPage,
   	crossDomain:true,
@@ -29,6 +28,7 @@ function reloadFunctions(currentFunctionPage, currentPackagePage){
       withCredentials: true
     }
 	}).done(function(result){
+    $('.functiondata').hide();
 		$('.functiondata').html(result);
     $('.functiondata').fadeIn('fast');
     if(urlParam('viewer_pane') === '1'){
