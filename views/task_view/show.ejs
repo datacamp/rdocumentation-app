@@ -1,51 +1,53 @@
 <% var view = data; %>
-<section class="task-views">
-  <div class="container">
+  <div class="content">
     <div class="row">
       <div class="col-md-8">
         <h1><%- view.name %></h1>
-        <a href='<%= view.url %>' target='_blank'>More info on CRAN <i class="fa fa-external-link" aria-hidden="true"></i></a>
+        <a href='<%= view.url %>' target='_blank'>
+          <%if(!(view.url.indexOf("bioconductor")>-1)){ %>
+            More info on CRAN <i class="fa fa-external-link" aria-hidden="true"></i></a>
+          <%} else { %>
+            More info on BioConductor <i class="fa fa-external-link" aria-hidden="true"></i></a>
+          <%}%>
       </div>
       <div class="col-md-4">
-        <section class="stats">
-          <div class="downloads download-task" data-url="/api/taskviews/<%= view.name %>/statistics">
-            <span class="downloads-nr">
-              <span class='total'>0</span>
-              <span>Downloads this month</span>
-            </span>
-            <span class="downloads-credits">Download stats provided by <a href="http://cranlogs.r-pkg.org/" target="_blank">MetaCran</a></span>
-          </div>
-        </section>
+        <%if(!data.nextPageUrl){ %>
+          <section class="stats-aggregate">
+            <div class="percentile">
+              <span class="percentile-nr">
+                <span class='percentile' id = aggpercentile>0th</span>
+              </span>
+              <p>Average Percentile</p>
+            </div>
+          </section>
+        <%}%>
       </div>
-
     </div>
-
-
     <section class="table-list">
       <input id="filter" type="text" placeholder="Filter list">
-      <table>
+      <table class="taskviewtable">
         <thead>
           <tr>
-            <td>Name</td>
-            <td>Description</td>
-            <td>Last month downloads</td>
-            <td width="115">Rating</td>
+            <td>Name <i class="fa fa-sort" aria-hidden="true"></i></td>
+            <td>Description <i class="fa fa-sort" aria-hidden="true"></i></td>
+            <td>Percentile <i class="fa fa-sort" aria-hidden="true"></i></td>
+            <td width="115">Rating <i class="fa fa-sort" aria-hidden="true"></i></td>
           </tr>
         </thead>
         <tbody id="filterableItems">
-          <% for(var i = 0; i < view.packages.length; i++) { %>
+          <% for(var i = 0; i < Math.min(view.packages.length,20); i++) { %>
             <% var package = view.packages[i]; %>
             <tr>
               <td><a href="<%= package.uri %>"><%= package.name %></a></td>
               <td> <%= package.latest_version ? package.latest_version.title : package.name %> </td>
               <td>
-                <span class="download-task" data-url="/api/packages/<%= package.name %>/downloads">
-                  <span class='total'>0</span>
+                <span class="percentile-number percentile-task" data-url="/api/packages/<%= package.name %>/percentile" >
+                  <span class='percentile'>0th</span>
                 </span>
               </td>
               <td>
 
-                <div class="rating">
+                <div class="rating" data-rating="<%= package.rating %>">
                   <% for(var j=1; j <= 5; j++) { %>
                     <i class="fa fa-star<%=
                     package.rating < j ?
@@ -61,7 +63,12 @@
         </tbody>
       </table>
     </section>
-
-
+    <div class="search-result--pagination">
+      <% if (data.prevPageUrl) { %>
+        <a href='<%= data.prevPageUrl %>' class='btn btn-secondary-light ry taskview-page-button'><i class="fa fa-chevron-left"></i>Previous 20 Packages </a>
+      <% } %>
+      <% if(data.nextPageUrl){ %>
+        <a  href='<%= data.nextPageUrl %>' class='btn btn-secondary-light pull-right taskview-page-button'>Next 20 Packages <i class="fa fa-chevron-right"></i></a>
+      <%}%>
+    </div>
   </div>
-</section>

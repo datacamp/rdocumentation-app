@@ -35,44 +35,17 @@ $(document).ready(function() {
     });
   });
   $.getScript("http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.2/js/jquery.tablesorter.js",function(){
-    // add parser through the tablesorter addParser method
-    $.tablesorter.addParser({
-        // set a unique id
-        id: 'rating',
-        is: function(s) {
-            // return false so this parser is not auto detected
-            return false;
-        },
-        format: function(s) {
-            // format your data for normalization
-            return parseFloat(s);
-        },
-        // set type, either numeric or text
-        type: 'numeric'
-    });
-    $("table").tablesorter({
-          headers: {
-              2: {
-                  sorter:'rating'
-              }
-          },
+    $("table.packagetable").tablesorter({
           textExtraction: function (node){
-            if($(node).find("i").length>0){
-              var stars = $(node).find("i");
-              //console.log(stars);
-              var count = 0.0;
-              stars.each(function(i){
-                if($(this).hasClass("fa-star")){
-                  count += 1.0;
-                }else if($(this).hasClass("fa-star-half-o")){
-                  count += 0.5;
-                }
-              });
-              return ""+count;
+            if($(node).find(".rating").length>0){
+              return ($(node).find(".rating").data('rating'));
+            }else if($(node).find(".percentile-task").length>0){
+              return $(node).find(".percentile-task").data('percentile');
             }
             return $(node).text();
           }
     });
+    window.triggerIcon();
   });
   bindUpvoteButton();
   window.bootTopic();

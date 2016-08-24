@@ -1,38 +1,55 @@
 <section class="task-views">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2">
-        <h1 class="task-views--header">Task Views</h1>
-        <% for(var i = 0; i < data.length; i++) { %>
-          <% var view = data[i] %>
-            <section class='view-item'>
-
-              <div class="view-item--header">
-                <div class="pull-left">
-                  <a href="/taskviews/<%- view.name %>"><h4 class='view-title'><%= view.name %></h4></a>
-                  <a href="#" data-toggle data-target="#<%= 'taskview_' + i %>" data-toggled-text="Hide packages">
-                  Show packages</a>
-                </div>
-                <div class="downloads download-task" data-url="/api/taskviews/<%= view.name %>/statistics">
-                  <span class="downloads-nr">
-                    <span class='total'>0</span>
-                    <span>Downloads this month</span>
-                  </span>
-                  <span class="downloads-credits">Download stats provided by <a href="http://cranlogs.r-pkg.org/" target="_blank">MetaCran</a></span>
-                </div>
-              </div>
-
-              <div class="view-item--packages" id='<%= 'taskview_' + i %>' data-toggle-hidden="true">
-                <% var packages = view.packages.map(function(package) {
-                  return '<a href="' + package.uri + '">' + package.name + '</a>';
-                }) -%>
-                <%- packages.join(', ') %>
-              </div>
-
-            </section>
-        <% } %>
+    <div id ="sidemenu">
+      <div class = "list-group-item" id ="listtitle">
+        <h4>Task View</h4>
       </div>
+      <ul class = "list-group level0">
+        <% for(var i = 0; i<data.length;i++){ %>
+          <li>
+            <a class = "list-group-item level0">
+            <%if(data[i].subviews.length>0){%>
+              <i class="fa fa-angle-right" aria-hidden="true"></i>
+            <%}%><%- data[i].name %>
+            </a>
+            <%if(data[i].subviews.length>0){%>
+              <ul class="sublist-group level1">
+                <% for(var j = 0; j<data[i].subviews.length;j++){ %>
+                  <li class="sublist-item">
+                    <a class = "list-group-item level1">
+                    <%if(data[i].subviews[j].subviews.length>0){%>
+                      <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    <%}%>  <%- data[i].subviews[j].name %>
+                    </a>
+                    <%if(data[i].subviews.length>0){%>
+                      <ul class="sublist-group level2">
+                        <% for(var k = 0; k<data[i].subviews[j].subviews.length;k++){ %>
+                          <li class="sublist-item">
+                            <a class = "list-group-item level2">
+                            <%if(data[i].subviews[j].subviews[k].subviews.length>0){%>
+                              <i class="fa fa-angle-right" aria-hidden="true"></i>
+                            <%}%>  <%- data[i].subviews[j].subviews[k].name %>
+                            </a>
+                            <%if(data[i].subviews.length>0){%>
+                              <ul class="sublist-group level3">
+                                <% for(var l = 0; l<data[i].subviews[j].subviews[k].subviews.length;l++){ %>
+                                  <li class="sublist-item"><a class = "list-group-item level3">  <%- data[i].subviews[j].subviews[k].subviews[l].name %></a></li>
+                                <%}%>
+                              </ul>
+                             <%}%>
+                          </li>
+                        <%}%>
+                      </ul>
+                    <%}%>
+                  </li>
+                <%}%>
+              </ul>
+            <%}%>
+          </li>
+        <% } %>
+      </ul>
     </div>
-  </div>
+    <div class="view">
+      
+    </div>
 </section>
 

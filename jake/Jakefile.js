@@ -236,4 +236,14 @@ task('parse-author', ['sails-load'], {async: true}, function () {
   //complete();
 });
 
+task('scrape-bioc-taskviews', ['sails-load'], {async: true}, function () {
+  CronService.scrapeBiocTaskViews().then(function(resp) {
+    console.log("Done !");
+    complete();
+  }).catch({message: "empty"}, function() {
+    console.log("something went wrong");
+    complete();
+  });
+});
+
 

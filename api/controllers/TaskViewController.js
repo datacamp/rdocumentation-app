@@ -7,6 +7,7 @@
 var _ = require('lodash');
 var axios = require('axios');
 var numeral = require('numeral');
+var querystring = require('querystring');
 
 module.exports = {
 
@@ -79,12 +80,35 @@ module.exports = {
     var key = 'rdocs_view_index';
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       return TaskView.findAll({
+        where:{
+          in_view:null
+        },
         include: [{
           model: Package,
           as: 'packages',
           through: {
             attributes: []
           }
+        },
+        {
+          model:TaskView,
+          as:'subviews',
+          required:false,
+          include: [{
+            model:TaskView,
+            as:'subviews',
+            required:false,
+            include: [{
+              model:TaskView,
+              as:'subviews',
+              required:false,
+              include: [{
+                model:TaskView,
+                as:'subviews',
+                required:false
+              }]
+            }]
+          }]
         }],
         order: [['name', 'ASC']]
       }).then(function(views) {
@@ -114,8 +138,9 @@ module.exports = {
   */
 
   find: function(req, res) {
+    var page = parseInt(req.param('page')) || 1;
     var view = req.param('view'),
-        key = 'rdocs_view_show_' + view;
+        key = 'rdocs_view_show_' + view +'_page_'+page;
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       return TaskView.findOne({
@@ -135,10 +160,96 @@ module.exports = {
             }],
             attributes: ['id', 'title', 'description']
           }]
+        },
+        {
+          model:TaskView,
+          as:'subviews',
+          required:false,
+          include: [{
+            model: Package,
+            as: 'packages',
+            through: {
+              attributes: []
+            },
+            include: [{
+              model: PackageVersion,
+              as: 'latest_version',
+              include: [{
+                model: Review,
+                as: 'reviews'
+              }],
+              attributes: ['id', 'title', 'description']
+            }]
+            },{
+            model:TaskView,
+            as:'subviews',
+            required:false,
+            include: [{
+              model: Package,
+              as: 'packages',
+              through: {
+                attributes: []
+              },
+              include: [{
+                model: PackageVersion,
+                as: 'latest_version',
+                include: [{
+                  model: Review,
+                  as: 'reviews'
+                }],
+                attributes: ['id', 'title', 'description']
+              }]
+              },{
+              model:TaskView,
+              as:'subviews',
+              required:false,
+              include: [{
+                model: Package,
+                as: 'packages',
+                through: {
+                  attributes: []
+                },
+                include: [{
+                  model: PackageVersion,
+                  as: 'latest_version',
+                  include: [{
+                    model: Review,
+                    as: 'reviews'
+                  }],
+                  attributes: ['id', 'title', 'description']
+                }]
+                },{
+                model:TaskView,
+                as:'subviews',
+                required:false
+              }]
+            }]
+          }]
         }]
       }).then(function(view) {
         var jsonViews = view.toJSON();
-        var packages = _.map(jsonViews.packages, function(package) {
+        allPackages = jsonViews.packages;
+        _.map(jsonViews.subviews,function(subview){
+          _.map(subview.subviews,function(subsubview){
+            _.map(subsubview.subviews,function(subsubsubview){
+              allPackages = allPackages.concat(subsubsubview.packages)
+            })
+            allPackages = allPackages.concat(subsubview.packages)
+          })
+          allPackages = allPackages.concat(subview.packages)
+        })
+        if(allPackages.length >20){
+          allPackages = allPackages.slice((page-1)*20,page*20)
+          var nextPageQuery = _.clone(req.query);
+          nextPageQuery.page = page + 1;
+          jsonViews.nextPageUrl = req.path + '?' + querystring.stringify(nextPageQuery)
+          if(page>1){
+            var prevPageQuery = _.clone(req.query);
+            prevPageQuery.page = page - 1;
+            jsonViews.prevPageUrl = req.path + '?' + querystring.stringify(prevPageQuery)
+          }
+        }
+        var packages = _.map(allPackages, function(package) {
           var rating;
           if(!package.latest_version || package.latest_version.reviews.length === 0) {
             rating = 0;
@@ -153,17 +264,17 @@ module.exports = {
         jsonViews.packages = packages;
         jsonViews.pageTitle = view.name;
         return jsonViews;
+      })
+      .catch(function(err){
+        console.log(err.message)
       });
     })
     // The method above will be cached
     .then(function(view){
       if(view === null) return res.notFound();
       else {
-        return res.ok(view, 'task_view/show.ejs');
+        return res.view('task_view/show.ejs',{data:view,layout:'badges/layout.ejs'});
       }
-    })
-    .catch(function(err) {
-      return res.negotiate(err);
     });
 
   },

@@ -17,6 +17,11 @@ module.exports = {
     url: {
       type: Sequelize.STRING,
       allowNull: false
+    },
+
+    in_view: {
+      type: Sequelize.STRING,
+      allowNull : true
     }
 
   },
@@ -29,6 +34,15 @@ module.exports = {
         foreignKey: 'task_id',
         timestamps: false
     });
+
+    TaskView.hasMany(TaskView,
+    {
+        as:'subviews',
+        foreignKey:{
+          name:'in_view',
+          as:'subview'
+        }
+    })
   },
 
   options: {
