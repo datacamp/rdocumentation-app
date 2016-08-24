@@ -1,20 +1,22 @@
 $(document).ready(function() {
-  $('.download-task').each(function(elem) {
-      var $self = $(this);
-      var url = $self.data('url');
-      $.get(url, function(data){
-        $self.find(".total").text(data.totalStr);
-        $self.find(".deps").text(data.indirectDownloadsStr);
-        $self.find(".indeps").text(data.directDownloadsStr);
-        $(".direct-downloads").attr("title","Monthly downloads are direct downloads. The package also had " + data.indirectDownloadsStr + " dependent downloads for a total of " + data.totalStr +".");
-        $(".distinct-ip-downloads").attr("title","Monthly downloads are downloads from distinct ip's.");
-        $(".fa-info-circle").buildTooltip({
-          placement: 'bottom'
+  $.getScript("/js/libs/tooltip.js",function(){
+    $('.download-task').each(function(elem) {
+        var $self = $(this);
+        var url = $self.data('url');
+        $.get(url, function(data){
+          $self.find(".total").text(data.totalStr);
+          $self.find(".deps").text(data.indirectDownloadsStr);
+          $self.find(".indeps").text(data.directDownloadsStr);
+          $(".direct-downloads").attr("title","Monthly downloads are direct downloads. The package also had " + data.indirectDownloadsStr + " dependent downloads for a total of " + data.totalStr +".");
+          $(".distinct-ip-downloads").attr("title","Monthly downloads are downloads from distinct ip's.");
+          $(".fa-info-circle").buildTooltip({
+            placement: 'bottom'
+          });
+          $('.downloads').css({'visibility': 'visible'});
         });
-        $('.downloads').css({'visibility': 'visible'});
-      });
+    });
+    $(".top10").find(".fa-info-circle").buildTooltip({placement: "bottom"});
   });
-  $(".top10").find(".fa-info-circle").buildTooltip({placement: "bottom"});
   $.getScript("http://code.jquery.com/ui/1.12.0/jquery-ui.js", function(){
     window.triggerIcon();
     $("#show").click(function(){
