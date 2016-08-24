@@ -14,19 +14,7 @@ function reloadPackages(currentFunctionPage, currentPackagePage){
       window.bindGlobalClickHandler();
     }
     window.getPercentiles();
-    var bindFade = function () {
-      $('.search-result--description.fade').unbind().click(function() {
-        var $this = $(this);
-        $this.removeClass('fade');
-        $this.addClass('expanded');
-        $this.unbind().click(function() {
-          $this.addClass('fade');
-          $this.removeClass('expanded');
-          bindFade();
-        });
-      });
-    };
-    bindFade();
+    window.bindFade();
     rebind(currentFunctionPage, currentPackagePage);
 	});
 }

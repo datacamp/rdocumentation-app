@@ -46,7 +46,7 @@ module.exports = {
     result.then(function(value) {
       res.location('/api/packages/' + value.package_name + '/versions/' + value.version);
       key = 'view_package_version_' + value.package_name + '_' + value.version;
-      RedisClient.del(key);
+      RedisService.del(key);
       res.json(value);
     }).catch(Sequelize.UniqueConstraintError, function (err) {
       return res.send(409, err.errors);
@@ -162,36 +162,11 @@ module.exports = {
     key = 'rdocs_download_stats_' + packageName;
 
     return RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
-      return sequelize.query("SELECT DISTINCT package_name FROM Dependencies INNER JOIN PackageVersions on PackageVersions.id = Dependencies.dependant_version_id WHERE dependency_name = ? and type = 'depends'", { replacements: [packageName], type: sequelize.QueryTypes.SELECT})
-        .then(function(data) {
-          var packageNames = _.map(data, 'package_name');
-          return packageNames.join(',');
-        })
-        .then(function(queryString) {
-          function getTotalDownloads() {
-            return axios.get('http://cranlogs.r-pkg.org/downloads/total/last-month/' + packageName);
-          }
 
-          function getRevDepsDownloads() {
-            return axios.get('http://cranlogs.r-pkg.org/downloads/total/last-month/' + queryString);
-          }
-
-          return new Promise(function(resolve) {
-
-            axios.all([getTotalDownloads(), getRevDepsDownloads()]).then(axios.spread(function (total, revDeps) {
-              var totalJSON = total.data[0],
-              revDepsJSON = revDeps.data;
-              total = totalJSON.downloads;
-              revDeps = _.sumBy(revDepsJSON, function(o) { return o.downloads; });
-
-              var json = {total: total, revDeps: revDeps, totalStr: numeral(total).format('0,0'), revDepsStr: numeral(revDeps).format('0,0') };
-
-              resolve(json);
-            }));
-
-          });
-
-        });
+      return DownloadStatistic.getMonthlySplittedDownloads(packageName).then(function(downloads) {
+        var total = downloads[0].indirect_downloads + downloads[0].direct_downloads;
+        return {total: total, revDeps: 0, totalStr: numeral(total).format('0,0'), revDepsStr: numeral(0).format('0,0') };
+      });
     });
 
   },

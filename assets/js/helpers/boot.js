@@ -24,6 +24,10 @@ $(document).ready(function() {
     window.packageVersionToggleHandler();
     window.activateTabs("#tabs");
     window.launchFullSearch();
+    if(typeof(Set) == "undefined"){
+      $('#tab1').closest('li').hide();
+      $('#tab2').closest('li').hide();
+    }
   });
   $.getScript("http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js",function(){
     $.getScript("http://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.min.js",function(){
@@ -75,5 +79,6 @@ $(document).ready(function() {
     });
   });
   bindUpvoteButton();
+  window.bindFade();
   window.bootTopic();
 });

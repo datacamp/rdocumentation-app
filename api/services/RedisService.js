@@ -17,21 +17,27 @@ module.exports = {
     var env = process.env.AWS_ENV || 'dev';
     key = env + '_' + key;
     return RedisClient.getAsync(key).then(function(response){
-      res.set('Cache-Control', 'max-age=' + expire);
+      if(res) res.set('Cache-Control', 'max-age=' + expire);
       if(response) {
         var json = JSON.parse(response);
         json.fromCache = true;
-        res.set('X-Cache', 'hit');
+        if(res) res.set('X-Cache', 'hit');
         return json;
       } else {
         return Promise.resolve(missFn()).then(function(value) {
-          if (value && process.env.NODE_ENV === 'production') RedisClient.set(key, JSON.stringify(value));
-          res.set('X-Cache', 'miss');
+          if (value) RedisClient.set(key, JSON.stringify(value));
+          if(res) res.set('X-Cache', 'miss');
           RedisClient.expire(key, expire);
           return value;
         });
       }
     });
+  },
+
+  del: function(key) {
+    var env = process.env.AWS_ENV || 'dev';
+    key = env + '_' + key;
+    RedisClient.del(key);
   }
 
 

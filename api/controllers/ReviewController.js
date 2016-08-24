@@ -49,7 +49,7 @@ module.exports = {
       reviewable: scope.reviewable,
       reviewable_id: topicId
     }).then(function(instance) {
-      RedisClient.del('view_topic_' + topicId);
+      RedisService.del('view_topic_' + topicId);
       if(req.wantsJSON) {
         return res.created(instance.toJSON());
       } else {
@@ -187,7 +187,7 @@ module.exports = {
         reviewable: scope.reviewable,
         reviewable_id: packageVersionInstance.id
       }).then(function(instance) {
-        RedisClient.del('view_package_version_' + packageName + '_' + packageVersion);
+        RedisService.del('view_package_version_' + packageName + '_' + packageVersion);
         if(req.wantsJSON) {
           return res.created(instance.toJSON());
         } else {
