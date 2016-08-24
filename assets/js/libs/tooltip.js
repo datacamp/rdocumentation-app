@@ -517,4 +517,4 @@
     return this
   }
 
-}(jQuery);
+}($jq);

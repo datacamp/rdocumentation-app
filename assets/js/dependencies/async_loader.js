@@ -1,3 +1,4 @@
+(function($) {
   $(function() {
     //extra login with ajax request is needed
     if(urlParam('viewer_pane') === '1' && !window.alreadyChecked==true){
@@ -110,7 +111,7 @@
                   window.stayLoggedIn().then(function(){
                      rerenderBody(html,true, url)
                   })
-                })                 
+                })
               }
               else{
                 rerenderBody(html,true, url);
@@ -216,7 +217,7 @@
             }
             $('#js-install').unbind('click',window.installpackage);
             $('#js-install').bind('click',window.installpackage);
-          });          
+          });
         }
       };
 
@@ -267,29 +268,30 @@
     }
   });
 
-_rStudioRequest=function(url,method,shared_secret,port,params){
-  var data={};
-  data.method = method;
-  //data.params = [$('.R').text()];
-  data.params = params;
-  data.clientId = '33e600bb-c1b1-46bf-b562-ab5cba070b0e';
-  data.clientVersion = "";
+  _rStudioRequest=function(url,method,shared_secret,port,params){
+    var data={};
+    data.method = method;
+    //data.params = [$('.R').text()];
+    data.params = params;
+    data.clientId = '33e600bb-c1b1-46bf-b562-ab5cba070b0e';
+    data.clientVersion = "";
 
-  return $.ajax({
-    url: 'http://127.0.0.1:'+port+url,
-    headers:
-    {
-        'Accept':'application/json',
-        'Content-Type':'application/json',
-        'X-Shared-Secret':shared_secret
-    },
-    type: 'POST',
-    dataType: 'json',
-    data: JSON.stringify(data),
-    processData: false,
-    crossDomain:true,
-    xhrFields: {
-      withCredentials: true
-    }
-  });
-};
+    return $.ajax({
+      url: 'http://127.0.0.1:'+port+url,
+      headers:
+      {
+          'Accept':'application/json',
+          'Content-Type':'application/json',
+          'X-Shared-Secret':shared_secret
+      },
+      type: 'POST',
+      dataType: 'json',
+      data: JSON.stringify(data),
+      processData: false,
+      crossDomain:true,
+      xhrFields: {
+        withCredentials: true
+      }
+    });
+  };
+})($jq);
