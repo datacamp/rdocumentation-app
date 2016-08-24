@@ -97,9 +97,6 @@
           }
         });
       MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-      $.getScript("/js/dependencies/async_loader.js",function(){
-        window.packageVersionControl()
-      })
     })
   })
   bindUpvoteButton();
