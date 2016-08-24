@@ -12,7 +12,6 @@
       <%- include _example.ejs %>
     <% } %>
   </div>
-  <% if(user) { %>
     <div class="example--form">
       <div class="example--form-body">
         <form method="post" action='<%= examplePostAction %>'>
@@ -35,12 +34,13 @@ var a = b
             </textarea>
           </fieldset>
           <fieldset>
+            <% if(user){ %>
             <button class="btn btn-primary pull-right" type="submit">Submit your example</button>
+            <% }else{ %>
+            <a id="openModalExample" href="/modalLogin" rel = "modal:open"><button class="btn btn-primary pull-right" type="button">Submit your example</button></a>
+            <% } %>
           </fieldset>
         </form>
       </div>
     </div>
-  <% } else { %>
-      <p>You are not logged in, please <a href="/login?rdr=<%= encodeURIComponent(path)%>">Sign in</a> or <a href="/register?rdr=<%= encodeURIComponent(path)%>">Create an account</a> to post examples.</p>
-  <% } %>
 </div>
