@@ -5,6 +5,8 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 
+var Promise = require('bluebird');
+
 module.exports = {
 
   attributes: {
@@ -107,6 +109,23 @@ module.exports = {
             return package.dataValues.name;
           })
         })
+      },
+
+      getPackagePercentile: function(name) {
+        var lastMonthPercentiles = ElasticSearchService.cachedLastMonthPercentiles();
+
+        var lastMonthDownload = sails.controllers.packageversion._getDownloadStatistics(undefined, name);
+
+        return Promise.join(lastMonthPercentiles, lastMonthDownload, function(percentilesResponse, downloads) {
+          var total = downloads.total;
+
+          var percentiles = _.omit(percentilesResponse, 'fromCache');
+          var percentile = _.findLastKey(percentiles, function(p) {
+            return total >= p;
+          });
+
+          return {total: total, percentile: Math.round(percentile * 100) / 100 };
+        });
       }
     }
   }

@@ -1,6 +1,15 @@
- <div class="downloads">
-  <span class="downloads-nr percentile-task" data-url="<%= percentilePath %>" >
+<% if (percentilePath) { %>
+ <div class="percentile-widget percentile-task" data-url="<%= percentilePath %>">
+  <span class="percentile-th">
     <span class='percentile'>0th</span>
   </span>
   <p>Percentile</p>
 </div>
+<% } else { %>
+<div class="percentile-widget" style="visibility: visible;">
+  <span class="percentile-th">
+    <span class='percentile'><%= percentile %>th</span>
+  </span>
+  <p>Percentile</p>
+</div>
+<% } %>
