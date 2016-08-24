@@ -1,5 +1,6 @@
 $(document).ready(function() {
-  $('.download-task').each(function(elem) {
+  getScript("/js/libs/tooltip.js",function(){
+    $('.download-task').each(function(elem) {
       var $self = $(this);
       var url = $self.data('url');
       $.get(url, function(data){
@@ -13,8 +14,9 @@ $(document).ready(function() {
         });
         $('.downloads').css({'visibility': 'visible'});
       });
+      $(".top10").find(".fa-info-circle").tooltip({placement: "bottom"});
+    })
   });
-  $(".top10").find(".fa-info-circle").tooltip({placement: "bottom"});
   $.getScript("http://code.jquery.com/ui/1.12.0/jquery-ui.js", function(){
     window.triggerIcon();
     $("#show").click(function(){
@@ -81,3 +83,16 @@ $(document).ready(function() {
   bindUpvoteButton();
   window.bootTopic();
 });
+
+getScript = function(src, callback) {
+  var s = document.createElement('script');
+  s.src = src;
+  s.async = true;
+  s.onreadystatechange = s.onload = function() {
+    if (!callback.done && (!s.readyState || /loaded|complete/.test(s.readyState))) {
+      callback.done = true;
+      callback();
+    }
+  };
+  document.querySelector('head').appendChild(s);
+}
