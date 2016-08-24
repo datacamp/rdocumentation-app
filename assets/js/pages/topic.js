@@ -3,7 +3,6 @@
 
   var bootstrapDCL = function() {
     var exercises = document.querySelectorAll("[data-datacamp-exercise]");
-    console.log(exercises.length)
     //TODO add code to reinit exercices
   };
 
