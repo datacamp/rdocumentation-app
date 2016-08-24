@@ -45,12 +45,11 @@
         }
         window.bindButtonAndForms();
         window.searchHandler(jQuery);
-        window.packageVersionControl();
         window.launchFullSearch();
         window.bindHistoryNavigation();
         window.scrollTo(0,0);
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         $('.search--results').hide();
+        window.packageVersionControl();
       };
 
       /************************************************************************************************************************************************
@@ -89,7 +88,7 @@
             window.pushHistory(history)
             $.ajax({
               type: type,
-              url: action,
+              url: action
               headers: { 
                 Accept : "text/html; charset=utf-8",
                 "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
