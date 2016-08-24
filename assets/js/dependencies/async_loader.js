@@ -45,12 +45,11 @@
         }
         window.bindButtonAndForms();
         window.searchHandler(jQuery);
-        window.packageVersionControl();
         window.launchFullSearch();
         window.bindHistoryNavigation();
         window.scrollTo(0,0);
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         $('.search--results').hide();
+        window.packageVersionControl();
       };
 
       /************************************************************************************************************************************************
@@ -90,17 +89,16 @@
             $.ajax({
               type: type,
               url: action,
+              headers: { 
+                Accept : "text/html; charset=utf-8",
+                "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+              },
               data: dataToWrite,
               contentType:"application/x-www-form-urlencoded",
               xhrFields: {
                 withCredentials: true
               },
-              crossDomain:true,
-              success: function(data, textStatus, xhr) {
-                if(xhr.status==200){
-                  return data;
-                }
-              }
+              crossDomain:true
             }).then(function(html,textData,xhr){
               var url = type === 'GET' ? action + '?' + dataToWrite : action;
               if(action.indexOf("/login")>-1 && !window.loggedIn){
@@ -146,7 +144,7 @@
             url : base +url,
             type: 'GET',
             dataType:"html",
-            Accept:'text/html',
+            Accept:"text/html",
             cache: false,
             xhrFields: {
               withCredentials: true
