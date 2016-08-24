@@ -8,13 +8,13 @@ $(document).ready(function() {
         $self.find(".indeps").text(data.directDownloadsStr);
         $(".direct-downloads").attr("title","Monthly downloads are direct downloads. The package also had " + data.indirectDownloadsStr + " dependent downloads for a total of " + data.totalStr +".");
         $(".distinct-ip-downloads").attr("title","Monthly downloads are downloads from distinct ip's.");
-        $(".fa-info-circle").tooltip({
+        $(".fa-info-circle").buildTooltip({
           placement: 'bottom'
         });
         $('.downloads').css({'visibility': 'visible'});
       });
   });
-  $(".top10").find(".fa-info-circle").tooltip({placement: "bottom"});
+  $(".top10").find(".fa-info-circle").buildTooltip({placement: "bottom"});
   $.getScript("http://code.jquery.com/ui/1.12.0/jquery-ui.js", function(){
     window.triggerIcon();
     $("#show").click(function(){
