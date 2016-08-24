@@ -20,15 +20,44 @@
   }
 }
 
-.downloads {
+
+.fading-text {
+  line-height: 1.5rem;
+  position: relative;
+  height: 4.5rem;
+}
+
+.fading-text:after {
+  content: "";
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 70%;
+  height: 1.5rem;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+
+.downloads, .percentile-widget {
   visibility: hidden;
+  vertical-align: middle;
+  margin-left: 0.2rem;
+  display: inline-block;
+  p{
+    -webkit-margin-before: -0.7em;
+    -webkit-margin-after: 0em;
+  }
+  i{
+    font-size: 1.4rem;
+    margin-left: 0.6rem;
+  }
 }
 
 .percentile-task {
   visibility: hidden;
 }
 
-.downloads-nr {
+.downloads-nr, .percentile-th {
   display: flex;
   align-items: center;
   span:first-child {
@@ -39,6 +68,7 @@
     font-size: $h3-size;
   }
 }
+
 .downloads-ind {
   display: block;
   span {

@@ -8,6 +8,8 @@
 var _ = require('lodash');
 var md5 = require('md5');
 var request = require('request');
+var Promise = require('bluebird');
+
 
 var self = module.exports = {
 
@@ -65,8 +67,9 @@ var self = module.exports = {
           bioconductor: 0,
           github: 0
         };
-        json.packages = _.map(packages, function(package) {
-          var latest = package.latest_version;
+
+        Promise.map(packages, function(package) {
+          var latest = package.latest_version.toJSON();
           if (latest.maintainer.name === name) {
             latest.is_maintainer = true;
           }
@@ -84,21 +87,33 @@ var self = module.exports = {
             json.email = collaborators[0].email;
           }
           repositories[package.repository.name] = repositories[package.repository.name]+1 || 1;
-          return latest;
+
+          return Package.getPackagePercentile(latest.package_name).then(function(percentileObject) {
+            latest.percentile = isNaN(percentileObject.percentile) ? -1 : percentileObject.percentile;
+            latest.totalDownloads = percentileObject.total;
+            latest.repoName = package.repository.name;
+            return latest;
+          });
+
+        }).then(function(packages) {
+          json.gravatar_url = 'https://www.gravatar.com/avatar/' + md5(_.trim(json.email).toLowerCase());
+          json.packages = _.orderBy(packages, ['is_maintainer', 'percentile', 'totalDownloads'], ['asc', 'desc', 'desc']);
+          json.repositories = repositories;
+          console.log(packages);
+          return res.ok(json,"collaborator/show.ejs");
         });
-        json.gravatar_url = 'https://www.gravatar.com/avatar/' + md5(_.trim(json.email).toLowerCase());
-        json.packages = _.sortBy(json.packages, ['is_maintainer']);
-        json.repositories = repositories;
-        return res.ok(json,"collaborator/show.ejs");
+
       }
     });
   },
+
   getNumberOfDirectDownloads: function(req,res){
     var name = req.param('name');
     DownloadStatistic.getNumberOfDirectDownloads(name).then(function(results){
       res.json(results[0]);
     });
   },
+
   getDepsyData: function(req,res){
     var name = req.param('name');
     request("http://depsy.org/api/search/"+name,function(error,response,body){

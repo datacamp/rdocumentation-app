@@ -28,6 +28,8 @@ module.exports = function redis_init(sails) {
         });
       }
 
+      // redisClient.flushdb();
+      // redisClient.flushall();
       if(process.env.NODE_ENV === 'production') {
         redisClient.flushdb();
         redisClient.flushall();

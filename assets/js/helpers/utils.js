@@ -23,6 +23,18 @@ function urlParam(name){
   }
 }
 
+window.bindFade = function () {
+  $('.fading-text').unbind().click(function() {
+    var $this = $(this);
+    $this.removeClass('fading-text');
+    $this.addClass('expanded');
+    $this.unbind().click(function() {
+      $this.addClass('fading-text');
+      $this.removeClass('expanded');
+      window.bindFade();
+    });
+  });
+};
 
 function getCurrentPath() {
   return $('body').attr('url') ? getPath($('body').attr('url')) : getPath(window.location.pathname);
