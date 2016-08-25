@@ -1,7 +1,7 @@
 (function($) {
   bootRstudioNavigator = function(){
     if(urlParam('viewer_pane') === '1' && !window.rstudioHistory){
-      if(typeof(urlParam("history"))=="undefined"){
+      if(urlParam("history")==null){
         window.rstudioHistory = [];
         nextHistoryState = 0;
       }

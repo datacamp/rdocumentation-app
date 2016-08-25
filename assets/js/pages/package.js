@@ -280,7 +280,19 @@
       e.preventDefault();
       var $this = $(this);
       var actionUrl = $(this).data('action');
-      $.post(actionUrl, function(response) {
+      $.ajax({
+        type: 'POST',
+        url: actionUrl,
+        headers: { 
+          Accept : "text/html; charset=utf-8",
+          "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+        },
+        contentType:"application/x-www-form-urlencoded",
+        xhrFields: {
+          withCredentials: true
+        },
+        crossDomain:true
+      }).then(function(response) {
         $('.star-count').html(response.newCount);
         $this.attr('upvoted', response.star !== 'deleted');
       });
