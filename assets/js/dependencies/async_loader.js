@@ -86,7 +86,7 @@
             else{
               window.queryTime=new Date();
             }
-            dataToWrite= dataToWrite+'&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
+            dataToWrite= dataToWrite+'&rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
             window.pushHistory(history)
             $.ajax({
               type: type,
@@ -137,10 +137,10 @@
           }
           var base = $('base').attr('href');
           if(url.indexOf('?')>-1){
-            url = url + '&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+            url = url + '&rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           else{
-            url=url+'?viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+            url=url+'?rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           return $.ajax({
             url : base +url,
