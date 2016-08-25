@@ -87,11 +87,11 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
           <p>Monthly downloads</p>
         </div>
         <%if(pkgVersion.package['type_id'] == 1){ %>
-        <div class="downloads" id = "percentile-arrow">
-          <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
-        </div>
-        <% var percentilePath = "/api" + path + "/percentile" %>
-        <%- include ../shared/_percentile.ejs %>
+          <div class="downloads" id = "percentile-arrow">
+            <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
+          </div>
+          <% var percentilePath = "/api" + path + "/percentile" %>
+          <%- include ../shared/_percentile.ejs %>
         <%}%>
 
         <div class="">
