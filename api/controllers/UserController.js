@@ -9,9 +9,10 @@ module.exports = {
         id: req.user.id,
       },
       include: [
-        { model: Review, as: 'reviews', limit: populateLimit, include: [
-          { model: PackageVersion, as: 'package_version'},
-          { model: Topic, as: 'topic'}
+        { model: Example, as: 'examples', limit: populateLimit, include: [
+          { model: Topic, as: 'topic', include:[
+            {model: PackageVersion, as: 'package_version'},
+          ]}
         ]},
       ]
     }).then(function(user) {
