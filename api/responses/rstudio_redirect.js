@@ -21,12 +21,13 @@
   var res = this.res;
   var sails = req._sails;
 
-  var urlParams="";
+  var urlParams= ['viewer_pane', 'Rstudio_port', 'RS_SHARED_SECRET', 'rstudio_layout'].map(function(p) {
+    return req.param(p) ? p + '=' + encodeURIComponent(req.param(p)) : '';
+  }).filter(function(p) {
+    return p !== '';
+  }).join('&');
 
-  urlParams='?viewer_pane='+encodeURIComponent(req.param("viewer_pane"))+
-    '&Rstudio_port='+encodeURIComponent(req.param('Rstudio_port'))+
-    "&RS_SHARED_SECRET="+encodeURIComponent(req.param('RS_SHARED_SECRET'))+
-    "&rstudio_layout="+encodeURIComponent(req.param('rstudio_layout'));
+  if(urlParams) urlParams = '?' + urlParams;
 
   sails.log.silly('res.restudio_redirect() :: Sending '+code+ ' (redirect) response');
   res.redirect(code,uri+urlParams);
