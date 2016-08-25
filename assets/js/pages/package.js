@@ -12,9 +12,11 @@
       $('#tab1').closest('li').hide();
       $('#tab2').closest('li').hide();
     }
+    else{
+      dependencyGraph(); 
+    }
     window.bindTabs();
     window.makeSlider();
-    dependencyGraph(); 
   };
   window.packageVersionToggleHandler = function() {
     $('#packageVersionSelect').change(function(){
