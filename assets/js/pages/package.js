@@ -274,7 +274,7 @@
   };
 
   window.bindUpvoteButton = function() {
-    $('#upvotePackage').click(function(e) {
+    $('#upvoteButton').click(function(e) {
       e.preventDefault();
       var $this = $(this);
       var actionUrl = $(this).data('action');
