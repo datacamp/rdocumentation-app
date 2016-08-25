@@ -11,7 +11,7 @@
         </table>
       </div>
       <div class="col-md-3" id="top10maintainers" data-url="/api/trends/topcollaborators">
-        <h4>Top 10 - Maintainers  <i class="fa fa-info-circle" aria-hidden="false" title="Ranking based on the direct downloads in the last month of the packages maintained by the given person."></i></h4>
+        <h4>Top 10 - Maintainers  <i class="fa fa-info-circle" aria-hidden="false" title="Ranking based on the number of downloads in the last month of the packages maintained by the given person."></i></h4>
         <table class = "data">
         <% data.topCollaborators.forEach(function(collaborator,j){ %>
         <tr><td><%- j+1 %>. <a href='/collaborators/name/<%- encodeURIComponent(collaborator.name) %>'><%- collaborator.name %></a><p class ='info-trends'><%- collaborator.total %></p></tr></td>

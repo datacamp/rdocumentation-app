@@ -128,4 +128,8 @@
           }
       });
   };
+
+  bootTrending = function(){
+    $(".trends .fa-info-circle").tooltip({placement:"bottom"});
+  }
 })($jq);
