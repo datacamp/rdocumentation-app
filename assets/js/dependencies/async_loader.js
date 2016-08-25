@@ -39,7 +39,7 @@
         body = body.replace(/<\/body[\S\s]*$/i, "");
         //apparently the rule below refires document.ready after replacing, thus the alreadyChecked boolean
         $('body').attr("url", url);
-        $pageBody.html(body);
+        $('#content').html(body);
         window.boot()
         if(rebind){
           window.classifyLinks();
