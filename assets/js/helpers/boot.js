@@ -1,7 +1,9 @@
 (function($){
+
   $(window).on("load", function() {
-    window.boot()
-  })
+    window.boot();
+  });
+
   window.boot = function() {
     bootDownloadStats();
     bootListTableFiltering();
@@ -13,7 +15,7 @@
     bootAsyncLoader();
     bootPackage();
     window.trendingPackagesLastWeek();
-    trendingKeywords(); 
+    trendingKeywords();
     // add parser through the tablesorter addParser method
     $.getScript("https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js",function(){
       window.bootTopic();
@@ -23,16 +25,18 @@
             extensions: ["tex2jax.js","mml2jax.js","asciimath2jax.js","MathMenu.js","MathZoom.js","AssistiveMML.js"],
             TeX: {
               extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+
             },
             tex2jax: {
               skipTags:["code"]
             }
           });
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-      })
-    })
+      });
+    });
     bindUpvoteButton();
     window.bindFade();
-  }
+  };
+
 })($jq);
 
