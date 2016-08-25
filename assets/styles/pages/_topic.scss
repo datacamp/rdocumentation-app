@@ -155,4 +155,19 @@ header {
   }
 }
 
+.jquery-modal.blocker{
+  z-index:1050;
+  .modal a.close-modal{
+    border-bottom: none;
+  }
+}
 
+.jquery-modal .modal{
+    width:550px;
+}
+
+@media(max-width: 600px){
+  .jquery-modal .modal{
+      width: 92%;
+  }
+}

@@ -95,9 +95,17 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
         <%}%>
 
         <div class="">
-          <span id="upvotePackage" upvoted="<%= pkgVersion.package.upvoted ? true : false %>" data-action="/api/packages/<%= pkgVersion.package_name %>/toggleStar">
-            <i class="fa fa-heart" aria-hidden="true"></i>
-          </span>
+          <% if(user){ %>
+            <span id="upvoteButton" class="upvotePackage"  upvoted="<%= pkgVersion.package.upvoted ? true : false %>" data-action="/api/packages/<%= pkgVersion.package_name %>/toggleStar">
+              <i class="fa fa-heart" aria-hidden="true"></i>
+            </span>
+          <% }else{ %>
+            <a id="openModalUpvote" href="/modalLogin" rel = "modal:open" data-action="/api/packages/<%= pkgVersion.package_name %>/toggleStar">
+            <span class="upvotePackage" upvoted="<%= pkgVersion.package.upvoted ? true : false %>">
+              <i class="fa fa-heart" aria-hidden="true"></i>
+            </span>
+            </a>
+          <% } %>
           <span class='star-count'><%= pkgVersion.package.stars.length %></span>
         </div>
       </div>

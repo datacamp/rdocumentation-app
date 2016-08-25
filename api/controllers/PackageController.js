@@ -108,6 +108,8 @@ module.exports = {
     var packageName = req.param('name');
     var user = req.user;
 
+    RedisService.delPrefix("view_package_version_"+packageName)
+
     Star.findOrCreate({
       where: {
         user_id: user.id,

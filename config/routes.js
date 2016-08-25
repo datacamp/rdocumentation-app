@@ -26,9 +26,11 @@ module.exports.routes = {
 
   // Authentication
   'get /login': 'AuthController.login',
+  'get /modalLogin': 'AuthController.modalLogin',
   'get /register': 'AuthController.register',
   'post /login': 'AuthController.process',
   'post /rstudio_login': 'AuthController.rstudioProcess',
+  'post /modalLogin':'AuthController.modalProcess',
   'get /logout': 'AuthController.logout',
 
 
