@@ -89,6 +89,27 @@
     display: inline-block;
   }
 
+  .topic--package-info {
+
+    font-size: 1.2rem;
+    font-weight: 400;
+    background-color: $primary-extra-light;
+    border-radius: 5px;
+    padding: 10px;
+    span {
+      display: inline-block;
+    }
+    .topic--package-info-details {
+      display: inline-block;
+      overflow: hidden;
+      width: 200px;
+    }
+    .percentile-widget {
+      vertical-align: super;
+      font-weight: 200;
+    }
+  }
+
 
 }
 
@@ -134,4 +155,19 @@ header {
   }
 }
 
+.jquery-modal.blocker{
+  z-index:1050;
+  .modal a.close-modal{
+    border-bottom: none;
+  }
+}
 
+.jquery-modal .modal{
+    width:550px;
+}
+
+@media(max-width: 600px){
+  .jquery-modal .modal{
+      width: 92%;
+  }
+}

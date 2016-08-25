@@ -6,7 +6,7 @@
         <h4>Top 10 - downloads  <i class="fa fa-info-circle" aria-hidden="false" title="Ranking based on the direct downloads of last month."></i></h4>
         <table class = "data">
         <% data.mostPopular.forEach(function(package,j){ %>
-        <tr><td><%- j+1 %>. <a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a><p class ='info'><%- package.total %></p></tr></td>
+        <tr><td><%- j+1 %>. <a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a><p class ='info-trends'><%- package.total %></p></tr></td>
         <% }); %>
         </table>
       </div>
@@ -14,7 +14,7 @@
         <h4>Top 10 - Maintainers  <i class="fa fa-info-circle" aria-hidden="false" title="Ranking based on the direct downloads in the last month of the packages maintained by the given person."></i></h4>
         <table class = "data">
         <% data.topCollaborators.forEach(function(collaborator,j){ %>
-        <tr><td><%- j+1 %>. <a href='/collaborators/name/<%- encodeURIComponent(collaborator.name) %>'><%- collaborator.name %></a><p class ='info'><%- collaborator.total %></p></tr></td>
+        <tr><td><%- j+1 %>. <a href='/collaborators/name/<%- encodeURIComponent(collaborator.name) %>'><%- collaborator.name %></a><p class ='info-trends'><%- collaborator.total %></p></tr></td>
         <% }); %>
         </table>
       </div>
@@ -23,7 +23,7 @@
         <table class = "data">
         <% data.newPackages.forEach(function(package,j){ %>
         <% var release = new Date(package.rel); %>
-        <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a><p class='info'><%- release.toDateString() %></p></tr></td>
+        <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a><p class='info-trends'><%- release.toDateString() %></p></tr></td>
         <% }); %>
         </table>
       </div>
@@ -32,7 +32,7 @@
         <table class = "data">
         <% data.newVersions.forEach(function(package,j){ %>
         <% var release = new Date(package.rel); %>
-        <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a><p class='info'><%- release.toDateString() %></p></tr></td>
+        <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a><p class='info-trends'><%- release.toDateString() %></p></tr></td>
         <% }); %>
         </table>
       </div>

@@ -49,7 +49,7 @@
   #chart svg, #trendingdownloads svg, #topkeywords svg{
     height: 400px;
   }
-  #dependencygraph svg{
+  #dependencygraph svg {
     height: 600px;
   }
 
@@ -216,7 +216,7 @@ i.fa.fa-user{
   }
 }
 
-span#upvotePackage {
+span.upvotePackage {
   cursor: pointer;
   padding: 5px;
   font-size: 2rem;
@@ -291,4 +291,9 @@ span#upvotePackage {
 
 .viewLinks {
   display:block;
+}
+
+#openModalUpvote{
+  color: inherit;
+  border-bottom: none;
 }

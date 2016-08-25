@@ -1,4 +1,5 @@
-  $(function() {
+(function($) {
+  bootAsyncLoader = function(){
     //extra login with ajax request is needed
     if(urlParam('viewer_pane') === '1' && !window.alreadyChecked==true){
       window.alreadyChecked=true;
@@ -38,19 +39,19 @@
         body = body.replace(/<\/body[\S\s]*$/i, "");
         //apparently the rule below refires document.ready after replacing, thus the alreadyChecked boolean
         $('body').attr("url", url);
-        $pageBody.html(body);
+        $('#content').html(body);
+        window.boot()
         if(rebind){
           window.classifyLinks();
           window.bindGlobalClickHandler();
         }
         window.bindButtonAndForms();
         window.searchHandler(jQuery);
-        window.packageVersionControl();
         window.launchFullSearch();
         window.bindHistoryNavigation();
         window.scrollTo(0,0);
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         $('.search--results').hide();
+        window.packageVersionControl();
       };
 
       /************************************************************************************************************************************************
@@ -85,22 +86,21 @@
             else{
               window.queryTime=new Date();
             }
-            dataToWrite= dataToWrite+'&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
+            dataToWrite= dataToWrite+'&rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
             window.pushHistory(history)
             $.ajax({
               type: type,
               url: action,
+              headers: { 
+                Accept : "text/html; charset=utf-8",
+                "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+              },
               data: dataToWrite,
               contentType:"application/x-www-form-urlencoded",
               xhrFields: {
                 withCredentials: true
               },
-              crossDomain:true,
-              success: function(data, textStatus, xhr) {
-                if(xhr.status==200){
-                  return data;
-                }
-              }
+              crossDomain:true
             }).then(function(html,textData,xhr){
               var url = type === 'GET' ? action + '?' + dataToWrite : action;
               if(action.indexOf("/login")>-1 && !window.loggedIn){
@@ -110,7 +110,7 @@
                   window.stayLoggedIn().then(function(){
                      rerenderBody(html,true, url)
                   })
-                })                 
+                })
               }
               else{
                 rerenderBody(html,true, url);
@@ -137,16 +137,16 @@
           }
           var base = $('base').attr('href');
           if(url.indexOf('?')>-1){
-            url = url + '&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+            url = url + '&rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           else{
-            url=url+'?viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+            url=url+'?rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           return $.ajax({
             url : base +url,
             type: 'GET',
             dataType:"html",
-            Accept:'text/html',
+            Accept:"text/html",
             cache: false,
             xhrFields: {
               withCredentials: true
@@ -216,7 +216,7 @@
             }
             $('#js-install').unbind('click',window.installpackage);
             $('#js-install').bind('click',window.installpackage);
-          });          
+          });
         }
       };
 
@@ -265,31 +265,32 @@
       window.bindButtonAndForms();
       window.scrollTo(0,0);
     }
-  });
+  };
 
-_rStudioRequest=function(url,method,shared_secret,port,params){
-  var data={};
-  data.method = method;
-  //data.params = [$('.R').text()];
-  data.params = params;
-  data.clientId = '33e600bb-c1b1-46bf-b562-ab5cba070b0e';
-  data.clientVersion = "";
+  _rStudioRequest=function(url,method,shared_secret,port,params){
+    var data={};
+    data.method = method;
+    //data.params = [$('.R').text()];
+    data.params = params;
+    data.clientId = '33e600bb-c1b1-46bf-b562-ab5cba070b0e';
+    data.clientVersion = "";
 
-  return $.ajax({
-    url: 'http://127.0.0.1:'+port+url,
-    headers:
-    {
-        'Accept':'application/json',
-        'Content-Type':'application/json',
-        'X-Shared-Secret':shared_secret
-    },
-    type: 'POST',
-    dataType: 'json',
-    data: JSON.stringify(data),
-    processData: false,
-    crossDomain:true,
-    xhrFields: {
-      withCredentials: true
-    }
-  });
-};
+    return $.ajax({
+      url: 'http://127.0.0.1:'+port+url,
+      headers:
+      {
+          'Accept':'application/json',
+          'Content-Type':'application/json',
+          'X-Shared-Secret':shared_secret
+      },
+      type: 'POST',
+      dataType: 'json',
+      data: JSON.stringify(data),
+      processData: false,
+      crossDomain:true,
+      xhrFields: {
+        withCredentials: true
+      }
+    });
+  };
+})($jq);

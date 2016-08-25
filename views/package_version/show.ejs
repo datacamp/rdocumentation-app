@@ -87,17 +87,25 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
           <p>Monthly downloads</p>
         </div>
         <%if(pkgVersion.package['type_id'] == 1){ %>
-        <div class="downloads" id = "percentile-arrow">
-          <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
-        </div>
-        <% var percentilePath = "/api" + path + "/percentile" %>
-        <%- include ../shared/_percentile.ejs %>
+          <div class="downloads" id = "percentile-arrow">
+            <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
+          </div>
+          <% var percentilePath = "/api" + path + "/percentile" %>
+          <%- include ../shared/_percentile.ejs %>
         <%}%>
 
         <div class="">
-          <span id="upvotePackage" upvoted="<%= pkgVersion.package.upvoted ? true : false %>" data-action="/api/packages/<%= pkgVersion.package_name %>/toggleStar">
-            <i class="fa fa-heart" aria-hidden="true"></i>
-          </span>
+          <% if(user){ %>
+            <span id="upvoteButton" class="upvotePackage"  upvoted="<%= pkgVersion.package.upvoted ? true : false %>" data-action="/api/packages/<%= pkgVersion.package_name %>/toggleStar">
+              <i class="fa fa-heart" aria-hidden="true"></i>
+            </span>
+          <% }else{ %>
+            <a id="openModalUpvote" href="/modalLogin" rel = "modal:open" data-action="/api/packages/<%= pkgVersion.package_name %>/toggleStar">
+            <span class="upvotePackage" upvoted="<%= pkgVersion.package.upvoted ? true : false %>">
+              <i class="fa fa-heart" aria-hidden="true"></i>
+            </span>
+            </a>
+          <% } %>
           <span class='star-count'><%= pkgVersion.package.stars.length %></span>
         </div>
       </div>
@@ -200,7 +208,7 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
     <section class="table-list">
       <h4 class="table-title">Functions in <%- pkgVersion.package_name %>  </h4>
       <input id="filter" type="text" placeholder="Search">
-      <table>
+      <table class = "packagetable">
         <thead>
           <tr>
             <td>Name <i class="fa fa-sort" aria-hidden="true"></i></td>

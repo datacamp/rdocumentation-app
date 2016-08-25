@@ -2,6 +2,10 @@
   height: 100%;
 }
 
+#content {
+  height: 100%;
+}
+
 .page-wrap {
   min-height: 100%;
   padding-top: 30px;
@@ -20,6 +24,10 @@
   }
 }
 
+
+.no-padding {
+  padding: 0;
+}
 
 .fading-text {
   line-height: 1.5rem;

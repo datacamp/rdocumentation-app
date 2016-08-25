@@ -126,15 +126,18 @@ module.exports = {
           through: {
             attributes: []
           },
-          include: [{
-            model: PackageVersion,
-            as: 'latest_version',
-            include: [{
-              model: Review,
-              as: 'reviews'
-            }],
-            attributes: ['id', 'title', 'description']
-          }]
+          include: [
+            {
+              model: PackageVersion,
+              as: 'latest_version',
+              include: [{
+                model: Review,
+                as: 'reviews'
+              }],
+              attributes: ['id', 'title', 'description']
+            },
+            { model: Star, as: 'stars' }
+          ]
         }]
       }).then(function(view) {
         var jsonViews = view.toJSON();
@@ -159,7 +162,7 @@ module.exports = {
     .then(function(view){
       if(view === null) return res.notFound();
       else {
-        return res.ok(view, 'task_view/show.ejs');
+        return res.view('task_view/show.ejs', {data: view, layout: null});
       }
     })
     .catch(function(err) {

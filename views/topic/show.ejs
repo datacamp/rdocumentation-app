@@ -3,23 +3,33 @@
 <section class="topic">
   <div class="container-fluid">
     <header class='topic--header'>
-      <h1>
-        <%- topic.name %>
-
-        <span>From
-          <a href="<%- topic.package_version.uri %>">
-            <%- topic.package_version.package_name %> v<%- topic.package_version.version %>
-          </a>
-          <% if(topic.package_version.maintainer) { %>
-            by <a href="/collaborators/name/<%- topic.package_version.maintainer.name %>">
-              <%- topic.package_version.maintainer.name %>
+      <div class="col-xs-6 no-padding">
+        <h1>
+          <%- topic.name %>
+        </h1>
+      </div>
+      <div class="pull-right topic--package-info">
+        <div class="topic--package-info-details">
+          <span>
+            From
+            <a href="<%- topic.package_version.uri %>">
+              <%- topic.package_version.package_name %> v<%- topic.package_version.version %>
             </a>
-          <% } %>
-        </span>
-        <span class="topic--package--percentile percentile-task" data-url="/api/packages/<%=topic.package_version.package_name%>/percentile" >
-            <span class='percentile topic--package--percentile'>0th</span> perc. popularity
           </span>
-      </h1>
+          <span>
+            <% if(topic.package_version.maintainer) { %>
+              by <a href="/collaborators/name/<%- topic.package_version.maintainer.name %>">
+              <%- topic.package_version.maintainer.name %>
+              </a>
+            <% } %>
+          </span>
+          </div>
+
+
+          <% var percentilePath = "/api/packages/"+topic.package_version.package_name+"/percentile"  %>
+          <%- include ../shared/_percentile.ejs %>
+
+      </div>
 
 
     </header>

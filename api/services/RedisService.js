@@ -4,6 +4,8 @@
 * Abstract away boilerplate code to work with Redis
 */
 
+var Promise = require('bluebird');
+
 
 module.exports = {
 
@@ -38,6 +40,16 @@ module.exports = {
     var env = process.env.AWS_ENV || 'dev';
     key = env + '_' + key;
     RedisClient.del(key);
+  },
+
+  delPrefix: function(prefix){
+    var env = process.env.AWS_ENV || 'dev';
+    var key = env + '_' + prefix + '*';
+    RedisClient.keys(key,function(err,rows){
+      Promise.map(rows,function(row){
+        RedisClient.del(row);
+      });
+    })
   }
 
 
