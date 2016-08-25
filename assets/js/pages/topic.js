@@ -1,10 +1,10 @@
 (function($) {
   window.bootTopic = function () {
 
-    var bootstrapDCL = function() {
-      var exercises = document.querySelectorAll("[data-datacamp-exercise]");
-      //TODO add code to reinit exercices
-    };
+  var bootstrapDCL = function() {
+    var exercises = document.querySelectorAll("[data-datacamp-exercise]");
+    //TODO add code to reinit exercices
+  };
 
     var renderer = new marked.Renderer();
     var defaultCodeFunction = renderer.code;
@@ -21,8 +21,7 @@
         return defaultCodeFunction.call(this, code, lang);
       }
     };
-
-
+    
     if ($("#postExampleText").length >= 1) {
       var simplemde = new SimpleMDE({
         element: $("#postExampleText")[0],
@@ -54,10 +53,12 @@
         });
         $(this).append(r);
       });
+      window.packageVersionControl();
     }
     else{
       bootstrapDCL();
     }
+
 
   };
 })($jq);

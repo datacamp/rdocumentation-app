@@ -27,27 +27,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
     <link rel="stylesheet" href='/css/nv.d3.min.css'>
     <link href = "http://code.jquery.com/ui/1.12.0-rc.2/themes/smoothness/jquery-ui.css" rel = "stylesheet">
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        jax: ["input/TeX","input/MathML","input/AsciiMath","output/CommonHTML"],
-        extensions: ["tex2jax.js","mml2jax.js","asciimath2jax.js","MathMenu.js","MathZoom.js","AssistiveMML.js"],
-        TeX: {
-          extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
-        },
-        tex2jax: {
-          inlineMath: [ ['$','$'] ],
-          displayMath: [ ['$$','$$'] ],
-          processEscapes: true
-        }
-      });
-    </script>
-    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   </head>
 
   <body>
-    <%- partial ('inner_layout.ejs') %>
-
+    <div id="content">
+      <%- partial ('inner_layout.ejs') %>
+    </div>
 
     <!--
         Client-side Templates
@@ -75,6 +61,10 @@
     <!--TEMPLATES END-->
 
     <script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src = "http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.2/js/jquery.tablesorter.js"> </script>
+    <script src = "http://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+    <script src = "http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"> </script>
+    <script src = "http://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.min.js"> </script>
     <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
     <% if(!inViewerPane) { %>
     <script src="https://cdn.datacamp.com/datacamp-light-latest.min.js"></script>

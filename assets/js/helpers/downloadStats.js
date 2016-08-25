@@ -14,8 +14,7 @@
     });
   };
 
-  $(document).ready(function() {
-
+  bootDownloadStats = function(){
     window.getPercentiles();
     $('.js-rating-download').each(function(elem) {
       var $self = $(this);
@@ -34,6 +33,21 @@
         $self.text();
       });
     });
-
-  });
+    $('.download-task').each(function(elem) {
+        var $self = $(this);
+        var url = $self.data('url');
+        $.get(url, function(data){
+          $self.find(".total").text(data.totalStr);
+          $self.find(".deps").text(data.indirectDownloadsStr);
+          $self.find(".indeps").text(data.directDownloadsStr);
+          $(".direct-downloads").attr("title","Monthly downloads are direct downloads. The package also had " + data.indirectDownloadsStr + " dependent downloads for a total of " + data.totalStr +".");
+          $(".distinct-ip-downloads").attr("title","Monthly downloads are downloads from distinct ip's.");
+          $(".fa-info-circle").tooltip({
+            placement: 'bottom'
+          });
+          $('.downloads').css({'visibility': 'visible'});
+        });
+    });
+    $(".top10").find(".fa-info-circle").tooltip({placement: "bottom"});
+  };
 })($jq);

@@ -1,5 +1,5 @@
 (function($) {
-  $(function() {
+  bootAsyncLoader = function(){
     //extra login with ajax request is needed
     if(urlParam('viewer_pane') === '1' && !window.alreadyChecked==true){
       window.alreadyChecked=true;
@@ -39,19 +39,19 @@
         body = body.replace(/<\/body[\S\s]*$/i, "");
         //apparently the rule below refires document.ready after replacing, thus the alreadyChecked boolean
         $('body').attr("url", url);
-        $pageBody.html(body);
+        $('#content').html(body);
+        window.boot()
         if(rebind){
           window.classifyLinks();
           window.bindGlobalClickHandler();
         }
         window.bindButtonAndForms();
         window.searchHandler(jQuery);
-        window.packageVersionControl();
         window.launchFullSearch();
         window.bindHistoryNavigation();
         window.scrollTo(0,0);
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         $('.search--results').hide();
+        window.packageVersionControl();
       };
 
       /************************************************************************************************************************************************
@@ -86,22 +86,21 @@
             else{
               window.queryTime=new Date();
             }
-            dataToWrite= dataToWrite+'&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
+            dataToWrite= dataToWrite+'&rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
             window.pushHistory(history)
             $.ajax({
               type: type,
               url: action,
+              headers: { 
+                Accept : "text/html; charset=utf-8",
+                "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+              },
               data: dataToWrite,
               contentType:"application/x-www-form-urlencoded",
               xhrFields: {
                 withCredentials: true
               },
-              crossDomain:true,
-              success: function(data, textStatus, xhr) {
-                if(xhr.status==200){
-                  return data;
-                }
-              }
+              crossDomain:true
             }).then(function(html,textData,xhr){
               var url = type === 'GET' ? action + '?' + dataToWrite : action;
               if(action.indexOf("/login")>-1 && !window.loggedIn){
@@ -138,16 +137,16 @@
           }
           var base = $('base').attr('href');
           if(url.indexOf('?')>-1){
-            url = url + '&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+            url = url + '&rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           else{
-            url=url+'?viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+            url=url+'?rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           return $.ajax({
             url : base +url,
             type: 'GET',
             dataType:"html",
-            Accept:'text/html',
+            Accept:"text/html",
             cache: false,
             xhrFields: {
               withCredentials: true
@@ -266,7 +265,7 @@
       window.bindButtonAndForms();
       window.scrollTo(0,0);
     }
-  });
+  };
 
   _rStudioRequest=function(url,method,shared_secret,port,params){
     var data={};

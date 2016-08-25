@@ -1,5 +1,5 @@
 (function($) {
-  $(document).ready(function() {
+  bootToggle = function() {
     $('[data-toggle]').click(function(event){
       event.preventDefault();
       var target = $($(this).data('target')),
@@ -16,5 +16,5 @@
         target.data('toggle-hidden', true);
       }
     });
-  });
+  };
 })($jq);
