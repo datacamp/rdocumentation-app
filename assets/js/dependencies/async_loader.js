@@ -103,7 +103,7 @@
             }).then(function(html,textData,xhr){
               var url = type === 'GET' ? action + '?' + dataToWrite : action;
               if(action.indexOf("/login")>-1){
-                window.loginForRstudio(dataToWrite).then(function(){
+                window.logInForRstudio(dataToWrite).then(function(){
                   rerenderBody(html,true, url)
                 })
               }
