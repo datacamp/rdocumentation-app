@@ -7,26 +7,22 @@
 
       //execute an ajax post request to login, this request must give back a 200 status code, otherwise it gets cancelled and the ajax doesn't keep the 
       //cookie
-      stayLoggedIn = function(){
-        var creds = "username="+decodeURIComponent(urlParam('username'))+"&password=" + decodeURIComponent(urlParam("password"))
-        if(urlParam("username")!=null){
-          return $.ajax({
-              type: 'POST',
-              url: '/rstudio_login',
-              data: creds,
-              contentType:"application/x-www-form-urlencoded",
-              xhrFields: {
-                withCredentials: true
-              },
-              crossDomain:true,
-              success: function(data, textStatus, xhr) {
-              },
-              error: function(jqXHR, textStatus, errorThrown) {
-              }
-          })
-        }
+      stayLoggedIn = function(creds){
+        return $.ajax({
+            type: 'POST',
+            url: '/rstudio_login',
+            data: creds,
+            contentType:"application/x-www-form-urlencoded",
+            xhrFields: {
+              withCredentials: true
+            },
+            crossDomain:true
+        })
       }
-      stayLoggedIn()
+      if(urlParam('username')!=null){
+        var creds = "username="+decodeURIComponent(urlParam('username'))+"&password=" + decodeURIComponent(urlParam("password"))
+        stayLoggedIn(creds)
+      }
 
       // Intercept all link clicks
       asyncClickHandler = function(e) {
@@ -47,7 +43,7 @@
           classifyLinks();
           window.bindGlobalClickHandler();
         }
-        bindButtonAndForms();
+        window.bindButtonAndForms();
         window.searchHandler(jQuery);
         window.launchFullSearch();
         bindHistoryNavigation();
@@ -62,14 +58,17 @@
 
       window.bindGlobalClickHandler = function(){        //unbinding seems to fail a lot in the Rstudio browser?!->be sure not to bind twice
         $('a:not(.js-external)').each(function(){
-          $(this).unbind('click').bind('click', asyncClickHandler);
+          if(typeof($(this).attr('href')) != "undefined" && $(this).attr('href').indexOf('/modalLogin')<0 
+              && $(this).attr('href').indexOf('#close-modal')<0){
+             $(this).unbind('click').bind('click', asyncClickHandler);
+          }
         })
       };
       bindSearchPaneClickHandler=function(){
         $('.search--results').find('a:not(.js-external)').unbind('click').bind('click',asyncClickHandler);
       };
 
-      bindButtonAndForms= function(){
+      window.bindButtonAndForms= function(){
         $('#js-examples').unbind('click').bind('click',runExamples);
         $('#js-install').unbind('click').bind('click',installpackage);
         $('#js-hideviewer').unbind('click').bind('click',hideViewer);
@@ -80,16 +79,14 @@
             var action = $(this)[0].action;
             var dataToWrite= $(this).serialize();
             var type = "GET";
-            var history = action + "?"+dataToWrite
             if (!(action.indexOf("search")>-1)){
               type = "POST";
-              var history=action
             }
             else{
               window.queryTime=new Date();
+              window.pushHistory(action + "?"+dataToWrite)
             }
             dataToWrite= dataToWrite+'&rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
-            window.pushHistory(history)
             $.ajax({
               type: type,
               url: action,
@@ -106,12 +103,8 @@
             }).then(function(html,textData,xhr){
               var url = type === 'GET' ? action + '?' + dataToWrite : action;
               if(action.indexOf("/login")>-1){
-                _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
-                  ["write('"+dataToWrite+"', file = paste0(find.package('Rdocumentation'),'/config/creds.txt')) \n Rdocumentation::login()"])
-                .then(function(){
-                  stayLoggedIn().then(function(){
-                     rerenderBody(html,true, url)
-                  })
+                window.loginForRstudio(dataToWrite).then(function(){
+                  rerenderBody(html,true, url)
                 })
               }
               else{
@@ -120,6 +113,13 @@
             });
           });
         });
+      }
+      window.logInForRstudio = function(loginData){
+        return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
+          ["write('"+ loginData +"', file = paste0(find.package('Rdocumentation'),'/config/creds.txt')) \n Rdocumentation::login()"])
+        .then(function(){
+          return stayLoggedIn(loginData)
+        })
       }
 
       // Helper function to grab new HTML
@@ -264,7 +264,7 @@
       packageVersionControl();
       classifyLinks();
       window.bindGlobalClickHandler();
-      bindButtonAndForms();
+      window.bindButtonAndForms();
       window.scrollTo(0,0);
     }
   };
