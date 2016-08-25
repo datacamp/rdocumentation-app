@@ -1,5 +1,5 @@
 (function($) {
-  $(document).ready(function(){
+  bootCollaborator = function(){
   	var depsyurl = $(".depsy").data("url");
     if(depsyurl) {
     	$.get(depsyurl,function(data){
@@ -41,5 +41,5 @@
     $('span.collaborator-type i.fa.fa-user').tooltip();
     $('span.collaborator-type i.fa.fa-users').tooltip();
     $('.impact-info').tooltip();
-  });
+  };
 })($jq);

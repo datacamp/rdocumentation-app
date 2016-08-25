@@ -1,5 +1,5 @@
 (function($) {
-  $(function() {
+  bootAsyncLoader = function(){
     //extra login with ajax request is needed
     if(urlParam('viewer_pane') === '1' && !window.alreadyChecked==true){
       window.alreadyChecked=true;
@@ -40,6 +40,7 @@
         //apparently the rule below refires document.ready after replacing, thus the alreadyChecked boolean
         $('body').attr("url", url);
         $pageBody.html(body);
+        window.boot()
         if(rebind){
           window.classifyLinks();
           window.bindGlobalClickHandler();
@@ -264,7 +265,7 @@
       window.bindButtonAndForms();
       window.scrollTo(0,0);
     }
-  });
+  };
 
   _rStudioRequest=function(url,method,shared_secret,port,params){
     var data={};

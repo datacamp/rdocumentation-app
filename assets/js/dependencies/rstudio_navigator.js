@@ -1,5 +1,5 @@
 (function($) {
-  $(function() {
+  bootRstudioNavigator = function(){
     if(urlParam('viewer_pane') === '1' && !window.rstudioHistory){
       if(typeof(urlParam("history"))=="undefined"){
         window.rstudioHistory = [];
@@ -79,5 +79,5 @@
       }
       window.bindHistoryNavigation();
     }
-  })
+  }
 })($jq);

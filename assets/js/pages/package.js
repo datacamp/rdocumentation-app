@@ -1,4 +1,21 @@
 (function($) {
+  bootPackage = function(){
+    window.triggerIcon();
+    $("#show").click(function(){
+      $("#show").hide();
+      $("#details").find(".hidden").removeClass("hidden");
+    });
+    window.packageVersionToggleHandler();
+    window.activateTabs("#tabs");
+    window.launchFullSearch();
+    if(typeof(Set) == "undefined"){
+      $('#tab1').closest('li').hide();
+      $('#tab2').closest('li').hide();
+    }
+    window.bindTabs();
+    window.makeSlider();
+    dependencyGraph(); 
+  };
   window.packageVersionToggleHandler = function() {
     $('#packageVersionSelect').change(function(){
       var url = $(this).find('option:selected').data('uri');
