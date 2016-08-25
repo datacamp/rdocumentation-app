@@ -251,14 +251,11 @@
         });
       };
 
-      window.executePackageCode=function(code){
-        var package = $(".packageData").data("package-name");
-        var version = $(".packageData").data("latest-version");
-        checkPackageVersion(package,version).then(function(installed){
-          if(installed==0|| installed==-1){
-            _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["require("+package+")\n"+code])
-          }
-        });
+      window.executePackageCode=function(package,code){
+        if(!package){
+          package = $(".packageData").data("package-name");
+        }
+        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["require("+package+")\n"+code])
       }
       //check the packageversion
       packageVersionControl();

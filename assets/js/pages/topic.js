@@ -48,8 +48,9 @@
     if(urlParam("viewer_pane")==1){
       $('[data-datacamp-exercise]').each(function(){
         var r= $('<button type="button" class="visible-installed btn btn-primary js-external pull-right">Run codeblock </button>');
+        var packageName = $(this).parent().data('package-name')
         r.bind('click',function(){
-          window.executePackageCode($(this).prev().text());
+          window.executePackageCode(packageName,$(this).prev().text());
         });
         $(this).append(r);
       });
