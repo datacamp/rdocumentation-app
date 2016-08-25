@@ -1,5 +1,5 @@
 <% var user = data; %>
-<% var reviews = user.reviews; %>
+<% var user_examples = user.examples; %>
 <section class="user">
   <div class="container">
     <header>
@@ -7,15 +7,16 @@
     </header>
 
     <section class="user--reviews">
-      <h3>My Reviews</h3>
+      <h3>My Examples</h3>
       <div class="user--reviews-content">
-        <% if(reviews.length === 0) { %>
-          <div class="review--placeholder">Looks like there are no reviews yet.</div>
+        <% if(user_examples.length === 0) { %>
+          <div class="review--placeholder">Looks like there are no examples yet.</div>
         <% } %>
-        <% for(var i=0; i < reviews.length; i++) { %>
-          <% var reviewUser = null; %>
-          <% var reviewTarget = (reviews[i].package_version || reviews[i].topic); %>
-          <%- include ../shared/_review.ejs %>
+        <% for(var i=0; i < user_examples.length; i++) { %>
+          <% var exampleUser = null; %>
+          <% var reviewTarget = (user_examples[i].topic); %>
+          <a href = '<%- reviewTarget.uri %>'><h4><%- reviewTarget.package_version.package_name+": "+reviewTarget.name %></h4></a>
+          <%- include ../shared/_example.ejs %>
         <% } %>
       </div>
     </section>

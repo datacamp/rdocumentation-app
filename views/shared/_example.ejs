@@ -3,9 +3,10 @@
     <span>
       <% if(exampleUser !== null) { %>
         <strong><%= exampleUser.username %></strong>
+      at
       <% } %>
 
-      at <%= dateformat(user_examples[i].created_at, "mediumDate") %>
+      <%= dateformat(user_examples[i].created_at, "mediumDate") %>
     </span>
   </div>
   <div class='example--body'>
