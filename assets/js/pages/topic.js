@@ -47,7 +47,7 @@
     });
     if(urlParam("viewer_pane")==1){
       $('[data-datacamp-exercise]').each(function(){
-        var r= $('<button type="button" class="visible-installed btn btn-primary js-external pull-right">Run codeblock </button>');
+        var r= $('<button type="button" class="visible-installed btn btn-primary js-external run-example">Run codeblock </button>');
         r.bind('click',function(){
           window.executePackageCode($(this).prev().text());
         });
