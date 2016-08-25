@@ -56,38 +56,26 @@
       });
   };
 
-  window.aggregatePercentile = function(){
-    total = 0;
-    $(".percentile-task").each(function(){
-      total += $(this).data('percentile');
-    });
-    avg = total/($(".percentile-task").length);
-    if(avg){
-      $("#aggpercentile").html(""+Math.round(avg)+"th");
-      $('.downloads').css({"visibility": "visible"});
-    }
-  };
 
   window.percentileTaskView = function(){
     requests =[];
-    $('.percentile-task').each(function(elem) {
+    $('.taskviewtable .percentile-task').each(function(elem) {
       var $self = $(this);
       var url = $self.data('url');
       requests.push($.get(url, function(data){
         if(data.percentile !== null){
-        $self.find(".percentile").text(''+ data.percentile + 'th');
-        $self.data("percentile",data.percentile);
-        $('.percentile-task').css({'visibility': 'visible'});
-      } else{
-        $('.percentile-task').css({'display': 'none'});
-      }
+          $self.find(".percentile").text(''+ data.percentile + 'th');
+          $self.data("percentile", data.percentile);
+          $self.css({'visibility': 'visible'});
+        } else{
+          $self.css({'visibility': 'hidden'});
+        }
       }));
     });
 
     $.when.apply(undefined,requests).then(function(){
       window.triggerIcon();
       sortTable();
-      aggregatePercentile();
     });
   };
 
