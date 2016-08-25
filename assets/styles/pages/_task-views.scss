@@ -13,6 +13,15 @@
       word-break: normal;
     }
   }
+  .percentile{
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 0.2rem;
+    p{
+      margin-top: -0.7rem;
+      margin-left: 0.35rem;
+    }
+  }
 }
 
 .task-views--header {
@@ -93,16 +102,7 @@ a.list-group-item{
   font-size: 3rem;
 }
 
-.percentile{
-  margin-top: 1rem;
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: 0.2rem;
-  p{
-    margin-top: -0.7rem;
-    margin-left: 0.35rem;
-  }
-}
+
 
 .stats-aggregate{
   float: right;
