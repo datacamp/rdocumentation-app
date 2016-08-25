@@ -22,9 +22,11 @@ module.exports = {
     res.view();
   },
   process: function(req, res){
-    passport.authenticate('local', { successRedirect: req.session['rdr'] || '/',
-                                     failureRedirect: '/login',
-                                     failureFlash: 'Invalid Username or password.' })(req, res);
+    var successRedirect =  req.session['rdr'] || '/';
+    passport.authenticate('local', { failureRedirect: '/login',
+                                     failureFlash: 'Invalid Username or password.' })(req, res, function() {
+                                        return res.rstudio_redirect(303, successRedirect);
+                                     });
   },
   rstudioProcess:function(req,res){
     var successRedirect =  req.session['rdr'] || '/';
@@ -45,6 +47,6 @@ module.exports = {
   logout: function (req,res){
     req.session['rdr'] =  null; //Reset the session rdr
     req.logout();
-    res.redirect('/')
+    res.rstudio_redirect(303,'/')
   }
 };

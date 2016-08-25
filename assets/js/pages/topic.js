@@ -1,5 +1,5 @@
 (function($) {
-  window.bootTopic = function () {
+  bootTopic = function () {
 
   var bootstrapDCL = function() {
     var exercises = document.querySelectorAll("[data-datacamp-exercise]");
@@ -53,7 +53,6 @@
         });
         $(this).append(r);
       });
-      window.packageVersionControl();
     }
     else{
       bootstrapDCL();

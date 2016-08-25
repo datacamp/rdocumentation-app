@@ -4,7 +4,7 @@
     if(urlParam('viewer_pane') === '1' && !window.alreadyChecked==true){
       window.alreadyChecked=true;
       console.log('*********************** AJAX MODE ***********************');
-      window.stayLoggedIn = function(){
+      stayLoggedIn = function(){
         var creds = "username="+decodeURIComponent(urlParam('username'))+"&password=" + decodeURIComponent(urlParam("password"))
         if(urlParam("username")!=null && !window.loggedIn){
           return $.ajax({
@@ -23,7 +23,7 @@
           })
         }
       }
-      window.stayLoggedIn()
+      stayLoggedIn()
       var $pageBody = $('body');
       window.loggedIn = false;
       // Intercept all link clicks
@@ -107,7 +107,7 @@
                 _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
                   ["write('"+dataToWrite+"', file = paste0(find.package('Rdocumentation'),'/config/creds.txt')) \n Rdocumentation::login()"])
                 .then(function(){
-                  window.stayLoggedIn().then(function(){
+                  stayLoggedIn().then(function(){
                      rerenderBody(html,true, url)
                   })
                 })
@@ -161,7 +161,7 @@
 
       };
 
-            /************************************************************************************************************************************************
+      /************************************************************************************************************************************************
       button press functions (running examples, installing packages);
       ************************************************************************************************************************************************/
       window.runExamples=function(e){
@@ -243,7 +243,7 @@
         var base = $('base').attr('href');
         $('a:not(.js-external)').map(function(){
           var link =$(this).attr("href")
-          if(!link.indexOf(base)>-1 && (link.indexOf("www")==0  || link.indexOf("http://")==0 || link.indexOf("https://") == 0)){
+          if(typeof(link) != "undefined" && !link.indexOf(base)>-1 && (link.indexOf("www")==0  || link.indexOf("http://")==0 || link.indexOf("https://") == 0)){
             $(this).addClass("js-external");
           }
         });
