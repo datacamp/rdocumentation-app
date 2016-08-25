@@ -12,7 +12,7 @@ module.exports = {
   * @apiName get monthly downloads badge
   * @apiGroup Badges
   *
-  * @apiDescription Returns a badge for the package with the monthly downloads of the specified kind 
+  * @apiDescription Returns a badge for the package with the monthly downloads of the specified kind
   * @see https://github.com/metacran/cranlogs.app for the similar api for cran
   *
   * @apiParam {String}   downloadsKind        Direct downloads, indirect downloads or total downloads
@@ -78,20 +78,20 @@ module.exports = {
 					statsName = "total downloads"
 				}
 				length = 20+ (String(downloads).length + period.length+1)*6
-				statistics= {
+				statistics = {
 					downloads:_formatNumber(downloads),
 					statsName:statsName,
 					period:period,
 					length:length
-				}
-				res.view('badges/downloads_badge.ejs',{data:statistics,layout:'badges/layout.ejs'})
+				};
+        res.type('image/svg+xml');
+				res.view('badges/downloads_badge.ejs',{data:statistics,layout:'badges/layout.ejs'});
 			}
 		})
 		.catch(function(err){
 			console.log(err.message);
-		})
-  	})
-	.catch(function(err){
+		});
+	}).catch(function(err){
 		console.log(err.message);
 	});
   },
@@ -108,22 +108,23 @@ module.exports = {
   getLatestVersion: function(req, res) {
   	var packageName = req.param("packageName");
   	Package.getLatestVersionNumber(packageName).then(function(package){
-  		if(package==null){
-  			version="not published"
-  			color="#e05d44"
+  		if(package===null){
+  			version="not published";
+  			color="#e05d44";
   		}
   		else{
   			version=package.latest_version.dataValues.version;
-  			color="#33aacc"
+  			color="#33aacc";
   		}
-  		length=40+version.length*6
-  		res.view('badges/version_badge.ejs',{data:{version:version,color:color,length:length},layout:'badges/layout.ejs'})
-  	})
+  		length=40+version.length*6;
+      res.type('image/svg+xml');
+  		res.view('badges/version_badge.ejs',{data:{version:version,color:color,length:length},layout:'badges/layout.ejs'});
+  	});
   },
-}
+};
 
 _formatNumber=function(number){
-	if(number > 999999) return (number/1000000).toFixed(1) + 'M'
-	else if (number >999) return (number/1000).toFixed(1) + 'K'
-	else return number
-}
+	if(number > 999999) return (number/1000000).toFixed(1) + 'M';
+	else if (number >999) return (number/1000).toFixed(1) + 'K';
+	else return number;
+};
