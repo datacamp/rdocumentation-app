@@ -2,5 +2,5 @@
   "name": "Rdocumentation JSON API",
   "version": "0.1.0",
   "title": "Rdocumentation JSON API",
-  "url" : "https://rdocumentation.org/api"
+  "url" : "http://rdocumentation.org/api"
 }
