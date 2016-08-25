@@ -283,6 +283,38 @@
         $this.attr('upvoted', response.star !== 'deleted');
       });
     });
+    $("#openModalUpvote").bind('modal:ajax:complete',function(){
+      var callback = function(){
+        $.post("/modalLogin",$(".authentication--form").serialize(),function(json){
+          console.log(json);
+          var status = json.status;
+          if(status === "success"){
+            $.post($('#openModalUpvote').data('action'), function(response) {
+              console.log(response);
+              location.reload();
+            });
+          }else if(status === "invalid"){
+            if($(".modal").find(".flash-error").length === 0){
+            $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+          }
+          }
+        });
+      };
+      $("#modalLoginButton").click(function(e){
+        e.preventDefault();
+        callback()
+      });
+      $("#username").keypress(function(e){
+        if(e.which == 13){
+          callback();
+        }
+      });
+      $("#password").keypress(function(e){
+        if(e.which == 13){
+          callback();
+        }
+      });
+    });
   };
 
   window.triggerIcon = function(){
@@ -307,34 +339,4 @@
       });
     });
   };
-  $(document).ready(function(){
-    $("#openModalUpvote").bind('modal:ajax:complete',function(){
-      var callback = function(){
-        $.post("/modalLogin",$(".authentication--form").serialize(),function(json){
-          console.log(json);
-          var status = json.status;
-          if(status === "success"){
-            $.post($('#openModalUpvote').data('action'), function(response) {
-              location.reload();
-            });
-          }else if(status === "invalid"){
-            if($(".modal").find(".flash-error").length === 0){
-            $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
-          }
-          }
-        });
-      };
-      $("#modalLoginButton").click(callback);
-      $("#username").keypress(function(e){
-        if(e.which == 13){
-          callback();
-        }
-      });
-      $("#password").keypress(function(e){
-        if(e.which == 13){
-          callback();
-        }
-      });
-    });
-  });
 })($jq);
