@@ -21,7 +21,7 @@
         return defaultCodeFunction.call(this, code, lang);
       }
     };
-    
+
     if ($("#postExampleText").length >= 1) {
       var simplemde = new SimpleMDE({
         element: $("#postExampleText")[0],
@@ -59,10 +59,6 @@
       bootstrapDCL();
     }
 
-
-
-  };
-  $(document).ready(function(){
     $("#openModalExample").bind('modal:ajax:complete',function(){
       var callback = function(){
         $.post("/modalLogin",$(".authentication--form").serialize(),function(json){
@@ -88,5 +84,7 @@
         }
       });
     });
-  });
+
+  };
+
 })($jq);
