@@ -45,7 +45,7 @@ module.exports = {
       order: [[sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'ASC' ]]
     }).then(function(package) {
       if(package === null) {
-        return res.rstudio_redirect(302, '/search?q=' + encodeURIComponent(packageName));
+        return res.rstudio_redirect(301, '/search?q=' + encodeURIComponent(packageName));
         //there seems to be a problem with redirected requests if text/html is set as contentype for the ajax request, so I just
         //adapt this so Rstudio still gets the html
       } else if(req.wantsJSON &&!req.param("viewer_pane")==1) {
