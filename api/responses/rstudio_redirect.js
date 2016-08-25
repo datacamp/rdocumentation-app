@@ -22,9 +22,12 @@
   var sails = req._sails;
 
   var urlParams="";
-  if(req.param("viewer_pane")==1){
-	urlParams='?viewer_pane=1&Rstudio_port='+encodeURIComponent(req.param('Rstudio_port'))+"&RS_SHARED_SECRET="+encodeURIComponent(req.param('RS_SHARED_SECRET'));
-  }
+
+  urlParams='?viewer_pane='+encodeURIComponent(req.param("viewer_pane"))+
+    '&Rstudio_port='+encodeURIComponent(req.param('Rstudio_port'))+
+    "&RS_SHARED_SECRET="+encodeURIComponent(req.param('RS_SHARED_SECRET'))+
+    "&rstudio_layout="+encodeURIComponent(req.param('rstudio_layout'));
+
   sails.log.silly('res.restudio_redirect() :: Sending '+code+ ' (redirect) response');
-  res.redirect(code,uri+urlParams);	
+  res.redirect(code,uri+urlParams);
 };
