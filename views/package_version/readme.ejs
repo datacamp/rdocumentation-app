@@ -23,13 +23,14 @@
                     <% } %>
                   </select>
                 </div>
-
-                <span class='package--maintainer'>
-                  by
-                  <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>">
-                    <%= pkgVersion.maintainer.name %>
-                  </a>
-                </span>
+                <% if(pkgVersion.maintainer){ %>
+                  <span class='package--maintainer'>
+                    by
+                    <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>">
+                      <%= pkgVersion.maintainer.name %>
+                    </a>
+                  </span>
+                <% } %>
 
 
 
