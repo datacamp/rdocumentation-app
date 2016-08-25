@@ -184,6 +184,7 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
               </table>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -235,6 +236,19 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
           <li ><a itemprop="softwareRequirements" href="<%= pkgVersion.dependencies[i].uri %>"><%= pkgVersion.dependencies[i].name %></a></li>
         <% } %>
       </ul>
+    </section>
+
+    <section class="package--badge">
+      <h5>Get your badge !<h5>
+      <p>
+        <img src="http://staging.rdocumentation.org/badges/version/<%= pkgVersion.package_name %>">
+      </p>
+      <p>
+        <code>
+          [![Rdoc](http://staging.rdocumentation.org/badges/version/<%= pkgVersion.package_name %>)](http://rdocumentation.org/packages/<%= pkgVersion.package_name %>)
+        </code>
+      </p>
+
     </section>
 
 
