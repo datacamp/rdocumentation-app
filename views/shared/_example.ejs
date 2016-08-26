@@ -10,6 +10,9 @@
     </span>
   </div>
   <div class='example--body'>
-    <p class='example--text'><%= user_examples[i].example %></p>
+    <p class='example--text tex2jax_ignore' 
+    <%if(user_examples[i].topic){%>
+     data-package-name = '<%=user_examples[i].topic.package_version.package_name%>'
+     <%}%>><%= user_examples[i].example %></p>
   </div>
 </div>

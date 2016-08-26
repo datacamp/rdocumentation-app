@@ -1,5 +1,5 @@
 (function($) {
-  window.bootTopic = function () {
+  bootTopic = function () {
 
   var bootstrapDCL = function() {
     var exercises = document.querySelectorAll("[data-datacamp-exercise]");
@@ -48,23 +48,35 @@
     if(urlParam("viewer_pane")==1){
       $('[data-datacamp-exercise]').each(function(){
         var r= $('<button type="button" class="visible-installed btn btn-primary js-external run-example">Run codeblock </button>');
+        var packageName = $(this).parent().data('package-name');
         r.bind('click',function(){
-          window.executePackageCode($(this).prev().text());
+          window.executePackageCode(packageName,$(this).prev().text());
         });
         $(this).append(r);
       });
-      window.packageVersionControl();
     }
     else{
       bootstrapDCL();
     }
 
     $("#openModalExample").bind('modal:ajax:complete',function(){
+      if(urlParam('viewer_pane')==1){
+        window.bindButtonAndForms()
+      }
       var callback = function(){
-        $.post("/modalLogin",$(".authentication--form").serialize(),function(json){
+        var auth = $(".authentication--form").serialize()
+        $.post("/modalLogin",auth,function(json){
           var status = json.status;
           if(status === "success"){
-            $(".example--form form").submit();
+            if(urlParam('viewer_pane')==1){
+              window.logInForRstudio(auth).then(function(){
+                $.modal.close();
+                $(".example--form form").submit();
+              })
+            }
+            else{
+              $(".example--form form").submit();
+            }
           }else if(status === "invalid"){
             if($(".modal").find(".flash-error").length === 0){
             $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
@@ -84,7 +96,6 @@
         }
       });
     });
-
   };
 
 })($jq);

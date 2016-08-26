@@ -67,7 +67,22 @@
     <script src = "http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"> </script>
     <script src = "http://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.min.js"> </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.1/jquery.modal.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script src = "https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script src = "https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        jax: ["input/TeX","input/MathML","input/AsciiMath","output/CommonHTML"],
+        extensions: ["tex2jax.js","mml2jax.js","asciimath2jax.js","MathMenu.js","MathZoom.js","AssistiveMML.js"],
+        TeX: {
+          extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+        },
+        tex2jax: {
+          inlineMath: [ ['$','$'] ],
+          displayMath: [ ['$$','$$'] ],
+          processEscapes: true
+        }
+      });
+    </script>
     <% if(!inViewerPane) { %>
     <script src="https://cdn.datacamp.com/datacamp-light-latest.min.js"></script>
     <% } %>

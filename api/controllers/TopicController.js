@@ -152,8 +152,8 @@ module.exports = {
         return topicJSON;
       });
     }).then(function(topicJSON) {
-      if(topicJSON === null) return res.redirect(301, '/packages/' + encodeURIComponent(packageName) + '/versions/' + encodeURIComponent(packageVersion));
-      else if(topicJSON.redirect_uri) return res.redirect(301, topicJSON.redirect_uri);
+      if(topicJSON === null) return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName) + '/versions/' + encodeURIComponent(packageVersion));
+      else if(topicJSON.redirect_uri) return res.rstudio_redirect(301, topicJSON.redirect_uri);
       return res.ok(topicJSON, 'topic/show.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
@@ -375,10 +375,10 @@ module.exports = {
       }
     }).then(function(topicInstance) {
       if(!topicInstance) {
-        return res.redirect(301, '/packages/' + encodeURIComponent(packageName));
+        return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName));
       } else {
         var prefix = req.path.startsWith('/api/') ? '/api' : '';
-        return res.redirect(301, prefix + topicInstance.uri);
+        return res.rstudio_redirect(301, prefix + topicInstance.uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);
