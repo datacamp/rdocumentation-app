@@ -32,7 +32,7 @@ module.exports = {
     var successRedirect =  req.session['rdr'] || '/';
     passport.authenticate('local', { failureRedirect: '/login',
                                      failureFlash: 'Invalid Username or password.' })(req, res, function() {
-                                        return res.ok([],'homepage.ejs');
+                                        return res.json({status: "success", message: "Logged"});
                                      });
   },
   modalProcess: function(req, res){
@@ -47,6 +47,6 @@ module.exports = {
   logout: function (req,res){
     req.session['rdr'] =  null; //Reset the session rdr
     req.logout();
-    res.rstudio_redirect(303,'/')
+    res.rstudio_redirect(303,'/');
   }
 };
