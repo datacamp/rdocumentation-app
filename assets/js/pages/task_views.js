@@ -21,7 +21,29 @@
         getView(v);
       } 
     }
+    window.makeSideBar();
   };
+
+  window.makeSideBar = function(){
+    $(".sidebar-slider-icon").click(function(){
+      var slider = $(".sidebar-slider-icon");
+      if(slider.hasClass("fa-angle-right")){
+        slider.removeClass("fa-angle-right");
+        slider.addClass("fa-angle-left")
+        $(".view").css("width","calc(100% - 21em)");
+        $(".view").css("margin-left","280px");
+        $(".sliding-sidebar").animate({width:'toggle'},350);
+      }else{
+        slider.removeClass("fa-angle-left");
+        slider.addClass("fa-angle-right");
+        $(".sliding-sidebar").animate({width:'toggle'},350,function(){
+          $(".view").css("width","100%");
+          $(".view").css("margin-left","20px");
+        });
+      }
+    });
+  };
+
 
 
 
