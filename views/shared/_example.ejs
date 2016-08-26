@@ -1,18 +1,28 @@
-<div class="example">
-  <div class='example--title'>
-    <span>
-      <% if(exampleUser !== null) { %>
-        <strong><%= exampleUser.username %></strong>
-      at
+<div class="example-wrapper">  
+  <% if(reviewTarget!==null){ %>
+    <a href = '<%- reviewTarget.uri %>'><h4><%- reviewTarget.package_version.package_name+": "+reviewTarget.name %></h4></a>
+  <% } %>
+  <div class="example" data-exampleid=<%-user_examples[i].id%>>
+    <div class='example--title'>
+      <span>
+        <% if(exampleUser !== null) { %>
+          <strong><%= exampleUser.username %></strong>
+        at
+        <% } %>
+        <%= dateformat(user_examples[i].created_at, "mediumDate") %>
+      </span>
+      <% if(user && user_examples[i].user_id===user.id){ %>
+        <div class="buttons">
+          <i class="edit-example fa fa-pencil" aria-hidden="true"></i>
+          <i class="delete-example fa fa-times" aria-hidden="true"></i>
+        </div>
       <% } %>
-
-      <%= dateformat(user_examples[i].created_at, "mediumDate") %>
-    </span>
-  </div>
-  <div class='example--body'>
-    <p class='example--text tex2jax_ignore' 
-    <%if(user_examples[i].topic){%>
-     data-package-name = '<%=user_examples[i].topic.package_version.package_name%>'
-     <%}%>><%= user_examples[i].example %></p>
+    </div>
+    <div class='example--body'>
+      <p class='example--text tex2jax_ignore' data-raw='<%= user_examples[i].example %>'
+      <%if(user_examples[i].topic){%>
+        data-package-name = '<%=user_examples[i].topic.package_version.package_name%>'
+      <%}%>><%= user_examples[i].example %></p>
+    </div>
   </div>
 </div>

@@ -9,6 +9,7 @@
     <% for(var i=0; i < user_examples.length; i++) { %>
       <% var exampleUser = user_examples[i].user; %>
       <% var exampleTarget = null; %>
+      <% var reviewTarget = null; %>
       <%- include _example.ejs %>
     <% } %>
   </div>

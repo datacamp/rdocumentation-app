@@ -30,7 +30,7 @@ module.exports = {
       user_id: user.id,
       topic_id: topicId
     }).then(function(instance) {
-      RedisService.del('view_topic_' + topicId);
+      RedisService.invalidateTopicById(topicId);
       if(req.wantsJSON) {
         return res.created(instance.toJSON());
       } else {
@@ -46,8 +46,36 @@ module.exports = {
   },
 
 
+  deleteExample: function(req, res) {
+    var exampleId = req.param('exampleId');
+    var user = req.user;
+    return Example.findOne({where:{id: exampleId, user_id: user.id}}).then(function(instance) {
+      if(instance){
+        RedisService.invalidateTopicById(instance.topic_id);
+        return instance.destroy().then(function(){return res.json({status: "done"})});
+      }else{
+        return res.json({status: "forbidden"});
+      }
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
+  },
 
-
+  updateExample: function(req, res) {
+    var exampleId = req.param('exampleId');
+    var exampleText = req.param('text');
+    var user = req.user;
+    return Example.findOne({where:{id: exampleId, user_id: user.id}}).then(function(instance) {
+      if(instance){
+        RedisService.invalidateTopicById(instance.topic_id);
+        return instance.update({example: exampleText}).then(function(){return res.json({status: "done"})});
+      }else{
+        return res.json({status: "forbidden"});
+      }
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
+  },
 
    /**
   * @api {get} /topics/:topicId/reviews/ Get list of topic's review

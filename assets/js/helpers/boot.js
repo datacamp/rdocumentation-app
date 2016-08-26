@@ -17,6 +17,7 @@
     trendingPackagesLastWeek();
     trendingKeywords(); 
     bootTopic();
+    bootUser();
     bindUpvoteButton();
     window.bindFade();
   };
