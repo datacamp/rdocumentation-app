@@ -1,11 +1,11 @@
 (function($) {
   bootAsyncLoader = function(){
     //extra login with ajax request is needed
-    if(urlParam('viewer_pane') === '1' && !window.alreadyChecked==true){
+    if(urlParam('viewer_pane') === '1' && window.alreadyChecked !== true){
       window.alreadyChecked=true;
       console.log('*********************** AJAX MODE ***********************');
 
-      //execute an ajax post request to login, this request must give back a 200 status code, otherwise it gets cancelled and the ajax doesn't keep the 
+      //execute an ajax post request to login, this request must give back a 200 status code, otherwise it gets cancelled and the ajax doesn't keep the
       //cookie
       stayLoggedIn = function(creds){
         return $.ajax({
@@ -17,11 +17,12 @@
               withCredentials: true
             },
             crossDomain:true
-        })
-      }
-      if(urlParam('username')!=null){
-        var creds = "username="+decodeURIComponent(urlParam('username'))+"&password=" + decodeURIComponent(urlParam("password"))
-        stayLoggedIn(creds)
+        });
+      };
+      if(urlParam('username')!==null){
+        var creds = "username="+decodeURIComponent(urlParam('username'))+
+          "&password=" + decodeURIComponent(urlParam("password"));
+        stayLoggedIn(creds);
       }
 
       // Intercept all link clicks
@@ -30,15 +31,13 @@
         // Grab the url from the anchor tag
         var url = $(this).attr('href');
         return window.replacePage(url,true,true);
-      }
+      };
 
       //rerender the body of the ajax retrieved url
       var rerenderBody = function(html,rebind, url){
-        var body = html.replace(/^[\S\s]*<body[^>]*?>/i, "");
-        body = body.replace(/<\/body[\S\s]*$/i, "");
         $('body').attr("url", url);
-        $('#content').html(body);
-        window.boot()
+        $('#content').html(html);
+        window.boot();
         if(rebind){
           classifyLinks();
           window.bindGlobalClickHandler();
@@ -58,12 +57,15 @@
 
       window.bindGlobalClickHandler = function(){        //unbinding seems to fail a lot in the Rstudio browser?!->be sure not to bind twice
         $('a:not(.js-external)').each(function(){
-          if(typeof($(this).attr('href')) != "undefined" && $(this).attr('href').indexOf('/modalLogin')<0 
-              && $(this).attr('href').indexOf('#close-modal')<0){
-             $(this).unbind('click').bind('click', asyncClickHandler);
+          if(typeof($(this).attr('href')) != "undefined" &&
+              $(this).attr('href').indexOf('/modalLogin')<0 &&
+              $(this).attr('href').indexOf('#close-modal')<0
+            ) {
+            $(this).unbind('click').bind('click', asyncClickHandler);
           }
-        })
+        });
       };
+
       bindSearchPaneClickHandler=function(){
         $('.search--results').find('a:not(.js-external)').unbind('click').bind('click',asyncClickHandler);
       };
@@ -73,24 +75,29 @@
         $('#js-install').unbind('click').bind('click',installpackage);
         $('#js-hideviewer').unbind('click').bind('click',hideViewer);
         $('#js-makedefault').unbind('click').bind('click',setDefault);
+
         $( "form" ).each(function(){
           $(this).unbind('submit').bind('submit',function(event) {
             event.preventDefault();
-            var action = $(this)[0].action;
-            var dataToWrite= $(this).serialize();
-            var type = "GET";
-            if (!(action.indexOf("search")>-1)){
-              type = "POST";
-            }
-            else{
-              window.queryTime=new Date();
-              window.pushHistory(action + "?"+dataToWrite)
-            }
-            dataToWrite= dataToWrite+'&rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port")
+            var action = $(this).attr('action');
+            var type = $(this).attr('method') || 'post';
+
+            var dataToWrite = $(this).serialize();
+
+            window.pushHistory(action + "?"+dataToWrite);
+
+            dataToWrite = dataToWrite+
+              '&rstudio_layout=1'+
+              '&viewer_pane=1'+
+              '&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+
+              "&Rstudio_port=" + urlParam("Rstudio_port");
+
+            window.pushHistory(action + "?"+dataToWrite);
+
             $.ajax({
               type: type,
               url: action,
-              headers: { 
+              headers: {
                 Accept : "text/html; charset=utf-8",
                 "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
               },
@@ -104,29 +111,30 @@
               var url = type === 'GET' ? action + '?' + dataToWrite : action;
               if(action.indexOf("/login")>-1){
                 window.logInForRstudio(dataToWrite).then(function(){
-                  rerenderBody(html,true, url)
-                })
+                  rerenderBody(html,true, url);
+                });
               }
               else{
                 rerenderBody(html,true, url);
               }
+
             });
           });
         });
-      }
+      };
       window.logInForRstudio = function(loginData){
         return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
           ["write('"+ loginData +"', file = paste0(find.package('Rdocumentation'),'/config/creds.txt')) \n Rdocumentation::login()"])
         .then(function(){
-          return stayLoggedIn(loginData)
-        })
-      }
+          return stayLoggedIn(loginData);
+        });
+      };
 
       // Helper function to grab new HTML
       // and replace the content
       window.replacePage = function(url,rebind,addToHistory) {
         if(addToHistory){
-          window.pushHistory(url)
+          window.pushHistory(url);
         }
         if(url.indexOf('#')>=0){
           url = url.substring(url.indexOf('#'),url.length);
@@ -158,7 +166,7 @@
               rerenderBody(data,rebind, url);
             }
           })
-          .fail(function(error) {console.log(error.responseJSON) });
+          .fail(function(error) {console.log(error.responseJSON); });
         }
 
       };
@@ -171,11 +179,11 @@
         var package = $(".packageData").data("package-name");
         var version = $(".packageData").data("latest-version");
         checkPackageVersion(package,version).then(function(installed){
-          if(installed==0|| installed==-1){
+          if(installed===0|| installed==-1){
             var examples= $('.topic').find('.topic--title').filter(function(i,el){
               return $(this).text()=="Examples";
             }).parent().find('.R').text();
-            _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["require("+package+")\n"+examples])
+            _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["require("+package+")\n"+examples]);
           }
         });
         return false;
@@ -197,7 +205,7 @@
       checkPackageVersion=function(package,version){
         return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["check_package('"+package+"','"+version+"')"])
         .then(function(result){
-            return parseInt(result.result)
+            return parseInt(result.result);
         });
       };
 
@@ -208,7 +216,7 @@
           checkPackageVersion(packageName,version).then(function(installed){
             if(installed==1){
               $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-large pull-right btn-primary js-external">Install</button>');
-              $('.visible-installed').hide()
+              $('.visible-installed').hide();
             }
             else if(installed==-1){
               $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-large pull-right btn-primary js-external">Update</button>');
@@ -227,7 +235,7 @@
         var packageName = $(".packageData").data("package-name");
         var packageSource= $(".packageData").data("type-id");
         _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
-                  ["install_package('"+packageName+"',"+packageSource+")"])
+                  ["install_package('"+packageName+"',"+packageSource+")"]);
         return false;
       };
 
@@ -235,7 +243,7 @@
         $('ul.tabs').find('a').each(function(){
           $(this.hash).hide();
         });
-        var link = ui.tab[0].innerHTML
+        var link = ui.tab[0].innerHTML;
         link = link.substring(link.indexOf('#'),link.indexOf('" class'));
         $(link).show();
         e.preventDefault();
@@ -244,8 +252,8 @@
       classifyLinks=function(){
         var base = $('base').attr('href');
         $('a:not(.js-external)').map(function(){
-          var link =$(this).attr("href")
-          if(typeof(link) != "undefined" && !link.indexOf(base)>-1 && (link.indexOf("www")==0  || link.indexOf("http://")==0 || link.indexOf("https://") == 0)){
+          var link =$(this).attr("href");
+          if(typeof(link) != "undefined" && link.indexOf(base)<=-1 && (link.indexOf("www")===0  || link.indexOf("http://")===0 || link.indexOf("https://") === 0)){
             $(this).addClass("js-external");
           }
         });
@@ -255,8 +263,8 @@
         if(!package){
           package = $(".packageData").data("package-name");
         }
-        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["require("+package+")\n"+code])
-      }
+        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["require("+package+")\n"+code]);
+      };
       //check the packageversion
       packageVersionControl();
       classifyLinks();

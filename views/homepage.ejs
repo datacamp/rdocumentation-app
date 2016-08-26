@@ -15,7 +15,7 @@
   <div class="home--cta">
     <h1>Search all <%= data.nbPackages %> CRAN, BioConductor and Github packages.</h1>
     <div class="home--search">
-      <form class="search" action="/search">
+      <form class="search" action="/search" method="get">
         <input name="q" type="text" placeholder="Search for packages, functions, etc" autofocus autocomplete="off">
         <button class="btn btn-primary" type="submit">Search</button>
         <div class="search--results"></div>
