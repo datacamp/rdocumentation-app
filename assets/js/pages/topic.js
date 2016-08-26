@@ -1,16 +1,37 @@
 (function($) {
   bootTopic = function () {
 
-  var bootstrapDCL = function() {
-    var exercises = document.querySelectorAll("[data-datacamp-exercise]");
-    //TODO add code to reinit exercices
-  };
+    var bootstrapExamples = function() {
+      if(urlParam("viewer_pane") != 1) {
+        window.initAddedDCLightExercises();
+      }
+      else {
+        $('.run-example').each(function() {
+          var packageName = $(this).parent().data('package-name') || $('.packageData').data('package-name');
+          $(this).click(function(){
+            window.executePackageCode(packageName,$(this).prev().text());
+          });
+        });
+      }
+    };
 
     var renderer = new marked.Renderer();
     var defaultCodeFunction = renderer.code;
 
     renderer.code = function(code, lang) {
-      if(lang === '{r}' || lang === 'r' || lang === 'python' || lang === '{python}') {
+      if(urlParam("viewer_pane") == 1 && (lang === 'r' || lang === '{r}')) {
+        var $block = $("<div>");
+
+        var exampleHTML = "<pre><code>" + code + "</code></pre>";
+
+        var $button = $('<button type="button" class="visible-installed btn btn-primary js-external run-example">Run codeblock </button>');
+
+        $block.append(exampleHTML);
+        $block.append($button);
+        return $block.prop('outerHTML');
+
+      }
+      else if(lang === '{r}' || lang === 'r' || lang === 'python' || lang === '{python}') {
         var codeBlock = '<div data-datacamp-exercise data-lang="r">';
         codeBlock += '<code data-type="sample-code">';
         codeBlock += code;
@@ -29,9 +50,7 @@
           setTimeout(function() {
             var rendered = marked(plainText, {renderer: renderer});
             $(preview).html(rendered);
-            if(urlParam("viewer_pane") !== 1){
-              bootstrapDCL();
-            }
+              bootstrapExamples();
           }, 0);
           return "Loading...";
         },
@@ -45,26 +64,16 @@
       var rendered =  marked(markdown, {renderer: renderer});
       $(this).html(rendered);
     });
-    if(urlParam("viewer_pane")==1){
-      $('[data-datacamp-exercise]').each(function(){
-        var r= $('<button type="button" class="visible-installed btn btn-primary js-external run-example">Run codeblock </button>');
-        var packageName = $(this).parent().data('package-name');
-        r.bind('click',function(){
-          window.executePackageCode(packageName,$(this).prev().text());
-        });
-        $(this).append(r);
-      });
-    }
-    else{
-      bootstrapDCL();
-    }
+
+    bootstrapExamples();
+
 
     $("#openModalExample").bind('modal:ajax:complete',function(){
       if(urlParam('viewer_pane')==1){
-        window.bindButtonAndForms()
+        window.bindButtonAndForms();
       }
       var callback = function(){
-        var auth = $(".authentication--form").serialize()
+        var auth = $(".authentication--form").serialize();
         $.post("/modalLogin",auth,function(json){
           var status = json.status;
           if(status === "success"){
@@ -72,7 +81,7 @@
               window.logInForRstudio(auth).then(function(){
                 $.modal.close();
                 $(".example--form form").submit();
-              })
+              });
             }
             else{
               $(".example--form form").submit();
