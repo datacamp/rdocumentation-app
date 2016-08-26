@@ -13,14 +13,14 @@
         $(this).addClass("highlight");
       });
     });
-
-    if(window.location.hash) {
-      getView(window.location.hash.slice(1));
-    } else {
-      var v = $('.list-group .list-group-item:first-child').text();
-      getView(v);
+    if($(".view")[0]){
+      if(window.location.hash) {
+        getView(window.location.hash.slice(1));
+      } else {
+        var v = $('.list-group .list-group-item:first-child').text();
+        getView(v);
+      } 
     }
-
   };
 
 
