@@ -32,6 +32,8 @@
         slider.addClass("fa-angle-left")
         $(".view").css("width","calc(100% - 21em)");
         $(".view").css("margin-left","280px");
+        $(".footer--credits--title ").css("width","calc(100% - 21em)");
+        $(".footer--credits--title ").css("margin-left","280px");
         $(".sliding-sidebar").animate({width:'toggle'},350);
       }else{
         slider.removeClass("fa-angle-left");
@@ -39,6 +41,8 @@
         $(".sliding-sidebar").animate({width:'toggle'},350,function(){
           $(".view").css("width","100%");
           $(".view").css("margin-left","20px");
+          $(".footer--credits--title ").css("width","100%");
+        $(".footer--credits--title ").css("margin-left","0px");
         });
       }
     });
