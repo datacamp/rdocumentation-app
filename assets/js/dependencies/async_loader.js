@@ -297,7 +297,6 @@
       window.bindGlobalClickHandler();
       window.bindButtonAndForms();
       window.scrollTo(0,0);
-      setupAJAX();
     }
   };
 
