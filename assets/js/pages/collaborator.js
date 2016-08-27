@@ -15,6 +15,9 @@
     			data.top_collabs.forEach(function(collab){
     				$(".top-collab-list").append("<a href = '/collaborators/name/"+encodeURIComponent(collab.name)+"'>"+collab.name+"</a>");
           });
+          if(urlParam('viewer_pane') == 1){
+            window.bindGlobalClickHandler()
+          }
     		}
 
         if(data.icon) {
