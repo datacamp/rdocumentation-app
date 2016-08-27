@@ -21,6 +21,13 @@
       window.alreadyChecked=true;
       console.log('*********************** AJAX MODE ***********************');
 
+      $.ajaxSetup({
+        beforeSend: function (xhr)
+        {
+           xhr.setRequestHeader("X-RStudio-Session", sid);
+           xhr.setRequestHeader("X-RStudio-Ajax",'true');
+        }
+      });
       //execute an ajax post request to login, this request must give back a 200 status code, otherwise it gets cancelled and the ajax doesn't keep the
       //cookie
       stayLoggedIn = function(creds){
@@ -40,6 +47,7 @@
           "&password=" + decodeURIComponent(urlParam("password"));
         stayLoggedIn(creds);
       }
+
 
       // Intercept all link clicks
       asyncClickHandler = function(e) {
@@ -116,8 +124,6 @@
               headers: {
                 Accept : "text/html; charset=utf-8",
                 "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-                "X-RStudio-Ajax": 'true',
-                "X-RStudio-Session": sid
               },
               data: dataToWrite,
               contentType:"application/x-www-form-urlencoded",
@@ -173,10 +179,6 @@
             url : base +url,
             type: 'GET',
             dataType:"html",
-            headers: {
-              "X-RStudio-Ajax": 'true',
-              "X-RStudio-Session": sid
-            },
             Accept:"text/html",
             cache: false,
             xhrFields: {
@@ -295,6 +297,7 @@
       window.bindGlobalClickHandler();
       window.bindButtonAndForms();
       window.scrollTo(0,0);
+      setupAJAX();
     }
   };
 

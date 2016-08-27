@@ -22,7 +22,7 @@
   var sails = req._sails;
 
   var fromRstudio = req.headers['x-rstudio-ajax'] === 'true';
-  var urlParams= ['viewer_pane', 'Rstudio_port', 'RS_SHARED_SECRET'].map(function(p) {
+  var urlParams= ['viewer_pane'].map(function(p) {
     return req.param(p) ? p + '=' + encodeURIComponent(req.param(p)) : '';
   }).filter(function(p) {
     return p !== '';

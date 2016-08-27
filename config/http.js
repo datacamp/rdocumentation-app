@@ -76,7 +76,6 @@ module.exports.http = {
   writeRstudioSession: function(req, res, next) {
     if(req.headers['x-rstudio-ajax'] === 'true') {
       res.set('X-Rstudio-Session', req.sessionID);
-      //res.getHeader('set-cookie');
     }
     next();
   },
