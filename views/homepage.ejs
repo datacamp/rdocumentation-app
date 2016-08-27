@@ -20,7 +20,9 @@
         <button class="btn btn-primary" type="submit">Search</button>
         <div class="search--results"></div>
       </form>
-      <p class="home--taskviews">Or explore packages in one of the <a href="/taskviews">Task Views</a>.</p>
+      <% if(!inViewerPane) { %>
+        <p class="home--taskviews">Or explore packages in one of the <a href="/taskviews">Task Views</a>.</p>
+      <% } %>
     </div>
   </div>
 
