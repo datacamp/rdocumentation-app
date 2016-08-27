@@ -1,4 +1,16 @@
 (function($) {
+
+  var responseHandler = function(successFn) {
+    return function(data, textStatus, xhr) {
+      var location = xhr.getResponseHeader('X-RStudio-Redirect');
+      if(location) {
+        window.replacePage(location, true, true);
+      } else {
+        successFn(data, textStatus, xhr);
+      }
+    };
+  };
+
   bootAsyncLoader = function(){
     //extra login with ajax request is needed
     if(urlParam('viewer_pane') === '1' && window.alreadyChecked !== true){
@@ -99,7 +111,8 @@
               url: action,
               headers: {
                 Accept : "text/html; charset=utf-8",
-                "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+                "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+                "X-RStudio-Ajax": 'true'
               },
               data: dataToWrite,
               contentType:"application/x-www-form-urlencoded",
@@ -107,18 +120,19 @@
                 withCredentials: true
               },
               crossDomain:true
-            }).then(function(html,textData,xhr){
-              var url = type === 'GET' ? action + '?' + dataToWrite : action;
-              if(action.indexOf("/login")>-1){
-                window.logInForRstudio(dataToWrite).then(function(){
+            }).then(responseHandler(function(html, textData, xhr) {
+                //normal handling
+                var url = type === 'GET' ? action + '?' + dataToWrite : action;
+                if(action.indexOf("/login")>-1){
+                  window.logInForRstudio(dataToWrite).then(function(){
+                    rerenderBody(html,true, url);
+                  });
+                }
+                else{
                   rerenderBody(html,true, url);
-                });
-              }
-              else{
-                rerenderBody(html,true, url);
-              }
-
-            });
+                }
+              })
+            );
           });
         });
       };
@@ -133,9 +147,6 @@
       // Helper function to grab new HTML
       // and replace the content
       window.replacePage = function(url,rebind,addToHistory) {
-        if(addToHistory){
-          window.pushHistory(url);
-        }
         if(url.indexOf('#')>=0){
           url = url.substring(url.indexOf('#'),url.length);
           document.getElementById(url).scrollIntoView();
@@ -156,15 +167,21 @@
             url : base +url,
             type: 'GET',
             dataType:"html",
+            headers: {
+              "X-RStudio-Ajax": 'true'
+            },
             Accept:"text/html",
             cache: false,
             xhrFields: {
               withCredentials: true
             },
             crossDomain:true,
-            success: function(data, textStatus, xhr) {
+            success: responseHandler(function(data, textStatus, xhr) {
+              if(addToHistory){
+                window.pushHistory(url);
+              }
               rerenderBody(data,rebind, url);
-            }
+            })
           })
           .fail(function(error) {console.log(error.responseJSON); });
         }

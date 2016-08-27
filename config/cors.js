@@ -57,6 +57,7 @@ module.exports.cors = {
 
   credentials: true,
 
+  exposeHeaders: 'X-RStudio-Ajax, X-RStudio-Redirect',
   /***************************************************************************
   *                                                                          *
   * Which methods should be allowed for CORS requests? This is only used in  *
@@ -73,6 +74,6 @@ module.exports.cors = {
   *                                                                          *
   ***************************************************************************/
 
-  headers: 'Content-Type, Accept-Encoding, X-Shared-Secret, X-Requested-With, Cache-Control'
+  headers: 'Content-Type, Accept-Encoding, X-Shared-Secret, X-Requested-With, Cache-Control, X-RStudio-Ajax, X-RStudio-Redirect'
 
 };

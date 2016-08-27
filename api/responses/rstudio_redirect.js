@@ -21,7 +21,8 @@
   var res = this.res;
   var sails = req._sails;
 
-  var urlParams= ['viewer_pane', 'Rstudio_port', 'RS_SHARED_SECRET', 'rstudio_layout'].map(function(p) {
+  var fromRstudio = req.headers['x-rstudio-ajax'] === 'true';
+  var urlParams= ['viewer_pane', 'Rstudio_port', 'RS_SHARED_SECRET'].map(function(p) {
     return req.param(p) ? p + '=' + encodeURIComponent(req.param(p)) : '';
   }).filter(function(p) {
     return p !== '';
@@ -29,6 +30,16 @@
 
   if(urlParams) urlParams = '?' + urlParams;
 
+  var redirectURL = uri+urlParams;
+
   sails.log.silly('res.restudio_redirect() :: Sending '+code+ ' (redirect) response');
-  res.redirect(code,uri+urlParams);
+
+  if(fromRstudio) {
+    res.location(redirectURL);
+    res.set('X-RStudio-Redirect', redirectURL);
+    res.json({ status: 'success'});
+  } else {
+    res.redirect(code,uri+urlParams);
+  }
+
 };

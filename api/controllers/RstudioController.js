@@ -34,7 +34,7 @@ module.exports = {
     }
     else{
       aliases =null;
-    }    
+    }
     var topicName = req.param('topic_names');
     if(typeof topicName != "undefined" && topicName.length>0){
       topicNames= topicName.split(",");
@@ -42,7 +42,7 @@ module.exports = {
     else{
       topicNames =null;
     }
-    var topic = req.param("topic"); 
+    var topic = req.param("topic");
     //if topicNames and packageNames where found by the local help function, search for it in the specified packages (might be none)
     if(packageNames != null && topicNames != null){
       return RStudioService.helpFindByTopicsAndPackages(topicNames,packageNames).then(function(json){
@@ -144,14 +144,14 @@ module.exports = {
     }
     else{
       packageNames =null;
-    }    
+    }
     var topicName = req.param('matching_titles');
     if(typeof topicName != "undefined" && topicName.length>0){
       topicNames= topicName.split(",");
     }
     else{
       topicNames =null;
-    } 
+    }
     var pattern = req.param("query");
     var fields = req.param("fields");
     fields = fields.split(",");
@@ -197,13 +197,13 @@ module.exports = {
         console.log(err.message);
       });
     }
-    
+
 
   },
   makeDefault:function(req,res){
-    res.ok([],'rStudio/make_default.ejs')
+    res.ok([],'rStudio/make_default.ejs');
   },
   redirect:function(req,res){
-    res.redirect(req._parsedOriginalUrl.path.substring(5,req._parsedOriginalUrl.path.length));
+    res.rstudio_redirect(302, req._parsedOriginalUrl.path.substring(5,req._parsedOriginalUrl.path.length))
   }
 };
