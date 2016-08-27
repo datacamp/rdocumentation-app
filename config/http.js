@@ -38,11 +38,13 @@ module.exports.http = {
     order: [
       'startRequestTimer',
       'cookieParser',
+      'readRstudioSession',
       'session',
       'passportInit',
       'passportSession',
       'userInjector',
       'paramsInjector',
+      'writeRstudioSession',
       'bodyParser',
       'handleBodyParserError',
       'compress',
@@ -61,6 +63,23 @@ module.exports.http = {
   * Example custom middleware; logs each request to the console.              *
   *                                                                           *
   ****************************************************************************/
+
+  readRstudioSession: function(req, res, next) {
+    if(req.headers['x-rstudio-ajax'] === 'true') {
+      if (req.headers['x-rstudio-session']);
+        req.signedCookies['sails.sid'] = req.headers['x-rstudio-session'];
+
+    }
+    return next();
+  },
+
+  writeRstudioSession: function(req, res, next) {
+    if(req.headers['x-rstudio-ajax'] === 'true') {
+      res.set('X-Rstudio-Session', req.sessionID);
+      //res.getHeader('set-cookie');
+    }
+    next();
+  },
 
   userInjector: function (req, res, next) {
     res.locals.user = req.user;

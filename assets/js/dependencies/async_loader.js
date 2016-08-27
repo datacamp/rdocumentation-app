@@ -1,8 +1,12 @@
 (function($) {
 
+  var sid = '';
+
   var responseHandler = function(successFn) {
     return function(data, textStatus, xhr) {
       var location = xhr.getResponseHeader('X-RStudio-Redirect');
+      var sessionid = xhr.getResponseHeader('X-RStudio-Session');
+      sid = sessionid;
       if(location) {
         window.replacePage(location, true, true);
       } else {
@@ -112,7 +116,8 @@
               headers: {
                 Accept : "text/html; charset=utf-8",
                 "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-                "X-RStudio-Ajax": 'true'
+                "X-RStudio-Ajax": 'true',
+                "X-RStudio-Session": sid
               },
               data: dataToWrite,
               contentType:"application/x-www-form-urlencoded",
@@ -140,6 +145,7 @@
         return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
           ["write('"+ loginData +"', file = paste0(find.package('Rdocumentation'),'/config/creds.txt')) \n Rdocumentation::login()"])
         .then(function(){
+          console.log("Stored creds in RStudio");
           return stayLoggedIn(loginData);
         });
       };
@@ -168,7 +174,8 @@
             type: 'GET',
             dataType:"html",
             headers: {
-              "X-RStudio-Ajax": 'true'
+              "X-RStudio-Ajax": 'true',
+              "X-RStudio-Session": sid
             },
             Accept:"text/html",
             cache: false,
