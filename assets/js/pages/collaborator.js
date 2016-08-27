@@ -34,8 +34,8 @@
   	var downurl = $(".direct-downloads").data("url");
     if(downurl) {
     	$.get(downurl,function(data){
-    		if(data.total){
-    			$("#direct-downloadsnr").html(data.total);
+    		if(data.totalStr){
+    			$("#direct-downloadsnr").html(data.totalStr);
     			$(".direct-downloads").show();
     		}
     	});

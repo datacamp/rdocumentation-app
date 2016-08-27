@@ -9,6 +9,8 @@ var _ = require('lodash');
 var md5 = require('md5');
 var request = require('request');
 var Promise = require('bluebird');
+var numeral = require('numeral');
+
 
 
 var self = module.exports = {
@@ -109,6 +111,8 @@ var self = module.exports = {
   getNumberOfDirectDownloads: function(req,res){
     var name = req.param('name');
     DownloadStatistic.getNumberOfDirectDownloads(name).then(function(results){
+      row = results[0];
+      row.totalStr = row.total ? numeral(row.total).format('0,0') : '';
       res.json(results[0]);
     });
   },
