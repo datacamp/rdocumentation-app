@@ -163,17 +163,17 @@
         else{
           url = url.replace("../","");
           if(url.charAt(0)!="/"){
-            url="/"+url;
+            url ="/"+url;
           }
           var base = $('base').attr('href');
           if(url.indexOf('?')>-1){
-            url = url + '&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+            urlWParams = url + '&rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           else{
-            url=url+'?viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+            urlWParams = url+'?rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           return $.ajax({
-            url : base +url,
+            url : base +urlWParams,
             type: 'GET',
             dataType:"html",
             Accept:"text/html",
@@ -186,7 +186,7 @@
               if(addToHistory){
                 window.pushHistory(url);
               }
-              rerenderBody(data,rebind, url);
+              rerenderBody(data,rebind, urlWParams);
             })
           })
           .fail(function(error) {console.log(error.responseJSON); });

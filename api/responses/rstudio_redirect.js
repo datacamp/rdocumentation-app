@@ -27,10 +27,13 @@
   }).filter(function(p) {
     return p !== '';
   }).join('&');
-
-  if(urlParams) urlParams = '?' + urlParams;
-
-  var redirectURL = uri+urlParams;
+  if(uri.indexOf('?')>0){
+    var redirectURL = uri.substring(0,uri.indexOf('?')) 
+  }
+  else{
+    var redirectURL = uri
+  }
+  
 
   sails.log.silly('res.restudio_redirect() :: Sending '+code+ ' (redirect) response');
 
@@ -39,7 +42,7 @@
     res.set('X-RStudio-Redirect', redirectURL);
     res.json({ status: 'success'});
   } else {
-    res.redirect(code,uri+urlParams);
+    res.redirect(code,uri+"?"+ urlParams);
   }
 
 };

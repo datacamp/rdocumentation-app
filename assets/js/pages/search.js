@@ -2,7 +2,7 @@
   window.reloadPackages = function(currentFunctionPage, currentPackagePage){
     $('html, body').animate({ scrollTop: 0 }, 'slow');
   	$.ajax({
-  		url: "/search_packages?q="+urlParam('q') + "&page=" + currentPackagePage,
+  		url: "/search_packages?q="+urlParam('q') + "&page=" + currentPackagePage +"&viewer_pane="+urlParam('viewer_pane'),
       crossDomain:true,
       xhrFields: {
         withCredentials: true
@@ -13,6 +13,7 @@
       $('.packagedata').fadeIn('fast');
       if(urlParam('viewer_pane') === '1'){
         window.bindGlobalClickHandler();
+        bindHistoryNavigation();
       }
       window.getPercentiles();
       window.bindFade();
@@ -23,7 +24,7 @@
   window.reloadFunctions = function(currentFunctionPage, currentPackagePage){
     $('html, body').animate({ scrollTop: 0 }, 'slow');
   	$.ajax({
-  		url: "/search_functions?q="+ urlParam('q') + "&page=" + currentFunctionPage,
+  		url: "/search_functions?q="+ urlParam('q') + "&page=" + currentFunctionPage +"&viewer_pane="+urlParam('viewer_pane'),
     	crossDomain:true,
       xhrFields: {
         withCredentials: true
@@ -34,6 +35,7 @@
       $('.functiondata').fadeIn('fast');
       if(urlParam('viewer_pane') === '1'){
         window.bindGlobalClickHandler();
+        bindHistoryNavigation();
       }
       rebind(currentFunctionPage, currentPackagePage);
   	});
