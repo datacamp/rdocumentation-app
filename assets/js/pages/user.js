@@ -71,7 +71,7 @@
             var rendered = marked(plainText, {renderer: renderer});
             $(preview).html(rendered);
             if(urlParam("viewer_pane") !== 1){
-              bootstrapDCL();
+              bootstrapExamples();
             }
           }, 0);
           return "Loading...";
@@ -91,6 +91,7 @@
       			var rendered =  marked(markdown, {renderer: renderer});
       			$(this).html(rendered);
     			});
+    			bootstrapExamples();
       		bindEditButton();
       	});
       });
