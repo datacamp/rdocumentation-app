@@ -108,10 +108,7 @@
 
             var dataToWrite = $(this).serialize();
 
-            window.pushHistory(action + "?"+dataToWrite);
-
             dataToWrite = dataToWrite+
-              '&rstudio_layout=1'+
               '&viewer_pane=1'+
               '&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+
               "&Rstudio_port=" + urlParam("Rstudio_port");
@@ -133,7 +130,7 @@
               crossDomain:true
             }).then(responseHandler(function(html, textData, xhr) {
                 //normal handling
-                var url = type === 'GET' ? action + '?' + dataToWrite : action;
+                var url = action + '?' + dataToWrite;
                 if(action.indexOf("/login")>-1){
                   window.logInForRstudio(dataToWrite).then(function(){
                     rerenderBody(html,true, url);
@@ -170,10 +167,10 @@
           }
           var base = $('base').attr('href');
           if(url.indexOf('?')>-1){
-            url = url + '&rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+            url = url + '&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           else{
-            url=url+'?rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+            url=url+'?viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           }
           return $.ajax({
             url : base +url,
