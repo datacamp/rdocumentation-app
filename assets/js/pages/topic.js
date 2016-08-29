@@ -7,7 +7,7 @@
       }
       else {
         $('.run-example').each(function() {
-          var packageName = $(this).parent().data('package-name') || $('.packageData').data('package-name');
+          var packageName = $(this).parent().parent().data('package-name') || $('.packageData').data('package-name');
           $(this).click(function(){
             window.executePackageCode(packageName,$(this).prev().text());
           });
