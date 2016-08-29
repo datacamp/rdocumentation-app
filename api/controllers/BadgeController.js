@@ -85,7 +85,8 @@ module.exports = {
 					length:length
 				};
         res.type('image/svg+xml');
-				res.view('badges/downloads_badge.ejs',{data:statistics,layout:'badges/layout.ejs'});
+        res.locals.layout = null;
+				res.view('badges/downloads_badge.ejs',{data:statistics});
 			}
 		})
 		.catch(function(err){
@@ -118,7 +119,8 @@ module.exports = {
   		}
   		length=40+version.length*6;
       res.type('image/svg+xml');
-  		res.view('badges/version_badge.ejs',{data:{version:version,color:color,length:length},layout:'badges/layout.ejs'});
+      res.locals.layout = null;
+  		res.view('badges/version_badge.ejs',{data:{version:version,color:color,length:length}});
   	});
   },
 };

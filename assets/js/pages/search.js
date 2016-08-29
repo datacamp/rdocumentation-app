@@ -2,7 +2,7 @@
   window.reloadPackages = function(currentFunctionPage, currentPackagePage){
     $('html, body').animate({ scrollTop: 0 }, 'slow');
   	$.ajax({
-  		url: "/search_packages?q="+urlParam('q') + "&page=" + currentPackagePage +"&viewer_pane="+urlParam('viewer_pane'),
+  		url: "/search_packages?q="+urlParam('q') + "&page=" + currentPackagePage,
       crossDomain:true,
       xhrFields: {
         withCredentials: true
@@ -24,7 +24,7 @@
   window.reloadFunctions = function(currentFunctionPage, currentPackagePage){
     $('html, body').animate({ scrollTop: 0 }, 'slow');
   	$.ajax({
-  		url: "/search_functions?q="+ urlParam('q') + "&page=" + currentFunctionPage +"&viewer_pane="+urlParam('viewer_pane'),
+  		url: "/search_functions?q="+ urlParam('q') + "&page=" + currentFunctionPage,
     	crossDomain:true,
       xhrFields: {
         withCredentials: true

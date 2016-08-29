@@ -113,8 +113,6 @@
               '&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+
               "&Rstudio_port=" + urlParam("Rstudio_port");
 
-            window.pushHistory(action + "?"+dataToWrite);
-
             $.ajax({
               type: type,
               url: action,
@@ -166,12 +164,8 @@
             url ="/"+url;
           }
           var base = $('base').attr('href');
-          if(url.indexOf('?')>-1){
-            urlWParams = url + '&rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
-          }
-          else{
-            urlWParams = url+'?rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
-          }
+          var urlWParams = (url.indexOf('?')>-1)? url+"&" : url +"?";
+          urlWParams = urlWParams +'rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
           return $.ajax({
             url : base +urlWParams,
             type: 'GET',
