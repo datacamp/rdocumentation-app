@@ -19,27 +19,10 @@
 	bindEditButton = function(){
 		$(".edit-example").click(function(){
 			$(this).unbind("click");
-			var $text = $(this).parents(".example").find(".example--text");
+			var $example = $(this).parents(".example");
+			var $text = $example.find(".example--text");
 			$text.replaceWith("<textarea name = 'text' rows = '4'>"+$text.data("raw")+"</textarea>");
-			var bootstrapDCL = function() {
-	    	var exercises = document.querySelectorAll("[data-datacamp-exercise]");
-		    //TODO add code to reinit exercices
-		  };
-			var renderer = new marked.Renderer();
-	    var defaultCodeFunction = renderer.code;
-	    renderer.code = function(code, lang) {
-	      if(lang === '{r}' || lang === 'r' || lang === 'python' || lang === '{python}') {
-	        var codeBlock = '<div data-datacamp-exercise data-lang="r">';
-	        codeBlock += '<code data-type="sample-code">';
-	        codeBlock += code;
-	        codeBlock += '</code>';
-	        codeBlock += '</div>';
-	        return codeBlock;
-	      } else {
-	        return defaultCodeFunction.call(this, code, lang);
-	      }
-	    };
-	    var element = $(this).parents(".example").find("textarea")[0]
+	    var element = $example.find("textarea")[0]
 			var simplemde = new SimpleMDE({
         element: element,
         previewRender: function(plainText, preview) {
@@ -55,14 +38,13 @@
         spellChecker: false,
         status: false
       });
-      $(this).parents(".example").find(".example--body").append("<div><button class='btn btn-primary submit-edit' type='button'>Submit your changes</button></div>");
-      $(this).parents(".example").find(".submit-edit").click(function(){
+      $example.find(".example--body").append("<div><button class='btn btn-primary submit-edit' type='button'>Submit your changes</button></div>");
+      $example.find(".submit-edit").click(function(){
       	$this = $(this);
       	var value = simplemde.value();
-      	console.log($this.parents(".example").data("exampleid"));
-      	$.post("/api/"+$this.parents(".example").data("exampleid")+"/update",{text: value},function(response){
+      	$.post("/api/"+$example.data("exampleid")+"/update",{text: value},function(response){
 					var string = "<p class='example--text' data-raw='"+value+"'>"+value+"</p>";
-      		$this.parents(".example").find(".example--body").html(string);
+      		$example.find(".example--body").html(string);
       		$('.example--text').each(function() {
       			var markdown = $(this).html();
       			var rendered =  marked(markdown, {renderer: renderer});
