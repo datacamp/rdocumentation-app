@@ -108,6 +108,8 @@
 
             var dataToWrite = $(this).serialize();
 
+            window.pushHistory(action+"?"+dataToWrite)
+            
             dataToWrite = dataToWrite+
               '&viewer_pane=1'+
               '&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+
