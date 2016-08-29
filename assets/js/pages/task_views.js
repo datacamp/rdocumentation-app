@@ -24,6 +24,8 @@
     }
     window.makeSideBar();
     hideSlider();
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)   
+    $('.list-group').css('height',h-80)
   };
 
   window.makeSideBar = function(){
