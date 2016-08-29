@@ -6,17 +6,21 @@
         <h4>Top 10 - downloads  <i class="fa fa-info-circle" aria-hidden="false" title="Ranking based on the direct downloads of last month."></i></h4>
         <table class = "data">
         <% data.mostPopular.forEach(function(package,j){ %>
-        <tr><td><%- j+1 %>. <a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a><p class ='info-trends'><%- package.total %></p></tr></td>
+        <tr><td><%- (data.page1-1)*10+j+1 %>. <a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a><p class ='info-trends'><%- package.total %></p></tr></td>
         <% }); %>
         </table>
+        <p class="previous pull-left">Previous</p>
+        <p class="next pull-right">Next</p>
       </div>
       <div class="col-md-3" id="top10maintainers" data-url="/api/trends/topcollaborators">
         <h4>Top 10 - Maintainers  <i class="fa fa-info-circle" aria-hidden="false" title="Ranking based on the number of downloads in the last month of the packages maintained by the given person."></i></h4>
         <table class = "data">
         <% data.topCollaborators.forEach(function(collaborator,j){ %>
-        <tr><td><%- j+1 %>. <a href='/collaborators/name/<%- encodeURIComponent(collaborator.name) %>'><%- collaborator.name %></a><p class ='info-trends'><%- collaborator.total %></p></tr></td>
+        <tr><td><%- (data.page2-1)*10+j+1 %>. <a href='/collaborators/name/<%- encodeURIComponent(collaborator.name) %>'><%- collaborator.name %></a><p class ='info-trends'><%- collaborator.total %></p></tr></td>
         <% }); %>
         </table>
+        <p class="previous pull-left">Previous</p>
+        <p class="next pull-right">Next</p>
       </div>
       <div class="col-md-3" id="top10new" data-url="/api/trends/newpackages">
         <h4>New packages</h4>
@@ -26,6 +30,8 @@
         <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a><p class='info-trends'><%- release.toDateString() %></p></tr></td>
         <% }); %>
         </table>
+        <p class="previous pull-left">Previous</p>
+        <p class="next pull-right">Next</p>
       </div>
       <div class="col-md-3" id="top10renew" data-url="/api/trends/newversions">
         <h4>Last updated packages</h4>
@@ -35,6 +41,8 @@
         <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a><p class='info-trends'><%- release.toDateString() %></p></tr></td>
         <% }); %>
         </table>
+        <p class="previous pull-left">Previous</p>
+        <p class="next pull-right">Next</p>
       </div>
     </div>
 
