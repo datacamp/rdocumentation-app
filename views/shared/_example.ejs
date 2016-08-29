@@ -1,6 +1,6 @@
 <div class="example-wrapper">  
-  <% if(reviewTarget!==null){ %>
-    <a href = '<%- reviewTarget.uri %>'><h4><%- reviewTarget.package_version.package_name+": "+reviewTarget.name %></h4></a>
+  <% if(exampleTarget!==null){ %>
+    <a href = '<%- exampleTarget.uri %>'><h4><%- exampleTarget.package_version.package_name+": "+exampleTarget.name %></h4></a>
   <% } %>
   <div class="example" data-exampleid=<%-user_examples[i].id%>>
     <div class='example--title'>

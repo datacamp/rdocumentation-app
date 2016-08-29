@@ -14,7 +14,7 @@
         <% } %>
         <% for(var i=0; i < user_examples.length; i++) { %>
           <% var exampleUser = null; %>
-          <% var reviewTarget = (user_examples[i].topic); %>
+          <% var exampleTarget = (user_examples[i].topic); %>
           <%- include ../shared/_example.ejs %>
         <% } %>
       </div>
