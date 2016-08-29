@@ -22,6 +22,47 @@
 			var $example = $(this).parents(".example");
 			var $text = $example.find(".example--text");
 			$text.replaceWith("<textarea name = 'text' rows = '4'>"+$text.data("raw")+"</textarea>");
+			var bootstrapExamples = function() {
+		    if(urlParam("viewer_pane") != 1) {
+		      window.initAddedDCLightExercises();
+		    }
+		    else {
+		      $('.run-example').each(function() {
+		        var packageName = $(this).parent().data('package-name') || $('.packageData').data('package-name');
+		        $(this).click(function(){
+		          window.executePackageCode(packageName,$(this).prev().text());
+		        });
+		      });
+		    }
+		  };
+
+		  var renderer = new marked.Renderer();
+		  var defaultCodeFunction = renderer.code;
+
+		  renderer.code = function(code, lang) {
+		    if(urlParam("viewer_pane") == 1 && (lang === 'r' || lang === '{r}')) {
+		      var $block = $("<div>");
+
+		      var exampleHTML = "<pre><code>" + code + "</code></pre>";
+
+		      var $button = $('<button type="button" class="visible-installed btn btn-primary js-external run-example">Run codeblock </button>');
+
+		      $block.append(exampleHTML);
+		      $block.append($button);
+		      return $block.prop('outerHTML');
+
+		    }
+		    else if(lang === '{r}' || lang === 'r' || lang === 'python' || lang === '{python}') {
+		      var codeBlock = '<div data-datacamp-exercise data-lang="r">';
+		      codeBlock += '<code data-type="sample-code">';
+		      codeBlock += code;
+		      codeBlock += '</code>';
+		      codeBlock += '</div>';
+		      return codeBlock;
+		    } else {
+		      return defaultCodeFunction.call(this, code, lang);
+		    }
+		  };
 	    var element = $example.find("textarea")[0]
 			var simplemde = new SimpleMDE({
         element: element,

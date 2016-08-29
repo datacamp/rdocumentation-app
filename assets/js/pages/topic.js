@@ -1,5 +1,8 @@
 (function($) {
 
+    
+  bootTopic = function () {
+
   var bootstrapExamples = function() {
     if(urlParam("viewer_pane") != 1) {
       window.initAddedDCLightExercises();
@@ -16,19 +19,6 @@
 
   var renderer = new marked.Renderer();
   var defaultCodeFunction = renderer.code;
-
-  renderer.code = function(code, lang) {
-    if(lang === '{r}' || lang === 'r' || lang === 'python' || lang === '{python}') {
-      var codeBlock = '<div data-datacamp-exercise data-lang="r">';
-      codeBlock += '<code data-type="sample-code">';
-      codeBlock += code;
-      codeBlock += '</code>';
-      codeBlock += '</div>';
-      return codeBlock;
-    } else {
-      return defaultCodeFunction.call(this, code, lang);
-    }
-  };
 
   renderer.code = function(code, lang) {
     if(urlParam("viewer_pane") == 1 && (lang === 'r' || lang === '{r}')) {
@@ -54,9 +44,6 @@
       return defaultCodeFunction.call(this, code, lang);
     }
   };
-    
-  bootTopic = function () {
-
 
     if ($("#postExampleText").length >= 1) {
       var simplemde = new SimpleMDE({
