@@ -2,8 +2,8 @@
 
   var addExpr = function(){
     // Make :eq case insensitive
-    jQuery.expr[':'].containsRaw = function(a, i, m) {
-      return jQuery(a).text().toUpperCase()
+    $.expr[':'].containsRaw = function(a, i, m) {
+      return $(a).text().toUpperCase()
           .indexOf(m[3].toUpperCase()) >= 0;
     };
   };
