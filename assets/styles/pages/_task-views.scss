@@ -134,3 +134,7 @@ a.list-group-item{
   top: 50%;
   transform: translateY(-50%);
 }
+
+.view td[data-column="2"] {
+    width: 115px;
+}

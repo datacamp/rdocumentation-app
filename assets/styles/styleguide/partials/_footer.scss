@@ -18,12 +18,14 @@
 		.logo-title {
 			font-size: 1rem;
 			color: $text-tertiary !important;
+			margin-top: 3px;
 		}
 	}
 }
 
 .footer .navbar--title{
     float: right;
+    z-index: 1;
 }
 
 
@@ -43,8 +45,19 @@
 
 }
 
-@media (max-width: 1180px){
+@media (min-width: 670px) and (max-width: 1180px){
 	.footer--credits--title {
-  	margin:auto;
+  		margin:auto;
+  		float: right;
+  		position:relative;
+  		display: inline-block;
+  		text-align: initial;
+  		width:initial;
+	}
+}
+
+@media (max-width: 670px){
+	.navbar--title.footer-largescreen{
+		display: none;
 	}
 }
