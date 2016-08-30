@@ -1,5 +1,11 @@
 <section class="bg bg-navigation home--background">
   <nav class='navbar'>
+    <% if(inViewerPane){ %>
+      <div class="rstudio-navigation pull-left">
+        <button class="btn btn-primary-light rstudio-navbutton rstudio-back"><i class="fa fa-chevron-left rstudio-back-arrow" style="font-size:15px"></i></button>
+        <button class="btn btn-primary-light rstudio-navbutton rstudio-forward"><i class="fa fa-chevron-right rstudio-forward-arrow" style="font-size:15px"></i></button>
+      </div>
+    <% } %>
     <div class="home--title">
       <a href="/">
         <div class="logo"></div>
@@ -20,9 +26,7 @@
         <button class="btn btn-primary" type="submit">Search</button>
         <div class="search--results"></div>
       </form>
-      <% if(!inViewerPane) { %>
-        <p class="home--taskviews">Or explore packages in one of the <a href="/taskviews">Task Views</a>.</p>
-      <% } %>
+      <p class="home--taskviews">Or explore packages in one of the <a href="/taskviews">Task Views</a>.</p>
     </div>
   </div>
 

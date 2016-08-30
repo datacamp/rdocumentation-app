@@ -15,7 +15,9 @@ module.exports = {
   quickSearch: function(req, res) {
     var token = req.body.token;
 
-    es.msearch({
+    var packages, topics, collaborators;
+
+    var elastic = es.msearch({
       body: [
         { index: 'rdoc', type: 'package_version' },
         { query: {
@@ -80,7 +82,7 @@ module.exports = {
               }
             }
           },
-          size: 5,
+          size: 4,
           fields: ['package_name', 'version']
         },
 
@@ -160,14 +162,14 @@ module.exports = {
             }
 
           },
-          size: 5,
+          size: 4,
           fields: ['name']
         },
 
     ]}).then(function(response) {
       var packageResult = response.responses[0];
       var topicResult = response.responses[1];
-      var packages = _.map(packageResult.hits.hits, function(hit) {
+      packages = _.map(packageResult.hits.hits, function(hit) {
         var name = hit.fields.package_name[0];
         var version = hit.fields.version[0];
         var uri = sails.getUrlFor({ target: 'PackageVersion.findByNameVersion' })
@@ -177,7 +179,7 @@ module.exports = {
         return { uri: uri,  name: name };
       });
 
-      var topics = _.map(topicResult.hits.hits, function(hit) {
+      topics = _.map(topicResult.hits.hits, function(hit) {
         var name = hit.fields.name[0];
         var id = hit._id;
         var inner_hit = hit.inner_hits.package_version.hits.hits[0];
@@ -190,9 +192,19 @@ module.exports = {
           .replace('/api/', '/');
         return { uri: uri,  name: name, package_name: package_name, package_version: version };
       });
-      return res.json({packages: packages, topics: topics});
     }).catch(function(err) {
       return res.negotiate(err);
+    });
+
+    var coll = Collaborator.quickSearch(token).then(function(result){
+      collaborators = _.map(result,function(collaborator){
+        var uri = '/collaborators/name/' + encodeURIComponent(collaborator.name);
+        return {uri : uri, name: collaborator.name};
+      });
+    });
+
+    Promise.all([elastic,coll]).then(function(){
+      return res.json({packages: packages, topics: topics, collaborators: collaborators});
     });
 
   },
