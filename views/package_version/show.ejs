@@ -112,6 +112,22 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
     </header>
 
     <section id="details" class="container-fluid sliding">
+      <div class='row'>
+        <div class="col-sm-12">
+        <% if(pkgVersion.collaborators.length > 0) { %>
+          <div class= "contributor">
+              <div class="listed">
+                <h5>Contributors:</h5>
+                  <ul>
+                    <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
+                      <li><a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a></li>
+                    <% } %>
+                  </ul>
+              </div>
+          </div>
+        <% } %>
+        </div>
+      </div>
 
       <div id="tabs" class="row">
         <ul class="tabs">
@@ -155,22 +171,7 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
 
         <div class="col-sm-12 package--details">
 
-          <div class='row'>
-            <div class="col-sm-12">
-            <% if(pkgVersion.collaborators.length > 0) { %>
-              <div class= "contributor">
-                  <div class="listed">
-                    <h5>Contributors:</h5>
-                      <ul>
-                        <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
-                          <li><a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a></li>
-                        <% } %>
-                      </ul>
-                  </div>
-              </div>
-            <% } %>
-            </div>
-          </div>
+
 
           <div class='row'>
             <div class='col-sm-12 package--details'>
