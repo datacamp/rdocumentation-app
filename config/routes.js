@@ -126,6 +126,8 @@ module.exports.routes = {
     // API
     'get /api/topics/:topicId/examples': 'ExampleController.findByTopic',
     'post /api/topics/:topicId/examples': 'ExampleController.postExampleToTopic',
+    'delete /api/examples/:exampleId': 'ExampleController.deleteExample',
+    'post /api/examples/:exampleId': 'ExampleController.updateExample',
 
   //***** TaskViews *****
     // API

@@ -14,3 +14,9 @@
     margin-bottom: $default-space / 2.0;
   }
 }
+
+.example {
+  .clearfix:before, .container:before, .container-fluid:before, .row:before{
+    display: none;
+  }
+}

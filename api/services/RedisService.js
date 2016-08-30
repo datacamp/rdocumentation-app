@@ -50,6 +50,13 @@ module.exports = {
         RedisClient.del(row);
       });
     })
+  },
+
+  invalidateTopicById: function(id) {
+    RedisService.del('view_topic_' + id);
+    Topic.findById(id,{include: [{model: PackageVersion, as: 'package_version'}]}).then(function(topic){
+      RedisService.del('view_topic_' + topic.package_version.package_name + '_' + topic.package_version.version + '_' + topic.name);
+    });
   }
 
 

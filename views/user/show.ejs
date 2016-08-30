@@ -14,8 +14,7 @@
         <% } %>
         <% for(var i=0; i < user_examples.length; i++) { %>
           <% var exampleUser = null; %>
-          <% var reviewTarget = (user_examples[i].topic); %>
-          <a href = '<%- reviewTarget.uri %>'><h4><%- reviewTarget.package_version.package_name+": "+reviewTarget.name %></h4></a>
+          <% var exampleTarget = (user_examples[i].topic); %>
           <%- include ../shared/_example.ejs %>
         <% } %>
       </div>

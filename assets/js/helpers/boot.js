@@ -14,8 +14,9 @@
     bootRstudioNavigator();
     bootAsyncLoader();
     bootPackage();
-    bootTopic();
+    bootExamples();
     bootTrending();
+    bootUser();
     bindUpvoteButton();
     window.bindFade();
   };
