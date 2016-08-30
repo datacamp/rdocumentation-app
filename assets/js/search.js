@@ -57,7 +57,7 @@
 
     function appendResults(results) {
       var object = '';
-      if(results.packages.length === 0 && results.topics.length === 0){
+      if(results.packages.length === 0 && results.topics.length === 0 && results.collaborators.length === 0){
         return searchResultsPane.html('<p class="placeholder">No results found. Press [enter] for full-text search.</p>')
       }
       if(results.packages.length > 0){
@@ -76,6 +76,15 @@
           object += "<li><a href=" + topic.uri + ">" + topic.name + "<em> ("+ topic.package_name + " - " + topic.package_version + ") </em>" + "</a></li>";
         });
         object += '</ul>';
+      }
+
+      if(results.collaborators.length > 0){
+        object += '<p class="header">Collaborators</p>'
+        object += '<ul class="collaborators">';
+        results.collaborators.forEach(function(collaborator){
+          object += "<li><a href=" + collaborator.uri + ">" + collaborator.name + "</a></li>";
+        });
+        object += '</ul>'; 
       }
       searchResultsPane.html(object);
       if(window.bindSearchPaneClickHandler){
@@ -130,10 +139,13 @@
             var next =($("li a.hover").parent().next("li"));
             if(next.length > 0){
               sethovering(next.find("a"));
-            }
-            else if($("li a.hover").parent().parent().hasClass("packages")){
+            }else if($("li a.hover").parent().parent().hasClass("packages")){
               if($(".search--results .topics li").length > 0){
               sethovering($(".search--results .topics li").eq(0).find("a"));
+              }
+            }else if($("li a.hover").parent().parent().hasClass("topics")){
+              if($(".search--results .collaborators li").length > 0){
+              sethovering($(".search--results .collaborators li").eq(0).find("a"));
               }
             }
           }else{
@@ -149,6 +161,11 @@
             else if($("li a.hover").parent().parent().hasClass("topics")){
               if($(".search--results .packages li").length>0){
               sethovering($(".search--results .packages li").last().find("a"));
+              }
+            }
+            else if($("li a.hover").parent().parent().hasClass("collaborators")){
+              if($(".search--results .topics li").length>0){
+              sethovering($(".search--results .topics li").last().find("a"));
               }
             }
           }else{
