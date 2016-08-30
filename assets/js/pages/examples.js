@@ -32,13 +32,20 @@
           return $block.prop('outerHTML');
 
         }
-        else if(lang === '{r}' || lang === 'r' || lang === 'python' || lang === '{python}') {
+        else if(lang === '{r}' || lang === 'r') {
           var codeBlock = '<div data-datacamp-exercise data-lang="r">';
           codeBlock += '<code data-type="sample-code">';
           codeBlock += code;
           codeBlock += '</code>';
           codeBlock += '</div>';
           return codeBlock;
+        }else if(lang === 'python' || lang === '{python}') {
+        var codeBlock = '<div data-datacamp-exercise data-lang="python">';
+        codeBlock += '<code data-type="sample-code">';
+        codeBlock += code;
+        codeBlock += '</code>';
+        codeBlock += '</div>';
+        return codeBlock;
         } else {
           return defaultCodeFunction.call(this, code, lang);
         }
