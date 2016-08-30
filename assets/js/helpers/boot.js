@@ -14,9 +14,8 @@
     bootRstudioNavigator();
     bootAsyncLoader();
     bootPackage();
-    trendingPackagesLastWeek();
-    trendingKeywords(); 
     bootTopic();
+    bootTrending();
     bindUpvoteButton();
     window.bindFade();
   };

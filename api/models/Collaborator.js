@@ -106,10 +106,10 @@ module.exports = {
         return sequelize.query(query, {type: sequelize.QueryTypes.DELETE});
       },
 
-      topCollaborators: function(){
-        var query = "SELECT coll.name, Sum(direct_downloads) as total From Packages pack INNER JOIN PackageVersions versions ON pack.latest_version_id=versions.id INNER JOIN Collaborators coll ON versions.maintainer_id = coll.id INNER JOIN DownloadStatistics downloads ON pack.name=downloads.package_name WHERE "+
-          "downloads.date >= current_date() - interval '1' month group by coll.name order by total desc limit 0,10";
-        return sequelize.query(query, {type: sequelize.QueryTypes.SELECT});
+      topCollaborators: function(page){
+        var query = "SELECT coll.name, Sum(direct_downloads), Sum(indirect_downloads), Sum(direct_downloads) + Sum(indirect_downloads) as total From Packages pack INNER JOIN PackageVersions versions ON pack.latest_version_id=versions.id INNER JOIN Collaborators coll ON versions.maintainer_id = coll.id INNER JOIN DownloadStatistics downloads ON pack.name=downloads.package_name WHERE "+
+          "downloads.date >= current_date() - interval '1' month group by coll.name order by total desc limit ?,10";
+        return sequelize.query(query, {replacements: [(page-1)*10], type: sequelize.QueryTypes.SELECT});
       }
 
     }

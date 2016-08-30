@@ -128,4 +128,143 @@
           }
       });
   };
+
+  bootTrending = function(){
+    trendingPackagesLastWeek();
+    trendingKeywords();
+    if(typeof(Set) !== "undefined"){
+      dependencyGraph();
+    }
+    $(".trends .fa-info-circle").tooltip({placement:"bottom"});
+    if(getCurrentPath().indexOf('trends')==0) {
+      var page1 = parseInt(urlParam("page1")) || 1;
+      var page2 = parseInt(urlParam("page2")) || 1;
+      var page3 = parseInt(urlParam("page3")) || 1;
+      var page4 = parseInt(urlParam("page4")) || 1;
+      window.rebindTrending(page1,page2,page3,page4);
+    }
+  };
+
+  window.reloadMostPopular = function(page1,page2,page3,page4){
+    $.ajax({
+      url : "/api/trends/mostpopular?page=" + page1
+    }).done(function(result){
+      $("#top10downloads tbody").empty();
+      result.results.forEach(function(result,i){
+        $("#top10downloads tbody").append("<tr><td>"+((page1-1)*10+i+1)+". "+"<a href = '/packages/"+result.package_name+"'>"+result.package_name+"</a><p class = 'info-trends'>"+result.total+"</p></td></tr>");
+      });
+    });
+    window.rebindTrending(page1,page2,page3,page4);
+  };
+
+  window.reloadTopCollaborators = function(page1,page2,page3,page4){
+    $.ajax({
+      url : "/api/trends/topcollaborators?page=" + page2
+    }).done(function(result){
+      $("#top10maintainers tbody").empty();
+      result.results.forEach(function(result,i){
+        $("#top10maintainers tbody").append("<tr><td>"+((page2-1)*10+i+1)+". "+"<a href = '/collaborators/"+encodeURIComonent(result.name)+"'>"+result.name+"</a><p class = 'info-trends'>"+result.total+"</p></td></tr>");
+      });
+    });
+    window.rebindTrending(page1,page2,page3,page4);
+  };
+
+  window.reloadNewPackages = function(page1,page2,page3,page4){
+    $.ajax({
+      url : "/api/trends/newpackages?page=" + page3
+    }).done(function(result){
+      $("#top10new tbody").empty();
+      result.newArrivals.forEach(function(arrival){
+        var release = new Date(arrival.rel);
+        $("#top10new tbody").append("<tr><td><a href = '/packages/"+arrival.package_name+"'>"+arrival.package_name+"</a><p class = 'info-trends'>"+release.toDateString()+"</p></td></tr>");
+      });
+    });
+    window.rebindTrending(page1,page2,page3,page4);
+  };
+
+  window.reloadNewVersions = function(page1,page2,page3,page4){
+    $.ajax({
+      url : "/api/trends/newversions?page=" + page4
+    }).done(function(result){
+      $("#top10renew tbody").empty();
+      result.newVersions.forEach(function(arrival){
+        var release = new Date(arrival.rel);
+        $("#top10renew tbody").append("<tr><td><a href = '/packages/"+arrival.package_name+"'>"+arrival.package_name+"</a><p class = 'info-trends'>"+release.toDateString()+"</p></td></tr>");
+      });
+    });
+    window.rebindTrending(page1,page2,page3,page4);
+  };
+
+  window.updateTrendingHistory = function(page1,page2,page3,page4){
+    var url = window.location.protocol+ "//" +
+     window.location.host +
+     window.location.pathname +
+     '?page1=' + page1 +
+     '&page2=' + page2 +
+     '&page3=' + page3 +
+     '&page4=' + page4;
+     history.pushState({page1: page1, page2: page2, page3: page3, page4: page4}, "Trends", url);
+  };
+
+  window.onpopstate = function(event) {
+    reloadMostPopular(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+    reloadTopCollaborators(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+    reloadNewPackages(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+    reloadNewVersions(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+  };
+
+  window.rebindTrending = function(page1,page2,page3,page4) {
+    if(page1 <= 1){
+      $("#top10downloads .previous").hide();
+    }else{
+      $("#top10downloads .previous").show();
+    }
+    $("#top10downloads .previous").unbind().click(function(){
+      window.updateTrendingHistory(page1-1,page2,page3,page4);
+      window.reloadMostPopular(page1-1,page2,page3,page4);
+    });
+    $("#top10downloads .next").unbind().click(function(){
+      window.updateTrendingHistory(page1+1,page2,page3,page4);
+      window.reloadMostPopular(page1+1,page2,page3,page4);
+    });
+    if(page2 <= 1){
+      $("#top10maintainers .previous").hide();
+    }else{
+      $("#top10maintainers .previous").show();
+    }
+    $("#top10maintainers .previous").unbind().click(function(){
+      window.updateTrendingHistory(page1,page2-1,page3,page4);
+      window.reloadTopCollaborators(page1,page2-1,page3,page4);
+    });
+    $("#top10maintainers .next").unbind().click(function(){
+      window.updateTrendingHistory(page1,page2+1,page3,page4);
+      window.reloadTopCollaborators(page1,page2+1,page3,page4);
+    });
+    if(page3 <= 1){
+      $("#top10new .previous").hide();
+    }else{
+      $("#top10new .previous").show();
+    }
+    $("#top10new .previous").unbind().click(function(){
+      window.updateTrendingHistory(page1,page2,page3-1,page4);
+      window.reloadNewPackages(page1,page2,page3-1,page4);
+    });
+    $("#top10new .next").unbind().click(function(){
+      window.updateTrendingHistory(page1,page2,page3+1,page4);
+      window.reloadNewPackages(page1,page2,page3+1,page4);
+    });
+    if(page4 <= 1){
+      $("#top10renew .previous").hide();
+    }else{
+      $("#top10renew .previous").show();
+    }
+    $("#top10renew .previous").unbind().click(function(){
+      window.updateTrendingHistory(page1,page2,page3,page4-1);
+      window.reloadNewVersions(page1,page2,page3,page4-1);
+    });
+    $("#top10renew .next").unbind().click(function(){
+      window.updateTrendingHistory(page1,page2,page3,page4+1);
+      window.reloadNewVersions(page1,page2,page3,page4+1);
+    });
+  };
 })($jq);

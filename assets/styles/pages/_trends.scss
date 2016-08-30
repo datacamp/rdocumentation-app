@@ -1,5 +1,4 @@
 .row.top10{
-  margin-bottom: 5em;
   margin-top: 2em;
 }
 .info-trends{
@@ -9,7 +8,7 @@
 }
 
 .top10 .col-md-3 {
-  margin-top: 2rem;
+  margin-bottom: 4.2rem;
 }
 
 .trends {
@@ -25,5 +24,15 @@
 }
 
 .graph {
-  margin-top: 5em;
+  margin-top: 2em;
+  margin-bottom: 5em;
+}
+
+.previous:hover, .next:hover{
+  cursor: pointer;
+}
+
+.previous, .next{
+  font-size:1.2em;
+  font-weight :bold;
 }
