@@ -13,7 +13,7 @@
       $('#tab2').closest('li').hide();
     }
     else{
-      dependencyGraph(); 
+      dependencyGraph();
     }
     window.bindTabs();
     window.makeSlider();
@@ -254,6 +254,7 @@
         if(!$("#chart svg").hasClass("nvd3-svg")){
           window.graphDownloadStatistics();
         }
+        window.dependencyGraphPackage();
       }else{
         slider.removeClass("fa-angle-up");
         slider.addClass("fa-angle-down");
@@ -283,7 +284,7 @@
       $.ajax({
         type: 'POST',
         url: actionUrl,
-        headers: { 
+        headers: {
           Accept : "text/html; charset=utf-8",
           "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
         },
@@ -308,7 +309,7 @@
                 $.ajax({
                   type: 'POST',
                   url: $('#openModalUpvote').data('action'),
-                  headers: { 
+                  headers: {
                     Accept : "text/html; charset=utf-8",
                     "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
                   },
