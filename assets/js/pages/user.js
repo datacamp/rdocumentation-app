@@ -6,12 +6,14 @@
 	window.userButtons = function(){
 		$(".delete-example").click(function(){
 			var $this = $(this);
-			$.post("api/"+$(this).parents(".example").data("exampleid")+"/remove",function(response){
-				if(response.status === "done"){
-					console.log("succes"); 
-					$this.parents(".example-wrapper").remove();
-				}
-			});
+			$.ajax({url: "api/examples/"+$(this).parents(".example").data("exampleid"),
+							type: "delete",
+							success: function(response){
+								if(response.status === "done"){
+									$this.parents(".example-wrapper").remove();
+								}
+							}
+						 });
 		});
 		bindEditButton();
 	};
@@ -83,7 +85,7 @@
       $example.find(".submit-edit").click(function(){
       	$this = $(this);
       	var value = simplemde.value();
-      	$.post("/api/"+$example.data("exampleid")+"/update",{text: value},function(response){
+      	$.post("/api/examples/"+$example.data("exampleid"),{text: value},function(response){
 					var string = "<p class='example--text' data-raw='"+value+"'>"+value+"</p>";
       		$example.find(".example--body").html(string);
       		$('.example--text').each(function() {
