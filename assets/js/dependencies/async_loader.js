@@ -271,10 +271,10 @@
           var link =$(this).attr("href");
           if(typeof(link) != "undefined" && link.indexOf(base)<=-1 && (link.indexOf("www")===0  || link.indexOf("http://")===0 || link.indexOf("https://") === 0)){
             $(this).addClass("js-external");
-          }
-          //detects if the help pane has rebound the url
-          if(link.indexOf('http://127.0.0.1:')==0){
-            $(this).attr("href",link.substring(link.indexOf("http",2),link.length));
+            $(this).unbind('click').bind('click',function(e){
+              e.preventDefault();
+              _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["browseURL('"+link+"')"])
+            })
           }
         });
       };
