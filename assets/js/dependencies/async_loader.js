@@ -135,7 +135,6 @@
               })
             );
             if(action.indexOf("/login")>-1){
-              console.log(action)
               window.logInForRstudio(dataToWrite)
             }
           });
