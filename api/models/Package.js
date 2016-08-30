@@ -112,14 +112,14 @@ module.exports = {
       },
 
       getPackagePercentile: function(name) {
-        var lastMonthPercentiles = ElasticSearchService.cachedLastMonthPercentiles();
+        var lastMonthPercentiles = Percentile.findAll();
 
         var lastMonthDownload = sails.controllers.packageversion._getDownloadStatistics(undefined, name);
 
         return Promise.join(lastMonthPercentiles, lastMonthDownload, function(percentilesResponse, downloads) {
           var total = downloads.total;
 
-          var percentiles = _.omit(percentilesResponse, 'fromCache');
+          var percentiles = _.mapValues(_.keyBy(percentilesResponse,"percentile"),function(a){return a.value;});
           var percentile = _.findLastKey(percentiles, function(p) {
             return total >= p;
           });
