@@ -73,19 +73,22 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
       <div class="col-md-4 col-sm-<%= inViewerPane ? '8' : '4'%> col-xs-12">
         <%if(pkgVersion.package['type_id'] == 2){ %>
           <div class="downloads download-task" data-url="/api<%= path %>/bioc/downloads/splitted">
-          <span class="downloads-nr" >
-          <span class='indeps'>0</span>
-            <i class="fa fa-info-circle distinct-ip-downloads" aria-hidden="false"></i>
-          </span>
-        <%} else {%>
+            <span class="downloads-nr" >
+            <span class='indeps'>0</span>
+              <i class="fa fa-info-circle distinct-ip-downloads" aria-hidden="false"></i>
+            </span>
+            <p>Monthly downloads</p>
+          </div>
+        <%} else if(pkgVersion.package['type_id'] == 1 ){%>
           <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
-          <span class="downloads-nr" >
-          <span class='indeps'>0</span>
-            <i class="fa fa-info-circle direct-downloads" aria-hidden="false"></i>
-          </span>
+            <span class="downloads-nr" >
+            <span class='indeps'>0</span>
+              <i class="fa fa-info-circle direct-downloads" aria-hidden="false"></i>
+            </span>
+            <p>Monthly downloads</p>
+          </div>
         <%}%>
-          <p>Monthly downloads</p>
-        </div>
+
         <%if(pkgVersion.package['type_id'] == 1){ %>
           <div class="downloads" id = "percentile-arrow">
             <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
