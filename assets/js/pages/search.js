@@ -13,6 +13,7 @@
       $('.packagedata').fadeIn('fast');
       if(urlParam('viewer_pane') === '1'){
         window.bindGlobalClickHandler();
+        bindHistoryNavigation();
       }
       window.getPercentiles();
       window.bindFade();
@@ -34,6 +35,7 @@
       $('.functiondata').fadeIn('fast');
       if(urlParam('viewer_pane') === '1'){
         window.bindGlobalClickHandler();
+        bindHistoryNavigation();
       }
       rebind(currentFunctionPage, currentPackagePage);
   	});

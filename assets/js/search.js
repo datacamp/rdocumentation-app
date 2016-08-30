@@ -29,7 +29,6 @@
 
     function search(token){
       $.post('/api/quick_search', {token: token}, function(data){
-        console.log(searchContainer.parents('html').length);
         if(searchContainer.parents('html').length > 0) {
           appendResults(data);
           showSearchResults();

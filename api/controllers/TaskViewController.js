@@ -162,7 +162,8 @@ module.exports = {
     .then(function(view){
       if(view === null) return res.notFound();
       else {
-        return res.view('task_view/show.ejs', {data: view, layout: null});
+        res.locals.layout = null;
+        return res.view('task_view/show.ejs', {data: view});
       }
     })
     .catch(function(err) {

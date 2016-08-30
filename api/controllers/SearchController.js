@@ -396,7 +396,8 @@ module.exports = {
             score: hit._score
           });
         });
-      return res.view('search/package_results.ejs', { data: {packages: packages, hits: numeral(result.hits.total).format('0,0')}, layout:null});
+      res.locals.layout = null;
+      return res.view('search/package_results.ejs', { data: {packages: packages, hits: numeral(result.hits.total).format('0,0')}});
     }).catch(function(err) {
       return res.negotiate(err);
     });
@@ -535,7 +536,8 @@ module.exports = {
             title: title
           });
         });
-      return res.view('search/function_results.ejs', {data: {functions: functions, hits: numeral(result.hits.total).format('0,0')}, layout: null});
+      res.locals.layout = null;
+      return res.view('search/function_results.ejs', {data: {functions: functions, hits: numeral(result.hits.total).format('0,0')}});
     }).catch(function(err) {
         return res.negotiate(err);
     });
