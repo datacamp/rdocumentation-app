@@ -1,16 +1,20 @@
 <section class="task-views">
-    <div id ="sidemenu">
-      <div class = "list-group-item" id ="listtitle">
-        <h4>Task View</h4>
+    <div id ="sidemenu" >
+      <div class = "sliding-sidebar">
+        <div class = "list-group-item" id ="listtitle">
+          <h4>Task View</h4>
+        </div>
+        <div class = "list-group">
+          <% for(var i = 0; i<data.length;i++){ %>
+            <a class = "list-group-item"><%- data[i].name %></a>
+          <% } %>
+        </div>
       </div>
-      <div class = "list-group">
-        <% for(var i = 0; i<data.length;i++){ %>
-          <a class = "list-group-item"><%- data[i].name %></a>
-        <% } %>
+      <div id= "sidebar-slider">
+          <i class="sidebar-slider-icon fa fa-angle-left" aria-hidden="true"></i>
       </div>
     </div>
     <div class="view">
       
     </div>
 </section>
-

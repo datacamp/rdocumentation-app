@@ -1,4 +1,5 @@
 .task-views {
+  clear:left;
   .container {
     margin-top: $default-space;
   }
@@ -69,7 +70,6 @@ a.list-group-item{
 .list-group{
   padding-left:0;
   overflow-y: scroll;
-  height: calc(100vh - 6em);
 }
 
 .list-group-item.highlight{
@@ -86,8 +86,8 @@ a.list-group-item{
 
 #sidemenu{
   display: inline-block;
-  width: 250px;
   position: fixed;
+  height:100%;
 }
 
 .view{
@@ -96,6 +96,7 @@ a.list-group-item{
   width: calc(100% - 21em);
   margin: 1rem;
   margin-left: 20em;
+  float:left;
 }
 
 .percentile-nr{
@@ -111,4 +112,25 @@ a.list-group-item{
 
 #listtitle{
   text-align: center;
+}
+
+#sidebar-slider{
+  height:100%;
+  float:left;
+  width:20px;
+  display: inline-block;
+  position: absolute;
+}
+
+.sliding-sidebar{
+  float:left;
+  width:250px;
+  position:relative;
+}
+
+.sidebar-slider-icon{
+  font-size: 2.5rem !important;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }

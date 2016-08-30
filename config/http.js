@@ -87,7 +87,7 @@ module.exports.http = {
 
   paramsInjector: function (req, res, next) {
     res.locals.inViewerPane = (req.param('viewer_pane') === '1') ? true : false;
-    res.locals.layout = (req.headers['x-rstudio-ajax'] === 'true') ? 'rstudio_layout.ejs' : res.locals.layout;
+    res.locals.layout = (req.headers['x-rstudio-ajax'] === 'true' && req.path.indexOf('/taskviews/')<0) ? 'rstudio_layout.ejs' : res.locals.layout;
     res.locals.path = req.path;
     res.locals.dateformat = dateFormat;
     res.locals.autoLink = autoLink;
