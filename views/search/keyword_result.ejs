@@ -3,7 +3,7 @@
     <h3>Search Results:</h3>
     <p class="search-result--index">Showing results <%= ((data.currentPage - 1) * data.perPage) + 1%> to <%= data.currentPage * data.perPage %> of <%= data.total %>.</p>
     <hr>
-    <div class="search-result--data">
+    <div class="keyword-search-result--data">
       <% for(var i = 0; i < data.hits.length; i++) { %>
         <% var hit = data.hits[i] %>
         <section class='search-result--item'>
