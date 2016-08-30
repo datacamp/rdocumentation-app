@@ -43,11 +43,14 @@
         $('#content').append(searchResultsPane.detach());
         var eOffset = searchContainer.offset();
         // make sure to place it where it would normally go (this could be improved)
+        var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
         searchResultsPane.css({
             'display': 'block',
-            'top': eOffset.top + searchContainer.outerHeight() + 10,
+            'top': eOffset.top + searchInput.outerHeight() + 10,
             'left': eOffset.left - HORIZONTAL_OFFSET,
-            'width': searchContainer.width() + 2 * HORIZONTAL_OFFSET
+            'width': searchContainer.width() + 2 * HORIZONTAL_OFFSET,
+            'max-height': h - (eOffset.top + searchInput.outerHeight() + 10)
+
         });
       }
     }
