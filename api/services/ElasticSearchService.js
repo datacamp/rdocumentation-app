@@ -15,7 +15,7 @@ module.exports = {
       download_percentiles: {
         "percentiles_bucket": {
             "buckets_path": "download_per_package>download_count",
-            "percents": _.range(1.00001, 100, 1).concat([99.5, 99.9, 99.99])
+            "percents": _.range(1.0000000001, 100, 1).concat([99.5, 99.9, 99.99])
 
         }
       },
@@ -351,9 +351,14 @@ module.exports = {
     });
   },
 
-  cachedLastMonthPercentiles: function(res) {
-    return RedisService.getJSONFromCache('percentiles', res, RedisService.DAILY, function() {
-      return ElasticSearchService.lastMonthPercentiles();
+  updateLastMonthPercentiles: function() {
+    return ElasticSearchService.lastMonthPercentiles().then(function(result){
+      var mapped = _.map(result,function(value,key){
+        return {  'percentile': Math.round(parseFloat(key)*100)/100,
+                  'value': value
+                };
+      });
+      return Percentile.bulkCreate(mapped,{updateOnDuplicate:["value","updated_at"]});
     });
   },
 
