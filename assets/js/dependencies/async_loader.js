@@ -131,16 +131,13 @@
             }).then(responseHandler(function(html, textData, xhr) {
                 //normal handling
                 var url = action + '?' + dataToWrite;
-                if(action.indexOf("/login")>-1){
-                  window.logInForRstudio(dataToWrite).then(function(){
-                    rerenderBody(html,true, url);
-                  });
-                }
-                else{
-                  rerenderBody(html,true, url);
-                }
+                rerenderBody(html,true, url);
               })
             );
+            if(action.indexOf("/login")>-1){
+              console.log(action)
+              window.logInForRstudio(dataToWrite)
+            }
           });
         });
       };
