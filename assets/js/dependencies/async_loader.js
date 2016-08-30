@@ -272,6 +272,10 @@
           if(typeof(link) != "undefined" && link.indexOf(base)<=-1 && (link.indexOf("www")===0  || link.indexOf("http://")===0 || link.indexOf("https://") === 0)){
             $(this).addClass("js-external");
           }
+          //detects if the help pane has rebound the url
+          if(link.indexOf('http://127.0.0.1:')==0){
+            $(this).attr("href",link.substring(link.indexOf("http",2),link.length));
+          }
         });
       };
 
