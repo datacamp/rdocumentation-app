@@ -284,11 +284,7 @@
           Accept : "text/html; charset=utf-8",
           "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
         },
-        contentType:"application/x-www-form-urlencoded",
-        xhrFields: {
-          withCredentials: true
-        },
-        crossDomain:true
+        contentType:"application/x-www-form-urlencoded"
       }).then(function(response) {
         $('.star-count').html(response.newCount);
         $this.attr('upvoted', response.star !== 'deleted');

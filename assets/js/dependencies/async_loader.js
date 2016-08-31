@@ -5,13 +5,13 @@
   /*
   responseHandler to handle the redirects and to store the sessionId when replacing the page in rstudio
   */
-  var responseHandler = function(successFn) {
+  var responseHandler = function(successFn,addToHistory) {
     return function(data, textStatus, xhr) {
       var location = xhr.getResponseHeader('X-RStudio-Redirect');
       var sessionid = xhr.getResponseHeader('X-RStudio-Session');
       sid = sessionid;
       if(location) {
-        window.replacePage(location, true);
+        window.replacePage(location,addToHistory);
       } else {
         successFn(data, textStatus, xhr);
       }
@@ -44,25 +44,11 @@
       $('#content').bind("DOMSubtreeModified",function(){
         bindGlobalClickHandler()
       });
-
-      /*
-      Each time a POST request is sent to the upvote modal, we cannot execute location.reload on succes
-      */
-      $( document ).ajaxSuccess(function( event, xhr, settings ) {
-        if(settings.type == "POST" && settings.url == $('#openModalUpvote').data('action')){
-          event.preventDefault();
-          $.modal.close()
-          window.replacePage('/packages/'+$(".packageData").data("package-name")+'/versions/'+ $(".packageData").data("latest-version"),false)
-        }
-      });
-
       /*
       */
       $( document ).ajaxSend(function(event, jqxhr, settings ) {
-        if(settings.type=="POST" && (settings.url.indexOf('/modalLogin')>-1 || settings.url.indexOf('/login')>-1)){
-          logInForRstudio(settings.data).then(function(){
-            event.triggerHandler()
-          })
+        if(settings.type=="POST" && settings.url.indexOf('/login')>-1){
+          logInForRstudio(settings.data)
         }
       });
       /*
@@ -71,19 +57,20 @@
       */
       if(urlParam('username')!==null){
         var creds = "username="+decodeURIComponent(urlParam('username'))+
-          "&password=" + decodeURIComponent(urlParam("password"));
-        stayLoggedIn(creds);
+                    "&password=" + decodeURIComponent(urlParam("password"));
+        stayLoggedIn(creds).then(responseHandler(function(){
+          /*
+          load the first page, because the first request comes from the view function of the rstudio-controller and
+          contains data tags for the post request
+          */
+          loadFirstPage().then(function(){
+            /*
+            remove the data tags
+            */
+            $('.rstudio-data').remove()
+          });
+        },false));
       }
-      /*
-      load the first page, because the first request comes from the view function of the rstudio-controller and
-      contains data tags for the post request
-      */
-      loadFirstPage().then(function(){
-        /*
-        remove the data tags
-        */
-        $('.rstudio-data').remove()
-      });
     }
   }
 
@@ -173,11 +160,9 @@
     bindHistoryNavigation();
 
     /*
-    This function must not be unbound! this is a side-effect and it doesn't really matter if happens twice
+    rebind the modals to work with rstudio
     */
-    $("#openModalExample").bind('modal:ajax:complete',function(){
-      bindGlobalClickHandler();
-    })
+    bindModals()
 
     /*
     bind all forms to ajax requests
@@ -208,7 +193,7 @@
       }).then(responseHandler(function(html, textData, xhr) {
           var url = action + '?' + dataToWrite;
           rerenderBody(html, url);
-        })
+        },false)
       );
     });
   };
@@ -219,7 +204,6 @@
   */
   window.replacePage = function(url, addToHistory) {
     urlWParams = addParams(url)
-    console.log(urlWParams);
     return $.ajax({
       url : urlWParams,
       type: 'GET',
@@ -231,7 +215,7 @@
           console.log(window.rstudioHistory)
         }
         rerenderBody(data, urlWParams);
-      })
+      },addToHistory)
     })
     .fail(function(error) {console.log(error.responseJSON); }); 
   };
@@ -239,7 +223,7 @@
   /*
   Helper function to classify internal and external links
   */
-  classifyLinks = function(){
+  var classifyLinks = function(){
     var base = $('base').attr('href');
     $('a:not(.js-external)').map(function(){
       var link =$(this).attr("href");
@@ -253,7 +237,7 @@
   first page is specified by the view function of the Rstudiocontroller in data attributes,
   execute a post request to the specified page with the attributes on first page load.
   */
-  loadFirstPage = function(){
+  var loadFirstPage = function(){
     var data = $('.rstudio-data').data()
     var url = addParams('/rstudio/'+data.called_function)
     return $.ajax({
@@ -264,7 +248,7 @@
       Accept:"text/html",
       success: responseHandler(function(data, textStatus, xhr) {
         rerenderBody(data,url);
-      })
+      },false)
     })
     .fail(function(error) {console.log(error.responseJSON); }); 
   }
@@ -272,9 +256,63 @@
   /*
   help function to add the parameters to the url
   */
-  addParams = function(url){
+  var addParams = function(url){
     var urlWParams = (url.indexOf('?')>-1)? url+"&" : url +"?";
     return urlWParams +'rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+  }
+
+  var bindModals = function(){
+    var bindModalSubmit = function(callback){
+      $("#modalLoginButton").click(callback);
+      $("#username").keypress(function(e){
+        if(e.which == 13){
+          callback();
+        }
+      });
+      $("#password").keypress(function(e){
+        if(e.which == 13){
+          callback();
+        }
+      });
+    };
+    rebind('#openModalExample','modal:ajax:complete',function(){
+      bindModalSubmit(function(){
+        var auth = $(".authentication--form").serialize();
+        $.post("/modalLogin",auth,function(json){
+          var status = json.status;
+          if(status === "success"){
+            logInForRstudio(auth).then(function(){
+              $.modal.close();
+              $(".example--form form").submit();
+            })
+          }else if(status === "invalid"){
+            if($(".modal").find(".flash-error").length === 0){
+            $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+            }
+          }
+        });
+      });
+    });
+    rebind("#openModalUpvote",'modal:ajax:complete',function(){
+      bindModalSubmit(function(){
+        var auth = $(".authentication--form").serialize()
+        $.post("/modalLogin",auth,function(json){
+          var status = json.status;
+          if(status === "success"){
+            logInForRstudio(auth).then(function(){
+              $.modal.close();
+              $.post($('#openModalUpvote').data('action'), function(response) {
+                replacePage('/packages/'+$(".packageData").data("package-name")+'/versions/'+ $(".packageData").data("latest-version"),false)
+              });
+            })
+          }else if(status === "invalid"){
+            if($(".modal").find(".flash-error").length === 0){
+            $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+          }
+          }
+        });
+      });
+    })
   }
 
   /*
