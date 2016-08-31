@@ -7,7 +7,12 @@
 
 	.navbar--title {
 		float:left;
-		margin-left: $default-space;
+		margin-right: $default-space;
+
+    a {
+      display: inline-block;
+      margin-left: 0;
+    }
 
 		.logo {
 			background: url("../images/logo-dark.png") no-repeat center center;
@@ -18,33 +23,41 @@
 		.logo-title {
 			font-size: 1rem;
 			color: $text-tertiary !important;
+			margin-top: 0;
+      line-height: 25px;
+      vertical-align: middle
 		}
 	}
 }
 
 .footer .navbar--title{
     float: right;
+    margin-top: 0;
+    margin-bottom: 0;
+    z-index: 1;
 }
 
 
 
 .footer--credits--title {
-    margin-right: auto;
-    margin-left: auto;
-    text-align: center;
-    width: 100%;
+    float: left;
+    position:relative;
+    left: 50%;
 
   .footer--credits {
     font-size: $h5-size;
     font-weight: 500;
+    position: relative;
+    left: -50%;
     margin: 0 0 0 3px;
     line-height: $navbar-height - 10px;
   }
 
 }
 
-@media (max-width: 1180px){
-	.footer--credits--title {
-  	margin:auto;
+
+@media (max-width: 850px){
+	.navbar--title.footer-largescreen{
+		display: none;
 	}
 }

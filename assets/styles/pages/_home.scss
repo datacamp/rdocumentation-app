@@ -37,6 +37,10 @@
     }
 }
 
+.navbar--title.home--title{
+    margin-top: -8px;
+}
+
 
 .home--credits {
     position: absolute;
@@ -44,4 +48,14 @@
     left: 0;
     right: 0;
     bottom: 0;
+}
+
+@media (max-height: 420px){
+    .home--cta{
+        top: initial;
+        transform: initial;
+        h1{
+            font-size: 2em;
+        }
+    }
 }
