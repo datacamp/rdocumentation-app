@@ -12,9 +12,6 @@
       $('#tab1').closest('li').hide();
       $('#tab2').closest('li').hide();
     }
-    else{
-      dependencyGraph();
-    }
     window.bindTabs();
     window.makeSlider();
   };
@@ -117,7 +114,6 @@
               .text(function(d) { return d.name; });
           });
         getData($('#packagedependencygraph').data('url'), function(data) {
-          $('#packagedependencygraph').show();
           d3.select('#packagedependencygraph svg')
             .datum(data)
             .call(chart);
@@ -160,7 +156,6 @@
               .text(function(d) { return d.name });
           });
         getData($('#packagereversedependencygraph').data('url'), function(data) {
-          $('#packagereversedependencygraph').show();
           d3.select('#packagereversedependencygraph svg')
             .datum(data)
             .call(chart);
@@ -267,11 +262,13 @@
     $("#tab1").click(function(){
       if(!$("#packagedependencygraph svg").hasClass("nvd3-svg")){
         window.dependencyGraphPackage();
+        $("#packagedependencygraph").show();
       }
     });
     $("#tab2").click(function(){
       if(!$("#packagereversedependencygraph svg").hasClass("nvd3-svg")){
         window.reverseDependencyGraph();
+        $('#packagereversedependencygraph').show();
       }
     });
   };
