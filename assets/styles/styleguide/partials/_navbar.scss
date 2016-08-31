@@ -39,19 +39,17 @@
     .logo {
         background: url("../images/logo.png") no-repeat center center;
         background-size: contain;
-        width: 21px;
+        width: 17px;
         vertical-align: middle;
         display: table-cell;
     }
     .github {
         background: url("../images/GitHub-Mark-32px.png") no-repeat center center;
-        float: left;
+        display: inline-block;
         background-size: contain;
         height: 21px;
         width: 21px;
         vertical-align: middle;
-        margin-top: 3px;
-        margin-left: 2px;
     }
 
     .logo-title {
@@ -60,15 +58,13 @@
         color: $text-invert;
         &:hover, &:focus {color: $text-invert }
         margin: 0 0 0 3px;
-        display: table;
-        float: left;
-        height: 100%;
+        display: inline-block;
         span {
           display: table-cell;
           vertical-align: middle;
           line-height: 24px;
         }
-        margin-top: 8px;
+        margin-top: 6px;
     }
   }
 
