@@ -135,6 +135,9 @@
         }
       });
     });
+    $(".flash").find(".close").click(function(){
+      $(this).parents(".flash")[0].remove();
+    });
   };
 
 })($jq);

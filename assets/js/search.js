@@ -24,12 +24,13 @@
   window.searchHandler = function() {
     var searchContainer = $('.search'),
     searchInput = $('.search input'),
+    oldInput = searchInput.val(),
     searchResultsPane = $('.search--results'),
     HORIZONTAL_OFFSET = 40;
 
     function search(token){
       $.post('/api/quick_search', {token: token}, function(data){
-        if(searchContainer.parents('html').length > 0) {
+        if(searchContainer.parents('html').length > 0 && token == searchInput.val()) {
           appendResults(data);
           showSearchResults();
           hover();
@@ -115,7 +116,11 @@
 
     function binding() {
       searchInput.on("keyup",debounce(function(e){
-        if(e.keyCode !== 40&&e.keyCode!==38){
+        if(searchInput.val()==""){
+          searchResultsPane.hide();
+        }
+        else if(e.keyCode !== 40&&e.keyCode!==38&&oldInput!==searchInput.val()){
+          oldInput = searchInput.val();
           search(searchInput.val());
         }
       }, 100));
