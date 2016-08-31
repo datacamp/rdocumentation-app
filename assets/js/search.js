@@ -88,9 +88,6 @@
         object += '</ul>'; 
       }
       searchResultsPane.html(object);
-      if(window.bindSearchPaneClickHandler){
-        window.bindSearchPaneClickHandler();
-      }
     }
 
     function hover(){

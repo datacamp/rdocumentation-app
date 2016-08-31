@@ -102,17 +102,28 @@ module.exports = {
       });
     }
   },
+    /**
+  * @api {post} /rstudio/view
+  * @apiName view the layout for rstudio with data attributes for the ajax request
+  * @apiGroup Rstudio
+  *
+  * @apiParam {String} packageName the name of the package to redirect to
+  */
+
+  view : function(req,res){
+    res.ok(req.body,'rStudio/view.ejs');
+  },
 
   /**
-  * @api {post} /rstudio/package/:packageName
+  * @api {get} /rstudio/package/:packageName
   * @apiName Redirects to a package given the packageName
   * @apiGroup Rstudio
   *
   * @apiParam {String} packageName the name of the package to redirect to
   */
 
-  findPackage:function(req,res){
-    var package = req.param("packageName");
+  findPackage : function(req,res){
+    var package = req.param("package_name");
     return RStudioService.findLatestVersion(package).then(function(version){
       if(version === null) return res.ok([],'rStudio/package_not_found.ejs');
       else {
@@ -136,7 +147,7 @@ module.exports = {
   * @apiParam {String} fuzzy "fuzzy" if the query was a fuzzy query, else "regexp" for a regexp query
   * @apiParam {String} ignore_case if the local query ignored cases or not, "TRUE" if true, else "FALSE"
   */
-  searchHelp:function(req,res){
+  searchHelp : function(req,res){
     //parse parameters
     var packageName = req.param('matching_packages');
     if(typeof packageName != "undefined" && packageName.length>0){
@@ -200,10 +211,10 @@ module.exports = {
 
 
   },
-  makeDefault:function(req,res){
+  makeDefault : function(req,res){
     res.ok([],'rStudio/make_default.ejs');
   },
-  redirect:function(req,res){
+  redirect : function(req,res){
     res.rstudio_redirect(302, req._parsedOriginalUrl.path.substring(5,req._parsedOriginalUrl.path.length))
   }
 };

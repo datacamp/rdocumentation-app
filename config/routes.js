@@ -145,10 +145,11 @@ module.exports.routes = {
   'get /link/:alias': 'Topic.findByAlias',
 
   //rstudio
-  'post /rstudio/normal/help': 'RStudioController.normalHelp',
-  'post /rstudio/search/help' : 'RStudioController.searchHelp',
-  'get /rstudio/package/:packageName':'RstudioController.findPackage',
-  'get /rstudio/make_default':'RstudioController.makeDefault',
+  'post /rstudio/help': 'RStudioController.normalHelp',
+  'post /rstudio/help_search' : 'RStudioController.searchHelp',
+  'post /rstudio/view' : 'RStudioController.view',
+  'post /rstudio/find_package':'RstudioController.findPackage',
+  'post /rstudio/make_default':'RstudioController.makeDefault',
   'get /help/*':'RstudioController.redirect',
 
   //Badges
