@@ -47,7 +47,7 @@ module.exports = {
     if(packageNames != null && topicNames != null){
       return RStudioService.helpFindByTopicsAndPackages(topicNames,packageNames).then(function(json){
         if(json.length == 0){
-          //with no results : fuzzy search
+          //with no results : package was found locally -> display local help
           return ElasticSearchService.helpSearchQuery(topic,['aliases'],true,2).then(function(json){
             return res.ok(json,'rStudio/topic_not_found.ejs');
           });
