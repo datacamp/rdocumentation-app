@@ -71,6 +71,18 @@
           });
         },false));
       }
+      else{
+        /*
+        load the first page, because the first request comes from the view function of the rstudio-controller and
+        contains data tags for the post request
+        */
+        loadFirstPage().then(function(){
+          /*
+          remove the data tags
+          */
+          $('.rstudio-data').remove()
+        });
+      }
     }
   }
 
