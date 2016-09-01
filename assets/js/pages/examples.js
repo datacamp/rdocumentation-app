@@ -99,23 +99,12 @@
 
 
     $("#openModalExample").bind('modal:ajax:complete',function(){
-      if(urlParam('viewer_pane')==1){
-        window.bindButtonAndForms();
-      }
       var callback = function(){
         var auth = $(".authentication--form").serialize();
         $.post("/modalLogin",auth,function(json){
           var status = json.status;
           if(status === "success"){
-            if(urlParam('viewer_pane')==1){
-              window.logInForRstudio(auth).then(function(){
-                $.modal.close();
-                $(".example--form form").submit();
-              });
-            }
-            else{
-              $(".example--form form").submit();
-            }
+            $(".example--form form").submit();
           }else if(status === "invalid"){
             if($(".modal").find(".flash-error").length === 0){
             $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");

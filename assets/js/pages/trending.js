@@ -163,7 +163,7 @@
     }).done(function(result){
       $("#top10maintainers tbody").empty();
       result.results.forEach(function(result,i){
-        $("#top10maintainers tbody").append("<tr><td>"+((page2-1)*10+i+1)+". "+"<a href = '/collaborators/"+encodeURIComonent(result.name)+"'>"+result.name+"</a><p class = 'info-trends'>"+result.total+"</p></td></tr>");
+        $("#top10maintainers tbody").append("<tr><td>"+((page2-1)*10+i+1)+". "+"<a href = '/collaborators/"+encodeURIComponent(result.name)+"'>"+result.name+"</a><p class = 'info-trends'>"+result.total+"</p></td></tr>");
       });
     });
     window.rebindTrending(page1,page2,page3,page4);
@@ -207,10 +207,12 @@
   };
 
   window.onpopstate = function(event) {
-    reloadMostPopular(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
-    reloadTopCollaborators(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
-    reloadNewPackages(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
-    reloadNewVersions(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+    if($(".trends")[0]){
+      reloadMostPopular(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+      reloadTopCollaborators(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+      reloadNewPackages(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+      reloadNewVersions(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+    }
   };
 
   window.rebindTrending = function(page1,page2,page3,page4) {

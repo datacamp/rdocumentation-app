@@ -2,315 +2,335 @@
 
   var sid = '';
 
-  var responseHandler = function(successFn) {
+  /*
+  responseHandler to handle the redirects and to store the sessionId when replacing the page in rstudio
+  */
+  var responseHandler = function(successFn,addToHistory) {
     return function(data, textStatus, xhr) {
       var location = xhr.getResponseHeader('X-RStudio-Redirect');
       var sessionid = xhr.getResponseHeader('X-RStudio-Session');
       sid = sessionid;
       if(location) {
-        window.replacePage(location, true, true);
+        window.replacePage(location,addToHistory);
       } else {
         successFn(data, textStatus, xhr);
       }
     };
   };
 
+  /*
+  function that gets called on each pageload
+  */
   bootAsyncLoader = function(){
     //extra login with ajax request is needed
-    if(urlParam('viewer_pane') === '1' && window.alreadyChecked !== true){
-      window.alreadyChecked=true;
+    if(urlParam('viewer_pane') === '1' && $('.rstudio-data')[0]){
       console.log('*********************** AJAX MODE ***********************');
 
+      /*
+      setting up the ajax requests, each request is crossDomain, and it needs to contain the X-Rstudio-session header for cookies and X-Rstudio-Ajax 
+      to give back the rstudio-layout
+      */
       $.ajaxSetup({
         beforeSend: function (xhr)
         {
            xhr.setRequestHeader("X-RStudio-Session", sid);
            xhr.setRequestHeader("X-RStudio-Ajax",'true');
+        },
+        crossDomain:true
+      });
+      /*
+      Need to rebind everything when the DOM changes
+      */
+      $('#content').bind("DOMSubtreeModified",function(){
+        bindGlobalClickHandler()
+      });
+      /*
+      */
+      $( document ).ajaxSend(function(event, jqxhr, settings ) {
+        if(settings.type=="POST" && settings.url.indexOf('/login')>-1){
+          logInForRstudio(settings.data)
         }
       });
-      //execute an ajax post request to login, this request must give back a 200 status code, otherwise it gets cancelled and the ajax doesn't keep the
-      //cookie
-      stayLoggedIn = function(creds){
-        return $.ajax({
-            type: 'POST',
-            url: '/rstudio_login',
-            data: creds,
-            contentType:"application/x-www-form-urlencoded",
-            xhrFields: {
-              withCredentials: true
-            },
-            crossDomain:true
-        });
-      };
+      /*
+      execute an ajax post request to login, this request must give back a 200 status code,
+      otherwise it gets cancelled and the ajax doesn't keep the cookie
+      */
       if(urlParam('username')!==null){
         var creds = "username="+decodeURIComponent(urlParam('username'))+
-          "&password=" + decodeURIComponent(urlParam("password"));
-        stayLoggedIn(creds);
+                    "&password=" + decodeURIComponent(urlParam("password"));
+        stayLoggedIn(creds).then(responseHandler(function(){
+          /*
+          load the first page, because the first request comes from the view function of the rstudio-controller and
+          contains data tags for the post request
+          */
+          loadFirstPage().then(function(){
+            /*
+            remove the data tags
+            */
+            $('.rstudio-data').remove()
+          });
+        },false));
       }
-
-
-      // Intercept all link clicks
-      asyncClickHandler = function(e) {
-        e.preventDefault();
-        // Grab the url from the anchor tag
-        var url = $(this).attr('href');
-        return window.replacePage(url,true,true);
-      };
-
-      //rerender the body of the ajax retrieved url
-      var rerenderBody = function(html,rebind, url){
-        $('body').attr("url", url);
-        $('#content').html(html);
-        window.boot();
-        if(rebind){
-          classifyLinks();
-          window.bindGlobalClickHandler();
-        }
-        window.bindButtonAndForms();
-        window.searchHandler(jQuery);
-        window.launchFullSearch();
-        bindHistoryNavigation();
-        window.scrollTo(0,0);
-        $('.search--results').hide();
-        packageVersionControl();
-      };
-
-      /************************************************************************************************************************************************
-      rebinding and executing trough ajax requests
-      ************************************************************************************************************************************************/
-
-      window.bindGlobalClickHandler = function(){        //unbinding seems to fail a lot in the Rstudio browser?!->be sure not to bind twice
-        $('a:not(.js-external)').each(function(){
-          if(typeof($(this).attr('href')) != "undefined" &&
-              $(this).attr('href').indexOf('/modalLogin')<0 &&
-              $(this).attr('href').indexOf('#close-modal')<0
-            ) {
-            $(this).unbind('click').bind('click', asyncClickHandler);
-          }
+      else{
+        /*
+        load the first page, because the first request comes from the view function of the rstudio-controller and
+        contains data tags for the post request
+        */
+        loadFirstPage().then(function(){
+          /*
+          remove the data tags
+          */
+          $('.rstudio-data').remove()
         });
-      };
-
-      bindSearchPaneClickHandler=function(){
-        $('.search--results').find('a:not(.js-external)').unbind('click').bind('click',asyncClickHandler);
-      };
-
-      window.bindButtonAndForms= function(){
-        $('#js-examples').unbind('click').bind('click',runExamples);
-        $('#js-install').unbind('click').bind('click',installpackage);
-        $('#js-hideviewer').unbind('click').bind('click',hideViewer);
-        $('#js-makedefault').unbind('click').bind('click',setDefault);
-
-        $( "form" ).each(function(){
-          $(this).unbind('submit').bind('submit',function(event) {
-            event.preventDefault();
-            var action = $(this).attr('action');
-            var type = $(this).attr('method') || 'post';
-
-            var dataToWrite = $(this).serialize();
-
-            window.pushHistory(action+"?"+dataToWrite)
-            
-            dataToWrite = dataToWrite+
-              '&viewer_pane=1'+
-              '&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+
-              "&Rstudio_port=" + urlParam("Rstudio_port");
-
-            $.ajax({
-              type: type,
-              url: action,
-              headers: {
-                Accept : "text/html; charset=utf-8",
-                "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-              },
-              data: dataToWrite,
-              contentType:"application/x-www-form-urlencoded",
-              xhrFields: {
-                withCredentials: true
-              },
-              crossDomain:true
-            }).then(responseHandler(function(html, textData, xhr) {
-                //normal handling
-                var url = action + '?' + dataToWrite;
-                rerenderBody(html,true, url);
-              })
-            );
-            if(action.indexOf("/login")>-1){
-              window.logInForRstudio(dataToWrite)
-            }
-          });
-        });
-      };
-      window.logInForRstudio = function(loginData){
-        return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
-          ["write('"+ loginData +"', file = paste0(find.package('Rdocumentation'),'/config/creds.txt')) \n Rdocumentation::login()"])
-        .then(function(){
-          console.log("Stored creds in RStudio");
-          return stayLoggedIn(loginData);
-        });
-      };
-
-      // Helper function to grab new HTML
-      // and replace the content
-      window.replacePage = function(url,rebind,addToHistory) {
-        if(url.indexOf('#')>=0){
-          url = url.substring(url.indexOf('#'),url.length);
-          document.getElementById(url).scrollIntoView();
-        }
-        else{
-          url = url.replace("../","");
-          if(url.charAt(0)!="/"){
-            url ="/"+url;
-          }
-          var base = $('base').attr('href');
-          var urlWParams = (url.indexOf('?')>-1)? url+"&" : url +"?";
-          urlWParams = urlWParams +'rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
-          return $.ajax({
-            url : base +urlWParams,
-            type: 'GET',
-            dataType:"html",
-            Accept:"text/html",
-            cache: false,
-            xhrFields: {
-              withCredentials: true
-            },
-            crossDomain:true,
-            success: responseHandler(function(data, textStatus, xhr) {
-              if(addToHistory){
-                window.pushHistory(url);
-              }
-              rerenderBody(data,rebind, urlWParams);
-            })
-          })
-          .fail(function(error) {console.log(error.responseJSON); });
-        }
-
-      };
-
-      /************************************************************************************************************************************************
-      button press functions (running examples, installing packages);
-      ************************************************************************************************************************************************/
-      runExamples=function(e){
-        e.preventDefault();
-        var package = $(".packageData").data("package-name");
-        var version = $(".packageData").data("latest-version");
-        checkPackageVersion(package,version).then(function(installed){
-          if(installed===0|| installed==-1){
-            var examples= $('.topic').find('.topic--title').filter(function(i,el){
-              return $(this).text()=="Examples";
-            }).parent().find('.R').text();
-            _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["require("+package+")\n"+examples]);
-          }
-        });
-        return false;
-      };
-
-      setDefault=function(e){
-        e.preventDefault();
-        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::makeDefault()"]);
-        return false;
-      };
-      hideViewer=function(e){
-        e.preventDefault();
-        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::hideViewer()"]);
-        return false;
-      };
-      /************************************************************************************************************************************************
-      checking installation of package and package version
-      ************************************************************************************************************************************************/
-      checkPackageVersion=function(package,version){
-        version = String(version).replace("-",".")
-        return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["check_package('"+package+"','"+version+"')"])
-        .then(function(result){
-            return parseInt(result.result);
-        });
-      };
-
-      packageVersionControl=function(){
-        var packageName = $(".packageData").data("package-name");
-        var version = $(".packageData").data("latest-version");
-        if(packageName){
-          checkPackageVersion(packageName,version).then(function(installed){
-            if(installed==1){
-              $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-large pull-right btn-primary js-external">Install</button>');
-              $('.visible-installed').hide();
-            }
-            else if(installed==-1){
-              $('.versionCheck').html('<button type="button" id="js-install" class="btn btn-large pull-right btn-primary js-external">Update</button>');
-            }
-            else{
-              $('.versionCheck').html('<i class="fa fa-check icon-green" aria-hidden="true"></i><span class="latest">You have the latest version<span>');
-            }
-            $('#js-install').unbind('click',installpackage);
-            $('#js-install').bind('click',installpackage);
-          });
-        }
-      };
-
-      installpackage=function(e){
-        e.preventDefault();
-        var packageName = $(".packageData").data("package-name");
-        var packageSource= $(".packageData").data("type-id");
-        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
-                  ["install_package('"+packageName+"',"+packageSource+")"]);
-        return false;
-      };
-
-      window.setTab=function(e,ui){
-        $('ul.tabs').find('a').each(function(){
-          $(this.hash).hide();
-        });
-        var link = ui.tab[0].innerHTML;
-        link = link.substring(link.indexOf('#'),link.indexOf('" class'));
-        $(link).show();
-        e.preventDefault();
-      };
-
-      classifyLinks=function(){
-        var base = $('base').attr('href');
-        $('a:not(.js-external)').map(function(){
-          var link =$(this).attr("href");
-          if(typeof(link) != "undefined" && link.indexOf(base)<=-1 && (link.indexOf("www")===0  || link.indexOf("http://")===0 || link.indexOf("https://") === 0)){
-            $(this).addClass("js-external");
-          }
-        });
-      };
-
-      window.executePackageCode=function(package,code){
-        _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["require("+package+")\n"+code]);
-      };
-      //check the packageversion
-      packageVersionControl();
-      classifyLinks();
-      window.bindGlobalClickHandler();
-      window.bindButtonAndForms();
-      window.scrollTo(0,0);
+      }
     }
+  }
+
+  stayLoggedIn = function(creds){
+    return $.ajax({
+        type: 'POST',
+        url: '/rstudio_login',
+        data: creds,
+        contentType:"application/x-www-form-urlencoded",
+    });
   };
 
-  _rStudioRequest=function(url,method,shared_secret,port,params){
-    var data={};
-    data.method = method;
-    //data.params = [$('.R').text()];
-    data.params = params;
-    data.clientId = '33e600bb-c1b1-46bf-b562-ab5cba070b0e';
-    data.clientVersion = "";
+  // Intercept all link clicks
+  asyncClickHandler = function(e) {
+    e.preventDefault();
+    // Grab the url from the anchor tag
+    var url = $(this).attr('href');
+    return window.replacePage(url, true);
+  };
 
+  //rerender the body of the ajax retrieved url
+  var rerenderBody = function(html,url){
+    $('body').attr("url", url);
+    $('#content').html(html);
+    window.boot();
+    /*
+    fit quicksearch
+    */
+    window.searchHandler(jQuery);
+    /*
+    launch search if needed
+    */
+    window.launchFullSearch();
+    window.scrollTo(0,0);
+    $('.search--results').hide();
+    /*
+    check if the user has the latest version of the package if on package-page
+    */
+    packageVersionControl();
+  };
+
+  /************************************************************************************************************************************************
+  rebinding and executing trough ajax requests
+  ************************************************************************************************************************************************/
+
+
+  /*
+  This is the main function that rebinds all elements with specific behaviour for the viewer pane
+  This function is called each time the DOM changes
+  */
+  bindGlobalClickHandler = function(){
+    /*
+    classify links to know which links are external and which internal
+    */
+    classifyLinks();
+
+    /*
+    bind all links to ajax requests, (except the ones for the modal, which are already ajax request bound by jquery)
+    */
+    $('a:not(.js-external)').each(function(){
+      if(typeof($(this).attr('href')) != "undefined" &&
+          $(this).attr('href').indexOf('/modalLogin')<0 &&
+          $(this).attr('href').indexOf('#close-modal')<0
+        ) {
+        rebind(this, 'click', asyncClickHandler);
+      }
+    })
+
+    /*
+    bind elements on specific pages to special behaviour for the viewer pane
+    */
+    rebind('#js-examples', 'click', runExamples);
+    rebind('#js-install', 'click', installpackage);
+    rebind('#js-hideviewer','click', hideViewer);
+    rebind('#js-makedefault','click', setDefault);
+    rebind('.top-collab-list','change',function(){
+      bindGlobalClickHandler($('.top-collab-list'))
+    })
+    rebind('#packageVersionSelect','change', function(){
+      var url = $(this).find('option:selected').data('uri');
+      window.replacePage(url,false);
+    });
+
+    /*
+    bind the history Navigation
+    */
+    bindHistoryNavigation();
+
+    /*
+    rebind the modals to work with rstudio
+    */
+    bindModals()
+
+    /*
+    bind all forms to ajax requests
+    */
+    rebind('form', 'submit', function(event) {
+      event.preventDefault();
+      var action = $(this).attr('action');
+      var type = $(this).attr('method') || 'post';
+
+      var dataToWrite = $(this).serialize();
+
+      window.pushHistory(action+"?"+dataToWrite)
+      
+      dataToWrite = dataToWrite+
+        '&viewer_pane=1'+
+        '&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+
+        "&Rstudio_port=" + urlParam("Rstudio_port");
+
+      $.ajax({
+        type: type,
+        url: action,
+        headers: {
+          Accept : "text/html; charset=utf-8",
+          "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+        },
+        data: dataToWrite,
+        contentType:"application/x-www-form-urlencoded",
+      }).then(responseHandler(function(html, textData, xhr) {
+          var url = action + '?' + dataToWrite;
+          rerenderBody(html, url);
+        },false)
+      );
+    });
+  };
+
+  /*
+  Helper function to grab new HTML
+  and replace the content
+  */
+  window.replacePage = function(url, addToHistory) {
+    urlWParams = addParams(url)
     return $.ajax({
-      url: 'http://127.0.0.1:'+port+url,
-      headers:
-      {
-          'Accept':'application/json',
-          'Content-Type':'application/json',
-          'X-Shared-Secret':shared_secret
-      },
-      type: 'POST',
-      dataType: 'json',
-      data: JSON.stringify(data),
-      processData: false,
-      crossDomain:true,
-      xhrFields: {
-        withCredentials: true
+      url : urlWParams,
+      type: 'GET',
+      dataType: "html",
+      Accept: "text/html",
+      success: responseHandler(function(data, textStatus, xhr) {
+        if(addToHistory){
+          window.pushHistory(url);
+        }
+        rerenderBody(data, urlWParams);
+      },addToHistory)
+    })
+    .fail(function(error) {console.log(error.responseJSON); }); 
+  };
+
+  /*
+  Helper function to classify internal and external links
+  */
+  var classifyLinks = function(){
+    var base = $('base').attr('href');
+    $('a:not(.js-external)').map(function(){
+      var link =$(this).attr("href");
+      if(typeof(link) != "undefined" && link.indexOf(base)<=-1 && (link.indexOf("www")===0  || link.indexOf("http://")===0 || link.indexOf("https://") === 0)){
+        $(this).addClass("js-external");
       }
     });
   };
+
+  /*
+  first page is specified by the view function of the Rstudiocontroller in data attributes,
+  execute a post request to the specified page with the attributes on first page load.
+  */
+  var loadFirstPage = function(){
+    var data = $('.rstudio-data').data()
+    var url = addParams('/rstudio/'+data.called_function)
+    return $.ajax({
+      url : url,
+      type: 'POST',
+      contentType:"application/json",
+      data: JSON.stringify(data),
+      Accept:"text/html",
+      success: responseHandler(function(data, textStatus, xhr) {
+        rerenderBody(data,url);
+      },false)
+    })
+    .fail(function(error) {console.log(error.responseJSON); }); 
+  }
+
+  /*
+  help function to add the parameters to the url
+  */
+  var addParams = function(url){
+    var urlWParams = (url.indexOf('?')>-1)? url+"&" : url +"?";
+    return urlWParams +'rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+  }
+
+  var bindModals = function(){
+    var bindModalSubmit = function(callback){
+      $("#modalLoginButton").click(callback);
+      $("#username").keypress(function(e){
+        if(e.which == 13){
+          callback();
+        }
+      });
+      $("#password").keypress(function(e){
+        if(e.which == 13){
+          callback();
+        }
+      });
+    };
+    rebind('#openModalExample','modal:ajax:complete',function(){
+      bindModalSubmit(function(){
+        var auth = $(".authentication--form").serialize();
+        $.post("/modalLogin",auth,function(json){
+          var status = json.status;
+          if(status === "success"){
+            logInForRstudio(auth).then(function(){
+              $.modal.close();
+              $(".example--form form").submit();
+            })
+          }else if(status === "invalid"){
+            if($(".modal").find(".flash-error").length === 0){
+            $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+            }
+          }
+        });
+      });
+    });
+    rebind("#openModalUpvote",'modal:ajax:complete',function(){
+      bindModalSubmit(function(){
+        var auth = $(".authentication--form").serialize()
+        $.post("/modalLogin",auth,function(json){
+          var status = json.status;
+          if(status === "success"){
+            logInForRstudio(auth).then(function(){
+              $.modal.close();
+              $.post($('#openModalUpvote').data('action'), function(response) {
+                replacePage('/packages/'+$(".packageData").data("package-name")+'/versions/'+ $(".packageData").data("latest-version"),false)
+              });
+            })
+          }else if(status === "invalid"){
+            if($(".modal").find(".flash-error").length === 0){
+            $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+          }
+          }
+        });
+      });
+    })
+  }
+
+  /*
+  help function to rebind functions to event on certain elements
+  */
+  var rebind = function(element,event,functionToBind){
+    $(element).unbind(event).bind(event,functionToBind)
+  } 
+
 })($jq);
