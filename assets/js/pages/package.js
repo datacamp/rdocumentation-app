@@ -19,13 +19,9 @@
     window.makeSlider();
   };
   window.packageVersionToggleHandler = function() {
-    $('#packageVersionSelect').change(function(){
+    $('#packageVersionSelect').bind('change',function(){
       var url = $(this).find('option:selected').data('uri');
-      if(urlParam('viewer_pane') === '1'){
-        window.replacePage(url,true);
-      } else {
-        window.location.href = url;
-      }
+      window.location.href = url;
     });
 
   };
@@ -288,11 +284,7 @@
           Accept : "text/html; charset=utf-8",
           "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
         },
-        contentType:"application/x-www-form-urlencoded",
-        xhrFields: {
-          withCredentials: true
-        },
-        crossDomain:true
+        contentType:"application/x-www-form-urlencoded"
       }).then(function(response) {
         $('.star-count').html(response.newCount);
         $this.attr('upvoted', response.star !== 'deleted');
@@ -304,32 +296,9 @@
         $.post("/modalLogin",auth,function(json){
           var status = json.status;
           if(status === "success"){
-            if(urlParam('viewer_pane')==1){
-              window.logInForRstudio(auth).then(function(){
-                $.ajax({
-                  type: 'POST',
-                  url: $('#openModalUpvote').data('action'),
-                  headers: {
-                    Accept : "text/html; charset=utf-8",
-                    "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
-                  },
-                  contentType:"application/x-www-form-urlencoded",
-                  xhrFields: {
-                    withCredentials: true
-                  },
-                  crossDomain:true
-                }).then(function(response) {
-                  $.modal.close()
-                  window.replacePage('/packages/'+$(".packageData").data("package-name")+'/versions/'+ $(".packageData").data("latest-version"),true,false)
-                });
-              })
-            }
-            else{
-              $.post($('#openModalUpvote').data('action'), function(response) {
-                location.reload();
-              });
-            }
-
+            $.post($('#openModalUpvote').data('action'), function(response) {
+              location.reload();
+            });
           }else if(status === "invalid"){
             if($(".modal").find(".flash-error").length === 0){
             $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");

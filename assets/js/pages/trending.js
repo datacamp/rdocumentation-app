@@ -207,10 +207,12 @@
   };
 
   window.onpopstate = function(event) {
-    reloadMostPopular(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
-    reloadTopCollaborators(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
-    reloadNewPackages(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
-    reloadNewVersions(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+    if($(".trends")[0]){
+      reloadMostPopular(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+      reloadTopCollaborators(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+      reloadNewPackages(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+      reloadNewVersions(event.state.page1, event.state.page2, event.state.page3, event.state.page4);
+    }
   };
 
   window.rebindTrending = function(page1,page2,page3,page4) {

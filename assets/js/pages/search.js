@@ -11,10 +11,6 @@
       $('.packagedata').hide();
       $('.packagedata').html(result);
       $('.packagedata').fadeIn('fast');
-      if(urlParam('viewer_pane') === '1'){
-        window.bindGlobalClickHandler();
-        bindHistoryNavigation();
-      }
       window.getPercentiles();
       window.bindFade();
       rebind(currentFunctionPage, currentPackagePage);
@@ -33,10 +29,6 @@
       $('.functiondata').hide();
   		$('.functiondata').html(result);
       $('.functiondata').fadeIn('fast');
-      if(urlParam('viewer_pane') === '1'){
-        window.bindGlobalClickHandler();
-        bindHistoryNavigation();
-      }
       rebind(currentFunctionPage, currentPackagePage);
   	});
   };

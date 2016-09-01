@@ -30,10 +30,13 @@ module.exports = {
   },
   rstudioProcess:function(req,res){
     var successRedirect =  req.session['rdr'] || '/';
-    passport.authenticate('local', { failureRedirect: '/login',
-                                     failureFlash: 'Invalid Username or password.' })(req, res, function() {
-                                        return res.json({status: "success", message: "Logged"});
-                                     });
+    passport.authenticate('local', function(err, user, info) {
+                            if(err || !user) { return res.json({status: "failure", message: "Not Logged"}) };
+                            req.logIn(user, function(err) {
+                              if (err) { return res.json({status: "failure", message: "Not Logged"}) }
+                              return res.json({status :"succes", message: "Logged"})
+                            });
+                          })(req, res);
   },
   modalProcess: function(req, res){
     passport.authenticate('local', function(err, user, info) {

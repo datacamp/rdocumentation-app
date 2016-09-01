@@ -60,7 +60,10 @@ module.exports.policies = {
   },
   RStudioController: {
     'normalHelp': ['flash'],
-    'searchHelp':['flash']
+    'searchHelp':['flash'],
+    'view':['flash'],
+    'findPackage':['flash'],
+    'makeDefault':['flash']
   },
 
   ReviewController: {
