@@ -11,7 +11,26 @@ var querystring = require('querystring');
 var numeral = require('numeral');
 
 module.exports = {
-
+/**
+  * @api {post} /quick_search Quick search
+  * @apiName quick search
+  * @apiGroup Search
+  * @apiDescription Searches for the given keyword and gives top results for packages, functions and collaborators.
+  *
+  * @apiParam   {String}    token            The token on which is searched
+  *
+  * @apiSuccess {Object[]}  packages                    The packages related to the token.
+  * @apiSuccess {String}    packages.uri                The link to the package.
+  * @apiSuccess {String}    packages.name               The name of the package.
+  * @apiSuccess {Object[]}  topics                      The topics (i.e. functions) related to the token.
+  * @apiSuccess {String}    topics.uri                  The link to the topic.
+  * @apiSuccess {String}    topics.name                 The name of the topic.
+  * @apiSuccess {String}    topics.package_name         The name of the package of the topic.
+  * @apiSuccess {String}    topics.package_version      The version of the package of the topic.
+  * @apiSuccess {Object[]}  collaborators               The collaborators matching the token.
+  * @apiSuccess {String}    collaborators.uri           The link to the page of the collaborator.
+  * @apiSuccess {String}    collaborators.name          The name of the collaborator.
+  */
   quickSearch: function(req, res) {
     var token = req.body.token;
 

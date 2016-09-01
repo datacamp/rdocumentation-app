@@ -165,12 +165,19 @@ module.exports = {
 
       return DownloadStatistic.getMonthlySplittedDownloads(packageName).then(function(downloads) {
         var total = downloads[0].indirect_downloads + downloads[0].direct_downloads;
-        return {total: total, revDeps: 0, totalStr: numeral(total).format('0,0'), revDepsStr: numeral(0).format('0,0') };
+        return {total: total, totalStr: numeral(total).format('0,0')};
       });
     });
 
   },
-
+/**
+  * @api {get} /packages/:name/downloads Total downloads of package
+  * @apiName Get package downloads
+  * @apiGroup Package
+  *
+  * @apiSuccess {Integer}  total            Total number of downloads.
+  * @apiSuccess {String}   totalStr         Total number of downloads.
+  */
   getDownloadStatistics: function(req, res) {
     var packageName = req.param('name');
 
@@ -180,7 +187,21 @@ module.exports = {
       return res.json(json);
     });
   },
-
+/**
+  * @api {get} /packages/:name/downloads/splitted Splitted downloads of package
+  * @apiName Get splitted package downloads
+  * @apiDescription Downloads splitted in direct and indirect ones. A package is downloaded indirectly when a reverse dependency of it is downloaded from the same ip within a minute.
+  * @apiGroup Package
+  *
+  * @apiParam {String}     name                 The name of the package.
+  *
+  * @apiSuccess {Integer}  directDownloads      Number of direct downloads.
+  * @apiSuccess {Integer}  inDirectDownloads    Number of indirect downloads.
+  * @apiSuccess {Integer}  total                Total number of downloads.
+  * @apiSuccess {String}   directDownloadsStr   Number of direct downloads.
+  * @apiSuccess {String}   inDirectDownloadsStr Number of indirect downloads.
+  * @apiSuccess {String}   totalStr             Total number of downloads.
+  */
   getSplittedDownloadStatistics : function(req,res){
     var packageName = req.param('name');
 
@@ -196,22 +217,42 @@ module.exports = {
     });
 
   },
+/**
+  * @api {get} /packages/:name/bioc/downloads/splitted Splitted downloads of BiocPackage
+  * @apiName Get splitted BiocPackage downloads
+  * @apiDescription Downloads for a Bioconductor package splitted in direct and indirect ones. A package is downloaded indirectly when a reverse dependency of it is downloaded from the same ip within a minute.
+  * @apiGroup Package
+  *
+  * @apiParam {String}     name                 The name of the package.
+  *
+  * @apiSuccess {Integer}  directDownloads      Number of direct downloads.
+  * @apiSuccess {Integer}  total                Total number of downloads.
+  * @apiSuccess {String}   directDownloadsStr   Number of direct downloads.
+  * @apiSuccess {String}   totalStr             Total number of downloads.
+  */
+  getSplittedBiocDownloadStatistics : function(req,res){
+  var packageName = req.param('name');
 
-    getSplittedBiocDownloadStatistics : function(req,res){
-    var packageName = req.param('name');
-
-    BiocDownloadStatistics.getMonthlySplittedDownloads(packageName).then(function(stats){
-      return res.json({
-        directDownloadsStr: numeral(stats[0].distinct_ips).format('0,0'),
-        totalStr: numeral(stats[0].downloads).format('0,0'),
-        directDownloads: stats[0].distinct_ips,
-        total: stats[0].downloads
-      });
+  BiocDownloadStatistics.getMonthlySplittedDownloads(packageName).then(function(stats){
+    return res.json({
+      directDownloadsStr: numeral(stats[0].distinct_ips).format('0,0'),
+      totalStr: numeral(stats[0].downloads).format('0,0'),
+      directDownloads: stats[0].distinct_ips,
+      total: stats[0].downloads
     });
+  });
 
   },
-
-
+/**
+  * @api {get} /packages/:name/percentile The download percentile of the package.
+  * @apiName Get download percentile.
+  * @apiGroup Package
+  *
+  * @apiParam {String}     name                 The name of the package.
+  *
+  * @apiSuccess {Integer}  percentile           The download percentile of the package.
+  * @apiSuccess {Integer}  total                Total number of downloads of the package.
+  */
   getPercentile: function(req, res) {
 
     var packageName = req.param('name');
@@ -231,7 +272,18 @@ module.exports = {
       return res.json({total: total, percentile: Math.round(percentile * 100) / 100 });
     });
   },
-
+/**
+  * @api {get} /packages/:name/downloads/per_day_last_month last month downloads
+  * @apiName Get downloads last month
+  * @apiDescription Downloads of the package for the last month grouped per day and per class of either direct or indirect downloads.
+  * @apiGroup Package
+  *
+  * @apiParam {String}     name                 The name of the package.
+  *
+  * @apiSuccess {Date}     timestamp            The day of the downloads.
+  * @apiSuccess {String}   key                  Shows whether the downloads were direct or indirect by direct_downloads and indirect_downloads respectively.
+  * @apiSuccess {Integer}  count                Number of downloads.
+  */
   getLastMonthDownloadPerDay: function(req, res) {
     var packageName = req.param('name');
     DownloadStatistic.lastMonthSplittedDownloadsPerDay(packageName).then(function(data) {
@@ -250,7 +302,19 @@ module.exports = {
       return res.json(serie);
     });
   },
-
+/**
+  * @api {get} /packages/:name/downloads/bioc/years/:year/per_month_last_years Bioc downloads (year)
+  * @apiName Get BiocDownloads last year
+  * @apiDescription Downloads of the Bioconductor package for the last year grouped per month.
+  * @apiGroup Package
+  *
+  * @apiParam {String}     name                 The name of the package.
+  * @apiParam {String}     year                 The year for which the downloads are retreived.
+  *
+  * @apiSuccess {Date}     timestamp            The month of the downloads.
+  * @apiSuccess {String}   key                  Shows description being downloads
+  * @apiSuccess {Integer}  count                Number of downloads.
+  */
   getBiocPerMonthLastYears: function(req, res) {
     var packageName = req.param('name');
     var years = req.param('years');
@@ -265,7 +329,21 @@ module.exports = {
       return res.json(serie);
     });
   },
-
+/**
+  * @api {get} /packages/:name/dependencies Dependency graph
+  * @apiName Get dependencies of package
+  * @apiDescription Get dependencies (2 levels deep) for a specific package formatted as a graph in json.
+  * @apiGroup Package
+  *
+  * @apiParam {String}     name                 The name of the package.
+  *
+  * @apiSuccess {Object[]} nodes                The package his dependencies and their dependencies.
+  * @apiSuccess {String}   nodes.name           The name of the package.
+  * @apiSuccess {Integer}  nodes.group          The group to which this package belongs in the graph. The dependency and his dependencies are grouped together. When conflict the second level dependency is grouped with the most popular dependency.
+  * @apiSuccess {Object[]} links                The links in the graph represented as a list.
+  * @apiSuccess {Integer}  links.source         The dependant package.
+  * @apiSuccess {Integer}  links.target         The depending package.   
+  */
   getDependencyGraph: function(req,res) {
     var rootPackage = req.param('name');
 
@@ -324,7 +402,21 @@ module.exports = {
       });
     });
   },
-
+/**
+  * @api {get} /packages/:name/reversedependencies Reverse dependency graph
+  * @apiName Get reversedependencies of package
+  * @apiDescription Get reversedependencies (2 levels deep) for a specific package formatted as a graph in json.
+  * @apiGroup Package
+  *
+  * @apiParam {String}     name                 The name of the package.
+  *
+  * @apiSuccess {Object[]} nodes                The package his reverse dependencies and their reverse dependencies.
+  * @apiSuccess {String}   nodes.name           The name of the package.
+  * @apiSuccess {Integer}  nodes.group          The group to which this package belongs in the graph. The reverse dependency and his reverse dependencies are grouped together. When conflict the second level reverse dependency is grouped with the most popular reverse dependency.
+  * @apiSuccess {Object[]} links                The links in the graph represented as a list.
+  * @apiSuccess {Integer}  links.source         The depending package.
+  * @apiSuccess {Integer}  links.target         The dependant package.   
+  */
   getReverseDependencyGraph: function(req,res) {
     var rootPackage = req.param('name');
 
@@ -384,7 +476,18 @@ module.exports = {
     });
 
   },
-
+/**
+  * @api {get} /packages/:name/downloads/days/:days/per_day last days downloads per day
+  * @apiName Get downloads last day per day
+  * @apiDescription Downloads of the package for the last month grouped per day.
+  * @apiGroup Package
+  *
+  * @apiParam {String}     name                 The name of the package.
+  *
+  * @apiSuccess {Date}     timestamp            The day of the downloads.
+  * @apiSuccess {String}   key                  Shows whether the downloads were direct, indirect or total by direct_downloads, indirect_downloads and total_downloads respectively.
+  * @apiSuccess {Integer}  count                Number of downloads.
+  */
   getDownloadPerDayLastDays:function(req,res){
     var packageName=req.param('name');
     var days = parseInt(req.param('days'));

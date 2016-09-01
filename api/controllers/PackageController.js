@@ -19,9 +19,13 @@ module.exports = {
   * @apiSuccess {String}   name                   Package name
   * @apiSuccess {String}   latest_version_id      Last version (more recent) of this package
   * @apiSuccess {String}   uri                    Url to `self`
+  * @apiSuccess {String}   api_uri                Url to the api endpoint of `self`
+  * @apiSuccess {String}   type_id                Represents the repository from which the package is retrieved (1 for cran, 2 for bioconductor and 3 for github).
+  * @apiSuccess {String}   created_at             The moment at which the record was created.
+  * @apiSuccess {String}   updated_at             The moment at which the most recent update to the record occured.
   * @apiSuccess {Object[]} versions               List of versions of this package
-  * @apiSuccess {String}   versions.url           Url to this version
-  * @apiSuccess {String}   versions.package_url   Url to the package of this version
+  * @apiSuccess {String}   versions.uri           Url to this version
+  * @apiSuccess {String}   versions.api_uri       Url to the api endpoint of this version
   * @apiSuccess {String}   versions.id            Id of this version
   * @apiSuccess {String}   versions.package_name  Name of the package of this version
   * @apiSuccess {String}   versions.version       String describing the version of the package
@@ -29,6 +33,12 @@ module.exports = {
   * @apiSuccess {String}   versions.description   Description of the package version
   * @apiSuccess {Date}     versions.release_date  Release date of the package version
   * @apiSuccess {String}   versions.license       License of the package version
+  * @apiSuccess {String}   versions.url           Url to official site of package
+  * @apiSuccess {String}   versions.copyright     Copyright notice included in package
+  * @apiSuccess {String}   versions.readmemd      Readme included in the package
+  * @apiSuccess {String}   versions.sourceJSON    The sourceJSON containing the data from which the package is parsed.
+  * @apiSuccess {Date}     created_at             The moment at which the record was created.
+  * @apiSuccess {Date}     updated_at             The moment at which the most recent update to the record occured.
   * @apiSuccess {String}   versions.maintainer_id Id of the maintainer of the package version
   */
 
@@ -78,10 +88,16 @@ module.exports = {
   * @apiParam {String} limit    the number to use when limiting records to send back (useful for pagination)
   * @apiParam {String} skip     the number of records to skip when limiting (useful for pagination)
   * @apiParam {String} sort     the order of returned records, e.g. `name ASC` or `name DESC`
+  * @apiParam {String} criteria Limits packages to ones matching the given criteria. Criteria on the following columns are supported: `name`, `created_at`, `updated_at`, `latest_version_id` and `type_id` (being the number given to the repository in which the package is 1 for cran, 2 for bioconductor and 3 for github).
+  * (e.g.: If you only want packages from github the argument type_id=3 can be passed.)
   *
   * @apiSuccess {String}   name                   Package name
-  * @apiSuccess {String}   latest_version_id      Last version (more recent) of this package
+  * @apiSuccess {String}   latest_version_id      Id of the last version (more recent) of this package
   * @apiSuccess {String}   uri                    Url to `self`
+  * @apiSuccess {String}   api_uri                Url to the api endpoint of `self`
+  * @apiSuccess {String}   type_id                Represents the repository from which the package is retrieved (1 for cran, 2 for bioconductor and 3 for github).
+  * @apiSuccess {Date}     created_at             The moment at which the record was created.
+  * @apiSuccess {Date}     updated_at             The moment at which the most recent update to the record occured.
   * @apiUse Timestamps
   */
   find: function(req, res) {
@@ -139,23 +155,5 @@ module.exports = {
       return res.negotiate(err);
     });
   }
-
-  /**
-  * @api {post} /packages Create a new package
-  * @apiName Create Package
-  * @apiGroup Package
-  * @apiDescription Return the newly created resource
-  * Note: The Location header contains a url to the newly created resource
-  *
-  * @apiParam {String} name                The name of the package to be created
-  * @apiParam {String} [latest_version_id] The id of the latest package version
-  *
-  * @apiSuccess {String}   name                   Package name
-  * @apiSuccess {String}   latest_version_id      Last version (more recent) of this package
-  * @apiSuccess {String}   uri                    Url to `self`
-  * @apiUse Timestamps
-  */
-
-
 };
 
