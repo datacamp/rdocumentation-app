@@ -150,7 +150,7 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
             <option value=365>Last year</option>
           </select>
           <svg></svg>
-        </div>
+          </div>
         <%} else if(pkgVersion.package['type_id']==2){%>
           <div class='tabs--content' id="bioc_chart" style="display: none" data-url="/api<%= path %>/downloads/bioc/years/1/per_month_last_years">
           <select onchange="window.redrawBiocChart(this.value)">
@@ -159,6 +159,7 @@ data-latest-version="<%=pkgVersion.package.latest_version.version%>" class="pack
             <option value=3>Last 3 years</option>
           </select>
           <svg></svg>
+          </div>
         <%}%>
 
           <div class='tabs--content' id="packagedependencygraph" style="dislay:none" data-url="/api<%= path %>/dependencies">
