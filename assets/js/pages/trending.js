@@ -153,6 +153,7 @@
       result.results.forEach(function(result,i){
         $("#top10downloads tbody").append("<tr><td>"+((page1-1)*10+i+1)+". "+"<a href = '/packages/"+result.package_name+"'>"+result.package_name+"</a><p class = 'info-trends'>"+result.total+"</p></td></tr>");
       });
+      $(document).trigger('content-changed');
     });
     window.rebindTrending(page1,page2,page3,page4);
   };
@@ -165,6 +166,7 @@
       result.results.forEach(function(result,i){
         $("#top10maintainers tbody").append("<tr><td>"+((page2-1)*10+i+1)+". "+"<a href = '/collaborators/"+encodeURIComponent(result.name)+"'>"+result.name+"</a><p class = 'info-trends'>"+result.total+"</p></td></tr>");
       });
+      $(document).trigger('content-changed');
     });
     window.rebindTrending(page1,page2,page3,page4);
   };
@@ -178,6 +180,7 @@
         var release = new Date(arrival.rel);
         $("#top10new tbody").append("<tr><td><a href = '/packages/"+arrival.package_name+"'>"+arrival.package_name+"</a><p class = 'info-trends'>"+release.toDateString()+"</p></td></tr>");
       });
+      $(document).trigger('content-changed');
     });
     window.rebindTrending(page1,page2,page3,page4);
   };
@@ -191,6 +194,7 @@
         var release = new Date(arrival.rel);
         $("#top10renew tbody").append("<tr><td><a href = '/packages/"+arrival.package_name+"'>"+arrival.package_name+"</a><p class = 'info-trends'>"+release.toDateString()+"</p></td></tr>");
       });
+      $(document).trigger('content-changed');
     });
     window.rebindTrending(page1,page2,page3,page4);
   };
