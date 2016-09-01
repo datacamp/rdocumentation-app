@@ -12,7 +12,6 @@ var dateFormat = require('dateformat');
 var autoLink = require('autolink-js');
 var marked = require('marked');
 var cheerio = require ('cheerio');
-var nodalytics = require('nodalytics');
 
 
 
@@ -44,7 +43,6 @@ module.exports.http = {
       'session',
       'passportInit',
       'passportSession',
-      'nodalyticsProxy',
       'userInjector',
       'paramsInjector',
       'writeRstudioSession',
@@ -87,8 +85,6 @@ module.exports.http = {
     res.locals.user = req.user;
     return next();
   },
-
-  nodalyticsProxy: nodalytics('UA-41577880-1'),
 
   paramsInjector: function (req, res, next) {
     res.locals.inViewerPane = (req.param('viewer_pane') === '1') ? true : false;
