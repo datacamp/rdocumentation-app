@@ -4,7 +4,7 @@
   var containerType = $('.rstudio-data')[0] ? 'rstudio' : 'web-iframe';
   var booted = false;
 
-  var Loader = {
+  Loader = {
 
     configure: function(containerType) {
       /*
@@ -100,6 +100,15 @@
         return urlWParams +'rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
       } else {
         return urlWParams + 'viewer_pane=1';
+      }
+    },
+
+    runExample: function(packageName, code) {
+      if(containerType === 'rstudio') {
+        RStudioRequests.executePackageCode(packageName, code);
+      } else {
+        var payload = "require("+packageName+")\n"+code;
+        parent.postMessage(payload, '*');
       }
     }
 
@@ -221,6 +230,18 @@
       rebind('#js-makedefault','click', RStudioRequests.setDefault);
     },
 
+    bindExampleButton: function() {
+      rebind('#js-examples', 'click', function(e) {
+        e.preventDefault();
+        var package = $(".packageData").data("package-name");
+        var version = $(".packageData").data("latest-version");
+        var examples= $('.topic').find('.topic--title').filter(function(i,el){
+          return $(this).text()=="Examples";
+        }).parent().find('.R').text();
+        Loader.runExample(package, examples);
+      });
+    },
+
     bindElements: function() {
        /*
       bind elements on specific pages to special behaviour for the viewer pane
@@ -337,13 +358,13 @@
 
       Binder.bindLinks();
 
-      if(true){
+      if(containerType === 'rstudio'){
         /*
         check if the user has the latest version of the package if on package-page
         */
         Binder.bindRStudioButtons();
       } else {
-
+        Binder.bindExampleButton();
       }
 
       Binder.bindElements();
@@ -369,6 +390,8 @@
       if(containerType === 'rstudio') {
         RStudio.configureLogin();
         RStudio.start();
+      } else {
+        Binder.bindGlobalClickHandler();
       }
 
     }
