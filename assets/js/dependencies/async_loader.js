@@ -224,7 +224,6 @@
       success: responseHandler(function(data, textStatus, xhr) {
         if(addToHistory){
           window.pushHistory(url);
-          console.log(window.rstudioHistory)
         }
         rerenderBody(data, urlWParams);
       },addToHistory)
