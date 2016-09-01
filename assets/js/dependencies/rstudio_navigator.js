@@ -52,7 +52,6 @@
     }
   }
   window.navigateBackward=function(){
-    console.log("navigating backward from "+nextHistoryState)
     if(nextHistoryState >1){
       url =window.rstudioHistory[nextHistoryState-2]
       var base = $('base').attr('href');
