@@ -1,6 +1,7 @@
 (function($) {
-
-
+  /*
+  Helper function to store credentials in Rstudio and to stay loggedIn for fututre ajax request
+  */
   logInForRstudio = function(loginData){
     return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
       ["write('"+ loginData +"', file = paste0(find.package('Rdocumentation'),'/config/creds.txt'))"])
@@ -10,7 +11,10 @@
     });
   };
 
-  runExamples=function(e){
+  /*
+  function to run the examples on a topic page
+  */
+  runExamples = function(e){
     e.preventDefault();
     var package = $(".packageData").data("package-name");
     var version = $(".packageData").data("latest-version");
@@ -25,20 +29,33 @@
     return false;
   };
 
-  setDefault=function(e){
+  /*
+  function for the 'make default' button
+  */
+  setDefault = function(e){
     e.preventDefault();
     _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::makeDefault()"]);
     return false;
   };
-  hideViewer=function(e){
+
+  /*
+  function for the 'continue without making default' button
+  */
+  hideViewer = function(e){
     e.preventDefault();
     _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::hideViewer()"]);
     return false;
   };
+
+
   /************************************************************************************************************************************************
   checking installation of package and package version
   ************************************************************************************************************************************************/
-  checkPackageVersion=function(package,version){
+  
+  /*
+  helper function to check the package version
+  */ 
+  checkPackageVersion = function(package,version){
     version = String(version).replace("-",".")
     return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["check_package('"+package+"','"+version+"')"])
     .then(function(result){
@@ -46,7 +63,10 @@
     });
   };
 
-  packageVersionControl=function(){
+  /*
+  function to hide/show elements dependent on package installation
+  */
+  packageVersionControl = function(){
     var packageName = $(".packageData").data("package-name");
     var version = $(".packageData").data("latest-version");
     if(packageName){
@@ -67,6 +87,9 @@
     }
   };
 
+  /*
+  function for the install button
+  */
   installpackage=function(e){
     e.preventDefault();
     var packageName = $(".packageData").data("package-name");
@@ -76,11 +99,17 @@
     return false;
   };
 
+  /*
+  function to run user-defined examples
+  */
   executePackageCode=function(package,code){
         _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["require("+package+")\n"+code]);
   };
 
-  _rStudioRequest=function(url,method,shared_secret,port,params){
+  /*
+  helper function for interaction with rstudio
+  */
+  var _rStudioRequest=function(url,method,shared_secret,port,params){
     var data={};
     data.method = method;
     //data.params = [$('.R').text()];
