@@ -8,6 +8,7 @@
 var _ = require('lodash');
 var Promise = require('bluebird');
 var md5 = require('md5');
+var numeral = require('numeral');
 
 module.exports = {
 
@@ -109,7 +110,13 @@ module.exports = {
       topCollaborators: function(page){
         var query = "SELECT coll.name, Sum(direct_downloads), Sum(indirect_downloads), Sum(direct_downloads) + Sum(indirect_downloads) as total From Packages pack INNER JOIN PackageVersions versions ON pack.latest_version_id=versions.id INNER JOIN Collaborators coll ON versions.maintainer_id = coll.id INNER JOIN DownloadStatistics downloads ON pack.name=downloads.package_name WHERE "+
           "downloads.date >= current_date() - interval '1' month group by coll.name order by total desc limit ?,10";
-        return sequelize.query(query, {replacements: [(page-1)*10], type: sequelize.QueryTypes.SELECT});
+        return sequelize.query(query, {replacements: [(page-1)*10], type: sequelize.QueryTypes.SELECT}).then(function(result){
+          var mapped = _.map(result,function(o){
+            o.totalStr = numeral(o.total).format('0,0');
+            return o;
+          });
+          return mapped;
+        });
       },
 
       quickSearch: function(pattern){
