@@ -70,7 +70,7 @@ module.exports = {
   *
   * @apiUse Timestamps
   * @apiSuccess {String}   uri              Url to this package version
-  * @apiSuccess {String}   package_uri      Url to the package of this version
+  * @apiSuccess {String}   api_uri          Url to the api  this version
   * @apiSuccess {String}   id               Id of this version
   * @apiSuccess {String}   package_name     Name of the package of this version
   * @apiSuccess {String}   version          String describing the version of the package
@@ -78,16 +78,22 @@ module.exports = {
   * @apiSuccess {String}   description      Description of the package version
   * @apiSuccess {Date}     release_date     Release date of the package version
   * @apiSuccess {String}   license          License of the package version
+  * @apiSuccess {String}   url              project url
+  * @apiSuccess {String}   copyright        copyright notice include in package
+  * @apiSuccess {String}   readmemd         The readme file of the package
+  * @apiSuccess {JSON}     sourceJSON       original information included
   * @apiSuccess {String}   maintainer_id    Id of the maintainer of the package version
   * @apiSuccess {Object}   maintainer       Description of the maintainer of this package version
   * @apiSuccess {String}   maintainer.name  Name of the maintainer of the package version
   * @apiSuccess {String}   maintainer.email Email of the maintainer of the package version
-  * @apiSuccess {Object[]} authors          List of the authors of this package version
-  * @apiSuccess {String}   authors.name     Name of this author of the package version
-  * @apiSuccess {String}   authors.email    Email of this author of the package version
+  * @apiSuccess {Integer}  maintainer.id    The id given to the maintainer
+  * @apiSuccess {String}   maintainer.uri   The url to the page of the maintainer
+  * @apiSuccess {String}   maintainer.api_uri The url to the api of the maintainer
+  * @apiSuccess {Object[]} collaborators    List of the collaborators and their information.
+  * @apiSuccess {String}   collaborators.name   Name of this collaborator of the package version
+  * @apiSuccess {String}   collaborators.email  Email of this collaborator of the package version
   * @apiSuccess {Object[]} topics           List of topics (only name and title) (limited to 30)
-
-
+  * @apiSuccess {JSON}     package          All information as retreived from ´api/packages/:name´
   */
   findByNameVersion: function(req, res) {
     var packageName = req.param('name'),
@@ -341,8 +347,8 @@ module.exports = {
   * @apiSuccess {String}   nodes.name           The name of the package.
   * @apiSuccess {Integer}  nodes.group          The group to which this package belongs in the graph. The dependency and his dependencies are grouped together. When conflict the second level dependency is grouped with the most popular dependency.
   * @apiSuccess {Object[]} links                The links in the graph represented as a list.
-  * @apiSuccess {Integer}  links.source         The dependant package.
-  * @apiSuccess {Integer}  links.target         The depending package.   
+  * @apiSuccess {Integer}  links.source         The dependant package (as number in the nodes list).
+  * @apiSuccess {Integer}  links.target         The depending package (as number in the nodes list).   
   */
   getDependencyGraph: function(req,res) {
     var rootPackage = req.param('name');
@@ -414,8 +420,8 @@ module.exports = {
   * @apiSuccess {String}   nodes.name           The name of the package.
   * @apiSuccess {Integer}  nodes.group          The group to which this package belongs in the graph. The reverse dependency and his reverse dependencies are grouped together. When conflict the second level reverse dependency is grouped with the most popular reverse dependency.
   * @apiSuccess {Object[]} links                The links in the graph represented as a list.
-  * @apiSuccess {Integer}  links.source         The depending package.
-  * @apiSuccess {Integer}  links.target         The dependant package.   
+  * @apiSuccess {Integer}  links.source         The depending package (as number in the nodes list).
+  * @apiSuccess {Integer}  links.target         The dependant package (as number in the nodes list).   
   */
   getReverseDependencyGraph: function(req,res) {
     var rootPackage = req.param('name');

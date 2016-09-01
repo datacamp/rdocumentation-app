@@ -17,16 +17,16 @@ module.exports = {
   *
   * @apiUse Timestamps
   * @apiSuccess {String}   name                   Package name
-  * @apiSuccess {String}   latest_version_id      Last version (more recent) of this package
+  * @apiSuccess {Integer}  latest_version_id      Last version (more recent) of this package
   * @apiSuccess {String}   uri                    Url to `self`
   * @apiSuccess {String}   api_uri                Url to the api endpoint of `self`
-  * @apiSuccess {String}   type_id                Represents the repository from which the package is retrieved (1 for cran, 2 for bioconductor and 3 for github).
+  * @apiSuccess {Integer}  type_id                Represents the repository from which the package is retrieved (1 for cran, 2 for bioconductor and 3 for github).
   * @apiSuccess {String}   created_at             The moment at which the record was created.
   * @apiSuccess {String}   updated_at             The moment at which the most recent update to the record occured.
   * @apiSuccess {Object[]} versions               List of versions of this package
   * @apiSuccess {String}   versions.uri           Url to this version
   * @apiSuccess {String}   versions.api_uri       Url to the api endpoint of this version
-  * @apiSuccess {String}   versions.id            Id of this version
+  * @apiSuccess {Integer}  versions.id            Id of this version
   * @apiSuccess {String}   versions.package_name  Name of the package of this version
   * @apiSuccess {String}   versions.version       String describing the version of the package
   * @apiSuccess {String}   versions.title         Title of the version
@@ -39,7 +39,7 @@ module.exports = {
   * @apiSuccess {String}   versions.sourceJSON    The sourceJSON containing the data from which the package is parsed.
   * @apiSuccess {Date}     created_at             The moment at which the record was created.
   * @apiSuccess {Date}     updated_at             The moment at which the most recent update to the record occured.
-  * @apiSuccess {String}   versions.maintainer_id Id of the maintainer of the package version
+  * @apiSuccess {Integer}  versions.maintainer_id Id of the maintainer of the package version
   */
 
   findByName: function(req, res) {
@@ -92,7 +92,7 @@ module.exports = {
   * (e.g.: If you only want packages from github the argument type_id=3 can be passed.)
   *
   * @apiSuccess {String}   name                   Package name
-  * @apiSuccess {String}   latest_version_id      Id of the last version (more recent) of this package
+  * @apiSuccess {Integer}  latest_version_id      Id of the last version (more recent) of this package
   * @apiSuccess {String}   uri                    Url to `self`
   * @apiSuccess {String}   api_uri                Url to the api endpoint of `self`
   * @apiSuccess {String}   type_id                Represents the repository from which the package is retrieved (1 for cran, 2 for bioconductor and 3 for github).

@@ -194,16 +194,10 @@ module.exports = {
   * @apiSuccess {String}   section.name                  Title of the section
   * @apiSuccess {String}   section.description           Description of the section
   * @apiSuccess {Object}   package_version               Informations about the version of the package
-  * @apiSuccess {String}   package_version.url           Url to this version
-  * @apiSuccess {String}   package_version.package_url   Url to the package of this version
-  * @apiSuccess {String}   package_version.id            Id of this version
+  * @apiSuccess {String}   package_version.uri           Url to this version
+  * @apiSuccess {String}   package_version.api_uri       Url to the api of this version.
   * @apiSuccess {String}   package_version.package_name  Name of the package of this version
   * @apiSuccess {String}   package_version.version       String describing the version of the package
-  * @apiSuccess {String}   package_version.title         Title of the version
-  * @apiSuccess {String}   package_version.description   Description of the package version
-  * @apiSuccess {Date}     package_version.release_date  Release date of the package version
-  * @apiSuccess {String}   package_version.license       License of the package version
-  * @apiSuccess {String}   package_version.maintainer_id Id of the maintainer of the package version
   */
 
   findById: function(req, res) {

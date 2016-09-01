@@ -69,9 +69,10 @@ module.exports = {
   * @apiGroup View
   * @apiDescription Return all the cran task view along with their packages
   *
+  * @apiSuccess {Integer}   id               id of the task view
   * @apiSuccess {String}    name             View name
   * @apiSuccess {String}    url              View url
-  * @apiSuccess {String[]}  packages         List of Packages object
+  * @apiSuccess {Object[]}  packages         List of Packages object
   * @apiUse Timestamps
   */
 

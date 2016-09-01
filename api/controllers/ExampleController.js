@@ -53,6 +53,8 @@ module.exports = {
   *
   *
   * @apiParam {Integer}     exampleId     The id of the example.
+  *
+  * @apiSuccess {String}    status        done when the operation was successful, forbidden if the user isn't properly authenticated.
   */
   deleteExample: function(req, res) {
     var exampleId = req.param('exampleId');
@@ -78,6 +80,8 @@ module.exports = {
   *
   * @apiParam {Integer}     exampleId     The id of the example.
   * @apiParam {String}      text          Contents of the updated example (styling via markdown).
+  * 
+  * @apiSuccess {String}    status        done when the operation was successful, forbidden if the user isn't properly authenticated.
   */
   updateExample: function(req, res) {
     var exampleId = req.param('exampleId');
