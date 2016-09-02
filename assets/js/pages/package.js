@@ -6,13 +6,18 @@
       $("#details").find(".hidden").removeClass("hidden");
     });
     window.packageVersionToggleHandler();
-    window.activateTabs("#tabs");
+    if(typeof(Set) != "undefined" || $('#tab0')[0]){
+      window.activateTabs("#tabs");
+      window.bindTabs();
+    }
+    else{
+      $('.tabs--content').hide();
+    }
     window.launchFullSearch();
     if(typeof(Set) == "undefined"){
       $('#tab1').closest('li').hide();
       $('#tab2').closest('li').hide();
     }
-    window.bindTabs();
     window.makeSlider();
   };
   window.packageVersionToggleHandler = function() {
@@ -245,7 +250,9 @@
         if(!$("#chart svg").hasClass("nvd3-svg")){
           window.graphDownloadStatistics();
         }
-        window.dependencyGraphPackage();
+        if(typeof(Set) != "undefined"){
+          window.dependencyGraphPackage();
+        }
       }else{
         slider.removeClass("fa-angle-up");
         slider.addClass("fa-angle-down");
