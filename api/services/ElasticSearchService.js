@@ -408,6 +408,7 @@ module.exports = {
     }
   },
   helpSearchQuery:function(pattern,fields,fuzzy,max_dist){
+    var highlighting = false;
     var t = {}
     t["index"] = "rdoc";
     t["body"] = {
@@ -485,6 +486,23 @@ module.exports = {
         "fields":fields,
         "fuzziness":max_dist
       };
+      if(fields.indexOf("aliases")>-1){
+        t["body"]["highlight"] = {
+          "fields" : {
+            "aliases": {
+               "number_of_fragments" : 0,
+               highlight_query: {
+               match: {
+                  aliases: {
+                    query : pattern,
+                    fuzziness : max_dist
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
       if(_.includes(fields,"concept")){
         t["body"]["query"]["bool"]["should"][0]["query"]={
           "bool":{
@@ -543,15 +561,19 @@ module.exports = {
         }
         else{
           return _.map(response.hits.hits,function(record){
-                    return {
-                    id:record._id,
-                    package_name:record.inner_hits.package_version.hits.hits[0].fields.package_name[0],
-                    package_version:record.inner_hits.package_version.hits.hits[0].fields.version[0],
-                    function_name:record.fields.name[0],
-                    function_alias:record.fields.aliases,
-                    function_description:record.fields.description[0]
-                    };
-            });
+            var alias = record.fields.aliases[0]
+            if(highlighting){
+              alias = striptags(record.highlight.aliases.toString(),'<em>')
+            }
+            return {
+              id : record._id,
+              package_name : record.inner_hits.package_version.hits.hits[0].fields.package_name[0],
+              package_version : record.inner_hits.package_version.hits.hits[0].fields.version[0],
+              function_name : record.fields.name[0],
+              function_alias : alias,
+              function_description : record.fields.description[0]
+            };
+          });
         }
       })
       .catch(function(err){
