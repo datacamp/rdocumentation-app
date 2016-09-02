@@ -14,6 +14,7 @@
       window.getPercentiles();
       window.bindFade();
       rebind(currentFunctionPage, currentPackagePage);
+      $(document).trigger('content-changed');
   	});
   };
 
@@ -30,6 +31,7 @@
   		$('.functiondata').html(result);
       $('.functiondata').fadeIn('fast');
       rebind(currentFunctionPage, currentPackagePage);
+      $(document).trigger('content-changed');
   	});
   };
 

@@ -34,6 +34,7 @@
           appendResults(data);
           showSearchResults();
           hover();
+          $(document).trigger('content-changed');
         }
       });
     }
@@ -85,7 +86,7 @@
         results.collaborators.forEach(function(collaborator){
           object += "<li><a href=" + collaborator.uri + ">" + collaborator.name + "</a></li>";
         });
-        object += '</ul>'; 
+        object += '</ul>';
       }
       searchResultsPane.html(object);
     }

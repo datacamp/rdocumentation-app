@@ -20,11 +20,11 @@
       } else {
         var v = $('.list-group .list-group-item:first-child').text();
         getView(v);
-      } 
+      }
     }
     window.makeSideBar();
     hideSlider();
-    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)   
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
     $('.list-group').css('height',h-80)
   };
 
@@ -79,6 +79,7 @@
     	$(".view").html(response);
     	window.bindFilter();
       percentileTaskView();
+      $(document).trigger('content-changed');
     });
   };
 

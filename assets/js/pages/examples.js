@@ -9,7 +9,7 @@
         $('.run-example').each(function() {
           var packageName = $(this).parent().parent().data('package-name') || $('.packageData').data('package-name');
           $(this).click(function(){
-            window.executePackageCode(packageName,$(this).prev().text());
+            Loader.runExample(packageName,$(this).prev().text());
           });
         });
       }
