@@ -17,6 +17,7 @@
            xhr.setRequestHeader("X-RStudio-Session", sid);
            xhr.setRequestHeader("X-RStudio-Ajax",'true');
         },
+        cache:false,
         crossDomain:true
       });
       /*
