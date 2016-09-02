@@ -47,7 +47,7 @@
       if(url.indexOf(base)>-1){
         url = url.substring(url.indexOf(base)+base.length,url.length)
       }
-      window.replacePage(url, false)
+      Loader.replacePage(url, false)
       nextHistoryState +=1;
     }
   }
@@ -58,7 +58,7 @@
       if(url.indexOf(base)>-1){
         url = url.substring(url.indexOf(base)+base.length,url.length)
       }
-      window.replacePage(url, false)
+      Loader.replacePage(url, false)
       nextHistoryState -=1;
     }
     else if(nextHistoryState == 1){
