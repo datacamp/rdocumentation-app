@@ -17,6 +17,7 @@
            xhr.setRequestHeader("X-RStudio-Session", sid);
            xhr.setRequestHeader("X-RStudio-Ajax",'true');
         },
+        cache:false,
         crossDomain:true
       });
       /*
@@ -201,7 +202,7 @@
       var link =$(this).attr("href");
       if(typeof(link) != "undefined" &&
           link.indexOf(base)<=-1 &&
-          (link.indexOf("www")===0  || link.indexOf("http://")===0 || link.indexOf("https://") === 0)){
+          (link.indexOf("www")===0  || link.indexOf("http://")===0 || link.indexOf("https://") === 0 || link.indexOf('/register') === 0)){
         $(this).addClass("js-external");
       }
     });

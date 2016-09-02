@@ -31,64 +31,90 @@
     function search(token){
       $.post('/api/quick_search', {token: token}, function(data){
         if(searchContainer.parents('html').length > 0 && token == searchInput.val()) {
-          appendResults(data);
-          showSearchResults();
+          var colls = appendResults(data);
+          showSearchResults(colls);
           hover();
           $(document).trigger('content-changed');
         }
       });
     }
 
-    function showSearchResults(){
+    function showSearchResults(colls){
       if(!searchResultsPane.is(":visible")) {
         searchResultsPane.show();
         $('#content').append(searchResultsPane.detach());
         var eOffset = searchContainer.offset();
         // make sure to place it where it would normally go (this could be improved)
         var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+        console.log(colls);
         searchResultsPane.css({
             'display': 'block',
             'top': eOffset.top + searchInput.outerHeight() + 10,
-            'left': eOffset.left - HORIZONTAL_OFFSET,
-            'width': searchContainer.width() + 2 * HORIZONTAL_OFFSET,
+            'max-width' : 225*colls,
+            'margin' : '0 auto',
             'max-height': h - (eOffset.top + searchInput.outerHeight() + 10)
 
         });
+      }else{
+        searchResultsPane.css({
+          'max-width' : 225*colls
+        })
       }
     }
 
     function appendResults(results) {
       var object = '';
       if(results.packages.length === 0 && results.topics.length === 0 && results.collaborators.length === 0){
-        return searchResultsPane.html('<p class="placeholder">No results found. Press [enter] for full-text search.</p>')
+        searchResultsPane.html('<p class="placeholder">No results found. Press [enter] for full-text search.</p>');
+        return 0;
       }
+      var col = 0;
+      if(results.packages.length !== 0){
+        col++;
+      }
+      if(results.topics.length !== 0){
+        col++;
+      }
+      if(results.collaborators.length !== 0){
+        col++;
+      }
+      object += "<div class='row'>"
       if(results.packages.length > 0){
+        object += '<div class="col-sm-'+12/col+'">';
         object += '<p class="header">Packages</p>';
         object += '<ul class="packages">';
         results.packages.forEach(function(package){
           object += "<li><a href=" + package.uri + ">" + package.name + "</a></li>";
         });
         object += '</ul>';
+        object += '</div>';
       }
 
       if(results.topics.length > 0){
+        object += '<div class="col-sm-'+12/col+'">';
         object += '<p class="header">Functions</p>';
         object += '<ul class="topics">';
         results.topics.forEach(function(topic){
           object += "<li><a href=" + topic.uri + ">" + topic.name + "<em> ("+ topic.package_name + " - " + topic.package_version + ") </em>" + "</a></li>";
         });
         object += '</ul>';
+        object += '</div>';
       }
 
       if(results.collaborators.length > 0){
+        object += '<div class="col-sm-'+12/col+'">';
         object += '<p class="header">Collaborators</p>'
         object += '<ul class="collaborators">';
         results.collaborators.forEach(function(collaborator){
           object += "<li><a href=" + collaborator.uri + ">" + collaborator.name + "</a></li>";
         });
         object += '</ul>';
+        object += '</div>'; 
       }
+      object += "</div>"
+      object += "<div class='row'><div class='col-sm-12 more'><b><a href='/search?q="+searchInput.val()+"'>Show more results</a></b></div></div>"
       searchResultsPane.html(object);
+      return col;
     }
 
     function hover(){

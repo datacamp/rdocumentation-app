@@ -37,7 +37,7 @@
     */
     logInForRstudio: function(loginData){
       return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
-        ["write('"+ loginData +"', file = paste0(find.package('Rdocumentation'),'/config/creds.txt'))"])
+        ["dir.create(paste0(find.package('Rdocumentation'),'/config')) \n write('"+ loginData +"', file = paste0(find.package('Rdocumentation'),'/config/creds.txt'))"])
       .then(function(){
         console.log("Stored creds in RStudio");
         return RStudio.stayLoggedIn(loginData);
