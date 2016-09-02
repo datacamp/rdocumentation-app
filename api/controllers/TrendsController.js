@@ -212,7 +212,7 @@ module.exports = {
 	},
 	/**
   * @api {get} /trends/topcollaborators Top Collaborators
-  * @apiDescription The most influential collaborators determined by the number of downloads of the packages they maintain paged per 10.
+  * @apiDescription The most influential collaborators determined by the combined total number of downloads of the packages they maintain paged per 10.
   * @apiName Top collaborators
   * @apiGroup Trends
   *
@@ -221,7 +221,7 @@ module.exports = {
   * 
   * @apiSuccess {Object[]} results 		          			List representing the most influential collaborators in rdocumetation offset by 10 times the given page.
   * @apiSuccess {String}	 results.name 					  	The name of the maintainer.
-  * @apiSuccess {timestamp}results.total 	 	 					The total number of downloads of the packages maintained by the given person.
+  * @apiSuccess {timestamp}results.total 	 	 					The combined total number of downloads of the packages maintained by the given person.
   */
 	topCollaborators: function(req,res){
 		var page = req.param("page")||1;
