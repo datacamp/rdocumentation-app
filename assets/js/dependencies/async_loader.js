@@ -17,6 +17,7 @@
            xhr.setRequestHeader("X-RStudio-Session", sid);
            xhr.setRequestHeader("X-RStudio-Ajax",'true');
         },
+        cache:false,
         crossDomain:true
       });
       /*
@@ -62,7 +63,6 @@
         type: 'GET',
         dataType: "html",
         Accept: "text/html",
-        cache: false,
         success: Loader.responseHandler(function(data, textStatus, xhr) {
           if(addToHistory){
             window.pushHistory(url);
