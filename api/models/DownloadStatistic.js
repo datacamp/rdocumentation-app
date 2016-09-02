@@ -113,6 +113,43 @@ module.exports = {
       },
       getNumberOfDirectDownloads: function(name){
         return sequelize.query("SELECT SUM(direct_downloads) AS total FROM Packages p INNER JOIN PackageVersions v ON p.latest_version_id = v.id INNER JOIN DownloadStatistics s ON s.package_name = p.name INNER JOIN Collaborators c ON v.maintainer_id = c.id WHERE c.name = ? and s.date >= current_date() - interval '1' month",{  replacements: [name], type: sequelize.QueryTypes.SELECT});
+      },
+
+      getNotIndexedDates:function() {
+        return sequelize.query( "SELECT MonthDate.Date AS absents "+
+                               "FROM ( "+
+                               "SELECT DATE(NOW() - INTERVAL 1 DAY) AS Date UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 2 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 3 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 4 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 5 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 6 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 7 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 8 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 9 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 10 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 11 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 12 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 13 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 14 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 15 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 16 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 17 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 18 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 19 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 20 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 21 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 22 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 23 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 24 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 25 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 26 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 27 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 28 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 29 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 30 DAY) UNION ALL "+
+                               "SELECT DATE(NOW() - INTERVAL 31 DAY)) AS MonthDate WHERE Date NOT IN (SELECT DISTINCT date FROM DownloadStatistics WHERE date >= DATE(NOW() - INTERVAL 31 DAY)); ",
+                                {type: sequelize.QueryTypes.SELECT});
       }
     }
   }
