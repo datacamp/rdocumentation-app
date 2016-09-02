@@ -50,6 +50,13 @@
     bottom: 0;
 }
 
+.home--apidoc {
+  color: white;
+  bottom: 0;
+  position: absolute;
+  margin-bottom: 7px;
+}
+
 @media (max-height: 420px){
     .home--cta{
         top: initial;

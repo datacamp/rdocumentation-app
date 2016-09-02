@@ -156,6 +156,9 @@ module.exports.routes = {
   'get /badges/version/:packageName':'BadgeController.getLatestVersion',
   'get /badges/:downloadsKind/:packageName' :'BadgeController.getDownloadStatsBadge',
   'get /badges/:downloadsKind/:period/:packageName' :'BadgeController.getDownloadStatsPeriodBadge',
+  'get /api/badges/version/:packageName':'BadgeController.getLatestVersion',
+  'get /api/badges/:downloadsKind/:packageName' :'BadgeController.getDownloadStatsBadge',
+  'get /api/badges/:downloadsKind/:period/:packageName' :'BadgeController.getDownloadStatsPeriodBadge',
 
   // Search
   'post /api/quick_search': 'SearchController.quickSearch',

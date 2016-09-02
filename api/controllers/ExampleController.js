@@ -11,10 +11,10 @@ module.exports = {
   /**
   * @api {post} /topics/:topicId/reviews/ Post a review to a topic
   * @apiName Post review to topic
-  * @apiGroup Review
-
+  * @apiGroup Example
+  * @apiPermission require to be authenticated
   * @apiDescription Create a new review in the specified topic.
-  * Note: require to be authenticated
+  * 
   *
   *
   * @apiParam {Int} topicId Id of the topic to post to review
@@ -44,8 +44,18 @@ module.exports = {
       return res.negotiate(err);
     });
   },
-
-
+/**
+  * @api {delete} /examples/:exampleId Delete example
+  * @apiName Delete the example with the id.
+  * @apiGroup Example
+  * @apiPermission The user owning the example must be authenticated.
+  * @apiDescription Delete the example with the id.
+  *
+  *
+  * @apiParam {Integer}     exampleId     The id of the example.
+  *
+  * @apiSuccess {String}    status        done when the operation was successful, forbidden if the user isn't properly authenticated.
+  */
   deleteExample: function(req, res) {
     var exampleId = req.param('exampleId');
     var user = req.user;
@@ -60,7 +70,19 @@ module.exports = {
       return res.negotiate(err);
     });
   },
-
+/**
+  * @api {post} /examples/:exampleId Update example
+  * @apiName Update the example with the id.
+  * @apiGroup Example
+  * @apiPermission The user owning the example must be authenticated.
+  * @apiDescription Edit the example with the id.
+  *
+  *
+  * @apiParam {Integer}     exampleId     The id of the example.
+  * @apiParam {String}      text          Contents of the updated example (styling via markdown).
+  * 
+  * @apiSuccess {String}    status        done when the operation was successful, forbidden if the user isn't properly authenticated.
+  */
   updateExample: function(req, res) {
     var exampleId = req.param('exampleId');
     var exampleText = req.param('text');
@@ -78,13 +100,13 @@ module.exports = {
   },
 
    /**
-  * @api {get} /topics/:topicId/reviews/ Get list of topic's review
-  * @apiName Review by topic
-  * @apiGroup Review
+  * @api {get} /topics/:topicId/reviews/ Get list of topic's examples
+  * @apiName Example by topic
+  * @apiGroup Example
   *
-  * @apiDescription Get list of topic's review
+  * @apiDescription Get list of topic's example
   *
-  * @apiParam {Int} topicId Id the topic for which we get the reviews
+  * @apiParam {Int} topicId Id the topic for which we get the examples
   */
   findByTopic: function(req, res) {
     var topicId = req.param('topicId');
