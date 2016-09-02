@@ -6,7 +6,7 @@
 
 .home--cta {
     position: absolute;
-    top: 40%;
+    top: 30%;
     left: 0;
     right: 0;
     transform: translateY(-50%);
@@ -28,6 +28,31 @@
     display: block;
     margin-bottom: 0;
     margin-top: 0.5rem;
+}
+
+.home--leaderboard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.home--tables {
+  border-radius: 5px;
+  color:$primary;
+  padding: 30px;
+  position: relative;
+  width: 900px;
+  left: -50%;
+  background-color:$primary-extra-light;
+}
+
+.home--leadertable {
+  min-width: 200px;
+  table {
+    tr {
+
+    }
+  }
 }
 
 .home--title {
