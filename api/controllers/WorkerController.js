@@ -49,20 +49,20 @@ module.exports = {
   },
 
   lastDaySplittedDownloads: function(req, res) {
-    DownloadStatistic.findLastIndexedDay().then(function(lastDay) {
-      var lastDate = new Date(lastDay);
-      var now = new Date();
-      var diff = Utils.dateDiffInDays(lastDate, now);
-      return diff;
-    }).then(function(nDays) {
-      if (nDays <= 1) {
+    DownloadStatistic.getNotIndexedDates().then(function(days) {
+      return days.map(function(day) {
+        var date = new Date(day.absents);
+        var now = new Date();
+        return Utils.dateDiffInDays(date, now);
+      });
+    }).then(function(diffs) {
+      if (diffs.length <= 0) {
         console.log("Nothing new");
         return res.send(200, "done");
       }
 
       DownloadStatsService.reverseDependenciesCache = {}; //clean old cache
-      var range = _.range(1, nDays);
-      Promise.map(range, function (nDay) {
+      Promise.map(diffs, function (nDay) {
         console.log("Started indexing for today - " + nDay + "days");
         return CronService.splittedAggregatedDownloadstats(nDay)
           .catch({message: "empty"}, function() {
