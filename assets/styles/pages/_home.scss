@@ -38,31 +38,28 @@
 
 .home--tables {
   border-radius: 5px;
-  color:$primary;
   padding: 30px;
   position: relative;
-  width: 900px;
+  min-width: 900px;
   left: -50%;
-  background-color:$primary-extra-light;
-}
-
-@media(min-width: 768px) and (max-width: 991px){
-  .home--tables{
-    width: 750px;
-  }
-}
-
-@media(max-width: 767px), (max-height: 750px){
-  .home--leaderboard{
-    display: none;
-  }
 }
 
 .home--leadertable {
   min-width: 200px;
   table {
+    color: white;
+    a {
+      color: white;
+      border-bottom: none;
+    }
+    tr:nth-of-type(2n) {
+      background-color: inherit;
+    }
     tr {
 
+      td {
+        color: $primary-extra-light;
+      }
     }
   }
 }
