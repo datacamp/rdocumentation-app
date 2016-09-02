@@ -107,7 +107,17 @@ var self = module.exports = {
       }
     });
   },
-
+/**
+  * @api {get} /collaborators/name/:name/downloads Maintainer downloads
+  * @apiName The downloads of a maintainer
+  * @apiGroup Collaborator
+  * @apiDescription The number of combined direct downloads of all packages of which the last version is maintained by the given user.
+  *
+  * @apiParam   {String}    name      The name of the maintainer.
+  *
+  * @apiSuccess {Integer}   total     The total amount of direct downloads as described.
+  * @apiSuccess {String}    totalStr  The total given as as string.
+  */
   getNumberOfDirectDownloads: function(req,res){
     var name = req.param('name');
     DownloadStatistic.getNumberOfDirectDownloads(name).then(function(results){
@@ -116,7 +126,17 @@ var self = module.exports = {
       res.json(results[0]);
     });
   },
-
+/**
+  * @api {get} /collaborators/name/:name/downloads Maintainer downloads
+  * @apiName The downloads of a maintainer
+  * @apiGroup Collaborator
+  * @apiDescription The number of combined direct downloads of all packages of which the last version is maintained by the given user.
+  *
+  * @apiParam   {String}    name      The name of the maintainer.
+  *
+  * @apiSuccess {Integer}   total     The total amount of direct downloads as described.
+  * @apiSuccess {String}    totalStr  The total given as as string.
+  */
   getDepsyData: function(req,res){
     var name = req.param('name');
     request("http://depsy.org/api/search/"+name,function(error,response,body){

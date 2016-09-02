@@ -3,6 +3,18 @@ var _ = require('lodash');
 
 module.exports = {
 
+	/**
+  * @api {get} /trends/download Trends in download behaviour of last month
+  * @apiName Top 10 downloads per day for last 30 days grouped per package.
+  * @apiGroup Trends
+  *
+  * 
+  * @apiSuccess {String}   key  	                Package name
+  * @apiSuccess {Object[]} values               	List representing the number of downloads per day for the last 30 days.
+  * @apiSuccess {String}	 values.count 					Number of downloads for the given package on the given day.
+  * @apiSuccess {String} 	 values.key 	 					The name of the package (redundant).
+  * @apiSuccess {timestamp}values.timestamp 			Day at which the downloads occurred expressed as a timestamp.
+  */
 	mostDownloaded: function (req,res){
 		return RedisService.getJSONFromCache("trends_mostdownloaded",res,RedisService.DAILY,function(){
 			return ElasticSearchService.lastMonthPerDayTrending().then(function(data){
@@ -58,6 +70,15 @@ module.exports = {
 			return res.json(result);
 		});
 	},
+	/**
+  * @api {get} /trends/keyword Most popular keywords used
+  * @apiName Top keywords used sorted from high to low.
+  * @apiGroup Trends
+  *
+  * 
+  * @apiSuccess {String}   key  	                Package name
+  * @apiSuccess {String}   doc_count              Number of occurences for keyword.
+  */
 	topKeywords: function (req,res){
 		return RedisService.getJSONFromCache("trends_topkeywords",res,RedisService.DAILY,function(){
 			return ElasticSearchService.topKeywords().then(function(result){
@@ -67,6 +88,20 @@ module.exports = {
 			return res.json(result);
 		});
 	},
+	/**
+  * @api {get} /trends/graph Dependencies between top 10 packages as graph
+  * @apiName Dependencies between top 10 packages as graph
+  * @apiGroup Trends
+  *
+  * 
+  * @apiSuccess {Object[]} nodes                	List representing the 10 most popular packages and their direct dependencies
+  * @apiSuccess {String}	 nodes.name   					The name of the package.
+  * @apiSuccess {String} 	 nodes.group 	 					The group in the graph to which it belongs (grouped per popular package, grouped with most popular when multiple are available).
+  * @apiSuccess {Object[]} links						 			The dependency links within the graph.
+  * @apiSuccess {String}	 links.source						The dependant package.
+  * @apiSuccess {String}	 links.target						The package on which it depends.
+  * @apiSuccess {String}	 links.value						The weight of the connection between the packages.
+  */
 	dependencyGraph: function(req,res){
 		return RedisService.getJSONFromCache("trends_dependencygraph_top10",res,RedisService.DAILY,function(){
 			return DownloadStatistic.getMostPopular().then(
@@ -112,6 +147,19 @@ module.exports = {
 			return res.json(result)
 		});
 	},
+	/**
+  * @api {get} /trends/newpackages New packages grouped per page
+  * @apiDescription Shows the last new packages added to rdocumentation conveniently grouped per 10 for pagination.
+  * @apiName Last new packages
+  * @apiGroup Trends
+  *
+  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  *
+  * 
+  * @apiSuccess {Object[]} newArrivals           			List representing the last new packages in rdocumetation offset by 10 times the given page.
+  * @apiSuccess {String}	 newArrivals.package_name  	The name of the package.
+  * @apiSuccess {timestamp}newArrivals.rel 	 					The date of release for the package.
+  */
 	newPackages: function(req,res){
 		var page = req.param("page")||1;
 		PackageVersion.getNewestPackages(page).then(function(results){
@@ -120,6 +168,19 @@ module.exports = {
 			});
 		});
 	},
+	/**
+  * @api {get} /trends/newversion Latest updates
+  * @apiDescription Shows the last updated packages on rdocumentation conveniently grouped per 10 for pagination.
+  * @apiName Last updated packages
+  * @apiGroup Trends
+  *
+  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  *
+  * 
+  * @apiSuccess {Object[]} newVersions           			List representing the last updated packages in rdocumetation offset by 10 times the given page.
+  * @apiSuccess {String}	 newVersions.package_name  	The name of the package.
+  * @apiSuccess {timestamp}newVersions.rel 	 					The date of update for the package.
+  */
 	newVersions: function(req,res){
 		var page = req.param("page")||1;
 		PackageVersion.getLatestUpdates(page).then(function(results){
@@ -128,6 +189,19 @@ module.exports = {
 			});
 		});
 	},
+	/**
+  * @api {get} /trends/mostpopular Most popular
+  * @apiDescription Shows the most packages on rdocumentation by direct downloads conveniently grouped per 10 for pagination.
+  * @apiName Most popular packages
+  * @apiGroup Trends
+  *
+  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  *
+  * 
+  * @apiSuccess {Object[]} results		           			List representing the most popular packages in rdocumetation offset by 10 times the given page.
+  * @apiSuccess {String}	 results.package_name 		 	The name of the package.
+  * @apiSuccess {String}	 results.total  	 					Number of direct downloads in the last month for the given package.
+  */
 	lastMonthMostDownloaded: function(req,res){
 		var page = req.param("page")||1;
 		DownloadStatistic.getMostPopularPerPage(page).then(function(results){
@@ -136,6 +210,19 @@ module.exports = {
 			});
 		});
 	},
+	/**
+  * @api {get} /trends/topcollaborators Top Collaborators
+  * @apiDescription The most influential collaborators determined by the combined total number of downloads of the packages they maintain paged per 10.
+  * @apiName Top collaborators
+  * @apiGroup Trends
+  *
+  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  *
+  * 
+  * @apiSuccess {Object[]} results 		          			List representing the most influential collaborators in rdocumetation offset by 10 times the given page.
+  * @apiSuccess {String}	 results.name 					  	The name of the maintainer.
+  * @apiSuccess {timestamp}results.total 	 	 					The combined total number of downloads of the packages maintained by the given person.
+  */
 	topCollaborators: function(req,res){
 		var page = req.param("page")||1;
 		Collaborator.topCollaborators(page).then(function(result){

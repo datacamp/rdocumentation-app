@@ -194,16 +194,10 @@ module.exports = {
   * @apiSuccess {String}   section.name                  Title of the section
   * @apiSuccess {String}   section.description           Description of the section
   * @apiSuccess {Object}   package_version               Informations about the version of the package
-  * @apiSuccess {String}   package_version.url           Url to this version
-  * @apiSuccess {String}   package_version.package_url   Url to the package of this version
-  * @apiSuccess {String}   package_version.id            Id of this version
+  * @apiSuccess {String}   package_version.uri           Url to this version
+  * @apiSuccess {String}   package_version.api_uri       Url to the api of this version.
   * @apiSuccess {String}   package_version.package_name  Name of the package of this version
   * @apiSuccess {String}   package_version.version       String describing the version of the package
-  * @apiSuccess {String}   package_version.title         Title of the version
-  * @apiSuccess {String}   package_version.description   Description of the package version
-  * @apiSuccess {Date}     package_version.release_date  Release date of the package version
-  * @apiSuccess {String}   package_version.license       License of the package version
-  * @apiSuccess {String}   package_version.maintainer_id Id of the maintainer of the package version
   */
 
   findById: function(req, res) {
@@ -338,7 +332,15 @@ module.exports = {
       return res.negotiate(err);
     });
   },
-
+/**
+  * @api {get} /topics/:id/rating Topic rating
+  * @apiName The rating of a topic
+  * @apiGroup Topic
+  *
+  * @apiParam   {Integer}   id        The id of the topic.
+  *
+  * @apiSuccess {Integer}   rating    The rating of the topic.
+  */
   rating: function(req, res) {
     var topicId = req.param('id'),
         key = 'topic_rating_' + topicId;
@@ -361,7 +363,53 @@ module.exports = {
       return res.negotiate(err);
     });
   },
+/**
+  * @api {get} /packages/:name/topics/:topic Request Topic information
+  * @apiDescription The topic is searched within the different versions and is redirected when found.
+  * @apiName Get Topic
+  * @apiGroup Topic
+  *
+  * @apiParam {String} name Name of the package
+  * @apiParam {String} topic Name of the topic to get
 
+  *
+  * @apiUse Timestamps
+  * @apiSuccess {Number}   id                            id of this topic
+  * @apiSuccess {Number}   package_version_id            id of the PackageVersion
+  * @apiSuccess {Number}   uri                           Uri to `self`
+  * @apiSuccess {String}   name                          Name of this topic
+  * @apiSuccess {String}   title                         Title of this topic
+  * @apiSuccess {String}   description                   `Description` section of this topic
+  * @apiSuccess {String}   usage                         `Usage` section of this topic
+  * @apiSuccess {String}   details                       `Details` section of this topic
+  * @apiSuccess {String}   value                         `Value` section of this topic
+  * @apiSuccess {String}   references                    `References` section of this topic
+  * @apiSuccess {String}   author                        `Author` section about this topic
+  * @apiSuccess {String}   note                          `Note` section about this topic
+  * @apiSuccess {String}   seealso                       `See also` section about this topic
+  * @apiSuccess {String}   examples                      `Examples` section about this topic
+  * @apiSuccess {Object[]} arguments                     List of topic arguments
+  * @apiSuccess {String}   arguments.name                Name of the argument
+  * @apiSuccess {String}   arguments.description         Description of the argument
+  * @apiSuccess {Object[]} keywords                      List of topic keywords
+  * @apiSuccess {String}   keywords.name                 Name of the keyword
+  * @apiSuccess {Object[]} aliases                       List of topic aliases
+  * @apiSuccess {String}   aliases.name                  Name of the alias
+  * @apiSuccess {Object[]} section                       List of topic custom sections
+  * @apiSuccess {String}   section.name                  Title of the section
+  * @apiSuccess {String}   section.description           Description of the section
+  * @apiSuccess {Object}   package_version               Informations about the version of the package
+  * @apiSuccess {String}   package_version.url           Url to this version
+  * @apiSuccess {String}   package_version.package_url   Url to the package of this version
+  * @apiSuccess {String}   package_version.id            Id of this version
+  * @apiSuccess {String}   package_version.package_name  Name of the package of this version
+  * @apiSuccess {String}   package_version.version       String describing the version of the package
+  * @apiSuccess {String}   package_version.title         Title of the version
+  * @apiSuccess {String}   package_version.description   Description of the package version
+  * @apiSuccess {Date}     package_version.release_date  Release date of the package version
+  * @apiSuccess {String}   package_version.license       License of the package version
+  * @apiSuccess {String}   package_version.maintainer_id Id of the maintainer of the package version
+  */
   redirect: function(req,res) {
     var packageName = req.param('name'),
         functionName = req.param('function');

@@ -69,9 +69,10 @@ module.exports = {
   * @apiGroup View
   * @apiDescription Return all the cran task view along with their packages
   *
+  * @apiSuccess {Integer}   id               id of the task view
   * @apiSuccess {String}    name             View name
   * @apiSuccess {String}    url              View url
-  * @apiSuccess {String[]}  packages         List of Packages object
+  * @apiSuccess {Object[]}  packages         List of Packages object
   * @apiUse Timestamps
   */
 
@@ -100,19 +101,19 @@ module.exports = {
       return res.negotiate(err);
     });
   },
-
   /**
-  * @api {get} /taskviews Get One Task Views
+  * @api {get} /taskviews/:view Get One Task Views
   * @apiName Get View
   * @apiGroup View
-  * @apiDescription Return one view along with it's packages
+  * @apiDescription Return the given view along with it's packages
+  *
+  * @apiParam   {String}    view             The name of the view.
   *
   * @apiSuccess {String}    name             View name
   * @apiSuccess {String}    url              View url
   * @apiSuccess {String[]}  packages         List of Packages object
   * @apiUse Timestamps
   */
-
   find: function(req, res) {
     var view = req.param('view'),
         key = 'rdocs_view_show_' + view;
@@ -171,7 +172,18 @@ module.exports = {
     });
 
   },
-
+/**
+  * @api {get} /taskviews/:view/statistics Get Task Views downloads
+  * @apiName Get View downloads
+  * @apiGroup View
+  * @apiDescription Return the total number of downloads for the view
+  *
+  * @apiParam   {String}    view             The name of the view.
+  *
+  * @apiSuccess {Integer}   total            The total number of downloads.
+  * @apiSuccess {String}    totalStr         The total number of downloads as string.
+  * @apiUse Timestamps
+  */
   getDownloadStatistics: function(req, res) {
     var view = req.param('view'),
     key = 'rdocs_view_download_stats_' + view;
