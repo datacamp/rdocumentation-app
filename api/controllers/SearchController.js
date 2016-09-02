@@ -82,7 +82,7 @@ module.exports = {
               }
             }
           },
-          size: 4,
+          size: 5,
           fields: ['package_name', 'version']
         },
 
@@ -162,7 +162,7 @@ module.exports = {
             }
 
           },
-          size: 4,
+          size: 5,
           fields: ['name']
         },
 

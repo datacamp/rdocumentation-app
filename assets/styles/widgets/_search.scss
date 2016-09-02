@@ -13,7 +13,6 @@
 .search--results {
     display: none;
     position: absolute;
-    overflow:auto;
     top: 60px;
     left: 0;
     right: 0;
@@ -68,6 +67,23 @@
     .placeholder {
         text-align: center;
         margin: 0;
+    }
+
+    .more{
+        margin: 0 auto;
+        text-align: center;
+        b a{
+            font-weight: 600;
+        }
+    }
+    .more b:hover{
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 767px){
+    .search--results{
+        width: 270px;
     }
 }
 
