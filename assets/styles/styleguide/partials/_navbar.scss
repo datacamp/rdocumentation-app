@@ -93,15 +93,16 @@
 
   @media (max-width: 950px){
     .navbar--search{
-    float: right;
+    float: left;
     left : initial;
     transform: initial;
     position: relative;
-    margin-right: 10px;
+    margin-left: 60px;
+    width: 250px;
     }
   }
 
-@media (max-width: 500px){
+@media (max-width: 625px){
     .navbar--navigation.largescreen{
       display: none;
     }
@@ -117,6 +118,18 @@
       margin-right: 5px;
     }
   }
+@media (max-width: 500px){
+  .navbar--search{
+    margin-left: 20px;
+  }
+  .navbar--title .logo-title{
+    display: none;
+  }
+  .navbar--title .logo{
+    width: 20px;
+    padding-top: 2.2rem;
+  }
+}
 
 
   .navbar--navigation {
