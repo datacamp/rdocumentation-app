@@ -62,6 +62,7 @@
         type: 'GET',
         dataType: "html",
         Accept: "text/html",
+        cache: false,
         success: Loader.responseHandler(function(data, textStatus, xhr) {
           if(addToHistory){
             window.pushHistory(url);
