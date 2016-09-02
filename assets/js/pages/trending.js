@@ -151,7 +151,7 @@
     }).done(function(result){
       $("#top10downloads tbody").empty();
       result.results.forEach(function(result,i){
-        $("#top10downloads tbody").append("<tr><td>"+((page1-1)*10+i+1)+". "+"<a href = '/packages/"+result.package_name+"'>"+result.package_name+"</a><p class = 'info-trends'>"+result.total+"</p></td></tr>");
+        $("#top10downloads tbody").append("<tr><td>"+((page1-1)*10+i+1)+". "+"<a href = '/packages/"+result.package_name+"'>"+result.package_name+"</a><p class = 'info-trends'>"+result.totalStr+"</p></td></tr>");
       });
     });
     window.rebindTrending(page1,page2,page3,page4);
@@ -163,7 +163,7 @@
     }).done(function(result){
       $("#top10maintainers tbody").empty();
       result.results.forEach(function(result,i){
-        $("#top10maintainers tbody").append("<tr><td>"+((page2-1)*10+i+1)+". "+"<a href = '/collaborators/"+encodeURIComponent(result.name)+"'>"+result.name+"</a><p class = 'info-trends'>"+result.total+"</p></td></tr>");
+        $("#top10maintainers tbody").append("<tr><td>"+((page2-1)*10+i+1)+". "+"<a href = '/collaborators/"+encodeURIComponent(result.name)+"'>"+result.name+"</a><p class = 'info-trends'>"+result.totalStr+"</p></td></tr>");
       });
     });
     window.rebindTrending(page1,page2,page3,page4);

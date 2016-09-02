@@ -5,6 +5,8 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 
+ var numeral = require('numeral');
+
 module.exports = {
 
   attributes: {
@@ -101,7 +103,13 @@ module.exports = {
         return sequelize.query("SELECT package_name, SUM(direct_downloads) AS total FROM DownloadStatistics WHERE date >= current_date() - interval '1' month group by package_name order by total DESC limit 0,10",{type:sequelize.QueryTypes.SELECT});
       },
       getMostPopularPerPage: function(page){
-        return sequelize.query("SELECT package_name, SUM(direct_downloads) AS total FROM DownloadStatistics WHERE date >= current_date() - interval '1' month group by package_name order by total DESC limit ?,10",{replacements: [(page-1)*10], type:sequelize.QueryTypes.SELECT});
+        return sequelize.query("SELECT package_name, SUM(direct_downloads) AS total FROM DownloadStatistics WHERE date >= current_date() - interval '1' month group by package_name order by total DESC limit ?,10",{replacements: [(page-1)*10], type:sequelize.QueryTypes.SELECT}).then(function(result){
+          var mapped = _.map(result,function(o){
+            o.totalStr = numeral(o.total).format('0,0');
+            return o;
+          });
+          return mapped;
+        });
       },
       getNumberOfDirectDownloads: function(name){
         return sequelize.query("SELECT SUM(direct_downloads) AS total FROM Packages p INNER JOIN PackageVersions v ON p.latest_version_id = v.id INNER JOIN DownloadStatistics s ON s.package_name = p.name INNER JOIN Collaborators c ON v.maintainer_id = c.id WHERE c.name = ? and s.date >= current_date() - interval '1' month",{  replacements: [name], type: sequelize.QueryTypes.SELECT});
