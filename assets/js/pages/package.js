@@ -250,7 +250,9 @@
         if(!$("#chart svg").hasClass("nvd3-svg")){
           window.graphDownloadStatistics();
         }
-        window.dependencyGraphPackage();
+        if(typeof(Set) != "undefined"){
+          window.dependencyGraphPackage();
+        }
       }else{
         slider.removeClass("fa-angle-up");
         slider.addClass("fa-angle-down");
