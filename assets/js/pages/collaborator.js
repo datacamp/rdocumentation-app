@@ -24,7 +24,7 @@
         if(data.github_login) {
           $('#collaborator_github_link').attr('href', "https://github.com/"+ data.github_login);
         }
-
+        $(document).trigger('content-changed');
     	});
     }
 
