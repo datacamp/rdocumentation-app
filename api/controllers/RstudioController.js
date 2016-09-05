@@ -11,95 +11,26 @@ var _ = require('lodash');
 module.exports = {
 
   /**
-  * @api {post} /rstudio/normal/help
-  * @apiName Get help for topic using the normal help function in rstudio
+  * @api {post} /rstudio/help
+  * @api {post} /rstudio/helpSearch
+  * @apiName serves the first ajax request in Rstudio with the information specified in data-tags
   * @apiGroup Rstudio
   *
-  * @apiParam {String} packages the list of packages that the local help function of rstudio found a hit in
-  * @apiParam {String} topic_names the list of topicnames that the local help function found a hit for
-  * @apiParam {String} aliases the alias query
-  */
-  normalHelp : function(req,res){
-    //parse parameters
-    var packageName = req.param('packages');
-    if(typeof packageName != "undefined" && packageName.length>0){
-      packageNames= packageName.split(",");
-    }
-    else{
-      packageNames =null;
-    }
-    var aliases = req.param('aliases');
-    if(typeof aliases != "undefined" && aliases.length>0){
-      aliases= aliases.split(",");
-    }
-    else{
-      aliases =null;
-    }
-    var topicName = req.param('topic_names');
-    if(typeof topicName != "undefined" && topicName.length>0){
-      topicNames= topicName.split(",");
-    }
-    else{
-      topicNames =null;
-    }
-    var topic = req.param("topic");
-    //if topicNames and packageNames where found by the local help function, search for it in the specified packages (might be none)
-    if(packageNames != null && topicNames != null){
-      return RStudioService.helpFindByTopicsAndPackages(topicNames,packageNames).then(function(json){
-        if(json.length == 0){
-          //with no results : package was found locally -> display local help
-          return ElasticSearchService.helpSearchQuery(topic,['aliases'],true,2).then(function(json){
-            return res.ok(json,'rStudio/topic_not_found.ejs');
-          });
-        }
-        //1 result : redirect to result
-        if(json.length == 1){
-          return res.ok(json[0],'topic/show.ejs');
-        }
-        else{
-          //multiple results :show options
-          return res.ok(json,'rStudio/list_options.ejs');
-        }
+  * @apiParam {String} the number of matches found by the help functions (online or offline)
+  * @apiParam {String} topic the name of the topic, only used if there were no matches
+  * @apiParam {json} data an array with the information for the matches to display in json format
+
+  **/
+  viewResults : function(req,res){
+    matches = req.param("matches")
+    if(matches === 0){
+      return ElasticSearchService.helpSearchQuery(req.param("topic"),['aliases'],true,2).then(function(json){
+        return res.ok(json,'rStudio/topic_not_found.ejs');
       });
     }
-    //if no results where found by the local help function, if there was no problem with a package not found in the local library:
-    else if(packageNames==null){
-      return RStudioService.helpFindByAlias(topic).then(function(json){
-        if(json.length == 0){
-          //with no results : fuzzy search
-          return ElasticSearchService.helpSearchQuery(topic,['aliases'],true,2).then(function(json){
-            return res.ok(json,'rStudio/topic_not_found.ejs');
-          });
-        }
-        //1 result : redirect to result
-        if(json.length == 1){
-          return res.ok(json[0],'topic/show.ejs');
-        }
-        else{
-          //multiple results :show options
-          return res.ok(json,'rStudio/list_options.ejs');
-        }
-      });
-    }
-    //if there was a problem with a package not found in the local library:
-        //if no results where found by the local help function, if there was no problem with a package not found in the local library:
-    else {
-      return RStudioService.helpFindByAliasAndPackage(topic,packageNames).then(function(json){
-        if(json.length == 0){
-          //with no results : fuzzy search
-          return ElasticSearchService.helpSearchQuery(topic,['aliases'],true,2).then(function(json){
-            return res.ok(json,'rStudio/topic_not_found.ejs');
-          });
-        }
-        //1 result : redirect to result
-        if(json.length == 1){
-          return res.ok(json[0],'topic/show.ejs');
-        }
-        else{
-          //multiple results :show options
-          return res.ok(json,'rStudio/list_options.ejs');
-        }
-      });
+    else{
+      var data =req.param("data")
+      return (data.length === 1)? res.ok(data[0],"topic/show.ejs"): res.ok(data,"rStudio/list_options");
     }
   },
     /**
@@ -107,114 +38,105 @@ module.exports = {
   * @apiName view the layout for rstudio with data attributes for the ajax request
   * @apiGroup Rstudio
   *
-  * @apiParam {String} packageName the name of the package to redirect to
+  * @apiParam {String} called_function the function called in Rstudio, other parameters are dependent of the function type
   */
 
   view : function(req,res){
-    res.ok(req.body,'rStudio/view.ejs');
-  },
+    var called_function = req.param("called_function")
+    switch(called_function) {
+      /*
+      retrieve data for help function
+      */
+      case "help":
+        //parse parameters
+        var packageNames = _splitByCommaOrNull(req.param("packages"));
+        var topicNames = _splitByCommaOrNull(req.param("topic_names"));
+        var topic = req.param("topic");
+        var help_data = RStudioService.help(packageNames,topicNames,topic);
+        break;
+      
+      /*
+      retrieve data for help.search function
+      */
+      case "help_search":
+        //parse parameters
+        var packageNames = _splitByCommaOrNull(req.param('matching_packages'));
+        var topicNames = _splitByCommaOrNull(req.param('matching_titles'));
+        var pattern = req.param("query");
+        var fields = req.param("fields").split(",");
+        var fuzzy = (req.param("type") === "fuzzy")? fuzzy = true : fuzzy = false;
+        var max_dist = 2;
+        var ignore_case = (req.param("ignore_case") === "TRUE")? ignore_case = true : ignore_case = false;
+        var help_data = RStudioService.helpSearch(packageNames, topicNames, pattern, fields, fuzzy, max_dist, ignore_case);
+        break;
 
-  /**
-  * @api {get} /rstudio/package/:packageName
-  * @apiName Redirects to a package given the packageName
-  * @apiGroup Rstudio
-  *
-  * @apiParam {String} packageName the name of the package to redirect to
-  */
+      /*
+      retrieve data for package
+      */
+      case 'find_package':
+        var help_data = RStudioService.findLatestVersion(req.param("package_name"));
+        break;
 
-  findPackage : function(req,res){
-    var package = req.param("package_name");
-    return RStudioService.findLatestVersion(package).then(function(version){
-      if(version === null) return res.ok([],'rStudio/package_not_found.ejs');
-      else {
-        return res.rstudio_redirect(301,'/packages/'+package+'/versions/'+version.version);
-      }
-    })
-    .catch(function(err){
-      console.log(err.message);
-    });
-
-  },
-  /**
-  * @api {post} /rstudio/package/:packageName
-  * @apiName Redirects to a package given the packageName
-  * @apiGroup Rstudio
-  *
-  * @apiParam {String} matching_packages a list of matching packages for the query in Rstudio
-  * @apiParam {String} matching_titles a list of matching titles for the query in Rstudio
-  * @apiParam {String} query the query that was executed in Rstudio
-  * @apiParam {String} fields the fields the query was executed on in Rstudio
-  * @apiParam {String} fuzzy "fuzzy" if the query was a fuzzy query, else "regexp" for a regexp query
-  * @apiParam {String} ignore_case if the local query ignored cases or not, "TRUE" if true, else "FALSE"
-  */
-  searchHelp : function(req,res){
-    //parse parameters
-    var packageName = req.param('matching_packages');
-    if(typeof packageName != "undefined" && packageName.length>0){
-      packageNames= packageName.split(",");
+      /*
+      other pages do not need data
+      */
+      default:
+        var help_data = null;
     }
-    else{
-      packageNames =null;
-    }
-    var topicName = req.param('matching_titles');
-    if(typeof topicName != "undefined" && topicName.length>0){
-      topicNames= topicName.split(",");
-    }
-    else{
-      topicNames =null;
-    }
-    var pattern = req.param("query");
-    var fields = req.param("fields");
-    fields = fields.split(",");
-    var fuzzy = req.param("type");
-    if(fuzzy == "fuzzy"){
-      fuzzy = true;
-    }
-    else{
-      fuzzy = false;
-    }
-    var max_dist = 2    ;
-    var ignore_case = req.param("ignore_case");
-    if(ignore_case == "TRUE"){
-      ignore_case = true;
-    }
-    else{
-      ignore_case = false;
-    }
-    if(topicNames== null || packageNames == null){
-      //the local help found no search
-      ElasticSearchService.helpSearchQuery(pattern,fields,fuzzy,max_dist,ignore_case).then(function(json){
-        return res.ok(json,'rStudio/list_options.ejs');
-      })
-    }
-    else{
-      return RStudioService.helpFindByTopicsAndPackages(topicNames,packageNames).then(function(json){
-        if(json.length == 0){
-          //with no results : fuzzy search, this only happens when the user has packages installed that are not on Rdocumentation
-          return ElasticSearchService.helpSearchQuery(pattern,fields,fuzzy,max_dist,ignore_case).then(function(json){
-            return res.ok(json,'rStudio/topic_not_found.ejs');
-          });
-        }
-        //1 result : redirect to result
-        if(json.length == 1){
-          return res.ok(json[0],'topic/show.ejs');
+    /*
+    if there is data -> wait for it and put it in data tags of output, if there was no data, but the local help function did find data
+    then return a 404 so the help function will fallback to the local help function
+    */
+    if(help_data != null){
+      help_data.then(function(result){
+        if(result.matches === 0 && result.found){
+          return res.notFound();
         }
         else{
-          //multiple results :show options
-          return res.ok(json,'rStudio/list_options.ejs');
+          result["called_function"] = called_function
+          return res.ok(result,'rStudio/view.ejs')
         }
       })
       .catch(function(err){
-        console.log(err.message);
-      });
+        console.log(err.message)
+      })
     }
-
-
+    else{
+      res.ok(req.body,'rStudio/view.ejs');
+    }
   },
+
+  /**
+  * @api {post} /rstudio/find_package
+  * @apiName Redirects to a package given the package uri
+  * @apiGroup Rstudio
+  *
+  * @apiParam {String} uri the uri of the package to redirect to
+  **/
+
+  findPackage : function(req,res){
+    return res.rstudio_redirect(301, req.param("uri"));
+  },
+
+  /**
+  * @api {post} /rstudio/make_default
+  * @apiName makeDefault page for Rstudio
+  * @apiGroup Rstudio
+  **/
   makeDefault : function(req,res){
     res.ok([],'rStudio/make_default.ejs');
   },
+
+  /**
+  * @api {get} /help
+  * @apiName redirects all /help request to following part of the url
+  * @apiGroup Rstudio
+  **/
   redirect : function(req,res){
     res.rstudio_redirect(302, req._parsedOriginalUrl.path.substring(5,req._parsedOriginalUrl.path.length))
   }
 };
+
+_splitByCommaOrNull = function(param){
+  return (typeof param != "undefined" && param.length>0)? param.split(",") : null;
+}

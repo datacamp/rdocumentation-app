@@ -145,8 +145,8 @@ module.exports.routes = {
   'get /link/:alias': 'Topic.findByAlias',
 
   //rstudio
-  'post /rstudio/help': 'RStudioController.normalHelp',
-  'post /rstudio/help_search' : 'RStudioController.searchHelp',
+  'post /rstudio/help': 'RStudioController.viewResults',
+  'post /rstudio/help_search' : 'RStudioController.viewResults',
   'post /rstudio/view' : 'RStudioController.view',
   'post /rstudio/find_package':'RstudioController.findPackage',
   'post /rstudio/make_default':'RstudioController.makeDefault',

@@ -59,8 +59,7 @@ module.exports.policies = {
     '*': ['flash']
   },
   RStudioController: {
-    'normalHelp': ['flash'],
-    'searchHelp':['flash'],
+    'viewResults': ['flash'],
     'view':['flash'],
     'findPackage':['flash'],
     'makeDefault':['flash']
