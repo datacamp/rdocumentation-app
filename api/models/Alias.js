@@ -71,7 +71,7 @@ module.exports = {
               include:[{
                 model:Package,
                 as:'package_latest',
-                required:false,
+                required:true,
                 attributes:['latest_version_id'],
                 include:[{
                   model:DownloadStatistic,
