@@ -19,7 +19,7 @@
   </nav>
 
   <div class="home--cta">
-    <h1>Search all <%= data.nbPackages %> CRAN, BioConductor and Github packages.</h1>
+    <h1>Search all <%= data.numbers.nbPackages %> CRAN, BioConductor and Github packages.</h1>
     <div class="home--search">
       <form class="search" action="/search" method="get">
         <input name="q" type="text" placeholder="Search for packages, functions, etc" autofocus autocomplete="off">
@@ -38,12 +38,11 @@
           <h3>Top 5 packages</h3>
           <table>
             <tbody>
-              <tr><td>Rcpp</td></tr>
-              <tr><td>dplyr</td></tr>
-              <tr><td>tidyr</td></tr>
-              <tr><td>devtool</td></tr>
-              <tr><td>caret</td></tr>
-              <tr><td>httr</td></tr>
+              <% data.mostPopular.forEach(function(item,i){ %>
+                <% if(i<5){ %>
+                  <tr><td><%-item.package_name %></td></tr>
+                <% } %>
+              <% }) %>
             </tbody>
           </table>
         </div>
@@ -51,12 +50,11 @@
           <h3>Top 5 authors</h3>
           <table>
             <tbody>
-              <tr><td>Hadley</td></tr>
-              <tr><td>Dirk</td></tr>
-              <tr><td>Muller</td></tr>
-              <tr><td>Nick</td></tr>
-              <tr><td>Romain</td></tr>
-              <tr><td>Francois</td></tr>
+              <% data.topCollaborators.forEach(function(item,i){ %>
+                <% if(i<5){ %>
+                  <tr><td><%-item.name %></td></tr>
+                <% } %>
+              <% }) %>
             </tbody>
           </table>
         </div>
@@ -64,12 +62,11 @@
           <h3>Newest packages</h3>
           <table>
             <tbody>
-              <tr><td>XRJulia</td></tr>
-              <tr><td>pdp</td></tr>
-              <tr><td>ecdfHT</td></tr>
-              <tr><td>EffectStars2</td></tr>
-              <tr><td>statcomp</td></tr>
-              <tr><td>nearfar</td></tr>
+              <% data.newPackages.forEach(function(item,i){ %>
+                <% if(i<5){ %>
+                  <tr><td><%-item.package_name %></td></tr>
+                <% } %>
+              <% }) %>
             </tbody>
           </table>
         </div>
