@@ -132,7 +132,7 @@ module.exports = {
         if(topicInstance === null) {
           return Topic.findByAliasInPackage(packageName, topic, packageVersion).then(function(topicInstance) {
             if(!topicInstance) return null;
-            else return { redirect_uri: topicInstance.uri };
+            else return res.rstudio_redirect(301,topicInstance.uri);
           });
         }
         else return topicInstance;

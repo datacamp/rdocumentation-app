@@ -281,10 +281,16 @@
           $.post("/modalLogin",auth,function(json){
             var status = json.status;
             if(status === "success"){
-              RStudioRequests.logInForRstudio(auth).then(function(){
+              if(containerType === 'rstudio') {
+                RStudioRequests.logInForRstudio(auth).then(function(){
+                  $.modal.close();
+                  $(".example--form form").submit();
+                });
+              }
+              else{
                 $.modal.close();
                 $(".example--form form").submit();
-              });
+              }
             }else if(status === "invalid"){
               if($(".modal").find(".flash-error").length === 0){
               $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
@@ -299,12 +305,20 @@
           $.post("/modalLogin",auth,function(json){
             var status = json.status;
             if(status === "success"){
-              RStudioRequests.logInForRstudio(auth).then(function(){
-                $.modal.close();
-                $.post($('#openModalUpvote').data('action'), function(response) {
-                  Loader.replacePage('/packages/'+$(".packageData").data("package-name")+'/versions/'+ $(".packageData").data("latest-version"),false);
+              if(containerType === 'rstudio') {
+                RStudioRequests.logInForRstudio(auth).then(function(){
+                  $.modal.close();
+                  $.post($('#openModalUpvote').data('action'), function(response) {
+                    Loader.replacePage('/packages/'+$(".packageData").data("package-name")+'/versions/'+ $(".packageData").data("latest-version"),false);
+                  });
                 });
-              });
+              }
+              else{
+                $.modal.close();
+                  $.post($('#openModalUpvote').data('action'), function(response) {
+                    Loader.replacePage('/packages/'+$(".packageData").data("package-name")+'/versions/'+ $(".packageData").data("latest-version"),false);
+                });
+              }
             }else if(status === "invalid"){
               if($(".modal").find(".flash-error").length === 0){
               $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
