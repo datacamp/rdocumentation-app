@@ -206,6 +206,11 @@
         $(this).addClass("js-external");
       }
     });
+    if(containerType != 'rstudio'){
+      $('a.js-external').map(function(){
+        $(this).attr("target","_blank")
+      })
+    }
   };
 
   Binder = {
