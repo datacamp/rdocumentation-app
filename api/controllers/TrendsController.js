@@ -260,8 +260,8 @@ module.exports = {
 		var json = {page1 : page1, page2 : page2, page3 : page3, page4 : page4};
 		promises.push(PackageVersion.getNewestPackages(page3).then(function(data){json.newPackages = data}));
 		promises.push(PackageVersion.getLatestUpdates(page4).then(function(data){json.newVersions = data}));
-		promises.push(Collaborator.topCollaborators(page2,sort2).then(function(data){json.topCollaborators = data.results; console.log(data.sort); json.topCollaboratorsSort = data.sort;}));
-		promises.push(DownloadStatistic.getMostPopularPerPage(page1,sort1).then(function(data){json.mostPopular = data.results;console.log(data.sort); json.mostPopularSort = data.sort;}));
+		promises.push(Collaborator.topCollaborators(page2,sort2).then(function(data){json.topCollaborators = data.results; json.topCollaboratorsSort = data.sort;}));
+		promises.push(DownloadStatistic.getMostPopularPerPage(page1,sort1).then(function(data){json.mostPopular = data.results; json.mostPopularSort = data.sort;}));
 		Promise.all(promises).then(function(){return res.ok(json,"trends/show.ejs")});
 	}
 }

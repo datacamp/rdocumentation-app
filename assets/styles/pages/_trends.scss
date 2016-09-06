@@ -45,3 +45,9 @@
 .trends .container{
   width: 82%
 }
+
+@media (max-width: 991px){
+  .trends .col-md-6{
+    margin-bottom: 4.2rem;
+  }
+}

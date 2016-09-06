@@ -113,7 +113,6 @@ module.exports = {
             o.indirectStr = numeral(o.indirect).format('0,0');
             return o;
           });
-          console.log(sort);
           return {results: mapped,sort:sort};
         });
       },
