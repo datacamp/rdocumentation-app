@@ -19,6 +19,43 @@ module.exports = {
 
         }
       },
+      all_downloads_last_month: {
+        "query": {
+          "filtered": {
+            "query": {
+              "query_string": {
+                "query": "*",
+                "analyze_wildcard": true
+              }
+            },
+            "filter": {
+              "bool": {
+                "must": [
+                  {
+                    "range": {
+                      "datetime": {
+                        "gte": "now-1M",
+                        "lte": "now",
+                        "format": "epoch_millis"
+                      }
+                    }
+                  }
+                ],
+                "must_not": []
+              }
+            }
+          }
+        },
+        "size": 0,
+        "aggs": {
+          "package": {
+            "terms": {
+              "field": "package",
+              "size" : 1000000
+              }
+          }
+        }
+      },
       "last_month_per_day": {
           "date_histogram" : {
               "field" : "datetime",
@@ -348,6 +385,34 @@ module.exports = {
       body: ElasticSearchService.queries.aggregations.topKeywords
     }).then(function(keywords){
       return keywords.aggregations.top.buckets;
+    });
+  },
+  downloadsPerRange: function() {
+    return es.search({
+      index: "stats",
+      body: ElasticSearchService.queries.aggregations.all_downloads_last_month
+    }).then(function(keywords){
+      var nonNull = _.reverse(_.map(_.mapValues(_.groupBy(_.map(
+        keywords.aggregations.package.buckets,function(item){
+          return item.doc_count;}),function(item){
+            return (Math.floor((item-1)/10000)*10000+1)+"-"+(Math.ceil(item/10000)*10000);
+          }),function(value){
+            return value.length
+          }),function(value,key){
+            return {key: key, count: value};
+          }));
+      var i=0, forward = _.first(nonNull), previous;
+      while(i<nonNull.length-1){
+        i++;
+        previous = forward;
+        forward  = nonNull[i];
+        if(parseInt(forward.key.split("-")[0])-parseInt(previous.key.split("-")[0])!==10000){
+          var value = parseInt(previous.key.split("-")[0])+10000;
+          nonNull.splice(i,0,{key: value +"-" + (value + 9999),count: 0});
+          forward = nonNull[i];
+        }
+      }
+      return nonNull;
     });
   },
 

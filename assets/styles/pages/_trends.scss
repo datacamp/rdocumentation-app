@@ -15,7 +15,7 @@
   #topkeywords {
     height: 400px;
   }
-  #trendingdownloads {
+  #packagesperrange {
     height: 400px;
   }
   h1{
@@ -35,4 +35,13 @@
 .previous, .next{
   font-size:1.2em;
   font-weight :bold;
+}
+
+.data .fa{
+  padding-left: 2px;
+  display: inline;
+}
+
+.trends .container{
+  width: 82%
 }

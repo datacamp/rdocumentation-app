@@ -102,13 +102,19 @@ module.exports = {
       getMostPopular: function(){
         return sequelize.query("SELECT package_name, SUM(direct_downloads) AS total FROM DownloadStatistics WHERE date >= current_date() - interval '1' month group by package_name order by total DESC limit 0,10",{type:sequelize.QueryTypes.SELECT});
       },
-      getMostPopularPerPage: function(page){
-        return sequelize.query("SELECT package_name, SUM(direct_downloads) AS total FROM DownloadStatistics WHERE date >= current_date() - interval '1' month group by package_name order by total DESC limit ?,10",{replacements: [(page-1)*10], type:sequelize.QueryTypes.SELECT}).then(function(result){
+      getMostPopularPerPage: function(page,sort){
+        if(sort!=="total"&&sort!=="direct"&&sort!=="indirect"){
+          sort = "total";
+        }
+        return sequelize.query("SELECT package_name, SUM(direct_downloads) AS direct, SUM(indirect_downloads) AS indirect, SUM(direct_downloads+indirect_downloads) AS total FROM DownloadStatistics WHERE date >= current_date() - interval '1' month group by package_name order by "+sort+" DESC limit ?,10",{replacements: [(page-1)*10], type:sequelize.QueryTypes.SELECT}).then(function(result){
           var mapped = _.map(result,function(o){
             o.totalStr = numeral(o.total).format('0,0');
+            o.directStr = numeral(o.direct).format('0,0');
+            o.indirectStr = numeral(o.indirect).format('0,0');
             return o;
           });
-          return mapped;
+          console.log(sort);
+          return {results: mapped,sort:sort};
         });
       },
       getNumberOfDirectDownloads: function(name){

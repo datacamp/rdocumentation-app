@@ -89,6 +89,24 @@ module.exports = {
 		});
 	},
 	/**
+  * @api {get} /trends/perrange packages per range
+  * @apiName The number of packages in each download range (per 10000).
+  * @apiGroup Trends
+  *
+  * 
+  * @apiSuccess {String}   key  	                Description of range
+  * @apiSuccess {String}   count 			            Number of packages within the range
+  */
+	downloadsPerRange: function (req,res){
+		return RedisService.getJSONFromCache("trends_downloadsperrange",res,RedisService.DAILY,function(){
+			return ElasticSearchService.downloadsPerRange().then(function(result){
+				return result;
+			});
+		}).then(function(result){
+			return res.json(result);
+		});
+	},
+	/**
   * @api {get} /trends/graph Dependencies between top 10 packages as graph
   * @apiName Dependencies between top 10 packages as graph
   * @apiGroup Trends
@@ -196,6 +214,7 @@ module.exports = {
   * @apiGroup Trends
   *
   * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  * @apiParam {String} 		 sort 											The parameter showing on which parameter this list is sorted. Either direct, indirect or total for respectively direct downloads, indirect downloads and total downloads.
   *
   * 
   * @apiSuccess {Object[]} results		           			List representing the most popular packages in rdocumetation offset by 10 times the given page.
@@ -204,10 +223,9 @@ module.exports = {
   */
 	lastMonthMostDownloaded: function(req,res){
 		var page = req.param("page")||1;
-		DownloadStatistic.getMostPopularPerPage(page).then(function(results){
-			return res.json({
-				results: results
-			});
+		var sort = req.param("sort")||"direct";
+		DownloadStatistic.getMostPopularPerPage(page,sort).then(function(results){
+			return res.json(results);
 		});
 	},
 	/**
@@ -217,6 +235,7 @@ module.exports = {
   * @apiGroup Trends
   *
   * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  * @apiParam {String} 		 sort 											The parameter showing on which parameter this list is sorted. Either direct, indirect or total for respectively direct downloads, indirect downloads and total downloads.
   *
   * 
   * @apiSuccess {Object[]} results 		          			List representing the most influential collaborators in rdocumetation offset by 10 times the given page.
@@ -225,23 +244,24 @@ module.exports = {
   */
 	topCollaborators: function(req,res){
 		var page = req.param("page")||1;
-		Collaborator.topCollaborators(page).then(function(result){
-			return res.json({
-				results: result
-			});
+		var sort = req.param("sort")||"total";
+		Collaborator.topCollaborators(page,sort).then(function(results){
+			return res.json(results);
 		});
 	},
 	startPage: function(req,res){
 		var page1 = req.param('page1') || 1;
+		var sort1 = req.param('sort1') || "direct";
 		var page2 = req.param('page2') || 1;
+		var sort2 = req.param('sort2') || "total";
 		var page3 = req.param('page3') || 1;
 		var page4 = req.param('page4') || 1;
 		var promises = [];
 		var json = {page1 : page1, page2 : page2, page3 : page3, page4 : page4};
 		promises.push(PackageVersion.getNewestPackages(page3).then(function(data){json.newPackages = data}));
 		promises.push(PackageVersion.getLatestUpdates(page4).then(function(data){json.newVersions = data}));
-		promises.push(Collaborator.topCollaborators(page2).then(function(data){json.topCollaborators = data}));
-		promises.push(DownloadStatistic.getMostPopularPerPage(page1).then(function(data){json.mostPopular = data}));
+		promises.push(Collaborator.topCollaborators(page2,sort2).then(function(data){json.topCollaborators = data.results; console.log(data.sort); json.topCollaboratorsSort = data.sort;}));
+		promises.push(DownloadStatistic.getMostPopularPerPage(page1,sort1).then(function(data){json.mostPopular = data.results;console.log(data.sort); json.mostPopularSort = data.sort;}));
 		Promise.all(promises).then(function(){return res.ok(json,"trends/show.ejs")});
 	}
 }
