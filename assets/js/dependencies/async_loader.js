@@ -116,6 +116,16 @@
 
   };
 
+  Campus = {
+    start:function() {
+      var package = $('.campus-data').data("package")
+      var topic = $('.campus-data').data("topic")
+      Loader.replacePage('/goto/'+ package + '/' + topic,false).then(function(){
+        $('.rstudio-data').remove();
+      }); 
+    }
+  }
+
   RStudio = {
     stayLoggedIn: function(creds){
       return $.ajax({
@@ -411,7 +421,7 @@
         RStudio.configureLogin();
         RStudio.start();
       } else {
-        Binder.bindGlobalClickHandler();
+        Campus.start();
       }
 
     }
