@@ -129,7 +129,13 @@
     configureLogin: function() {
      $( document ).ajaxSend(function(event, jqxhr, settings ) {
         if(settings.type=="POST" && settings.url.indexOf('/login')>-1){
-          RStudioRequests.logInForRstudio(settings.data);
+          RStudioRequests.logInForRstudio(settings.data).then(function(response){
+            if(response.status && response.status === "invalid"){
+              if ($(".flash-error").length === 0){
+                $(".authentication").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+              }
+            }
+          });
         }
       });
 
