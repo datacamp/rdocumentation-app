@@ -355,7 +355,9 @@
 
         var dataToWrite = $(this).serialize();
 
-        window.pushHistory(action+"?"+dataToWrite);
+        if(type.toUpperCase() == 'GET'){
+          window.pushHistory(action+"?"+dataToWrite);    +          window.pushHistory(action + "?" + dataToWrite);
+        }
 
         dataToWrite = dataToWrite+
           '&viewer_pane=1'+

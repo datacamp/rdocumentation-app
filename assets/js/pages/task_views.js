@@ -16,9 +16,11 @@
     });
     if($(".view")[0]){
       if(window.location.hash) {
+        console.log("location "+window.location.hash.slice(1))
         getView(window.location.hash.slice(1));
       } else {
         var v = $('.list-group .list-group-item:first-child').text();
+        console.log("v "+v)
         getView(v);
       }
     }
@@ -71,7 +73,8 @@
 
 
   window.getView = function(view){
-    location.hash = view;
+    if(!(urlParam('viewer_pane')==='1')) location.hash = view;
+    console.log("here "+location)
     $.ajax({
     	url: "/taskviews/"+view,
       cache: false
