@@ -45,7 +45,7 @@
     </div>
     <div class="row top10">
       <div class="col-md-6" id="top10new" data-url="/api/trends/newpackages">
-        <h4>New packages</h4>
+        <h4>New packages <i class="fa fa-info-circle" aria-hidden="false" title="Based on time of indexation of the package by rdocumentation. Discrepancy possible with actual time of release."></i></h4>
         <table class = "data">
         <% data.newPackages.forEach(function(package,j){ %>
         <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a></td><td><p class='info-trends'><%- package.rel %></p></td></tr>
@@ -55,7 +55,7 @@
         <p class="next pull-right">Next</p>
       </div>
       <div class="col-md-6" id="top10renew" data-url="/api/trends/newversions">
-        <h4>Last updated packages</h4>
+        <h4>Last updated packages <i class="fa fa-info-circle" aria-hidden="false" title="Based on time of indexation of the last version by rdocumentation. Discrepancy possible with actual time of release."></i></h4>
         <table class = "data">
         <% data.newVersions.forEach(function(package,j){ %>
         <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a></td><td><p class='info-trends'><%- package.rel %></p></td></tr>
