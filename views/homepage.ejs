@@ -34,37 +34,37 @@
     <div class="home--tables">
 
       <div class='row'>
-        <div class='col-md-4 home--leadertable'>
+        <div class='col-sm-4 home--leadertable'>
           <h3>Top 5 packages</h3>
           <table>
             <tbody>
               <% data.mostPopular.forEach(function(item,i){ %>
                 <% if(i<5){ %>
-                  <tr><td><%-item.package_name %></td></tr>
+                  <tr><td><a href='/packages/<%-item.package_name %>'><%-item.package_name %></a></td></tr>
                 <% } %>
               <% }) %>
             </tbody>
           </table>
         </div>
-        <div class='col-md-4 home--leadertable'>
+        <div class='col-sm-4 home--leadertable'>
           <h3>Top 5 authors</h3>
           <table>
             <tbody>
               <% data.topCollaborators.forEach(function(item,i){ %>
                 <% if(i<5){ %>
-                  <tr><td><%-item.name %></td></tr>
+                  <tr><td><a href='/collaborators/name/<%-encodeURIComponent(item.name) %>'><%-item.name %></a></td></tr>
                 <% } %>
               <% }) %>
             </tbody>
           </table>
         </div>
-        <div class='col-md-4 home--leadertable'>
+        <div class='col-sm-4 home--leadertable'>
           <h3>Newest packages</h3>
           <table>
             <tbody>
               <% data.newPackages.forEach(function(item,i){ %>
                 <% if(i<5){ %>
-                  <tr><td><%-item.package_name %></td></tr>
+                  <tr><td><a href='/packages/<%-item.package_name %>'><%-item.package_name %></a></td></tr>
                 <% } %>
               <% }) %>
             </tbody>

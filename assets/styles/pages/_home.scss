@@ -46,6 +46,18 @@
   background-color:$primary-extra-light;
 }
 
+@media(min-width: 768px) and (max-width: 991px){
+  .home--tables{
+    width: 750px;
+  }
+}
+
+@media(max-width: 767px), (max-height: 750px){
+  .home--leaderboard{
+    display: none;
+  }
+}
+
 .home--leadertable {
   min-width: 200px;
   table {
