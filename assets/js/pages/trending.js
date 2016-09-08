@@ -1,18 +1,22 @@
 (function($) {
-  window.trendingPackagesLastWeek = function(){
+  window.packagesPerRange = function(){
   	var getData = function(data_url, callback) {
       return $.get(data_url, callback);
     };
 
     nv.addGraph(function() {
-    	var chart = nv.models.discreteBarChart()
+    	var chart = nv.models.multiBarChart()
           .x(function (d){
-            return d.key;
+            return d.range;
           })
           .y(function (d){
             return d.count;
           })
-          .staggerLabels(true)
+          .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
+          .rotateLabels(0)      //Angle to rotate x-axis labels.
+          .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
+          .groupSpacing(0.1)    //Distance between each group of bars.
+          .showLegend(false)
           .color(['#33aacc']);
 
         if($('#packagesperrange').data('url')){
@@ -20,7 +24,7 @@
             $('#packagesperrange').show();
             d3.select('#packagesperrange svg')
               .datum([{
-                key: "Top keywords",
+                key: "Packages",
                 values: data
               }])
               .call(chart);
@@ -120,7 +124,7 @@
   };
 
   bootTrending = function(){
-    trendingPackagesLastWeek();
+    packagesPerRange();
     trendingKeywords();
     if(typeof(Set) !== "undefined"){
       dependencyGraph();
