@@ -142,8 +142,6 @@
           RStudioRequests.logInForRstudio(settings.data);
         }
       });
-
-
     },
 
     start: function () {
@@ -290,56 +288,40 @@
           }
         });
       };
-      rebind('#openModalExample','modal:ajax:complete',function(){
-        bindModalSubmit(function(){
+      var bindModalWhenLoaded = function(modalId,callback){
+        rebind(modalId,'modal:ajax:complete',function(){
+          bindModalSubmit(function(){
           var auth = $(".authentication--form").serialize();
-          $.post("/modalLogin",auth,function(json){
-            var status = json.status;
-            if(status === "success"){
-              if(containerType === 'rstudio') {
-                RStudioRequests.logInForRstudio(auth).then(function(){
+            $.post("/modalLogin",auth,function(json){
+              var status = json.status;
+              if(status === "success"){
+                if(containerType === 'rstudio') {
+                  RStudioRequests.logInForRstudio(auth).then(function(){
+                    $.modal.close();
+                    callback();
+                  })
+                }
+                else{
                   $.modal.close();
-                  $(".example--form form").submit();
-                });
+                  callback();
+                }
+              }else if(status === "invalid"){
+                if($(".modal").find(".flash-error").length === 0){
+                $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+                }
               }
-              else{
-                $.modal.close();
-                $(".example--form form").submit();
-              }
-            }else if(status === "invalid"){
-              if($(".modal").find(".flash-error").length === 0){
-              $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
-              }
-            }
+            });
           });
         });
+      };
+
+      bindModalWhenLoaded('#openModalExample',function(){
+        $(".example--form form").submit();
       });
-      rebind("#openModalUpvote",'modal:ajax:complete',function(){
-        bindModalSubmit(function(){
-          var auth = $(".authentication--form").serialize();
-          $.post("/modalLogin",auth,function(json){
-            var status = json.status;
-            if(status === "success"){
-              if(containerType === 'rstudio') {
-                RStudioRequests.logInForRstudio(auth).then(function(){
-                  $.modal.close();
-                  $.post($('#openModalUpvote').data('action'), function(response) {
-                    Loader.replacePage('/packages/'+$(".packageData").data("package-name")+'/versions/'+ $(".packageData").data("latest-version"),false);
-                  });
-                });
-              }
-              else{
-                $.modal.close();
-                  $.post($('#openModalUpvote').data('action'), function(response) {
-                    Loader.replacePage('/packages/'+$(".packageData").data("package-name")+'/versions/'+ $(".packageData").data("latest-version"),false);
-                });
-              }
-            }else if(status === "invalid"){
-              if($(".modal").find(".flash-error").length === 0){
-              $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
-            }
-            }
-          });
+
+      bindModalWhenLoaded('#openModalUpvote',function(){
+        $.post($('#openModalUpvote').data('action'), function(response) {
+          Loader.replacePage('/packages/'+$(".packageData").data("package-name")+'/versions/'+ $(".packageData").data("latest-version"),false);
         });
       });
     },
