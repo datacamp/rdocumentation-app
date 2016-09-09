@@ -9,5 +9,7 @@
     <%- body %>
   </div>
 
-  <%- partial ('shared/_footer.ejs') %>
+  <% if (path !== '/modalLogin') { %>
+  	<%- partial ('shared/_footer.ejs') %>
+  <% } %>
 <% } %>
