@@ -88,7 +88,6 @@
       */
       window.launchFullSearch();
       window.scrollTo(0,0);
-      $('.search--results').hide();
       $(document).trigger('content-changed');
     },
 
@@ -120,6 +119,7 @@
     start:function() {
       var package = $('.campus-data').data("package")
       var topic = $('.campus-data').data("topic")
+      //load the first page
       Loader.replacePage('/goto/'+ package + '/' + topic,false).then(function(){
         $('.rstudio-data').remove();
       }); 
