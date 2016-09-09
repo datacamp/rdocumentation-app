@@ -89,7 +89,7 @@
     helper function to check the package version
     */
     checkPackageVersion: function(package,version){
-      version = String(version).replace("-",".")
+      version = String(version).replace("-",".");
       return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["check_package('"+package+"','"+version+"')"])
       .then(function(result){
           return parseInt(result.result);
