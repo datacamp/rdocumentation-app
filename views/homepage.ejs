@@ -19,7 +19,7 @@
   </nav>
 
   <div class="home--cta">
-    <h1>Search all <%= data.nbPackages %> CRAN, BioConductor and Github packages.</h1>
+    <h1>Search all <%= data.numbers.nbPackages %> CRAN, BioConductor and Github packages.</h1>
     <div class="home--search">
       <form class="search" action="/search" method="get">
         <input name="q" type="text" placeholder="Search for packages, functions, etc" autofocus autocomplete="off">
@@ -27,6 +27,50 @@
         <div class="search--results"></div>
       </form>
       <p class="home--taskviews">Or explore packages in one of the <a href="/taskviews">Task Views</a>.</p>
+    </div>
+  </div>
+
+  <div class="home--leaderboard">
+    <div class="home--tables">
+
+      <div class='row'>
+        <div class='col-sm-4 home--leadertable'>
+          <h3><a href="/trends">Top 5 packages</a></h3>
+          <table>
+            <tbody>
+              <% data.mostPopular.forEach(function(item,i){ %>
+                <% if(i<5){ %>
+                  <tr><td><a href='/packages/<%-item.package_name %>'><%-item.package_name %></a></td></tr>
+                <% } %>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <div class='col-sm-4 home--leadertable'>
+          <h3><a href="/trends">Top 5 authors</a></h3>
+          <table>
+            <tbody>
+              <% data.topCollaborators.forEach(function(item,i){ %>
+                <% if(i<5){ %>
+                  <tr><td><a href='/collaborators/name/<%-encodeURIComponent(item.name) %>'><%-item.name %></a></td></tr>
+                <% } %>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <div class='col-sm-4 home--leadertable'>
+          <h3><a href="/trends">Newest packages</a></h3>
+          <table>
+            <tbody>
+              <% data.newPackages.forEach(function(item,i){ %>
+                <% if(i<5){ %>
+                  <tr><td><a href='/packages/<%-item.package_name %>'><%-item.package_name %></a></td></tr>
+                <% } %>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
