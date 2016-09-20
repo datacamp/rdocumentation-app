@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
 
   var sid = '';
   var containerType = $('.rstudio-data')[0] ? 'rstudio' : 'web-iframe';
@@ -6,7 +6,7 @@
 
   Loader = {
 
-    configure: function(containerType) {
+    configure: function (containerType) {
       /*
       setting up the ajax requests, each request is crossDomain, and it needs to contain the X-Rstudio-session header for cookies and X-Rstudio-Ajax
       to give back the rstudio-layout
@@ -23,7 +23,7 @@
       /*
       Need to rebind everything when the DOM changes
       */
-      $(document).bind("content-changed",function(){
+      $(document).bind("content-changed",function () {
         Binder.bindGlobalClickHandler();
       });
 
@@ -31,8 +31,8 @@
     /*
     responseHandler to handle the redirects and to store the sessionId when replacing the page in rstudio
     */
-    responseHandler: function(successFn,addToHistory) {
-      return function(data, textStatus, xhr) {
+    responseHandler: function (successFn, addToHistory) {
+      return function (data, textStatus, xhr) {
         var location = xhr.getResponseHeader('X-RStudio-Redirect');
         var sessionid = xhr.getResponseHeader('X-RStudio-Session');
         sid = sessionid;
@@ -45,7 +45,7 @@
     },
 
      // Intercept all link clicks
-    asyncClickHandler: function(e) {
+    asyncClickHandler: function (e) {
       e.preventDefault();
       // Grab the url from the anchor tag
       var url = $(this).attr('href');
@@ -56,26 +56,26 @@
     Helper function to grab new HTML
     and replace the content
     */
-    replacePage: function(url, addToHistory) {
-      urlWParams = Loader.addParams(url);
+    replacePage: function (url, addToHistory) {
+      var urlWParams = Loader.addParams(url);
       return $.ajax({
         url : urlWParams,
         type: 'GET',
         dataType: "html",
         Accept: "text/html",
-        success: Loader.responseHandler(function(data, textStatus, xhr) {
-          if(addToHistory){
+        success: Loader.responseHandler(function (data, textStatus, xhr) {
+          if(addToHistory) {
             window.pushHistory(url);
           }
           Loader.rerenderBody(data, urlWParams);
         },addToHistory)
       })
-      .fail(function(error) {console.log(error.responseJSON); });
+      .fail(function (error) {console.log(error.responseJSON); });
     },
 
 
     //rerender the body of the ajax retrieved url
-    rerenderBody: function(html,url){
+    rerenderBody: function (html,url) {
       $('body').attr("url", url);
       $('#content').html(html);
       window.boot();
@@ -87,15 +87,14 @@
       launch search if needed
       */
       window.launchFullSearch();
-      window.scrollTo(0,0);
-      $('.search--results').hide();
+      window.scrollTo(0, 0);
       $(document).trigger('content-changed');
     },
 
     /*
     help function to add the parameters to the url
     */
-    addParams: function(url){
+    addParams: function (url) {
       var urlWParams = (url.indexOf('?')>-1)? url+"&" : url +"?";
       if(containerType === 'rstudio') {
         return urlWParams +'rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
@@ -104,7 +103,7 @@
       }
     },
 
-    runExample: function(packageName, code) {
+    runExample: function (packageName, code) {
       if(containerType === 'rstudio') {
         RStudioRequests.executePackageCode(packageName, code);
       } else {
@@ -112,23 +111,32 @@
         parent.postMessage(payload, '*');
       }
     }
+  };
 
-
+  Campus = {
+    start:function () {
+      var packageName = $('.campus-data').data("package");
+      var topic = $('.campus-data').data("topic");
+      //load the first page
+      Loader.replacePage('/goto/'+ packageName + '/' + topic,false).then(function () {
+        $('.rstudio-data').remove();
+      });
+    }
   };
 
   RStudio = {
-    stayLoggedIn: function(creds){
+    stayLoggedIn: function (creds) {
       return $.ajax({
           type: 'POST',
           url: '/rstudio_login',
           data: creds,
-          contentType:"application/x-www-form-urlencoded",
+          contentType:"application/x-www-form-urlencoded"
         });
     },
 
     configureLogin: function() {
      $( document ).ajaxSend(function(event, jqxhr, settings ) {
-        if(settings.type=="POST" && settings.url.indexOf('/login')>-1){
+        if(settings.type === "POST" && settings.url.indexOf('/login')>-1){
           RStudioRequests.logInForRstudio(settings.data).then(function(response){
             if(response.status && response.status === "invalid"){
               if ($(".flash-error").length === 0){
@@ -138,8 +146,6 @@
           });
         }
       });
-
-
     },
 
     start: function () {
@@ -147,10 +153,10 @@
       execute an ajax post request to login, this request must give back a 200 status code,
       otherwise it gets cancelled and the ajax doesn't keep the cookie
       */
-      if(urlParam('username')!==null){
+      if(urlParam('username')!==null) {
         var creds = "username="+decodeURIComponent(urlParam('username'))+
                     "&password=" + decodeURIComponent(urlParam("password"));
-        RStudio.stayLoggedIn(creds).then(Loader.responseHandler(function(){
+        RStudio.stayLoggedIn(creds).then(Loader.responseHandler(function () {
         //load the first page, because the first request comes from the view function of the rstudio-controller and contains data tags for the post request
          RStudio.loadFirstPage();
         },false));
@@ -165,7 +171,7 @@
     first page is specified by the view function of the Rstudiocontroller in data attributes,
     execute a post request to the specified page with the attributes on first page load.
     */
-    loadFirstPage: function(){
+    loadFirstPage: function () {
       var data = $('.rstudio-data').data();
       var url = Loader.addParams('/rstudio/'+data.called_function);
       return $.ajax({
@@ -174,11 +180,11 @@
         contentType:"application/json",
         data: JSON.stringify(data),
         Accept:"text/html",
-        success: Loader.responseHandler(function(data, textStatus, xhr) {
+        success: Loader.responseHandler(function (data, textStatus, xhr) {
           Loader.rerenderBody(data,url);
         },false)
       })
-      .fail(function(error) {console.log(error.responseJSON); }).then(function(){
+      .fail(function (error) {console.log(error.responseJSON); }).then(function () {
         /*
         remove the data tags
         */
@@ -195,32 +201,37 @@
   /*
   help function to rebind functions to event on certain elements
   */
-  var rebind = function(element,event,functionToBind){
+  var rebind = function (element,event,functionToBind) {
     $(element).unbind(event).bind(event,functionToBind);
   };
 
   /*
   Helper function to classify internal and external links
   */
-  var classifyLinks = function(){
+  var classifyLinks = function () {
     var base = $('base').attr('href');
-    $('a:not(.js-external)').map(function(){
+    $('a:not(.js-external)').map(function () {
       var link =$(this).attr("href");
       if(typeof(link) != "undefined" &&
           link.indexOf(base)<=-1 &&
-          (link.indexOf("www")===0  || link.indexOf("http://")===0 || link.indexOf("https://") === 0 || link.indexOf('/register') === 0)){
+          (link.indexOf("www") === 0  || link.indexOf("http://") === 0 || link.indexOf("https://") === 0 || link.indexOf('/register') === 0)) {
         $(this).addClass("js-external");
       }
     });
+    if(containerType !== 'rstudio') {
+      $('a.js-external').map(function () {
+        $(this).attr("target","_blank");
+      });
+    }
   };
 
   Binder = {
-    bindLinks: function() {
+    bindLinks: function () {
       /*
       bind all links to ajax requests, (except the ones for the modal, which are already ajax request bound by jquery)
       */
-      $('a:not(.js-external)').each(function(){
-        if(typeof($(this).attr('href')) != "undefined" &&
+      $('a:not(.js-external)').each(function () {
+        if($(this).attr('href') !== undefined &&
             $(this).attr('href').indexOf('/modalLogin')<0 &&
             $(this).attr('href').indexOf('#close-modal')<0
           ) {
@@ -229,7 +240,7 @@
       });
     },
 
-    bindRStudioButtons: function() {
+    bindRStudioButtons: function () {
       RStudioRequests.packageVersionControl();
       rebind('#js-examples', 'click', RStudioRequests.runExamples);
       rebind('#js-install', 'click', RStudioRequests.installpackage);
@@ -237,102 +248,106 @@
       rebind('#js-makedefault','click', RStudioRequests.setDefault);
     },
 
-    bindExampleButton: function() {
-      rebind('#js-examples', 'click', function(e) {
+    bindExampleButton: function () {
+      rebind('#js-examples', 'click', function (e) {
         e.preventDefault();
-        var package = $(".packageData").data("package-name");
+        var packageName = $(".packageData").data("package-name");
         var version = $(".packageData").data("latest-version");
-        var examples= $('.topic').find('.topic--title').filter(function(i,el){
-          return $(this).text()=="Examples";
+        var examples= $('.topic').find('.topic--title').filter(function (i,el) {
+          return $(this).text() === "Examples";
         }).parent().find('.R').text();
-        Loader.runExample(package, examples);
+        Loader.runExample(packageName, examples);
       });
     },
 
-    bindElements: function() {
+    bindElements: function () {
        /*
       bind elements on specific pages to special behaviour for the viewer pane
       */
 
-      rebind('.top-collab-list','change',function(){
+      rebind('.top-collab-list','change',function () {
         Binder.bindLinks();
       });
 
-      rebind('#packageVersionSelect','change', function(){
+      rebind('#packageVersionSelect','change', function () {
         var url = $(this).find('option:selected').data('uri');
         Loader.replacePage(url,false);
       });
     },
 
-    bindModals: function(){
+    bindModals: function () {
       /*
       rebind the modals to work with rstudio
       */
-      var bindModalSubmit = function(callback){
+      var bindModalSubmit = function (callback) {
         $("#modalLoginButton").click(callback);
-        $("#username").keypress(function(e){
-          if(e.which == 13){
+        $("#username").keypress(function (e) {
+          if(e.which === 13) {
             callback();
           }
         });
-        $("#password").keypress(function(e){
-          if(e.which == 13){
+        $("#password").keypress(function (e) {
+          if(e.which === 13) {
             callback();
           }
         });
       };
-      rebind('#openModalExample','modal:ajax:complete',function(){
-        bindModalSubmit(function(){
+      var bindModalWhenLoaded = function (modalId, callback) {
+        rebind(modalId,'modal:ajax:complete',function () {
+          bindModalSubmit(function () {
           var auth = $(".authentication--form").serialize();
-          $.post("/modalLogin",auth,function(json){
-            var status = json.status;
-            if(status === "success"){
-              RStudioRequests.logInForRstudio(auth).then(function(){
-                $.modal.close();
-                $(".example--form form").submit();
-              });
-            }else if(status === "invalid"){
-              if($(".modal").find(".flash-error").length === 0){
-              $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+            $.post("/modalLogin",auth,function (json) {
+              var status = json.status;
+              if(status === "success") {
+                if(containerType === 'rstudio') {
+                  RStudioRequests.logInForRstudio(auth).then(function () {
+                    $.modal.close();
+                    callback();
+                  });
+                }
+                else{
+                  $.modal.close();
+                  callback();
+                }
+              }else if(status === "invalid") {
+                if($(".modal").find(".flash-error").length === 0) {
+                $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+                }
               }
-            }
+            });
           });
         });
+      };
+
+      bindModalWhenLoaded('#openModalExample', function () {
+        $(".example--form form").submit();
       });
-      rebind("#openModalUpvote",'modal:ajax:complete',function(){
-        bindModalSubmit(function(){
-          var auth = $(".authentication--form").serialize();
-          $.post("/modalLogin",auth,function(json){
-            var status = json.status;
-            if(status === "success"){
-              RStudioRequests.logInForRstudio(auth).then(function(){
-                $.modal.close();
-                $.post($('#openModalUpvote').data('action'), function(response) {
-                  Loader.replacePage('/packages/'+$(".packageData").data("package-name")+'/versions/'+ $(".packageData").data("latest-version"),false);
-                });
-              });
-            }else if(status === "invalid"){
-              if($(".modal").find(".flash-error").length === 0){
-              $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
-            }
-            }
-          });
+
+      bindModalWhenLoaded('#openModalUpvote', function () {
+        $.post($('#openModalUpvote').data('action'), function () {
+          Loader.replacePage('/packages/'+$(".packageData").data("package-name")+'/versions/'+ $(".packageData").data("latest-version"),false);
         });
       });
     },
 
-    bindForms: function() {
+    bindForms: function () {
       /*
       bind all forms to ajax requests
       */
-      rebind('form', 'submit', function(event) {
+      rebind('form', 'submit', function (event) {
         event.preventDefault();
         var action = $(this).attr('action');
         var type = $(this).attr('method') || 'post';
 
         var dataToWrite = $(this).serialize();
+<<<<<<< HEAD
         if(type.toUpperCase() == 'GET'){
           window.pushHistory(action + "?" + dataToWrite);
+=======
+
+        if(type.toUpperCase() == 'GET') {
+          window.pushHistory(action + "?" + dataToWrite);
+>>>>>>> issue244
         }
 
         dataToWrite = dataToWrite+
@@ -345,11 +360,11 @@
           url: action,
           headers: {
             Accept : "text/html; charset=utf-8",
-            "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+            "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
           },
           data: dataToWrite,
-          contentType:"application/x-www-form-urlencoded",
-        }).then(Loader.responseHandler(function(html, textData, xhr) {
+          contentType:"application/x-www-form-urlencoded"
+        }).then(Loader.responseHandler(function (html, textData, xhr) {
             var url = action + '?' + dataToWrite;
             Loader.rerenderBody(html, url);
           },false)
@@ -360,13 +375,13 @@
     This is the main function that rebinds all elements with specific behaviour for the viewer pane
     This function is called each time the DOM changes
     */
-    bindGlobalClickHandler: function(){
+    bindGlobalClickHandler: function () {
 
       classifyLinks();
 
       Binder.bindLinks();
 
-      if(containerType === 'rstudio'){
+      if(containerType === 'rstudio') {
         /*
         check if the user has the latest version of the package if on package-page
         */
@@ -388,9 +403,9 @@
     /*
   function that gets called on each pageload
   */
-  bootAsyncLoader = function(){
+  bootAsyncLoader = function () {
     //extra login with ajax request is needed
-    if(urlParam('viewer_pane') === '1' && !booted){
+    if(urlParam('viewer_pane') === '1' && !booted) {
       console.log('*********************** AJAX MODE ***********************');
       booted = true;
       Loader.configure(containerType);
@@ -399,7 +414,7 @@
         RStudio.configureLogin();
         RStudio.start();
       } else {
-        Binder.bindGlobalClickHandler();
+        Campus.start();
       }
 
     }

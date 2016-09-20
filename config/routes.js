@@ -153,6 +153,9 @@ module.exports.routes = {
   'post /rstudio/make_default':'RstudioController.makeDefault',
   'get /help/*':'RstudioController.redirect',
 
+  //campus-app
+  'get /campus/help/:package/:topic': 'CampusController.help',
+
   //Badges
   'get /badges/version/:packageName':'BadgeController.getLatestVersion',
   'get /badges/:downloadsKind/:packageName' :'BadgeController.getDownloadStatsBadge',
