@@ -20,7 +20,7 @@ module.exports = {
           return {nbPackages: numeral(row.package_count).format('0,0'), nbPackageVersions: numeral(row.topic_count).format('0,0'), nbCollaborators: numeral(row.collaborator_count).format('0,0')};
         })[0];
       }));
-    // TODO: When merging this with branch issue242 the sort parameter must be added!!
+
     promises.push(PackageVersion.getNewestPackages(1).then(function(data){json.newPackages = data}));
     promises.push(Collaborator.topCollaborators(1).then(function(data){
       json.topCollaborators = data.results;

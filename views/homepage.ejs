@@ -38,11 +38,13 @@
           <h3><a href="/trends">Top 5 packages</a></h3>
           <table>
             <tbody>
-              <% data.mostPopular.forEach(function(item,i){ %>
-                <% if(i<5){ %>
-                  <tr><td><a href='/packages/<%-item.package_name %>'><%-item.package_name %></a></td></tr>
-                <% } %>
-              <% }) %>
+              <% if (Array.isArray(data.mostPopular)) { %>
+                <% data.mostPopular.forEach(function(item,i){ %>
+                  <% if(i<5){ %>
+                    <tr><td><a href='/packages/<%-item.package_name %>'><%-item.package_name %></a></td></tr>
+                  <% } %>
+                <% }) %>
+              <% } %>
             </tbody>
           </table>
         </div>
@@ -50,11 +52,13 @@
           <h3><a href="/trends">Top 5 authors</a></h3>
           <table>
             <tbody>
-              <% data.topCollaborators.forEach(function(item,i){ %>
-                <% if(i<5){ %>
-                  <tr><td><a href='/collaborators/name/<%-encodeURIComponent(item.name) %>'><%-item.name %></a></td></tr>
-                <% } %>
-              <% }) %>
+              <% if (Array.isArray(data.topCollaborators)) { %>
+                <% data.topCollaborators.forEach(function(item,i){ %>
+                  <% if(i<5){ %>
+                    <tr><td><a href='/collaborators/name/<%-encodeURIComponent(item.name) %>'><%-item.name %></a></td></tr>
+                  <% } %>
+                <% }) %>
+              <% } %>
             </tbody>
           </table>
         </div>
@@ -62,11 +66,13 @@
           <h3><a href="/trends">Newest packages</a></h3>
           <table>
             <tbody>
-              <% data.newPackages.forEach(function(item,i){ %>
-                <% if(i<5){ %>
-                  <tr><td><a href='/packages/<%-item.package_name %>'><%-item.package_name %></a></td></tr>
-                <% } %>
-              <% }) %>
+              <% if (Array.isArray(data.newPackages)) { %>
+                <% data.newPackages.forEach(function(item,i){ %>
+                  <% if(i<5){ %>
+                    <tr><td><a href='/packages/<%-item.package_name %>'><%-item.package_name %></a></td></tr>
+                  <% } %>
+                <% }) %>
+              <% } %>
             </tbody>
           </table>
         </div>
