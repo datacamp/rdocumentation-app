@@ -340,14 +340,9 @@
         var type = $(this).attr('method') || 'post';
 
         var dataToWrite = $(this).serialize();
-<<<<<<< HEAD
-        if(type.toUpperCase() == 'GET'){
-          window.pushHistory(action + "?" + dataToWrite);
-=======
 
         if(type.toUpperCase() == 'GET') {
           window.pushHistory(action + "?" + dataToWrite);
->>>>>>> issue244
         }
 
         dataToWrite = dataToWrite+
