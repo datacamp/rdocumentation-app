@@ -19,6 +19,7 @@
     bootUser();
     bindUpvoteButton();
     window.bindFade();
+    window.counter();
   };
 
 })($jq);

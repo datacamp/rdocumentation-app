@@ -79,10 +79,8 @@
     margin-top: $default-space;
   }
 
-  .dcl-exercise-area{
-    *:before{
-      content : none;
-    }
+  .dcl-exercise-area .clearfix:before{
+    content : none;
   }
 
   .topic--package--percentile {

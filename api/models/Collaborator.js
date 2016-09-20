@@ -107,15 +107,20 @@ module.exports = {
         return sequelize.query(query, {type: sequelize.QueryTypes.DELETE});
       },
 
-      topCollaborators: function(page){
-        var query = "SELECT coll.name, Sum(direct_downloads), Sum(indirect_downloads), Sum(direct_downloads) + Sum(indirect_downloads) as total From Packages pack INNER JOIN PackageVersions versions ON pack.latest_version_id=versions.id INNER JOIN Collaborators coll ON versions.maintainer_id = coll.id INNER JOIN DownloadStatistics downloads ON pack.name=downloads.package_name WHERE "+
-          "downloads.date >= current_date() - interval '1' month group by coll.name order by total desc limit ?,10";
+      topCollaborators: function(page,sort){
+        if(sort!=="total"&&sort!=="direct"&&sort!=="indirect"){
+          sort = "total";
+        }
+        var query = "SELECT coll.name, Sum(direct_downloads) as direct, Sum(indirect_downloads) as indirect, Sum(direct_downloads) + Sum(indirect_downloads) as total From Packages pack INNER JOIN PackageVersions versions ON pack.latest_version_id=versions.id INNER JOIN Collaborators coll ON versions.maintainer_id = coll.id INNER JOIN DownloadStatistics downloads ON pack.name=downloads.package_name WHERE "+
+          "downloads.date >= current_date() - interval '1' month group by coll.name order by "+sort+" desc limit ?,10";
         return sequelize.query(query, {replacements: [(page-1)*10], type: sequelize.QueryTypes.SELECT}).then(function(result){
           var mapped = _.map(result,function(o){
             o.totalStr = numeral(o.total).format('0,0');
+            o.directStr = numeral(o.direct).format('0,0');
+            o.indirectStr = numeral(o.indirect).format('0,0');
             return o;
           });
-          return mapped;
+          return {results: mapped, sort: sort};
         });
       },
 

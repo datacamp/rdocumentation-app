@@ -8,7 +8,7 @@ module.exports = {
   * @apiName Top 10 downloads per day for last 30 days grouped per package.
   * @apiGroup Trends
   *
-  * 
+  *
   * @apiSuccess {String}   key  	                Package name
   * @apiSuccess {Object[]} values               	List representing the number of downloads per day for the last 30 days.
   * @apiSuccess {String}	 values.count 					Number of downloads for the given package on the given day.
@@ -75,7 +75,7 @@ module.exports = {
   * @apiName Top keywords used sorted from high to low.
   * @apiGroup Trends
   *
-  * 
+  *
   * @apiSuccess {String}   key  	                Package name
   * @apiSuccess {String}   doc_count              Number of occurences for keyword.
   */
@@ -89,11 +89,27 @@ module.exports = {
 		});
 	},
 	/**
+  * @api {get} /trends/perrange packages per range
+  * @apiName The number of packages in each download range (per 10000).
+  * @apiGroup Trends
+  *
+  *
+  * @apiSuccess {String}   key  	                Description of range
+  * @apiSuccess {String}   count 			            Number of packages within the range
+  */
+	downloadsPerRange: function (req,res){
+		return RedisService.getJSONFromCache("trends_downloadsperrange",res,RedisService.DAILY,function(){
+			return DownloadStatistic.downloadsPerRange();
+	   }).then(function(result){
+			return res.json(result);
+		});
+	},
+	/**
   * @api {get} /trends/graph Dependencies between top 10 packages as graph
   * @apiName Dependencies between top 10 packages as graph
   * @apiGroup Trends
   *
-  * 
+  *
   * @apiSuccess {Object[]} nodes                	List representing the 10 most popular packages and their direct dependencies
   * @apiSuccess {String}	 nodes.name   					The name of the package.
   * @apiSuccess {String} 	 nodes.group 	 					The group in the graph to which it belongs (grouped per popular package, grouped with most popular when multiple are available).
@@ -131,7 +147,7 @@ module.exports = {
 									target : nodes.indexOf(result.package_name),
 									value  : 10
 								});
-							}); 
+							});
 							}));
 						});
 					return Promise.all(promises).then(function(){
@@ -140,7 +156,7 @@ module.exports = {
 							links: deps
 						};
 					});
-					
+
 				}
 			);
 		}).then(function(result){
@@ -153,9 +169,9 @@ module.exports = {
   * @apiName Last new packages
   * @apiGroup Trends
   *
-  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)
   *
-  * 
+  *
   * @apiSuccess {Object[]} newArrivals           			List representing the last new packages in rdocumetation offset by 10 times the given page.
   * @apiSuccess {String}	 newArrivals.package_name  	The name of the package.
   * @apiSuccess {timestamp}newArrivals.rel 	 					The date of release for the package.
@@ -174,9 +190,9 @@ module.exports = {
   * @apiName Last updated packages
   * @apiGroup Trends
   *
-  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)
   *
-  * 
+  *
   * @apiSuccess {Object[]} newVersions           			List representing the last updated packages in rdocumetation offset by 10 times the given page.
   * @apiSuccess {String}	 newVersions.package_name  	The name of the package.
   * @apiSuccess {timestamp}newVersions.rel 	 					The date of update for the package.
@@ -195,19 +211,19 @@ module.exports = {
   * @apiName Most popular packages
   * @apiGroup Trends
   *
-  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)
+  * @apiParam {String} 		 sort 											The parameter showing on which parameter this list is sorted. Either direct, indirect or total for respectively direct downloads, indirect downloads and total downloads.
   *
-  * 
+  *
   * @apiSuccess {Object[]} results		           			List representing the most popular packages in rdocumetation offset by 10 times the given page.
   * @apiSuccess {String}	 results.package_name 		 	The name of the package.
   * @apiSuccess {String}	 results.total  	 					Number of direct downloads in the last month for the given package.
   */
 	lastMonthMostDownloaded: function(req,res){
 		var page = req.param("page")||1;
-		DownloadStatistic.getMostPopularPerPage(page).then(function(results){
-			return res.json({
-				results: results
-			});
+		var sort = req.param("sort")||"direct";
+		DownloadStatistic.getMostPopularPerPage(page,sort).then(function(results){
+			return res.json(results);
 		});
 	},
 	/**
@@ -216,32 +232,44 @@ module.exports = {
   * @apiName Top collaborators
   * @apiGroup Trends
   *
-  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)
+  * @apiParam {String} 		 sort 											The parameter showing on which parameter this list is sorted. Either direct, indirect or total for respectively direct downloads, indirect downloads and total downloads.
   *
-  * 
+  *
   * @apiSuccess {Object[]} results 		          			List representing the most influential collaborators in rdocumetation offset by 10 times the given page.
   * @apiSuccess {String}	 results.name 					  	The name of the maintainer.
   * @apiSuccess {timestamp}results.total 	 	 					The combined total number of downloads of the packages maintained by the given person.
   */
 	topCollaborators: function(req,res){
 		var page = req.param("page")||1;
-		Collaborator.topCollaborators(page).then(function(result){
-			return res.json({
-				results: result
-			});
+		var sort = req.param("sort")||"total";
+		Collaborator.topCollaborators(page,sort).then(function(results){
+			return res.json(results);
 		});
 	},
+
 	startPage: function(req,res){
 		var page1 = req.param('page1') || 1;
+		var sort1 = req.param('sort1') || "direct";
 		var page2 = req.param('page2') || 1;
+		var sort2 = req.param('sort2') || "total";
 		var page3 = req.param('page3') || 1;
 		var page4 = req.param('page4') || 1;
 		var promises = [];
 		var json = {page1 : page1, page2 : page2, page3 : page3, page4 : page4};
-		promises.push(PackageVersion.getNewestPackages(page3).then(function(data){json.newPackages = data}));
-		promises.push(PackageVersion.getLatestUpdates(page4).then(function(data){json.newVersions = data}));
-		promises.push(Collaborator.topCollaborators(page2).then(function(data){json.topCollaborators = data}));
-		promises.push(DownloadStatistic.getMostPopularPerPage(page1).then(function(data){json.mostPopular = data}));
-		Promise.all(promises).then(function(){return res.ok(json,"trends/show.ejs")});
-	}
-}
+		promises.push(PackageVersion.getNewestPackages(page3).then(function(data){json.newPackages = data;}));
+		promises.push(PackageVersion.getLatestUpdates(page4).then(function(data){json.newVersions = data;}));
+		promises.push(Collaborator.topCollaborators(page2,sort2).then(function(data){json.topCollaborators = data.results; json.topCollaboratorsSort = data.sort;}));
+		promises.push(DownloadStatistic.getMostPopularPerPage(page1,sort1).then(function(data){json.mostPopular = data.results; json.mostPopularSort = data.sort;}));
+    promises.push(sequelize.query("SELECT (SELECT COUNT(*) FROM Packages) as package_count, (SELECT COUNT(*) FROM Topics) as topic_count, (SELECT COUNT(*) FROM (SELECT DISTINCT name from Collaborators) c) as collaborator_count;")
+      .then(function(counts) {
+        var row = counts[0][0];
+        json.package_count = row.package_count;
+        json.topic_count = row.topic_count;
+        json.collaborator_count = row.collaborator_count;
+      })
+    );
+		Promise.all(promises).then(function(){return res.ok(json,"trends/show.ejs");});
+  }
+
+};

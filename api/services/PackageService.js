@@ -59,9 +59,11 @@ module.exports = {
 
     var name = descriptionJSON.Package || descriptionJSON.Bundle || 'Undefined';
 
-    var timestamp = descriptionJSON.Date ? Date.parse(descriptionJSON.Date) : null;
+    var date = descriptionJSON['Date/Publication'] || descriptionJSON.Date;
 
-    var release_date = isNaN(timestamp) ? null : new Date(timestamp);
+    var timestamp = date ? Date.parse(date) : null;
+
+    var release_date = isNaN(timestamp) ? new Date() : new Date(timestamp);
 
     var authors = {contributors : []};
 

@@ -5,6 +5,7 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 var Promise = require('bluebird');
+var dateFormat = require('dateformat');
 var _ = require('lodash');
 
 module.exports = {
@@ -286,16 +287,24 @@ module.exports = {
         });
       },
 
-      getNewestPackages: function(page){
-        return sequelize.query("SELECT package_name, min(release_date) as rel FROM PackageVersions where release_date < now() group by package_name order by rel Desc Limit ?,10",{replacements: [(page-1)*10], type: sequelize.QueryTypes.SELECT });
+      getPackagesByDate: function(page, dateExpression) {
+        return sequelize.query("SELECT package_name, " + dateExpression + " as rel FROM PackageVersions where release_date < now() group by package_name order by rel Desc Limit :offset,10",
+          {replacements: { offset: (page-1)*10 }, type: sequelize.QueryTypes.SELECT })
+          .then(function(records) {
+            return records.map(function(record) {
+              record.rel = dateFormat(record.rel);
+              return record;
+            });
+          });
+      },
+
+      getNewestPackages: function(page) {
+        return PackageVersion.getPackagesByDate(page, "min(release_date)");
       },
 
       getLatestUpdates: function(page){
-        return sequelize.query("SELECT package_name, max(release_date) as rel FROM PackageVersions where release_date < now() group by package_name order by rel Desc Limit ?,10;",{replacements: [(page-1)*10], type: sequelize.QueryTypes.SELECT });
+        return PackageVersion.getPackagesByDate(page, "max(release_date)");
       }
-
-
-
     },
 
     underscored: true

@@ -233,6 +233,34 @@ task('parse-author', ['sails-load'], {async: true}, function () {
   });
 });
 
+task('recover-date', ['sails-load'], {async: true}, function () {
+  PackageVersion.findAll({
+    attributes: ['id', 'sourceJSON', 'package_name']
+  }).map(function(version) {
+    var descriptionJSON;
+    try {
+      descriptionJSON = JSON.parse(version.sourceJSON) || {};
+    } catch (e) {
+      descriptionJSON = {};
+    }
+
+    var date = descriptionJSON['Date/Publication'] || descriptionJSON.Date;
+
+    var timestamp = date ? Date.parse(date) : null;
+
+    var release_date = isNaN(timestamp) ? null : new Date(timestamp);
+    return version.update({
+      release_date: release_date
+    }).then(function(version) {
+      console.log("Updated " + version.package_name + " to " + version.release_date);
+      return true;
+    });
+  }, {concurrency: 4})
+  .then(function() {
+    complete();
+  });
+});
+
 task('percentile', ['sails-load'], {async: true}, function () {
   ElasticSearchService.updateLastMonthPercentiles().then(function(){
     complete();

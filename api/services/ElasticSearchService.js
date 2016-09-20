@@ -19,6 +19,43 @@ module.exports = {
 
         }
       },
+      all_downloads_last_month: {
+        "query": {
+          "filtered": {
+            "query": {
+              "query_string": {
+                "query": "*",
+                "analyze_wildcard": true
+              }
+            },
+            "filter": {
+              "bool": {
+                "must": [
+                  {
+                    "range": {
+                      "datetime": {
+                        "gte": "now-1M",
+                        "lte": "now",
+                        "format": "epoch_millis"
+                      }
+                    }
+                  }
+                ],
+                "must_not": []
+              }
+            }
+          }
+        },
+        "size": 0,
+        "aggs": {
+          "package": {
+            "terms": {
+              "field": "package",
+              "size" : 1000000
+              }
+          }
+        }
+      },
       "last_month_per_day": {
           "date_histogram" : {
               "field" : "datetime",
@@ -234,7 +271,7 @@ module.exports = {
   },
 
   lastMonthMostDownloaded: function() {
-    var body = ElasticSearchService.queries.aggregations.lastMonthMostDownloaded;    
+    var body = ElasticSearchService.queries.aggregations.lastMonthMostDownloaded;
     return es.search({
       index: 'stats',
       body: body
@@ -350,6 +387,7 @@ module.exports = {
       return keywords.aggregations.top.buckets;
     });
   },
+
 
   updateLastMonthPercentiles: function() {
     return ElasticSearchService.lastMonthPercentiles().then(function(result){
@@ -579,5 +617,5 @@ module.exports = {
       .catch(function(err){
         console.log(err.message);
       });
-  } 
+  }
 };

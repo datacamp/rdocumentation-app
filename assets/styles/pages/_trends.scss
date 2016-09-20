@@ -1,6 +1,14 @@
 .row.top10{
   margin-top: 2em;
 }
+
+.row.metrics {
+  margin-top: 3rem;
+  margin-bottom: 5rem;
+}
+
+
+
 .info-trends{
   float: right;
   margin-top :0em;
@@ -15,12 +23,17 @@
   #topkeywords {
     height: 400px;
   }
-  #trendingdownloads {
+  #packagesperrange {
     height: 400px;
   }
   h1{
     margin-top: .65em;
   }
+}
+
+#dependencygraph {
+  height: 900px;
+  overflow-y: scroll;
 }
 
 .graph {
@@ -35,4 +48,19 @@
 .previous, .next{
   font-size:1.2em;
   font-weight :bold;
+}
+
+.data .fa{
+  padding-left: 2px;
+  display: inline;
+}
+
+.trends .container{
+  width: 82%
+}
+
+@media (max-width: 991px){
+  .trends .col-md-6{
+    margin-bottom: 4.2rem;
+  }
 }

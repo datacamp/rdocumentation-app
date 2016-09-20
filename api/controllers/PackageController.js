@@ -124,7 +124,18 @@ module.exports = {
     var packageName = req.param('name');
     var user = req.user;
 
-    RedisService.delPrefix("view_package_version_"+packageName)
+    RedisService.delPrefix("view_package_version_"+packageName);
+    Package.findOne({
+      where: {name: packageName},
+      include: [
+        { model: TaskView, as: 'inViews', attributes:['name'] }
+      ]
+    }).then(function(package){
+      var views = package.inViews;
+      views.forEach(function(view){
+        RedisService.del('rdocs_view_show_' + view.name);
+      });
+    });
 
     Star.findOrCreate({
       where: {
