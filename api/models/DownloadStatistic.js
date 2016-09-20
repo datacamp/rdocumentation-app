@@ -153,7 +153,7 @@ module.exports = {
       },
 
       getNotIndexedDates:function() {
-        return sequelize.query( "SELECT MonthDate.Date AS absents "+
+        return sequelize.query("SELECT MonthDate.Date AS absents "+
                                "FROM ( "+
                                "SELECT DATE(NOW() - INTERVAL 1 DAY) AS Date UNION ALL "+
                                "SELECT DATE(NOW() - INTERVAL 2 DAY) UNION ALL "+
