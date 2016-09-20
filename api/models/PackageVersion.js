@@ -5,6 +5,7 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 var Promise = require('bluebird');
+var dateFormat = require('dateformat');
 var _ = require('lodash');
 
 module.exports = {
@@ -286,48 +287,23 @@ module.exports = {
         });
       },
 
-      getNewestPackages: function(page){
-        return sequelize.query("SELECT name as package_name, created_at as rel FROM Packages order by rel Desc Limit ?,10",{replacements: [(page-1)*10], type: sequelize.QueryTypes.SELECT })
-        .then(function(result){
-          Number.prototype.padLeft = function(base,chr){
-            var  len = (String(base || 10).length - String(this).length)+1;
-            return len > 0? new Array(len).join(chr || '0')+this : this;
-          }
-          var mapped = _.map(result,function(value){
-            var d = value.rel;
-            value.rel = 
-              [d.getHours().padLeft(),
-               d.getMinutes().padLeft(),
-               d.getSeconds().padLeft()].join(':') +' ' +
-              [(d.getMonth()+1).padLeft(),
-               d.getDate().padLeft(),
-               d.getFullYear()].join('/');
-            return value;
+      getPackagesByDate: function(page, dateExpression) {
+        return sequelize.query("SELECT package_name, " + dateExpression + " as rel FROM PackageVersions where release_date < now() group by package_name order by rel Desc Limit :offset,10",
+          {replacements: { offset: (page-1)*10 }, type: sequelize.QueryTypes.SELECT })
+          .then(function(records) {
+            return records.map(function(record) {
+              record.rel = dateFormat(record.rel);
+              return record;
+            });
           });
-          return mapped;
-        });
+      },
+
+      getNewestPackages: function(page) {
+        return PackageVersion.getPackagesByDate(page, "min(release_date)");
       },
 
       getLatestUpdates: function(page){
-        return sequelize.query("SELECT name as package_name, updated_at as rel FROM Packages order by rel Desc Limit ?,10;",{replacements: [(page-1)*10], type: sequelize.QueryTypes.SELECT })
-        .then(function(result){
-          Number.prototype.padLeft = function(base,chr){
-            var  len = (String(base || 10).length - String(this).length)+1;
-            return len > 0? new Array(len).join(chr || '0')+this : this;
-          }
-          var mapped = _.map(result,function(value){
-            var d = value.rel;
-            value.rel = 
-              [d.getHours().padLeft(),
-               d.getMinutes().padLeft(),
-               d.getSeconds().padLeft()].join(':') +' ' +
-              [(d.getMonth()+1).padLeft(),
-               d.getDate().padLeft(),
-               d.getFullYear()].join('/');
-            return value;
-          });
-          return mapped;
-        });
+        return PackageVersion.getPackagesByDate(page, "max(release_date)");
       }
     },
 

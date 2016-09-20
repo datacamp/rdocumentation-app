@@ -65,20 +65,52 @@ module.exports = {
         return DownloadStatistic.max('date');
       },
       AllStatsNDaysAgo:function(last_day,nb_days,package_name) {
+        var where = {
+          date:{
+            $gte:new Date(new Date(last_day)-nb_days*24*60*60*1000)
+          }
+        };
+        if (package_name) where.package_name = package_name;
         return DownloadStatistic.findAll({
-          attributes:[[sequelize.fn('SUM', sequelize.col('direct_downloads')),"sum_direct"],[sequelize.fn('SUM', sequelize.col('indirect_downloads')),"sum_indirect"]],
-          where:{
-            package_name:package_name,
-            date:{
-              $gte:new Date(new Date(last_day)-nb_days*24*60*60*1000)
-            }
-          },
+          attributes:[[sequelize.fn('SUM', sequelize.col('direct_downloads')),"sum_direct"],[sequelize.fn('SUM', sequelize.col('indirect_downloads')),"sum_indirect"], "package_name"],
+          where: where,
           group:["package_name"]
         }).then(function(stats){
-          if(stats.length==0) return null;
-          return stats[0].dataValues
-        })
+          if(stats.length === 0) return null;
+          else if(stats.length === 1) return stats[0].dataValues;
+          else {
+            return stats.map(function(x) {return x.toJSON();});
+          }
+        });
       },
+
+      downloadsPerRange: function() {
+        return DownloadStatistic.AllStatsNDaysAgo(new Date(), 30).then(function(records){
+          return _.orderBy(
+            _.map(
+              _.mapValues(
+                _.groupBy(
+                  _.map(records,function(item){
+                    return item.sum_direct + item.sum_indirect;
+                  }),
+                function(item){
+                  if (item === 1 || item === 0) return item.toString();
+                  return (Math.pow(10, Math.floor(Math.log10(item - 1))) + 1) +
+                    "-" +
+                    (Math.pow(10, Math.ceil(Math.log10(item))) );
+                }),
+              function(value){
+                return value.length;
+              }),
+            function(value,key){
+              return {key: "Packages in range", range: key, count: value};
+            }),
+          function(obj) {
+            return parseInt(obj.range.split("-")[0]);
+          });
+        });
+      },
+
       lastMonthSplittedDownloadsPerDay:function(package_name){
         return DownloadStatistic.findAll({
           where:{

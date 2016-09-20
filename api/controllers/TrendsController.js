@@ -8,7 +8,7 @@ module.exports = {
   * @apiName Top 10 downloads per day for last 30 days grouped per package.
   * @apiGroup Trends
   *
-  * 
+  *
   * @apiSuccess {String}   key  	                Package name
   * @apiSuccess {Object[]} values               	List representing the number of downloads per day for the last 30 days.
   * @apiSuccess {String}	 values.count 					Number of downloads for the given package on the given day.
@@ -75,7 +75,7 @@ module.exports = {
   * @apiName Top keywords used sorted from high to low.
   * @apiGroup Trends
   *
-  * 
+  *
   * @apiSuccess {String}   key  	                Package name
   * @apiSuccess {String}   doc_count              Number of occurences for keyword.
   */
@@ -93,16 +93,14 @@ module.exports = {
   * @apiName The number of packages in each download range (per 10000).
   * @apiGroup Trends
   *
-  * 
+  *
   * @apiSuccess {String}   key  	                Description of range
   * @apiSuccess {String}   count 			            Number of packages within the range
   */
 	downloadsPerRange: function (req,res){
 		return RedisService.getJSONFromCache("trends_downloadsperrange",res,RedisService.DAILY,function(){
-			return ElasticSearchService.downloadsPerRange().then(function(result){
-				return result;
-			});
-		}).then(function(result){
+			return DownloadStatistic.downloadsPerRange();
+	   }).then(function(result){
 			return res.json(result);
 		});
 	},
@@ -111,7 +109,7 @@ module.exports = {
   * @apiName Dependencies between top 10 packages as graph
   * @apiGroup Trends
   *
-  * 
+  *
   * @apiSuccess {Object[]} nodes                	List representing the 10 most popular packages and their direct dependencies
   * @apiSuccess {String}	 nodes.name   					The name of the package.
   * @apiSuccess {String} 	 nodes.group 	 					The group in the graph to which it belongs (grouped per popular package, grouped with most popular when multiple are available).
@@ -149,7 +147,7 @@ module.exports = {
 									target : nodes.indexOf(result.package_name),
 									value  : 10
 								});
-							}); 
+							});
 							}));
 						});
 					return Promise.all(promises).then(function(){
@@ -158,7 +156,7 @@ module.exports = {
 							links: deps
 						};
 					});
-					
+
 				}
 			);
 		}).then(function(result){
@@ -171,9 +169,9 @@ module.exports = {
   * @apiName Last new packages
   * @apiGroup Trends
   *
-  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)
   *
-  * 
+  *
   * @apiSuccess {Object[]} newArrivals           			List representing the last new packages in rdocumetation offset by 10 times the given page.
   * @apiSuccess {String}	 newArrivals.package_name  	The name of the package.
   * @apiSuccess {timestamp}newArrivals.rel 	 					The date of release for the package.
@@ -192,9 +190,9 @@ module.exports = {
   * @apiName Last updated packages
   * @apiGroup Trends
   *
-  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)
   *
-  * 
+  *
   * @apiSuccess {Object[]} newVersions           			List representing the last updated packages in rdocumetation offset by 10 times the given page.
   * @apiSuccess {String}	 newVersions.package_name  	The name of the package.
   * @apiSuccess {timestamp}newVersions.rel 	 					The date of update for the package.
@@ -213,10 +211,10 @@ module.exports = {
   * @apiName Most popular packages
   * @apiGroup Trends
   *
-  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)
   * @apiParam {String} 		 sort 											The parameter showing on which parameter this list is sorted. Either direct, indirect or total for respectively direct downloads, indirect downloads and total downloads.
   *
-  * 
+  *
   * @apiSuccess {Object[]} results		           			List representing the most popular packages in rdocumetation offset by 10 times the given page.
   * @apiSuccess {String}	 results.package_name 		 	The name of the package.
   * @apiSuccess {String}	 results.total  	 					Number of direct downloads in the last month for the given package.
@@ -234,10 +232,10 @@ module.exports = {
   * @apiName Top collaborators
   * @apiGroup Trends
   *
-  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)	
+  * @apiParam {String}		 page   										The page shown (10 records per page, easy for pagination)
   * @apiParam {String} 		 sort 											The parameter showing on which parameter this list is sorted. Either direct, indirect or total for respectively direct downloads, indirect downloads and total downloads.
   *
-  * 
+  *
   * @apiSuccess {Object[]} results 		          			List representing the most influential collaborators in rdocumetation offset by 10 times the given page.
   * @apiSuccess {String}	 results.name 					  	The name of the maintainer.
   * @apiSuccess {timestamp}results.total 	 	 					The combined total number of downloads of the packages maintained by the given person.
