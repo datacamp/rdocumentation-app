@@ -162,7 +162,7 @@
         // DOWN array (only works with keydown and not keypress)
         if(e.keyCode==13 && $("li a.hover").length>0){
           e.preventDefault();
-          document.location =  $("li a.hover").attr('href');
+          $("li a.hover")[0].click();
         }else if(e.keyCode == 40){
           if($("li a.hover").length>0){
             var next =($("li a.hover").parent().next("li"));
