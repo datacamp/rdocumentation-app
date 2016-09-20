@@ -6,7 +6,7 @@
 
 .home--cta {
     position: absolute;
-    top: 40%;
+    top: 30%;
     left: 0;
     right: 0;
     transform: translateY(-50%);
@@ -28,6 +28,44 @@
     display: block;
     margin-bottom: 0;
     margin-top: 0.5rem;
+}
+
+.home--leaderboard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  a {
+    color: white;
+    border-bottom-color: white;
+  }
+}
+
+.home--tables {
+  border-radius: 5px;
+  padding: 30px;
+  position: relative;
+  min-width: 900px;
+  left: -50%;
+}
+
+.home--leadertable {
+  min-width: 200px;
+  table {
+    color: white;
+    a {
+      color: white;
+      border-bottom: none;
+    }
+    tr:nth-of-type(2n) {
+      background-color: inherit;
+    }
+    tr {
+
+      td {
+        color: $primary-extra-light;
+      }
+    }
+  }
 }
 
 .home--title {
