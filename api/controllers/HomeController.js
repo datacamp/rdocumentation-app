@@ -22,8 +22,12 @@ module.exports = {
       }));
     // TODO: When merging this with branch issue242 the sort parameter must be added!!
     promises.push(PackageVersion.getNewestPackages(1).then(function(data){json.newPackages = data}));
-    promises.push(Collaborator.topCollaborators(1).then(function(data){json.topCollaborators = data}));
-    promises.push(DownloadStatistic.getMostPopularPerPage(1).then(function(data){json.mostPopular = data}));
+    promises.push(Collaborator.topCollaborators(1).then(function(data){
+      json.topCollaborators = data.results;
+    }));
+    promises.push(DownloadStatistic.getMostPopularPerPage(1).then(function(data){
+      json.mostPopular = data.results;
+    }));
     Promise.all(promises).then(function(){
       return res.ok(json, 'homepage.ejs');
     }).catch(function(err) {
