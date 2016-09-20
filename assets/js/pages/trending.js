@@ -84,12 +84,12 @@
   	nv.addGraph({
           generate: function() {
               var width = nv.utils.windowSize().width,
-                  height = nv.utils.windowSize().height;
+                  height = 900;
               var d3Colors = d3.scale.category20();
               var chart = nv.models.forceDirectedGraph()
                   .width(width)
                   .height(height)
-                  .margin({top: 60, right: 150, bottom: 60, left: 60})
+                  .margin({top: 60, right: 60, bottom: 60, left: 60})
                   .color(function(d) { return d3Colors(d.group) })
                   .nodeExtras(function(node) {
                     node
@@ -102,7 +102,8 @@
                 getData($('#dependencygraph').data('url'), function(data) {
                   $('#dependencygraph').show();
                   d3.select('#dependencygraph svg')
-                        .datum(data)
+                        .datum(data).attr('width', width)
+                      .attr('height', height)
                         .call(chart);
                 });
               }
@@ -111,12 +112,10 @@
           callback: function(graph) {
               window.onresize = function() {
                   var width = nv.utils.windowSize().width,
-                      height = nv.utils.windowSize().height,
+                      height = 900,
                       margin = graph.margin();
                   graph.width(width).height(height);
                   d3.select('#dependencygraph svg')
-                      .attr('width', width)
-                      .attr('height', height)
                       .call(graph);
               };
           }

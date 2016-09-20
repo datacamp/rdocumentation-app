@@ -247,6 +247,7 @@ module.exports = {
 			return res.json(results);
 		});
 	},
+
 	startPage: function(req,res){
 		var page1 = req.param('page1') || 1;
 		var sort1 = req.param('sort1') || "direct";
@@ -256,10 +257,19 @@ module.exports = {
 		var page4 = req.param('page4') || 1;
 		var promises = [];
 		var json = {page1 : page1, page2 : page2, page3 : page3, page4 : page4};
-		promises.push(PackageVersion.getNewestPackages(page3).then(function(data){json.newPackages = data}));
-		promises.push(PackageVersion.getLatestUpdates(page4).then(function(data){json.newVersions = data}));
+		promises.push(PackageVersion.getNewestPackages(page3).then(function(data){json.newPackages = data;}));
+		promises.push(PackageVersion.getLatestUpdates(page4).then(function(data){json.newVersions = data;}));
 		promises.push(Collaborator.topCollaborators(page2,sort2).then(function(data){json.topCollaborators = data.results; json.topCollaboratorsSort = data.sort;}));
 		promises.push(DownloadStatistic.getMostPopularPerPage(page1,sort1).then(function(data){json.mostPopular = data.results; json.mostPopularSort = data.sort;}));
-		Promise.all(promises).then(function(){return res.ok(json,"trends/show.ejs")});
-	}
-}
+    promises.push(sequelize.query("SELECT (SELECT COUNT(*) FROM Packages) as package_count, (SELECT COUNT(*) FROM Topics) as topic_count, (SELECT COUNT(*) FROM (SELECT DISTINCT name from Collaborators) c) as collaborator_count;")
+      .then(function(counts) {
+        var row = counts[0][0];
+        json.package_count = row.package_count;
+        json.topic_count = row.topic_count;
+        json.collaborator_count = row.collaborator_count;
+      })
+    );
+		Promise.all(promises).then(function(){return res.ok(json,"trends/show.ejs");});
+  }
+
+};

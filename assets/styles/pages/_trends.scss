@@ -1,6 +1,14 @@
 .row.top10{
   margin-top: 2em;
 }
+
+.row.metrics {
+  margin-top: 3rem;
+  margin-bottom: 5rem;
+}
+
+
+
 .info-trends{
   float: right;
   margin-top :0em;
@@ -21,6 +29,11 @@
   h1{
     margin-top: .65em;
   }
+}
+
+#dependencygraph {
+  height: 900px;
+  overflow-y: scroll;
 }
 
 .graph {

@@ -1,6 +1,20 @@
 <section class="trends">
   <div class="container">
   <h1> Leaderboard </h1>
+    <div class="row metrics">
+      <div class="col-md-6">
+        <div class="big-number">
+          <div class="number counter" data-count="<%= data.package_count %>"></div>
+          <div class="big-number-label">indexed packages</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="big-number">
+          <div class="number topic counter" data-count="<%= data.topic_count %>"></div>
+          <div class="big-number-label">indexed functions</div>
+        </div>
+      </div>
+    </div>
     <div class="row top10">
       <div class="col-md-6" id="top10downloads" data-url="/api/trends/mostpopular">
         <h4>Most downloaded packages</h4>
@@ -77,21 +91,6 @@
     </div>
 
     <div class="row">
-      <div class="col-md-6">
-        <div class="big-number">
-          <div class="number">15</div>
-          <div class="big-number-label">label</div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="big-number">
-          <div class="number">10055</div>
-          <div class="big-number-label">label</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
 
       <div id="packagesperrange" class= "graph col-md-6" style="display: none" data-url="/api/trends/perrange">
         <section>
@@ -108,11 +107,10 @@
       </div>
     </div>
 
-
-    <div id="dependencygraph" class = "graph col-md-12" style="display: none" data-url="/api/trends/graph">
     <section>
       <h4>Top packages dependency graph</h4>
     </section>
+    <div id="dependencygraph" class = "graph col-md-12" style="display: none" data-url="/api/trends/graph">
       <svg></svg>
     </div>
 
