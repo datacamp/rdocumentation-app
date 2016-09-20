@@ -160,7 +160,7 @@
     }).done(function(result){
       $("#top10maintainers tbody").empty();
       result.results.forEach(function(result,i){
-        $("#top10maintainers tbody").append("<tr><td>"+((page2-1)*10+i+1)+". "+"<a href = '/collaborators/"+encodeURIComponent(result.name)+"'>"+result.name+"</a></td><td>"+result.directStr+"</td><td>"+result.indirectStr+"</td><td>"+result.totalStr+ "</td></tr>");
+        $("#top10maintainers tbody").append("<tr><td>"+((page2-1)*10+i+1)+". "+"<a href = '/collaborators/name/"+encodeURIComponent(result.name)+"'>"+result.name+"</a></td><td>"+result.directStr+"</td><td>"+result.indirectStr+"</td><td>"+result.totalStr+ "</td></tr>");
       });
       $(document).trigger('content-changed');
     });
@@ -199,7 +199,7 @@
      window.location.host +
      window.location.pathname +
      '?page1=' + page1 +
-     "&sort1=" + sort1 + 
+     "&sort1=" + sort1 +
      '&page2=' + page2 +
      "&sort2=" + sort2 +
      '&page3=' + page3 +
