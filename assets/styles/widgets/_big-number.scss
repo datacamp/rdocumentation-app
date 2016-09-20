@@ -1,0 +1,16 @@
+.big-number {
+  height: 15rem;
+  .number {
+    line-height: 13rem;
+    height: 100%;
+    text-align: center;
+    display: block;
+    font-size: 13rem;
+  }
+  .big-number-label {
+    display: block;
+    text-align: center;
+    line-height: 2rem;
+    font-size: 2rem;
+  }
+}
