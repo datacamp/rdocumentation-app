@@ -53,6 +53,7 @@ module.exports.routes = {
     'get /api/trends/download': 'TrendsController.mostDownloaded',
     'get /api/trends/keyword': 'TrendsController.topKeywords',
     'get /api/trends/graph': 'TrendsController.dependencyGraph',
+    'get /api/trends/perrange': 'TrendsController.downloadsPerRange',
     'get /api/trends/newpackages' : 'TrendsController.newPackages',
     'get /api/trends/newversions' : 'TrendsController.newVersions',
     'get /api/trends/mostpopular' : 'TrendsController.lastMonthMostDownloaded',

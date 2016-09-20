@@ -41,6 +41,23 @@
     return $('body').attr('url') ? getPath($('body').attr('url')) : getPath(window.location.pathname);
   };
 
+  window.counter = function () {
+    var options = {
+      useEasing : true,
+      useGrouping : true,
+      separator : ',',
+      decimal : '.',
+      prefix : '',
+      suffix : ''
+    };
+    $(".counter").each(function() {
+      var $this = $(this);
+      var count = $this.data("count");
+      var counter = new CountUp(this, 0, count, 0, 2.5, options);
+      counter.start();
+    });
+  };
+
 
   window.activateTabs = function(id) {
     $(id).find('a').prop('href', function(){
