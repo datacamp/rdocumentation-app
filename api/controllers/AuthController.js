@@ -31,9 +31,9 @@ module.exports = {
   rstudioProcess:function(req,res){
     var successRedirect =  req.session['rdr'] || '/';
     passport.authenticate('local', function(err, user, info) {
-                            if(err || !user) { return res.json({status: "failure", message: "Not Logged"}) };
+                            if(err || !user) { return res.json({status: "invalid", message: "Not Logged"}) };
                             req.logIn(user, function(err) {
-                              if (err) { return res.json({status: "failure", message: "Not Logged"}) }
+                              if (err) { return res.json({status: "invalid", message: "Not Logged"}) }
                               return res.json({status :"succes", message: "Logged"})
                             });
                           })(req, res);

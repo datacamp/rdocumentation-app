@@ -67,6 +67,7 @@ module.exports = {
               model:PackageVersion,
               as:'package_version',
               attributes:['id','package_name'],
+              required:true,
               include:[{
                 model:Package,
                 as:'package_latest',
@@ -75,7 +76,7 @@ module.exports = {
                 include:[{
                   model:DownloadStatistic,
                   as:'last_month_stats',
-                  required:true,
+                  required : false,
                   attributes:[],
                   where:{date :{
                     $gte: new Date(new Date() - 30*24 * 60 * 60 * 1000)
@@ -99,7 +100,6 @@ module.exports = {
           })
           return allResults; 
         }).catch(function(err){
-          console.log("error in alias");
           console.log(err.message);
         });
       },
@@ -122,7 +122,7 @@ module.exports = {
                 include:[{
                   model:DownloadStatistic,
                   as:'last_month_stats',
-                  required:true,
+                  required:false,
                   attributes:[],
                   where:{date :{
                     $gte: new Date(new Date() - 30*24 * 60 * 60 * 1000)
@@ -170,7 +170,7 @@ module.exports = {
               include:[{
                 model:DownloadStatistic,
                 as:'last_month_stats',
-                required:true,
+                required:false,
                 attributes:[],
                 where:{date :{
                   $gte: new Date(new Date() - 30*24 * 60 * 60 * 1000)
@@ -191,32 +191,27 @@ module.exports = {
           group:['name','package_version.id','id','package_version.package_latest.name'],
           order:[sequelize.fn('SUM', sequelize.col('package_version.package_latest.last_month_stats.direct_downloads'))]
         }).then(function(data){
-            allResults= _.map(data,function(record){
-              return Alias.findAll({
-                where: {topic_id:record.id}
-              }).then(function(aliases){
-                var all_aliases=""
-                _.map(aliases,function(alias){
-                  all_aliases=all_aliases+alias.name+",";
-                })
-                all_aliases=all_aliases.substring(0,all_aliases.length-1)
-                return {
-                  id:record.id,
-                  package_name:record.package_version.package_name,
-                  function_name:record.name,
-                  function_alias:all_aliases,
-                  function_description:record.description
-                };
-              })
-              .catch(function(err){
-                console.log(err.message);
-              })
+          allResults= _.map(data,function(record){
+            return Alias.findAll({
+              where: {topic_id:record.id}
+            }).then(function(aliases){
+              alias = (aliases != null && aliases.length > 0)? aliases[0].name : "";
+              return {
+                id:record.id,
+                package_name:record.package_version.package_name,
+                function_name:record.name,
+                function_alias:alias,
+                function_description:record.description
+              };
+            })
+            .catch(function(err){
+              console.log(err.message);
+            })
           })
           return Promise.all(allResults).then(function(results){
             return results;
           });
         }).catch(function(err){
-          console.log("error in topic");
           console.log(err.message);
         });
       }

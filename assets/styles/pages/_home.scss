@@ -44,8 +44,15 @@
   border-radius: 5px;
   padding: 30px;
   position: relative;
-  min-width: 900px;
   left: -50%;
+  display: none;
+  width: 900px;
+}
+
+@media (min-width: 992px) {
+  .home--tables {
+      display: block;
+  }
 }
 
 .home--leadertable {

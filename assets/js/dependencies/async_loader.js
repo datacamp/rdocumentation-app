@@ -129,7 +129,13 @@
     configureLogin: function() {
      $( document ).ajaxSend(function(event, jqxhr, settings ) {
         if(settings.type=="POST" && settings.url.indexOf('/login')>-1){
-          RStudioRequests.logInForRstudio(settings.data);
+          RStudioRequests.logInForRstudio(settings.data).then(function(response){
+            if(response.status && response.status === "invalid"){
+              if ($(".flash-error").length === 0){
+                $(".authentication").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+              }
+            }
+          });
         }
       });
 
@@ -325,8 +331,9 @@
         var type = $(this).attr('method') || 'post';
 
         var dataToWrite = $(this).serialize();
-
-        window.pushHistory(action+"?"+dataToWrite);
+        if(type.toUpperCase() == 'GET'){
+          window.pushHistory(action + "?" + dataToWrite);
+        }
 
         dataToWrite = dataToWrite+
           '&viewer_pane=1'+

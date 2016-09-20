@@ -1,4 +1,6 @@
 <section class="rstudio-data" 
 <% for (var k in data){ %>
-	data-<%=k%> = <%=data[k]%>
+	<%if(data[k]!= null){%>
+		data-<%=k%> = "<%=data[k]%>"
+	<%}%>
 <%}%>></section>
