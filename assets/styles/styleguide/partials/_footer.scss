@@ -30,14 +30,13 @@
 	}
 
   .apidoc {
-    position: absolute;
+    position: relative;
     padding-top: 0px;
     height: 20px;
   }
 }
 
 .footer .navbar--title{
-    float: right;
     margin-top: 0;
     margin-bottom: 0;
     z-index: 1;
@@ -48,7 +47,7 @@
 .footer--credits--title {
     float: left;
     position:relative;
-    left: 50%;
+    left: calc(50% - 15em);
 
   .footer--credits {
     font-size: 0.9rem;

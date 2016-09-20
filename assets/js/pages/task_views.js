@@ -26,6 +26,8 @@
     hideSlider();
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
     $('.list-group').css('height',h-80)
+    $(".apidoc").hide();
+    $(".footer--credits--title").css("left", "50%");
   };
 
   window.makeSideBar = function(){
@@ -43,10 +45,10 @@
     slider.removeClass("fa-angle-left");
     slider.addClass("fa-angle-right");
     $(".sliding-sidebar").animate({width:'toggle'},350,function(){
-      $(".view").css("width","100%");
+      $(".view").css("width","calc(100% - 2em)");
       $(".view").css("margin-left","20px");
-      $(".footer--credits--title ").css("width","100%");
-    $(".footer--credits--title ").css("margin-left","0px");
+      $(".footer").css("width","calc(100% - 2em)");
+      $(".footer").css("margin-left","0px");
     });
   }
 
@@ -55,8 +57,8 @@
     slider.addClass("fa-angle-left")
     $(".view").css("width","calc(100% - 21em)");
     $(".view").css("margin-left","280px");
-    $(".footer--credits--title ").css("width","calc(100% - 21em)");
-    $(".footer--credits--title ").css("margin-left","280px");
+    $(".footer").css("width","calc(100% - 21em)");
+    $(".footer").css("margin-left","280px");
     $(".sliding-sidebar").animate({width:'toggle'},350);
   }
 
@@ -85,15 +87,10 @@
 
   window.sortTable = function(){
     $("table.taskviewtable").tablesorter({
-            headers: {
-              3: {
-                  sorter:'rating'
-              }
-          },
           textExtraction: function (node){
             if($(node).find(".rating").length>0){
               return ($(node).find(".rating").data('rating'));
-            }else if($(node).find(".percentile-task".length>0)){
+            }else if($(node).find(".percentile-task").length>0){
               return $(node).find(".percentile-task").data('percentile');
             }
             return $(node).text();
