@@ -73,7 +73,7 @@
 
 
   window.getView = function(view){
-    location.hash = view;
+    if(!(urlParam('viewer_pane')==='1')) location.hash = view;
     $.ajax({
     	url: "/taskviews/"+view,
       cache: false
