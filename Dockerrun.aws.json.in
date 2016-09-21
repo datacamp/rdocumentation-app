@@ -39,6 +39,10 @@
         {
           "hostPort": 80,
           "containerPort": 80
+        },
+        {
+          "hostPort": 81,
+          "containerPort": 81
         }
       ],
       "links": [
