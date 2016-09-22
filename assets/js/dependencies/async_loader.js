@@ -117,8 +117,10 @@
     start:function () {
       var packageName = $('.campus-data').data("package");
       var topic = $('.campus-data').data("topic");
+
+      var path = $('.campus-data').data("path") || '/goto/'+ packageName + '/' + topic;
       //load the first page
-      Loader.replacePage('/goto/'+ packageName + '/' + topic,false).then(function () {
+      Loader.replacePage(decodeURIComponent(path), false).then(function () {
         $('.rstudio-data').remove();
       });
     }

@@ -155,6 +155,7 @@ module.exports.routes = {
 
   //campus-app
   'get /campus/help/:package/:topic': 'CampusController.help',
+  'get /campus/help': 'CampusController.path',
 
   //Badges
   'get /badges/version/:packageName':'BadgeController.getLatestVersion',
