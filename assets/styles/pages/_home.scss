@@ -100,14 +100,18 @@
   bottom: 0;
   position: absolute;
   margin-bottom: 7px;
+  z-index: 1;
+  :hover {
+    cursor: pointer;
+  }
 }
 
 @media (max-height: 420px){
-    .home--cta{
-        top: initial;
-        transform: initial;
-        h1{
-            font-size: 2em;
-        }
-    }
+  .home--cta{
+      top: initial;
+      transform: initial;
+      h1{
+          font-size: 2em;
+      }
+  }
 }

@@ -24,9 +24,8 @@
     }
     window.makeSideBar();
     hideSlider();
-    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
-    $('.list-group').css('height',h-80)
-    $(".apidoc").hide();
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    $('.list-group').css('height',h-80);
     $(".footer--credits--title").css("left", "50%");
   };
 
