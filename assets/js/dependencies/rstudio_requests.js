@@ -2,15 +2,17 @@
   /*
   helper function for interaction with rstudio
   */
-  var _rStudioRequest = function (url, method, shared_secret, port,params) {
-    var data={};
+  var _rStudioRequest = function (method, params) {
+    var data={},
+    shared_secret = urlParam("RS_SHARED_SECRET"),
+    port = urlParam("Rstudio_port");
     data.method = method;
     data.params = params;
     data.clientId = '33e600bb-c1b1-46bf-b562-ab5cba070b0e';
     data.clientVersion = "";
 
     return $.ajax({
-      url: 'http://127.0.0.1:' + port + url,
+      url: 'http://127.0.0.1:' + port + RStudioRPCEndpoints[method],
       headers:
       {
           'Accept':'application/json',
@@ -28,15 +30,30 @@
     });
   };
 
+  RStudioRPCEndpoints = {
+    execute_r_code: '/rpc/execute_r_code',
+    console_input: '/rpc/console_input'
+  };
+
   RStudioRequests = {
 
+    rdoc_package_version: "0.6",
+
+    checkRDocumentationPackageVersion: function() {
+      return RStudioRequests.checkPackageVersion("RDocumentation", RStudioRequests.rdoc_package_version).then(function(installed) {
+        if( installed !== 0 ) {
+          Loader.replacePage("/rstudio/update");
+          return false;
+        } else return true;
+      });
+    },
 
     /*
     Helper function to store credentials in Rstudio and to stay loggedIn for fututre ajax request
     */
     logInForRstudio: function (loginData) {
-      return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
-        ["dir.create(paste0(find.package('Rdocumentation'),'/config')) \n write('" + loginData + "', file = paste0(find.package('Rdocumentation'),'/config/creds.txt'))"])
+      return _rStudioRequest('execute_r_code',
+        ["dir.create(paste0(find.package('RDocumentation'),'/config')) \n write('" + loginData + "', file = paste0(find.package('RDocumentation'),'/config/creds.txt'))"])
       .then(function () {
         console.log("Stored creds in RStudio");
         return RStudio.stayLoggedIn(loginData);
@@ -55,7 +72,7 @@
           var examples= $('.topic').find('.topic--title').filter(function (i,el) {
             return $(this).text() == "Examples";
           }).parent().find('.R').text();
-          _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["require(" + package + ")\n" + examples]);
+          _rStudioRequest('console_input',["require(" + package + ")\n" + examples]);
         }
       });
       return false;
@@ -66,7 +83,7 @@
     */
     setDefault: function (e) {
       e.preventDefault();
-      _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::makeDefault()"]);
+      _rStudioRequest('console_input',["RDocumentation::makeDefault()"]);
       return false;
     },
 
@@ -75,7 +92,7 @@
     */
     hideViewer: function (e) {
       e.preventDefault();
-      _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["Rdocumentation::hideViewer()"]);
+      _rStudioRequest('console_input',["RDocumentation::hideViewer()"]);
       return false;
     },
 
@@ -89,7 +106,7 @@
     */
     checkPackageVersion: function (package,version) {
       version = String(version).replace("-",".");
-      return _rStudioRequest('/rpc/execute_r_code','execute_r_code',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),["check_package('" + package + "','"+version+"')"])
+      return _rStudioRequest('execute_r_code',["check_package('" + package + "','"+version+"')"])
       .then(function (result) {
           return parseInt(result.result);
       });
@@ -126,7 +143,7 @@
       e.preventDefault();
       var packageName = $(".packageData").data("package-name");
       var packageSource = $(".packageData").data("type-id");
-      _rStudioRequest('/rpc/console_input','console_input',urlParam("RS_SHARED_SECRET"),urlParam("Rstudio_port"),
+      _rStudioRequest('console_input',
                 ["install_package('" + packageName + "'," + packageSource + ")"]);
       return false;
     },
@@ -135,7 +152,11 @@
     function to run user-defined examples
     */
     executePackageCode: function (package,code) {
-      _rStudioRequest('/rpc/console_input', 'console_input', urlParam("RS_SHARED_SECRET"), urlParam("Rstudio_port"), ["require(" + package + ")\n" + code]);
+      _rStudioRequest('console_input', ["require(" + package + ")\n" + code]);
+    },
+
+    updateRDoc: function() {
+      _rStudioRequest('console_input', ["install_package('RDocumentation',3)"]);
     }
 
   };

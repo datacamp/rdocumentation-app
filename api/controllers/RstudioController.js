@@ -54,7 +54,7 @@ module.exports = {
         var topic = req.param("topic");
         var help_data = RStudioService.help(packageNames,topicNames,topic);
         break;
-      
+
       /*
       retrieve data for help.search function
       */
@@ -125,6 +125,11 @@ module.exports = {
   **/
   makeDefault : function(req,res){
     res.ok([],'rStudio/make_default.ejs');
+  },
+
+
+  update : function(req,res){
+    res.ok([],'rStudio/update.ejs');
   },
 
   /**

@@ -155,18 +155,22 @@
       execute an ajax post request to login, this request must give back a 200 status code,
       otherwise it gets cancelled and the ajax doesn't keep the cookie
       */
-      if(urlParam('username')!==null) {
-        var creds = "username="+decodeURIComponent(urlParam('username'))+
-                    "&password=" + decodeURIComponent(urlParam("password"));
-        RStudio.stayLoggedIn(creds).then(Loader.responseHandler(function () {
-        //load the first page, because the first request comes from the view function of the rstudio-controller and contains data tags for the post request
-         RStudio.loadFirstPage();
-        },false));
-      }
-      else{
-        //load the first page, because the first request comes from the view function of the rstudio-controller and contains data tags for the post request
-        RStudio.loadFirstPage();
-      }
+      RStudioRequests.checkRDocumentationPackageVersion().then(function (upToDate) {
+        if(upToDate) {
+          if(urlParam('username')!==null) {
+            var creds = "username="+decodeURIComponent(urlParam('username'))+
+                        "&password=" + decodeURIComponent(urlParam("password"));
+            RStudio.stayLoggedIn(creds).then(Loader.responseHandler(function () {
+            //load the first page, because the first request comes from the view function of the rstudio-controller and contains data tags for the post request
+             RStudio.loadFirstPage();
+            },false));
+          }
+          else{
+            //load the first page, because the first request comes from the view function of the rstudio-controller and contains data tags for the post request
+            RStudio.loadFirstPage();
+          }
+        }
+      });
     },
 
      /*
@@ -248,6 +252,7 @@
       rebind('#js-install', 'click', RStudioRequests.installpackage);
       rebind('#js-hideviewer','click', RStudioRequests.hideViewer);
       rebind('#js-makedefault','click', RStudioRequests.setDefault);
+      rebind('#js-update_rdoc', 'click', RStudioRequests.updateRDoc);
     },
 
     bindExampleButton: function () {
