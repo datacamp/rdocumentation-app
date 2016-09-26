@@ -30,7 +30,7 @@ module.exports = {
       promises.push(Collaborator.topCollaborators(1).then(function(data){
         json.topCollaborators = data.results;
       }));
-      promises.push(DownloadStatistic.getMostPopularPerPage(1).then(function(data){
+      promises.push(DownloadStatistic.getMostPopularPerPage(1, "direct").then(function(data){
         json.mostPopular = data.results;
       }));
       return Promise.all(promises).then(function(){
