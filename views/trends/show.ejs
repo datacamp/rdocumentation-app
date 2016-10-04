@@ -1,7 +1,7 @@
 <section class="trends">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-offset-1 col-sm-10">
+      <div class="col-sm-offset-1 col-lg-10">
         <h1> Leaderboard </h1>
 
         <div class="row metrics">
@@ -22,7 +22,7 @@
         <div class="row top10">
           <div class="col-md-6" id="top10downloads" data-url="/api/trends/mostpopular">
             <h4>Most downloaded packages</h4>
-            <table class = "data">
+            <table class="data">
               <thead>
                 <tr>
                   <th>Name</th>
@@ -43,7 +43,7 @@
 
           <div class="col-md-6" id="top10maintainers" data-url="/api/trends/topcollaborators">
             <h4>Most active maintainers</i></h4>
-            <table class = "data">
+            <table class="data">
             <thead>
               <tr>
                 <th>Name</th>
@@ -76,7 +76,7 @@
         <div class="row top10">
           <div class="col-md-6" id="top10new" data-url="/api/trends/newpackages">
             <h4>Newest packages <i class="fa fa-info-circle" aria-hidden="false" title="Based on time of indexation of the package by rdocumentation. Discrepancy possible with actual time of release."></i></h4>
-            <table class = "data">
+            <table class="data">
             <% data.newPackages.forEach(function(package,j){ %>
             <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a></td><td><p class='info-trends'><%- package.rel %></p></td></tr>
             <% }); %>
@@ -86,7 +86,7 @@
           </div>
           <div class="col-md-6" id="top10renew" data-url="/api/trends/newversions">
             <h4>Newest updates <i class="fa fa-info-circle" aria-hidden="false" title="Based on time of indexation of the last version by rdocumentation. Discrepancy possible with actual time of release."></i></h4>
-            <table class = "data">
+            <table class="data">
             <% data.newVersions.forEach(function(package,j){ %>
             <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a></td><td><p class='info-trends'><%- package.rel %></p></td></tr>
             <% }); %>
