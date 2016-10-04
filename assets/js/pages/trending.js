@@ -221,11 +221,13 @@
     }else{
       $("#top10downloads .previous").show();
     }
-    $("#top10downloads .previous").unbind().click(function(){
+    $("#top10downloads .previous").unbind().click(function(e){
+      e.preventDefault();
       window.updateTrendingHistory(page1-1,sort1,page2,sort2,page3,page4);
       window.reloadMostPopular(page1-1,sort1,page2,sort2,page3,page4);
     });
-    $("#top10downloads .next").unbind().click(function(){
+    $("#top10downloads .next").unbind().click(function(e){
+      e.preventDefault();
       window.updateTrendingHistory(page1+1,sort1,page2,sort2,page3,page4);
       window.reloadMostPopular(page1+1,sort1,page2,sort2,page3,page4);
     });
@@ -234,11 +236,13 @@
     }else{
       $("#top10maintainers .previous").show();
     }
-    $("#top10maintainers .previous").unbind().click(function(){
+    $("#top10maintainers .previous").unbind().click(function(e){
+      e.preventDefault();
       window.updateTrendingHistory(page1,sort1,page2-1,sort2,page3,page4);
       window.reloadTopCollaborators(page1,sort1,page2-1,sort2,page3,page4);
     });
-    $("#top10maintainers .next").unbind().click(function(){
+    $("#top10maintainers .next").unbind().click(function(e){
+      e.preventDefault();
       window.updateTrendingHistory(page1,sort1,page2+1,sort2,page3,page4);
       window.reloadTopCollaborators(page1,sort1,page2+1,sort2,page3,page4);
     });
@@ -247,11 +251,13 @@
     }else{
       $("#top10new .previous").show();
     }
-    $("#top10new .previous").unbind().click(function(){
+    $("#top10new .previous").unbind().click(function(e){
+      e.preventDefault();
       window.updateTrendingHistory(page1,sort1,page2,sort2,page3-1,page4);
       window.reloadNewPackages(page1,sort1,page2,sort2,page3-1,page4);
     });
-    $("#top10new .next").unbind().click(function(){
+    $("#top10new .next").unbind().click(function(e){
+      e.preventDefault();
       window.updateTrendingHistory(page1,sort1,page2,sort2,page3+1,page4);
       window.reloadNewPackages(page1,sort1,page2,sort2,page3+1,page4);
     });
@@ -260,11 +266,13 @@
     }else{
       $("#top10renew .previous").show();
     }
-    $("#top10renew .previous").unbind().click(function(){
+    $("#top10renew .previous").unbind().click(function(e){
+      e.preventDefault();
       window.updateTrendingHistory(page1,sort1,page2,sort2,page3,page4-1);
       window.reloadNewVersions(page1,sort1,page2,sort2,page3,page4-1);
     });
-    $("#top10renew .next").unbind().click(function(){
+    $("#top10renew .next").unbind().click(function(e){
+      e.preventDefault();
       window.updateTrendingHistory(page1,sort1,page2,sort2,page3,page4+1);
       window.reloadNewVersions(page1,sort1,page2,sort2,page3,page4+1);
     });

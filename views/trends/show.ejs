@@ -1,118 +1,118 @@
 <section class="trends">
-  <div class="container">
-  <h1> Leaderboard </h1>
-    <div class="row metrics">
-      <div class="col-md-6">
-        <div class="big-number">
-          <div class="number counter" data-count="<%= data.package_count %>"></div>
-          <div class="big-number-label">indexed packages</div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="big-number">
-          <div class="number topic counter" data-count="<%= data.topic_count %>"></div>
-          <div class="big-number-label">indexed functions</div>
-        </div>
-      </div>
-    </div>
-    <div class="row top10">
-      <div class="col-md-6" id="top10downloads" data-url="/api/trends/mostpopular">
-        <h4>Most downloaded packages</h4>
-        <table class = "data">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th class = "direct">Direct downloads<%- data.mostPopularSort==="direct" ? '<i class="fa fa-sort-desc" aria-hidden="true"></i>' : '<i class="fa fa-sort" aria-hidden="true"></i>' %></th>
-            <th class = "indirect">Indirect downloads<%- data.mostPopularSort==="indirect" ? '<i class="fa fa-sort-desc" aria-hidden="true"></i>' : '<i class="fa fa-sort" aria-hidden="true"></i>' %></th>
-            <th class = "total">Total<%- data.mostPopularSort==="total" ? '<i class="fa fa-sort-desc" aria-hidden="true"></i>' : '<i class="fa fa-sort" aria-hidden="true"></i>' %></th>
-          </tr>
-        </thead>
-        <tbody>
-        <% data.mostPopular.forEach(function(package,j){ %>
-        <tr><td><%- (data.page1-1)*10+j+1 %>. <a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a></td><td><%- package.directStr %></td><td><%- package.indirectStr %></td><td><%- package.totalStr %></td></tr>
-        <% }); %>
-        </tbody>
-        </table>
-        <p class="previous pull-left">Previous</p>
-        <p class="next pull-right">Next</p>
-      </div>
-      <div class="col-md-6" id="top10maintainers" data-url="/api/trends/topcollaborators">
-        <h4>Most active maintainers</i></h4>
-        <table class = "data">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th class="direct">Direct downloads<%- data.topCollaboratorsSort==="direct" ? '<i class="fa fa-sort-desc" aria-hidden="true"></i>' : '<i class="fa fa-sort" aria-hidden="true"></i>' %></th>
-            <th class="indirect">Indirect downloads<%- data.topCollaboratorsSort==="indirect" ? '<i class="fa fa-sort-desc" aria-hidden="true"></i>' : '<i class="fa fa-sort" aria-hidden="true"></i>' %></th>
-            <th class="total">Total<%- data.topCollaboratorsSort==="total" ? '<i class="fa fa-sort-desc" aria-hidden="true"></i>' : '<i class="fa fa-sort" aria-hidden="true"></i>' %></th>
-          </tr>
-        </thead>
-        <tbody>
-        <% data.topCollaborators.forEach(function(collaborator,j){ %>
-          <tr>
-            <td>
-              <%- (data.page2-1)*10+j+1 %>.
-              <a href='/collaborators/name/<%- encodeURIComponent(collaborator.name) %>'>
-                <%- collaborator.name %>
-              </a>
-            </td>
-            <td><%- collaborator.directStr %></td>
-            <td><%- collaborator.indirectStr %></td>
-            <td><%- collaborator.totalStr %></td>
-          </tr>
-        <% }); %>
-        </tbody>
-        </table>
-        <p class="previous pull-left">Previous</p>
-        <p class="next pull-right">Next</p>
-      </div>
-    </div>
-    <div class="row top10">
-      <div class="col-md-6" id="top10new" data-url="/api/trends/newpackages">
-        <h4>Newest packages <i class="fa fa-info-circle" aria-hidden="false" title="Based on time of indexation of the package by rdocumentation. Discrepancy possible with actual time of release."></i></h4>
-        <table class = "data">
-        <% data.newPackages.forEach(function(package,j){ %>
-        <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a></td><td><p class='info-trends'><%- package.rel %></p></td></tr>
-        <% }); %>
-        </table>
-        <p class="previous pull-left">Previous</p>
-        <p class="next pull-right">Next</p>
-      </div>
-      <div class="col-md-6" id="top10renew" data-url="/api/trends/newversions">
-        <h4>Newest updates <i class="fa fa-info-circle" aria-hidden="false" title="Based on time of indexation of the last version by rdocumentation. Discrepancy possible with actual time of release."></i></h4>
-        <table class = "data">
-        <% data.newVersions.forEach(function(package,j){ %>
-        <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a></td><td><p class='info-trends'><%- package.rel %></p></td></tr>
-        <% }); %>
-        </table>
-        <p class="previous pull-left">Previous</p>
-        <p class="next pull-right">Next</p>
-      </div>
-    </div>
-
+  <div class="container-fluid">
     <div class="row">
+      <div class="col-sm-offset-1 col-sm-10">
+        <h1> Leaderboard </h1>
 
-      <div id="packagesperrange" class= "graph col-md-6" style="display: none" data-url="/api/trends/perrange">
-        <section>
-          <h4>Downloads distribution <i class="fa fa-info-circle" aria-hidden="false" title="Number of packages that have a number of downloads between the given bounds."></i></h4>
-        </section>
-        <svg></svg>
-      </div>
+        <div class="row metrics">
+          <div class="col-md-6">
+            <div class="big-number">
+              <div class="number counter" data-count="<%= data.package_count %>"></div>
+              <div class="big-number-label">indexed packages</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="big-number">
+              <div class="number topic counter" data-count="<%= data.topic_count %>"></div>
+              <div class="big-number-label">indexed functions</div>
+            </div>
+          </div>
+        </div>
 
-      <div id="topkeywords" class = "graph col-md-6" style="display: none" data-url="/api/trends/keyword">
-        <section>
-          <h4>Most used keywords</h4>
-        </section>
-        <svg></svg>
-      </div>
-    </div>
+        <div class="row top10">
+          <div class="col-md-6" id="top10downloads" data-url="/api/trends/mostpopular">
+            <h4>Most downloaded packages</h4>
+            <table class = "data">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th class = "direct">Direct downloads<%- data.mostPopularSort==="direct" ? '<i class="fa fa-sort-desc" aria-hidden="true"></i>' : '<i class="fa fa-sort" aria-hidden="true"></i>' %></th>
+                  <th class = "indirect">Indirect downloads<%- data.mostPopularSort==="indirect" ? '<i class="fa fa-sort-desc" aria-hidden="true"></i>' : '<i class="fa fa-sort" aria-hidden="true"></i>' %></th>
+                  <th class = "total">Total<%- data.mostPopularSort==="total" ? '<i class="fa fa-sort-desc" aria-hidden="true"></i>' : '<i class="fa fa-sort" aria-hidden="true"></i>' %></th>
+                </tr>
+              </thead>
+              <tbody>
+              <% data.mostPopular.forEach(function(package,j){ %>
+                <tr><td><%- (data.page1-1)*10+j+1 %>. <a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a></td><td><%- package.directStr %></td><td><%- package.indirectStr %></td><td><%- package.totalStr %></td></tr>
+              <% }); %>
+              </tbody>
+            </table>
+            <a href="#" class="previous pull-left"><i class="fa fa-chevron-left"></i>&nbsp;Previous</a>
+            <a href="#" class="next pull-right">Next&nbsp;<i class="fa fa-chevron-right"></i></a>
+          </div>
 
-    <section>
-      <h4>Top packages dependency graph</h4>
-    </section>
-    <div id="dependencygraph" class = "graph col-md-12" style="display: none" data-url="/api/trends/graph">
-      <svg></svg>
-    </div>
+          <div class="col-md-6" id="top10maintainers" data-url="/api/trends/topcollaborators">
+            <h4>Most active maintainers</i></h4>
+            <table class = "data">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th class="direct">Direct downloads<%- data.topCollaboratorsSort==="direct" ? '<i class="fa fa-sort-desc" aria-hidden="true"></i>' : '<i class="fa fa-sort" aria-hidden="true"></i>' %></th>
+                <th class="indirect">Indirect downloads<%- data.topCollaboratorsSort==="indirect" ? '<i class="fa fa-sort-desc" aria-hidden="true"></i>' : '<i class="fa fa-sort" aria-hidden="true"></i>' %></th>
+                <th class="total">Total<%- data.topCollaboratorsSort==="total" ? '<i class="fa fa-sort-desc" aria-hidden="true"></i>' : '<i class="fa fa-sort" aria-hidden="true"></i>' %></th>
+              </tr>
+            </thead>
+            <tbody>
+            <% data.topCollaborators.forEach(function(collaborator,j){ %>
+              <tr>
+                <td>
+                  <%- (data.page2-1)*10+j+1 %>.
+                  <a href='/collaborators/name/<%- encodeURIComponent(collaborator.name) %>'>
+                    <%- collaborator.name %>
+                  </a>
+                </td>
+                <td><%- collaborator.directStr %></td>
+                <td><%- collaborator.indirectStr %></td>
+                <td><%- collaborator.totalStr %></td>
+              </tr>
+            <% }); %>
+            </tbody>
+            </table>
+            <a href="#" class="previous pull-left"><i class="fa fa-chevron-left"></i>&nbsp;Previous</a>
+            <a href="#" class="next pull-right">Next&nbsp;<i class="fa fa-chevron-right"></i></a>
+          </div>
+        </div>
 
-  </div>
+        <div class="row top10">
+          <div class="col-md-6" id="top10new" data-url="/api/trends/newpackages">
+            <h4>Newest packages <i class="fa fa-info-circle" aria-hidden="false" title="Based on time of indexation of the package by rdocumentation. Discrepancy possible with actual time of release."></i></h4>
+            <table class = "data">
+            <% data.newPackages.forEach(function(package,j){ %>
+            <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a></td><td><p class='info-trends'><%- package.rel %></p></td></tr>
+            <% }); %>
+            </table>
+            <a href="#" class="previous pull-left"><i class="fa fa-chevron-left"></i>&nbsp;Previous</a>
+            <a href="#" class="next pull-right">Next&nbsp;<i class="fa fa-chevron-right"></i></a>
+          </div>
+          <div class="col-md-6" id="top10renew" data-url="/api/trends/newversions">
+            <h4>Newest updates <i class="fa fa-info-circle" aria-hidden="false" title="Based on time of indexation of the last version by rdocumentation. Discrepancy possible with actual time of release."></i></h4>
+            <table class = "data">
+            <% data.newVersions.forEach(function(package,j){ %>
+            <tr><td><a href='/packages/<%- encodeURIComponent(package.package_name) %>'><%- package.package_name %></a></td><td><p class='info-trends'><%- package.rel %></p></td></tr>
+            <% }); %>
+            </table>
+            <a href="#" class="previous pull-left"><i class="fa fa-chevron-left"></i>&nbsp;Previous</a>
+            <a href="#" class="next pull-right">Next&nbsp;<i class="fa fa-chevron-right"></i></a>
+          </div>
+        </div>
+
+        <div class="row">
+          <div id="packagesperrange" class="graph col-md-6" style="display: none" data-url="/api/trends/perrange">
+            <h4>Downloads distribution <i class="fa fa-info-circle" aria-hidden="false" title="Number of packages that have a number of downloads between the given bounds."></i></h4>
+            <svg></svg>
+          </div>
+
+          <div id="topkeywords" class="graph col-md-6" style="display: none" data-url="/api/trends/keyword">
+            <h4>Most used keywords</h4>
+            <svg></svg>
+          </div>
+        </div>
+
+        <h4>Top packages dependency graph</h4>
+        <div id="dependencygraph" class="graph col-md-12" style="display: none" data-url="/api/trends/graph">
+          <svg></svg>
+        </div>
+      </div><!-- /col-sm-10 -->
+    </div><!-- /row -->
+  </div><!-- /container-fluid -->
 </section>
