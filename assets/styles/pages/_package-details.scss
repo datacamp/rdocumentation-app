@@ -1,0 +1,87 @@
+.package-details {
+  #chart svg, #trendingdownloads svg, #topkeywords svg{
+    height: 400px;
+  }
+  #dependencygraph svg {
+    height: 600px;
+  }
+
+  .tabs--content {
+    height: 450px;
+  }
+}
+
+.package-details-info {
+  margin-top: 1rem;
+  table {
+    table-layout: fixed;
+    overflow: hidden;
+    tr td:first-child {
+      width: 30%;
+    }
+  }
+}
+
+.hidden{
+  display:none;
+}
+
+.sliding {
+  display: none;
+}
+
+.slider {
+  font-size: 2.5rem;
+  width: 100%;
+  text-align: center;
+}
+
+.slider-icon {
+  position: relative;
+  left: 48%;
+  font-size: 2.5rem !important;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.slider-border {
+  position:relative;
+  top:17px;
+  border-top: 3px solid #ebf4f7;
+}
+
+#slider{
+  margin: 2rem 0;
+}
+.slider:hover {
+  cursor: pointer;
+}
+
+
+#tabs {
+    background: transparent;
+    border: none;
+    margin-top: $default-space;
+}
+#tabs .ui-widget-header {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #c0c0c0;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+}
+#tabs .ui-tabs-nav .ui-state-default {
+    background: transparent;
+    border: none;
+}
+#tabs .ui-tabs-nav .ui-state-default a {
+    color: #c0c0c0;
+    border-bottom: none;
+}
+#tabs .ui-tabs-nav .ui-state-active a {
+    color: black;
+    border-bottom: none;
+}

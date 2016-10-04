@@ -1,184 +1,19 @@
 .package {
   min-height: 85%;
-  #package--container {
+  .container {
     margin-top: $default-space;
-
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 1170px;
-    min-width: 350px;
-  }
-
-  header {
-    @include clearfix;
-    margin-bottom: $default-space;
-
-    h1 {
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    .package--version--select {
-      font-size: 1.2rem;
-      display: inline-block;
-      select {
-        padding: 0.4rem;
-      }
-      .package--version--v {
-        font-weight: bold;
-      }
-    }
-
-    .rating {
-      margin-left: 1rem;
-    }
-    i.fa {
-      display: inline-block;
-    }
-
-    #percentile-arrow{
-      margin-left: 0rem;
-      margin-top: 0.65rem;
-    }
-
-    .col-sm-3 {
-      margin-top: 0.5rem;
-    }
-  }
-
-  #chart svg, #trendingdownloads svg, #topkeywords svg{
-    height: 400px;
-  }
-  #dependencygraph svg {
-    height: 600px;
-  }
-
-
-  .package--title--container {
-    margin-bottom: $default-space;
-    vertical-align: bottom;
-    a {
-      vertical-align: bottom;
-    }
-  }
-
-  .package--title {
-    margin: 0px 5px 0px 0px;
-    font-size: 5rem;
-    vertical-align: bottom;
-  }
-
-  .package--maintainer {
-    font-size: 2rem;
-    display: inline-block;
-    vertical-align: bottom;
-  }
-
-  .package--details {
-    margin-top: 1rem;
-    table {
-      table-layout: fixed;
-      overflow: hidden;
-      tr td:first-child {
-        width: 30%;
-      }
-    }
   }
 
   .package--badge {
     margin-top: $default-space;
   }
 
-  .tabs--content {
-    height: 450px;
-  }
-
 }
-
-
 
 i.fa.fa-user{
   font-size: 2rem;
 }
-.maintainer{
-  display: inline-block;
-  vertical-align: middle;
-  a{
-    font-size: 1.4rem;
-    text-decoration: none;
-    border-bottom: none;
-  }
-  p{
-    -webkit-margin-before: 0rem;
-  }
-  i.fa.fa-envelope{
-    color: #3a3a3a;
-    font-size: 1.4rem;
-    margin-left: 0.3rem;
-  }
-  &.contributor{
-    margin-top:0.8rem;
-  }
-}
-.contributor{
-  dd{
-    -webkit-margin-start: 0px;
-  }
-  a{
-    font-size: 1.2rem;
-  }
-  h5 {
-    display: inline;
-  }
-  ul {
-    padding-left: 0.5rem;
-    list-style: none;
-    display: inline;
-    li {
-      display: inline
-    }
-  }
-  .listed{
-    margin-left:0.5rem;
-  }
-}
 
-.hidden{
-  display:none;
-}
-
-.sliding {
-  display: none;
-}
-
-.slider {
-  font-size: 2.5rem;
-  width: 100%;
-  text-align: center;
-}
-
-.slider-icon {
-  position: relative;
-  left: 48%;
-  font-size: 2.5rem !important;
-  padding-left: 20px;
-  padding-right: 20px;
-  background-color: white;
-  cursor: pointer;
-}
-
-.slider-border {
-  position:relative;
-  top:17px;
-  border-top: 3px solid #ebf4f7;
-}
-
-#slider{
-  margin: 2rem;
-}
-.slider:hover {
-  cursor: pointer;
-}
 #show:hover {
   cursor: pointer;
 }
@@ -211,32 +46,6 @@ i.fa.fa-user{
   display:inline-block;
 }
 
-.package--readme {
-  img {
-    max-width: 100%;
-  }
-  a {
-    border-bottom: none;
-  }
-}
-
-span.upvotePackage {
-  cursor: pointer;
-  padding: 5px;
-  font-size: 2rem;
-  &[upvoted="false"]:hover, &[upvoted="true"] {
-    color: $primary;
-  }
-  &[upvoted="true"]:hover, &[upvoted="false"] {
-    color: inherit;
-  }
-
-}
-
-.star-count {
-  font-size: 2rem;
-}
-
 .package--stats {
   dd a {
     margin-right: $default-space / 3.0;
@@ -265,39 +74,4 @@ span.upvotePackage {
     color: #00cc00;
     font-size: 1.5em;
     margin-right: 0.5rem;
-}
-
-#tabs {
-    background: transparent;
-    border: none;
-    margin-top: $default-space;
-}
-#tabs .ui-widget-header {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid #c0c0c0;
-    -moz-border-radius: 0px;
-    -webkit-border-radius: 0px;
-    border-radius: 0px;
-}
-#tabs .ui-tabs-nav .ui-state-default {
-    background: transparent;
-    border: none;
-}
-#tabs .ui-tabs-nav .ui-state-default a {
-    color: #c0c0c0;
-    border-bottom: none;
-}
-#tabs .ui-tabs-nav .ui-state-active a {
-    color: black;
-    border-bottom: none;
-}
-
-.viewLinks {
-  display:block;
-}
-
-#openModalUpvote{
-  color: inherit;
-  border-bottom: none;
 }
