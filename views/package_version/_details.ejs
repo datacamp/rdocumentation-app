@@ -2,15 +2,13 @@
   <div class="container">
     <div id="details" class="sliding">
       <% if(pkgVersion.collaborators.length > 0) { %>
-        <div class= "contributor">
-          <div class="listed">
-            <h5>Contributors:</h5>
-            <ul>
-              <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
-                <li><a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a></li>
-              <% } %>
-            </ul>
-          </div>
+        <div class="package-details--contr">
+          <h5>Contributors:</h5>
+          <ul>
+            <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
+              <li><a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a></li>
+            <% } %>
+          </ul>
         </div>
       <% } %>
 
