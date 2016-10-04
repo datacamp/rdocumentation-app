@@ -5,11 +5,9 @@
       var url = $self.data('url');
       $.get(url, function(data){
         if(data.percentile != null){
-        $self.find(".percentile").text(''+ data.percentile + 'th');
-        $self.css({'visibility': 'visible'});
-      } else{
-        $self.css({'display': 'none'});
-      }
+          $self.find(".percentile").text(''+ data.percentile + 'th');
+          $self.css({'visibility': 'visible'});
+        }
       });
     });
   };
@@ -59,6 +57,3 @@
   };
 
 })($jq);
-
-
-

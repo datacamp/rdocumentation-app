@@ -1,181 +1,73 @@
 .topic {
   min-height: 84%;
-  .container-fluid {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: $default-space / 2;
-    max-width: 1170px;
-    min-width: 350px;
-  }
-
-  header {
-    @include clearfix;
-
-    h1 {
-      display: inline-block;
-      vertical-align: middle;
-
-      span {
-        font-size: $default-font-size;
-        font-weight: 300;
-        margin-left: 1rem;
-      }
-    }
-    margin-bottom:15px;
-  }
 
   h5 {
     text-transform: capitalize;
   }
-
-  section.topic--value {
-    dl {
-      dd {
-        float: none;
-      }
-      dt {
-        float: none;
-      }
-    }
-    ul {
-      @include clearfix;
-      display: block;
-      list-style: none;
-      margin-top: 1em;
-      margin-bottom: 1em;
-      margin-left: 0;
-      margin-right: 0;
-      padding-left: 0;
-
-      li {
-        margin-bottom: 1rem;
-        name {
-          display: block;
-          font-weight: bold;
-          float: left;
-        }
-
-        description {
-          display: block;
-          margin-left: 40px;
-          margin-left: 130px;
-        }
-      }
-
-    }
-
-  }
-
-  .powered-by-datacamp {
-    font-size: 15px !important;
-    a {
-      margin-left: 5px;
-      display: inline-flex;
-      font-size: 15px !important;
-    }
-  }
-
-  .topic--title {
-    margin-top: $default-space;
-  }
-
-  .dcl-exercise-area .clearfix:before{
-    content : none;
-  }
-
-  .topic--package--percentile {
-    font-weight: 600;
-    display: inline-block;
-  }
-
-  .topic--package-info {
-
-    font-size: 1.2rem;
-    font-weight: 400;
-    background-color: $primary-extra-light;
-    border-radius: 5px;
-    padding: 10px;
-    span {
-      display: inline-block;
-    }
-    .topic--package-info-details {
-      display: inline-block;
-      overflow: hidden;
-      width: 200px;
-    }
-    .percentile-widget {
-      vertical-align: super;
-      font-weight: 200;
-    }
-  }
-
   .run-example {
     display: block;
     margin: 10px 0;
   }
-
-
 }
 
-header {
-  .topic--package{
-    padding:5px;
-    margin-top:-10px;
-    div{
-      display:block;
+.topic--title {
+  margin-top: $default-space;
+}
+
+// Override and support custom entries in topic--value (?)
+.topic--value {
+  dl {
+    dd {
+      float: none;
     }
-    .topic--package-maintainer{
-      float:left;
-      i.fa.fa-user{
-        font-size: 2rem;
-        vertical-align: middle;
-        margin-left: 1.5rem;
+    dt {
+      float: none;
+    }
+  }
+  ul {
+    @include clearfix;
+    display: block;
+    list-style: none;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+
+    li {
+      margin-bottom: 1rem;
+      name {
+        display: block;
+        font-weight: bold;
+        float: left;
+      }
+
+      .description {
+        display: block;
+        margin-left: 40px;
+        margin-left: 130px;
       }
     }
-    .downloads{
-      margin-top:25px;
-      margin-left:15px;
-      float:right;
-      p{
-        visibility:visible;
-        -webkit-margin-before: -0.7em;
-        -webkit-margin-after: 0em;
-      }
-    }
-  }
-  .topic--package-name{
-    margin-top:-20px;
-    font-size: 1.7rem;
-    margin-bottom:0px;
-  }
-  .neg-top-margin{
-    margin-top:-15px;
-    margin-bottom:0px;
-  }
-  .pull-left{
-    float:left;
-    margin-left:0px;
-    margin-top:-10px;
   }
 }
 
-.jquery-modal.blocker{
-  z-index:1050;
-  .modal a.close-modal{
-    border-bottom: none;
+
+// Override DCL style
+.topic .powered-by-datacamp {
+  background: white;
+  margin: 0;
+  a {
+    margin-left: 5px;
+    margin-top: 5px;
+    display: inline-flex;
+    font-size: 12px !important;
+  }
+  .logo {
+    height: 18px;
+    max-resolution: 0;
   }
 }
 
-.jquery-modal .modal{
-    width:550px;
-}
-
-@media(max-width: 600px){
-  .jquery-modal .modal{
-      width: 92%;
-  }
-}
-
-#postExampleTitle{
-  margin-bottom: .6em;
+.topic .dcl-exercise-area .clearfix:before{
+  content: none;
 }
