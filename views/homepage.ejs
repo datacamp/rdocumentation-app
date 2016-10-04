@@ -41,7 +41,7 @@
               <% if (Array.isArray(data.mostPopular)) { %>
                 <% data.mostPopular.forEach(function(item,i){ %>
                   <% if(i<5){ %>
-                    <tr><td><a href='/packages/<%-item.package_name %>'><%-item.package_name %></a></td></tr>
+                    <tr><td><a href='/packages/<%-item.package_name %>'><%- i + 1 %>.&nbsp;<%-item.package_name %></a></td></tr>
                   <% } %>
                 <% }) %>
               <% } %>
@@ -55,7 +55,7 @@
               <% if (Array.isArray(data.topCollaborators)) { %>
                 <% data.topCollaborators.forEach(function(item,i){ %>
                   <% if(i<5){ %>
-                    <tr><td><a href='/collaborators/name/<%-encodeURIComponent(item.name) %>'><%-item.name %></a></td></tr>
+                    <tr><td><a href='/collaborators/name/<%-encodeURIComponent(item.name) %>'><%- i + 1 %>.&nbsp;<%-item.name %></a></td></tr>
                   <% } %>
                 <% }) %>
               <% } %>
@@ -69,7 +69,7 @@
               <% if (Array.isArray(data.newPackages)) { %>
                 <% data.newPackages.forEach(function(item,i){ %>
                   <% if(i<5){ %>
-                    <tr><td><a href='/packages/<%-item.package_name %>'><%-item.package_name %></a></td></tr>
+                    <tr><td><a href='/packages/<%-item.package_name %>'><%- i + 1 %>.&nbsp;<%-item.package_name %></a></td></tr>
                   <% } %>
                 <% }) %>
               <% } %>
@@ -80,9 +80,6 @@
     </div>
   </div>
 
-  <a class="home--apidoc btn btn-default js-external" target="_blank" href="/docs">
-      <i class="fa fa-cogs"></i>
-      API documentation
-  </a>
+  <a class="home--apidoc btn btn-default js-external" target="_blank" href="/docs"><i class="fa fa-cogs"></i>API documentation</a>
   <p class="home--credits">Created by <a href="https://www.datacamp.com">DataCamp.com</a></p>
 </section>

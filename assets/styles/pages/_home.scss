@@ -63,11 +63,15 @@
       color: white;
       border-bottom: none;
     }
+
+    a:hover {
+      color: $primary-light;
+    }
     tr:nth-of-type(2n) {
       background-color: inherit;
     }
     tr {
-
+      border-bottom: none;
       td {
         color: $primary-extra-light;
       }
@@ -101,9 +105,8 @@
   position: absolute;
   margin-bottom: 7px;
   z-index: 1;
-  :hover {
-    cursor: pointer;
-  }
+  cursor: pointer;
+  font-weight:300;
 }
 
 @media (max-height: 420px){
