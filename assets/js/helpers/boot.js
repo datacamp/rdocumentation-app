@@ -20,6 +20,8 @@
     bindUpvoteButton();
     window.bindFade();
     window.counter();
+    hljs.initHighlighting.called = false;
+    hljs.initHighlighting();
   };
 
 })($jq);
