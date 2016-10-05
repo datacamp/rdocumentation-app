@@ -14,7 +14,7 @@
     </div>
 
     <% if(!inViewerPane) { %>
-      <%- partial ('shared/_navigation.ejs') %>
+      <%- partial ('shared/_navigation.ejs', {primaryButtonClass: 'btn-primary', secondaryButtonClass: 'btn-secondary'}) %>
     <% } %>
   </nav>
 

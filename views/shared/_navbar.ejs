@@ -1,27 +1,41 @@
-<section class="bg bg-navigation navbar navbar-fixed-top">
-  <nav class="clearfix">
-    <% if(inViewerPane) {%>
+<% if(inViewerPane) {%>
+  <section class="navbar navbar-fixed-top">
+    <nav class="clearfix">
       <div class="rstudio-navigation pull-left">
-        <button class="btn btn-primary-light rstudio-navbutton rstudio-back"><i class="fa fa-chevron-left rstudio-back-arrow" style="font-size:15px"></i></button>
-        <button class="btn btn-primary-light rstudio-navbutton rstudio-forward"><i class="fa fa-chevron-right rstudio-forward-arrow" style="font-size:15px"></i></button>
+        <button class="btn rstudio-navbutton rstudio-back"><i class="fa fa-chevron-left rstudio-back-arrow" style="font-size:15px"></i></button>
+        <button class="btn rstudio-navbutton rstudio-forward"><i class="fa fa-chevron-right rstudio-forward-arrow" style="font-size:15px"></i></button>
       </div>
-    <% } %>
-    <div class="navbar--title">
-      <a href="/">
-        <div class="logo"></div>
-        <div class="logo-title"><span>RDocumentation</span></div>
-      </a>
-    </div>
-
-
-    <%- partial ('_navigation.ejs') %>
-
-
-    <div class="navbar--search">
-      <form class="search" action="/search" method="get">
-        <input name="q" id = "searchbar" type="text" placeholder="Search for packages, functions, etc" autocomplete="off">
-        <div class="search--results"></div>
-      </form>
-    </div>
-  </nav>
-</section>
+      <div class="navbar--title">
+        <a href="/">
+          <div class="logo"></div>
+          <div class="logo-title"><span>RDocumentation.org</span></div>
+        </a>
+      </div>
+      <%- partial ('_navigation.ejs', {primaryButtonClass: 'btn-inv', secondaryButtonClass: 'btn-inv'}) %>
+      <div class="navbar--search">
+        <form class="search" action="/search" method="get">
+          <input name="q" id = "searchbar" type="text" placeholder="Search for packages, functions, etc" autocomplete="off">
+          <div class="search--results"></div>
+        </form>
+      </div>
+    </nav>
+  </section>
+<% } else { %>
+  <section class="navbar navbar-color navbar-fixed-top">
+    <nav class="clearfix">
+      <div class="navbar--title">
+        <a href="/">
+          <div class="logo"></div>
+          <div class="logo-title"><span>RDocumentation</span></div>
+        </a>
+      </div>
+      <%- partial ('_navigation.ejs', {primaryButtonClass: 'btn-primary', secondaryButtonClass: 'btn-secondary'}) %>
+      <div class="navbar--search">
+        <form class="search" action="/search" method="get">
+          <input name="q" id = "searchbar" type="text" placeholder="Search for packages, functions, etc" autocomplete="off">
+          <div class="search--results"></div>
+        </form>
+      </div>
+    </nav>
+  </section>
+<% } %>
