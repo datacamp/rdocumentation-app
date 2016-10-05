@@ -5,12 +5,15 @@
         <button class="btn rstudio-navbutton rstudio-back"><i class="fa fa-chevron-left rstudio-back-arrow" style="font-size:15px"></i></button>
         <button class="btn rstudio-navbutton rstudio-forward"><i class="fa fa-chevron-right rstudio-forward-arrow" style="font-size:15px"></i></button>
       </div>
-      <div class="navbar--title">
-        <a href="/">
-          <div class="logo"></div>
-          <div class="logo-title"><span>RDocumentation.org</span></div>
-        </a>
-      </div>
+      <!--  Do not show the title when in the campus app, but do show it inside RStudio -->
+      <% if(!inCampus) {%>
+        <div class="navbar--title">
+          <a href="/">
+            <div class="logo"></div>
+            <div class="logo-title"><span>RDocumentation.org</span></div>
+          </a>
+        </div>
+      <% } %>
       <%- partial ('_navigation.ejs', {primaryButtonClass: 'btn-inv', secondaryButtonClass: 'btn-inv'}) %>
       <div class="navbar--search">
         <form class="search" action="/search" method="get">

@@ -84,7 +84,7 @@
 }
 
 .btn-inv {
-    border: 1px solid $primary-lighter;
+    border: 1px solid $primary-light;
     @include color-button(white, $primary-light, $primary-extra-light);
 }
 

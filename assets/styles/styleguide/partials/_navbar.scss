@@ -3,7 +3,8 @@
   padding: 0.2em;
   height: $navbar-height;
   position: relative;
-  border-bottom: 1px solid $primary-extra-light;
+  border-bottom: 1px solid $primary-light;
+  background-color: white;
   nav {
     height: 100%;
   }
@@ -13,8 +14,12 @@
   background-color: $primary;
   background-image: linear-gradient(transparent 90%, rgba(0,0,0,0.01)),linear-gradient(173deg, #3AAACA, #2389B1);
   color: $text-invert;
-}
 
+  .navbar--title .logo-title {
+    color: $text-invert;
+    &:hover, &:focus {color: $text-invert }
+  }
+}
 
 .navbar-fixed-top {
   top: 0;
@@ -63,8 +68,6 @@
   .logo-title {
     font-size: 1.2em;
     font-weight: 500;
-    color: $text-invert;
-    &:hover, &:focus {color: $text-invert }
     margin: 0 0 0 3px;
     display: inline-block;
   }
@@ -80,6 +83,7 @@ $navbar-search-results-width: 32%px;
 
   input {
       padding: 0.1rem 0.5rem;
+      border: 1px solid $primary;
   }
 
   .search .results {
