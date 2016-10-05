@@ -19,6 +19,16 @@
     color: $text-invert;
     &:hover, &:focus {color: $text-invert }
   }
+
+  .navbar--navigation .link {
+      color: white;
+      border-bottom-color: white;
+      &:focus,
+      &:hover {
+          color: inherit;
+      }
+  }
+
 }
 
 .navbar-fixed-top {
@@ -131,15 +141,6 @@ button.rstudio-navbutton{
   display: inline-block;
   float: right;
   margin-right: 10px;
-
-  .link {
-    color: white;
-    border-bottom-color: white;
-    &:focus,
-    &:hover {
-        color: inherit;
-    }
-  }
 
   .btn {
     margin: 0;

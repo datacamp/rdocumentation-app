@@ -1,10 +1,6 @@
 .package-header {
   @include clearfix;
-  margin-bottom: $default-space;
-
-  .container {
-    margin-top: $default-space;
-  }
+  margin-top: 2rem;
 
   h1 {
     display: inline-block;
