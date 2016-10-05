@@ -11,17 +11,6 @@
     vertical-align: middle;
   }
 
-  .package--version--select {
-    font-size: 1.2rem;
-    display: inline-block;
-    select {
-      padding: 0.4rem;
-    }
-    .package--version--v {
-      font-weight: bold;
-    }
-  }
-
   .rating {
     margin-left: 1rem;
   }
@@ -37,26 +26,6 @@
   .col-sm-3 {
     margin-top: 0.5rem;
   }
-
-  .package--maintainer {
-    font-size: 2rem;
-    display: inline-block;
-    vertical-align: bottom;
-  }
-
-  .package--title--container {
-    margin-bottom: $default-space;
-    vertical-align: bottom;
-    a {
-      vertical-align: bottom;
-    }
-  }
-
-  .package--title {
-    margin: 0px 5px 0px 0px;
-    font-size: 5rem;
-    vertical-align: bottom;
-  }
   .upvotePackage {
     cursor: pointer;
     padding: 5px;
@@ -67,11 +36,46 @@
     &[upvoted="true"]:hover, &[upvoted="false"] {
       color: inherit;
     }
-
   }
 
   .star-count {
+    display: inline-block;
     font-size: 2rem;
+    vertical-align: baseline;
+  }
+}
+
+.ph-flex-position {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.package--title--container {
+  display: flex;
+  align-items: center;
+  margin-bottom: $default-space;
+}
+
+.package--maintainer {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+}
+
+.package--title {
+  margin: 0;
+  font-size: 5rem;
+}
+
+.package--version--select {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  select {
+    padding: 0.4rem;
+  }
+  .package--version--v {
+    font-weight: bold;
   }
 }
 

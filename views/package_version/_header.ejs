@@ -1,8 +1,7 @@
 <header class="package-header">
   <div class="container">
-    <div class='row'>
-      <div class='col-md-<%= inViewerPane ? '6' : '8'%> col-sm-8 col-xs-9'>
-
+    <div class="ph-flex-position">
+      <div> <!-- Do not remove this div, needed for ph-flex-position -->
         <div class='package--title--container'>
           <h1 class= 'package--title' itemprop="name"><%- pkgVersion.package_name %></h1>
 
@@ -25,13 +24,12 @@
             <span class='package--maintainer'>by <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>"><%= pkgVersion.maintainer.name %></a></span>
           <% } %>
         </div> <!-- /package-title-container -->
-      </div> <!-- /col -->
+      </div> <!-- /Do not remove this div, needed for ph-flex-position -->
 
-      <% if(inViewerPane) { %>
-        <div class='col-md-2 col-sm-4 col-xs-3'><div class="versionCheck"></div></div>
-      <%}%>
-
-      <div class="col-md-4 col-sm-<%= inViewerPane ? '8' : '4'%> col-xs-12">
+      <div><!-- Do not remove this div, needed for ph-flex-position -->
+        <% if(inViewerPane) { %>
+          <div class="versionCheck"></div>
+        <%}%>
         <%if(pkgVersion.package['type_id'] == 2){ %>
           <div class="downloads download-task" data-url="/api<%= path %>/bioc/downloads/splitted">
             <span class="downloads-nr" >
@@ -58,7 +56,7 @@
           <%- include ../shared/_percentile.ejs %>
         <%}%>
 
-        <div class="start-count">
+        <div class="star-count">
           <% if(user){ %>
             <span id="upvoteButton" class="upvotePackage"  upvoted="<%= pkgVersion.package.upvoted ? true : false %>" data-action="/api/packages/<%= pkgVersion.package_name %>/toggleStar">
               <i class="fa fa-heart" aria-hidden="true"></i>
@@ -72,7 +70,7 @@
           <% } %>
           <span class='star-count--number'><%= pkgVersion.package.stars.length %></span>
         </div>
-      </div> <!-- /col -->
+      </div> <!-- /Do not remove this div, needed for ph-flex-position -->
 
     </div> <!-- /row -->
   </div> <!-- /container -->
