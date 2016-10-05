@@ -1,35 +1,29 @@
 .topic-header {
   margin-bottom:15px;
-  @include clearfix();
+}
 
-  .container {
-    position: relative;
-  }
-
+.th--flex-position {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  flex-flow: row wrap;
 }
 
 .th--pkg-info {
-  font-size: 1.2rem;
-  font-weight: 400;
-  background-color: $primary-extra-light;
+  font-size: 1rem;
+  background-color: #ebf4f7;
   border-radius: 5px;
-  padding: 10px;
-
-  position: absolute;
-  top: 27px;
-  right: 15px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
 }
 
-.th--origin {
-  display: inline-block;
-  span {
-    display: block;
-  }
+.th--origin span {
+  display: block;
 }
 
 .th--percentile {
-  display: inline-block;
-  vertical-align: top;
   margin-left: 20px;
   font-weight: 200;
 }
