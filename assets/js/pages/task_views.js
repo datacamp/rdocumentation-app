@@ -67,6 +67,9 @@
     if($(".view").width()<600){
       var slider = $(".sidebar-slider-icon i");
       slideLeft(slider);
+    } else {
+      $(".footer").css("width","calc(100% - 21em)");
+      $(".footer").css("margin-left","280px");
     }
   }
   window.getView = function(view){
