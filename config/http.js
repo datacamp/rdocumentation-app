@@ -88,6 +88,7 @@ module.exports.http = {
 
   paramsInjector: function (req, res, next) {
     res.locals.inViewerPane = (req.param('viewer_pane') === '1') ? true : false;
+    res.locals.inCampus = (req.param('campus_app') === '1') ? true : false;
     res.locals.layout = (req.headers['x-rstudio-ajax'] === 'true' && req.path.indexOf('/taskviews/')<0 && req.path.indexOf('modalLogin')<0) ? 'rstudio_layout.ejs' : res.locals.layout;
     res.locals.path = req.path;
     res.locals.dateformat = dateFormat;

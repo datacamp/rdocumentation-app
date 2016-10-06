@@ -1,0 +1,24 @@
+<header class='topic-header'>
+  <div class="container">
+
+    <div class="th--flex-position">
+      <div> <!-- Do not remove this div, needed for th-flex-position -->
+        <h1><%- topic.name %></h1>
+      </div>
+      <div> <!-- Do not remove this div, needed for th-flex-position -->
+        <div class="th--pkg-info">
+          <div class="th--origin">
+            <span>From <a href="<%- topic.package_version.uri %>"><%- topic.package_version.package_name %> v<%- topic.package_version.version %></a></span>
+            <% if(topic.package_version.maintainer) { %>
+              <span>by <a href="/collaborators/name/<%- topic.package_version.maintainer.name %>"><%- topic.package_version.maintainer.name %></a></span>
+            <% } %>
+          </div>
+          <div class="th--percentile">
+            <% var percentilePath = "/api/packages/"+topic.package_version.package_name+"/percentile"  %>
+            <%- include ../shared/_percentile.ejs %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

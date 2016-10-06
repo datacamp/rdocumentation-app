@@ -290,7 +290,7 @@
         },
         contentType:"application/x-www-form-urlencoded"
       }).then(function(response) {
-        $('.star-count').html(response.newCount);
+        $('.star-count--number').html(response.newCount);
         $this.attr('upvoted', response.star !== 'deleted');
       });
     });
@@ -350,4 +350,3 @@
     });
   };
 })($jq);
-

@@ -1,45 +1,17 @@
 <% var topic = data; %>
-<section data-package-name="<%=topic.package_version.package_name%>" data-latest-version="<%=topic.package_version.version%>" class="packageData" itemscope itemtype="http://schema.org/SoftwareApplication"></section>
-<section class="topic">
-  <div class="container-fluid">
-    <header class='topic--header'>
-      <div class="col-xs-6 no-padding">
-        <h1>
-          <%- topic.name %>
-        </h1>
-      </div>
-      <div class="pull-right topic--package-info">
-        <div class="topic--package-info-details">
-          <span>
-            From
-            <a href="<%- topic.package_version.uri %>">
-              <%- topic.package_version.package_name %> v<%- topic.package_version.version %>
-            </a>
-          </span>
-          <span>
-            <% if(topic.package_version.maintainer) { %>
-              by <a href="/collaborators/name/<%- topic.package_version.maintainer.name %>">
-              <%- topic.package_version.maintainer.name %>
-              </a>
-            <% } %>
-          </span>
-          </div>
+<section class="topic packageData"
+  data-package-name="<%=topic.package_version.package_name%>"
+  data-latest-version="<%=topic.package_version.version%>" >
 
+  <%- include ../topic/_header.ejs %>
 
-          <% var percentilePath = "/api/packages/"+topic.package_version.package_name+"/percentile"  %>
-          <%- include ../shared/_percentile.ejs %>
-
-      </div>
-
-
-    </header>
-
+  <div class="container">
     <section>
       <h5><%- topic.title %></h5>
       <p><%- topic.description %></p>
     </section>
 
-   <% if(topic.keywords && topic.keywords.length>0){ %>
+    <% if(topic.keywords && topic.keywords.length>0){ %>
       <section class="topic--keywords">
         <dl>
           <dt>Keywords</dt>
@@ -51,14 +23,14 @@
       </section>
     <%}%>
 
-   <% if(topic.usage) { %>
-    <section>
-      <h5 class="topic--title">Usage</h5>
-      <pre><code class="R"><%- topic.usage %></code></pre>
-    </section>
-  <% } %>
+    <% if(topic.usage) { %>
+      <section>
+        <h5 class="topic--title">Usage</h5>
+        <pre><code class="R"><%- topic.usage %></code></pre>
+      </section>
+    <% } %>
 
-    <%if(topic.arguments && topic.arguments.length>0){%>
+    <% if(topic.arguments && topic.arguments.length>0){ %>
       <section class="topic--arguments">
         <h5 class="topic--title">Arguments</h5>
         <dl>
@@ -71,8 +43,6 @@
     <%}%>
 
     <!-- Other info -->
-
-
     <% if(topic.details) { %>
       <section>
         <h5 class="topic--title">Details</h5>
@@ -86,7 +56,6 @@
         <p><%- topic.value %></p>
       </section>
     <% } %>
-
 
     <% if(topic.note) { %>
       <section>
@@ -103,7 +72,6 @@
           <p><%- section.description %></p>
         </section>
       <% } %>
-
     <% } %>
 
     <% if(topic.references) { %>
@@ -113,15 +81,12 @@
       </section>
     <% } %>
 
-
     <% if(topic.seealso) { %>
       <section>
         <h5 class="topic--title">See Also</h5>
         <p><%- topic.seealso %></p>
       </section>
     <% } %>
-
-
 
     <% if(topic.examples) { %>
       <section>
@@ -134,10 +99,9 @@
         </section>
       <% }%>
     <% } %>
-
     <small>
       <i> Documentation reproduced from package <span itemprop="name"><%- topic.package_version.package_name %></span>, version <span itemprop="version"><%- topic.package_version.version %></span>,
-      License: <%= topic.package_version.license %>
+        License: <%= topic.package_version.license %>
       </i>
     </small>
 

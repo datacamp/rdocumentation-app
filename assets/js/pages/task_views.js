@@ -1,5 +1,5 @@
 (function($) {
-  bootTaskViews = function() {
+  window.bootTaskViews = function() {
     $( ".js-display-list" ).click(function(e) {
       e.preventDefault();
       $(this).parent().find(".js-view-package-list").toggle();
@@ -31,7 +31,7 @@
 
   window.makeSideBar = function(){
     $(".sidebar-slider-icon").click(function(){
-      var slider = $(".sidebar-slider-icon");
+      var slider = $(".sidebar-slider-icon i");
       if(slider.hasClass("fa-angle-right")){
         slideRight(slider);
       }else{
@@ -40,37 +40,38 @@
     });
   };
 
-  slideLeft = function(slider){
+  var slideLeft = function(slider){
     slider.removeClass("fa-angle-left");
     slider.addClass("fa-angle-right");
-    $(".sliding-sidebar").animate({width:'toggle'},350,function(){
+    $(".sliding-sidebar").animate({width:0},350,function(){
       $(".view").css("width","calc(100% - 2em)");
       $(".view").css("margin-left","20px");
       $(".footer").css("width","calc(100% - 2em)");
       $(".footer").css("margin-left","0px");
+      // $(".sidebar-slider-icon").css("left","10px");
     });
   }
 
-  slideRight = function(slider){
+  var slideRight = function(slider){
     slider.removeClass("fa-angle-right");
-    slider.addClass("fa-angle-left")
+    slider.addClass("fa-angle-left");
     $(".view").css("width","calc(100% - 21em)");
     $(".view").css("margin-left","280px");
     $(".footer").css("width","calc(100% - 21em)");
     $(".footer").css("margin-left","280px");
-    $(".sliding-sidebar").animate({width:'toggle'},350);
+    // $(".sidebar-slider-icon").css("left","250px");
+    $(".sliding-sidebar").animate({width:250},350);
   }
 
-  hideSlider = function(){
+  var hideSlider = function(){
     if($(".view").width()<600){
-      var slider = $(".sidebar-slider-icon");
+      var slider = $(".sidebar-slider-icon i");
       slideLeft(slider);
+    } else {
+      $(".footer").css("width","calc(100% - 21em)");
+      $(".footer").css("margin-left","280px");
     }
   }
-
-
-
-
   window.getView = function(view){
     if(!(urlParam('viewer_pane')==='1')) location.hash = view;
     $.ajax({
@@ -122,4 +123,3 @@
   };
 
 })($jq);
-

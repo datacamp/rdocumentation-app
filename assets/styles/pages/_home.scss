@@ -2,6 +2,23 @@
     position: fixed;
     width: 100%;
     height: 100%;
+    padding: 1em;
+    background-color: $primary;
+    background-image: linear-gradient(transparent 90%, rgba(0,0,0,0.01)),linear-gradient(173deg, #3AAACA, #2389B1);
+    color: $text-invert;
+    p a {
+        transition: color $default-duration ease-out;
+        color: $accent;
+        border-bottom:1px solid $accent;
+        &:hover, { color: $accent-light; }
+        &:focus { color: $accent-light; border-bottom: 1px solid $accent-light; outline: none }
+    }
+
+    .navbar {
+      background: none;
+      background-color: transparent;
+      border-bottom: none;
+    }
 }
 
 .home--cta {
@@ -63,11 +80,15 @@
       color: white;
       border-bottom: none;
     }
+
+    a:hover {
+      color: $primary-light;
+    }
     tr:nth-of-type(2n) {
       background-color: inherit;
     }
     tr {
-
+      border-bottom: none;
       td {
         color: $primary-extra-light;
       }
@@ -101,9 +122,8 @@
   position: absolute;
   margin-bottom: 7px;
   z-index: 1;
-  :hover {
-    cursor: pointer;
-  }
+  cursor: pointer;
+  font-weight:300;
 }
 
 @media (max-height: 420px){

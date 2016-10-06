@@ -99,7 +99,7 @@
       if(containerType === 'rstudio') {
         return urlWParams +'rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
       } else {
-        return urlWParams + 'viewer_pane=1';
+        return urlWParams + 'viewer_pane=1&campus_app=1';
       }
     },
 

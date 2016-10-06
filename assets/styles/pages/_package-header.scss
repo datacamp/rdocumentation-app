@@ -1,0 +1,81 @@
+.package-header {
+  @include clearfix;
+  margin-top: 2rem;
+
+  h1 {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .rating {
+    margin-left: 1rem;
+  }
+  i.fa {
+    display: inline-block;
+  }
+
+  #percentile-arrow{
+    margin-left: 0rem;
+    margin-top: 0.65rem;
+  }
+
+  .col-sm-3 {
+    margin-top: 0.5rem;
+  }
+  .upvotePackage {
+    cursor: pointer;
+    padding: 5px;
+    font-size: 2rem;
+    &[upvoted="false"]:hover, &[upvoted="true"] {
+      color: $primary;
+    }
+    &[upvoted="true"]:hover, &[upvoted="false"] {
+      color: inherit;
+    }
+  }
+
+  .star-count {
+    display: inline-block;
+    font-size: 2rem;
+    vertical-align: baseline;
+  }
+}
+
+.ph-flex-position {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.package--title--container {
+  display: flex;
+  align-items: center;
+  margin-bottom: $default-space;
+}
+
+.package--maintainer {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+}
+
+.package--title {
+  margin: 0;
+  font-size: 5rem;
+}
+
+.package--version--select {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  select {
+    padding: 0.4rem;
+  }
+  .package--version--v {
+    font-weight: bold;
+  }
+}
+
+#openModalUpvote{
+  color: inherit;
+  border-bottom: none;
+}

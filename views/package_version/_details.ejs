@@ -1,0 +1,64 @@
+<section class="package-details">
+  <div class="container">
+    <div id="details" class="sliding">
+      <% if(pkgVersion.collaborators.length > 0) { %>
+        <div class="package-details--contr">
+          <h5>Contributors:</h5>
+          <ul>
+            <% for(var i = 0; i < pkgVersion.collaborators.length; i++) { %>
+              <li><a href="<%= pkgVersion.collaborators[i].uri %>"><%= pkgVersion.collaborators[i].name %></a></li>
+            <% } %>
+          </ul>
+        </div>
+      <% } %>
+
+      <div id="tabs">
+        <ul class="tabs">
+          <% if(pkgVersion.package['type_id'] == 1){%>
+            <li><a id="tab0" href="#chart" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
+          <%} else if(pkgVersion.package['type_id']==2){%>
+            <li><a id ="tab0" href="#bioc_chart" class= "js-external js-tab"><%= pkgVersion.package_name %> downloads</a></li>
+          <%}%>
+          <li><a id="tab1" href="#packagedependencygraph" class="js-external js-tab">Dependency graph</a></li>
+          <li><a id="tab2" href="#packagereversedependencygraph" class="js-external js-tab">Reverse dependency graph</a></li>
+        </ul>
+        <% if(pkgVersion.package['type_id'] == 1){%>
+          <div class='tabs--content' id="chart" style="display: none" data-url="/api<%= path %>/downloads/per_day_last_month">
+            <select onchange="window.redrawChart(this.value)">
+              <option value=7>Last week</option>
+              <option selected="selected" value=30>Last month</option>
+              <option value=365>Last year</option>
+            </select>
+            <svg></svg>
+          </div>
+        <%} else if(pkgVersion.package['type_id']==2){%>
+          <div class='tabs--content' id="bioc_chart" style="display: none" data-url="/api<%= path %>/downloads/bioc/years/1/per_month_last_years">
+            <select onchange="window.redrawBiocChart(this.value)">
+              <option selected="selected" value=1>Last year</option>
+              <option value=2>Last 2 years</option>
+              <option value=3>Last 3 years</option>
+            </select>
+            <svg></svg>
+          </div>
+        <%}%>
+        <div class='tabs--content' id="packagedependencygraph" style="dislay:none" data-url="/api<%= path %>/dependencies"><svg></svg></div>
+        <div class='tabs--content' id="packagereversedependencygraph" style ="display:none" data-url="/api<%= path %>/reversedependencies" ><svg></svg></div>
+      </div> <!-- /#tabs -->
+
+      <div class='package-details-info'>
+        <table>
+          <% for(prop in pkgVersion.sourceJSON) { %>
+            <tr>
+              <td><%= prop %></td>
+              <td><%- pkgVersion.sourceJSON[prop].autoLink({ target: "_blank"}) %></td>
+            </tr>
+          <% } %>
+        </table>
+      </div> <!-- /.package-details -->
+    </div> <!-- /#details -->
+    <section id="slider">
+      <div class="slider-border"></div>
+      <i class="slider-icon fa fa-angle-down" aria-hidden="true"></i>
+    </section>
+  </div> <!-- /.container -->
+</section>
