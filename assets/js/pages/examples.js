@@ -28,7 +28,9 @@
           var $button = $('<button type="button" class="visible-installed btn btn-primary js-external run-example">Run codeblock </button>');
 
           $block.append(exampleHTML);
-          $block.append($button);
+          if(RStudio.rpcActive || Loader.containerType === 'web-iframe') {
+            $block.append($button);
+          }
           return $block.prop('outerHTML');
 
         }
