@@ -30,7 +30,12 @@ module.exports = {
     }
     else{
       var data =req.param("data")
-      return (data.length === 1)? res.ok(data[0],"topic/show.ejs"): res.ok(data,"rStudio/list_options");
+      if (data.length === 1){
+        res.locals.path = data[0].uri;
+        return res.ok(data[0],"topic/show.ejs")
+      } else {
+        return res.ok(data,"rStudio/list_options");
+      }
     }
   },
     /**
