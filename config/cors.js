@@ -55,7 +55,7 @@ module.exports.cors = {
   *                                                                          *
   ***************************************************************************/
 
-  credentials: true,
+  credentials: false,
 
   exposeHeaders: 'X-RStudio-Ajax, X-RStudio-Redirect, X-Rstudio-Session',
   /***************************************************************************
