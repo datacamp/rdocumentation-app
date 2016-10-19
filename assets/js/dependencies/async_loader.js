@@ -7,6 +7,7 @@
   Loader = {
 
     configure: function (containerType) {
+      Loader.containerType = containerType;
       /*
       setting up the ajax requests, each request is crossDomain, and it needs to contain the X-Rstudio-session header for cookies and X-Rstudio-Ajax
       to give back the rstudio-layout
@@ -127,6 +128,7 @@
   };
 
   RStudio = {
+    rpcActive: true,
     stayLoggedIn: function (creds) {
       return $.ajax({
           type: 'POST',
@@ -138,7 +140,7 @@
 
     configureLogin: function() {
      $( document ).ajaxSend(function(event, jqxhr, settings ) {
-        if(settings.type === "POST" && settings.url.indexOf('/login')>-1){
+        if(settings.type === "POST" && settings.url.indexOf('/login')>-1 && RStudio.rpcActive){
           RStudioRequests.logInForRstudio(settings.data).then(function(response){
             if(response.status && response.status === "invalid"){
               if ($(".flash-error").length === 0){
@@ -160,16 +162,13 @@
           if(urlParam('username')!==null) {
             var creds = "username="+decodeURIComponent(urlParam('username'))+
                         "&password=" + decodeURIComponent(urlParam("password"));
-            RStudio.stayLoggedIn(creds).then(Loader.responseHandler(function () {
-            //load the first page, because the first request comes from the view function of the rstudio-controller and contains data tags for the post request
-             RStudio.loadFirstPage();
-            },false));
-          }
-          else{
-            //load the first page, because the first request comes from the view function of the rstudio-controller and contains data tags for the post request
-            RStudio.loadFirstPage();
+            return RStudio.stayLoggedIn(creds).then(Loader.responseHandler(function () {},false));
           }
         }
+      }).fail(function() {
+        RStudio.rpcActive = false;
+      }).always(function() {
+        RStudio.loadFirstPage();
       });
     },
 
@@ -247,12 +246,17 @@
     },
 
     bindRStudioButtons: function () {
-      RStudioRequests.packageVersionControl();
-      rebind('#js-examples', 'click', RStudioRequests.runExamples);
-      rebind('#js-install', 'click', RStudioRequests.installpackage);
-      rebind('#js-hideviewer','click', RStudioRequests.hideViewer);
-      rebind('#js-makedefault','click', RStudioRequests.setDefault);
-      rebind('#js-update_rdoc', 'click', RStudioRequests.updateRDoc);
+      if(RStudio.rpcActive) {
+        RStudioRequests.packageVersionControl();
+        rebind('#js-examples', 'click', RStudioRequests.runExamples);
+        rebind('#js-install', 'click', RStudioRequests.installpackage);
+        rebind('#js-hideviewer','click', RStudioRequests.hideViewer);
+        rebind('#js-makedefault','click', RStudioRequests.setDefault);
+        rebind('#js-update_rdoc', 'click', RStudioRequests.updateRDoc);
+      } else {
+        $('#js-examples').remove();
+        $('#js-install').remove();
+      }
     },
 
     bindExampleButton: function () {
