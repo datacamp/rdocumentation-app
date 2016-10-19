@@ -7,7 +7,7 @@
       <title><%= data.pageTitle %> | RDocumentation</title>
     <% } %>
 
-    <base href="<%= process.env.BASE_URL ? process.env.BASE_URL : '/' %>">
+    <base href="<%= process.env.BASE_URL ? (fromRStudio ? 'http:' : '') + process.env.BASE_URL : '/' %>">
 
     <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
