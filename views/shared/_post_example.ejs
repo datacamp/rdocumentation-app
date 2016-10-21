@@ -16,22 +16,8 @@
       <div class="example--form-body">
         <form method="post" action='<%= examplePostAction %>'>
           <fieldset class="example--form-text">
-            <label for="text"><h4 id="postExampleTitle">Post a new example:</h4></label>
-            <textarea name='text' rows="4" id="postExampleText">
-## New example
-Use markdown to format your example
-
-R code blocks are runnable and interactive:
-```r
-a <- 2
-print(a)
-```
-
-You can also display normal code blocks
-```
-var a = b
-```
-            </textarea>
+            <label for="text"><h3 id="postExampleTitle">Post a new example:</h3></label>
+            <textarea name='text' rows="4" id="postExampleText"></textarea>
           </fieldset>
           <fieldset>
             <% if(user){ %>
