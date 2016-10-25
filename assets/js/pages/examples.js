@@ -68,7 +68,8 @@
             return "Loading...";
           },
           spellChecker: false,
-          status: false
+          status: false,
+          placeholder: "## New example\nUse markdown to format your example\n\nR code blocks are runnable and interactive:\n```r\na <- 2\nprint(a)\n```\n\nYou can also display normal code blocks\n```\nvar a = b\n```"
         });
         return simplemde;
       }
@@ -85,6 +86,39 @@
       $(selector).each(function() { Examples.renderExample($(this)); });
       // initialize DCL widget for added examples
       Examples.bootstrapExamples();
+    },
+
+    validateExample: function(text) {
+      var predicates = [
+        [function(text) { //not empty
+          return text.trim() !== ""
+        }, "Your example is empty"],
+        [function(text) { //actually contains the function name
+          var aliases = $('.topic--aliases li').toArray().map(function(li) {
+            return $(li).text();
+          });
+          var present = $.grep(aliases, function(item) {
+            return text.indexOf(item) >= 0
+          });
+          return present.length >= 1;
+        }, "The function is not used is your example, please use the function name in your example"]
+      ];
+
+      var result = predicates.reduce(function(acc, predicate) {
+        if (acc === true) {
+          return predicate[0](text) ? true : predicate[1];
+        } else return acc;
+      }, true);
+
+      if (result === true) {
+        return {
+          valid: true
+        }
+      }
+      return {
+        valid: false,
+        message: result
+      }
     }
 
 
@@ -128,6 +162,17 @@
     });
     $(".flash").find(".close").click(function(){
       $(this).parents(".flash")[0].remove();
+    });
+
+    $(".example--form form").submit(function(e) {
+      var text = $(this).serializeArray()[0].value
+      var validation = Examples.validateExample(text);
+      if (validation.valid) {
+        return true;
+      } else {
+        alert(validation.message);
+        return false;
+      }
     });
   };
 

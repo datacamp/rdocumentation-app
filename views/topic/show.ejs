@@ -88,6 +88,17 @@
       </section>
     <% } %>
 
+    <% if(topic.aliases) { %>
+      <section style="display: none;">
+        <h5 class="topic--title">Aliases</h5>
+        <ul class="topic--aliases">
+        <% for(var i = 0; i < topic.aliases.length; i++) { %>
+          <li><%- topic.aliases[i].name %></li>
+        <% } %>
+        </ul>
+      </section>
+    <% } %>
+
     <% if(topic.examples) { %>
       <section>
         <h5 class="topic--title">Examples</h5>
