@@ -6,9 +6,9 @@
     return pathName;
   };
 
-  window.urlParam = function(name){
-    var url;
-    if(name === 'viewer_pane' || name === 'RS_SHARED_SECRET' || name === 'Rstudio_port' || name === 'username' || name === 'password' || name === 'history') {
+  window.urlParam = function(name, url){
+    if(typeof url !== 'undefined') { }
+    else if(name === 'viewer_pane' || name === 'RS_SHARED_SECRET' || name === 'Rstudio_port' || name === 'sid' || name === 'history') {
       url = window.location.href;
     } else if ( urlParam('viewer_pane') !== '1') {
       url = window.location.href;

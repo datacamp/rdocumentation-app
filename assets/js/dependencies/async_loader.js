@@ -129,24 +129,28 @@
 
   RStudio = {
     rpcActive: true,
-    stayLoggedIn: function (creds) {
+    stayLoggedIn: function (_sid) {
+      sid = _sid;
       return $.ajax({
-          type: 'POST',
-          url: '/rstudio_login',
-          data: creds,
-          contentType:"application/x-www-form-urlencoded"
-        });
+        type: 'GET',
+        url: '/users/me',
+        contentType:"application/x-www-form-urlencoded"
+      });
     },
 
     configureLogin: function() {
      $( document ).ajaxSend(function(event, jqxhr, settings ) {
         if(settings.type === "POST" && settings.url.indexOf('/login')>-1 && RStudio.rpcActive){
-          RStudioRequests.logInForRstudio(settings.data).then(function(response){
-            if(response.status && response.status === "invalid"){
-              if ($(".flash-error").length === 0){
-                $(".authentication").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+          console.log("Logging in");
+          jqxhr.then(function(res) {
+            console.log("Logged");
+            RStudioRequests.logInForRstudio(sid).then(function(response){
+              if(response.status && response.status === "invalid"){
+                if ($(".flash-error").length === 0){
+                  $(".authentication").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+                }
               }
-            }
+            });
           });
         }
       });
@@ -159,10 +163,9 @@
       */
       RStudioRequests.checkRDocumentationPackageVersion().then(function (upToDate) {
         if(upToDate) {
-          if(urlParam('username')!==null) {
-            var creds = "username="+decodeURIComponent(urlParam('username'))+
-                        "&password=" + decodeURIComponent(urlParam("password"));
-            return RStudio.stayLoggedIn(creds).then(Loader.responseHandler(function () {},false));
+          var sid = urlParam('sid');
+          if(sid!==null) {
+            return RStudio.stayLoggedIn(sid).then(Loader.responseHandler(function () {},false));
           }
         }
       }).fail(function() {
@@ -307,11 +310,12 @@
         rebind(modalId,'modal:ajax:complete',function () {
           bindModalSubmit(function () {
           var auth = $(".authentication--form").serialize();
-            $.post("/modalLogin",auth,function (json) {
+            $.post("/modalLogin",auth,function (json, status, xhr) {
               var status = json.status;
               if(status === "success") {
                 if(containerType === 'rstudio') {
-                  RStudioRequests.logInForRstudio(auth).then(function () {
+                  var sessionid = xhr.getResponseHeader('X-RStudio-Session');
+                  RStudioRequests.logInForRstudio(sessionid).then(function () {
                     $.modal.close();
                     callback();
                   });

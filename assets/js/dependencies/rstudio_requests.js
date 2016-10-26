@@ -37,7 +37,7 @@
 
   RStudioRequests = {
 
-    rdoc_package_version: "0.6",
+    rdoc_package_version: "0.7.1",
 
     checkRDocumentationPackageVersion: function() {
       return RStudioRequests.checkPackageVersion("RDocumentation", RStudioRequests.rdoc_package_version).then(function(installed) {
@@ -51,12 +51,12 @@
     /*
     Helper function to store credentials in Rstudio and to stay loggedIn for fututre ajax request
     */
-    logInForRstudio: function (loginData) {
+    logInForRstudio: function (sid) {
       return _rStudioRequest('execute_r_code',
-        ["dir.create(paste0(find.package('RDocumentation'),'/config')) \n write('" + loginData + "', file = paste0(find.package('RDocumentation'),'/config/creds.txt'))"])
+        ["dir.create(paste0(find.package('RDocumentation'),'/config')) \n write('" + 'sid=' + sid + "', file = paste0(find.package('RDocumentation'),'/config/creds.txt'))"])
       .then(function () {
-        console.log("Stored creds in RStudio");
-        return RStudio.stayLoggedIn(loginData);
+        console.log("Stored creds in RStudio: "+ sid);
+        return RStudio.stayLoggedIn(sid);
       });
     },
 
