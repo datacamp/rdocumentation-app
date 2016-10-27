@@ -48,6 +48,15 @@ module.exports = {
     });
   },
 
+  updatePercentile: function(req, res) {
+    ElasticSearchService.updateLastMonthPercentiles().then(function(){
+      console.log("Finished updating percentiles");
+      res.send(200, "done");
+    }).catch(function(err){
+      return res.negotiate(err.errors);
+    });
+  },
+
   lastDaySplittedDownloads: function(req, res) {
     DownloadStatistic.getNotIndexedDates().then(function(days) {
       return days.map(function(day) {
