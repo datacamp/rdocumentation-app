@@ -73,7 +73,7 @@ module.exports = {
         }
       });
 
-    }, {concurrency: 3}).then(function(){
+    }, {concurrency: 10}).then(function(){
 
       return ElasticSearchService.scrollDailyDownloadsBulk(_response,formattedDate,directDownloads,indirectDownloads,total,callback);
     });
