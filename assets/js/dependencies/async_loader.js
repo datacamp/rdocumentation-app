@@ -128,7 +128,7 @@
   };
 
   RStudio = {
-    rpcActive: true,
+    rpcActive: false,
     stayLoggedIn: function (_sid) {
       sid = _sid;
       return $.ajax({
