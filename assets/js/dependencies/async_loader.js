@@ -167,7 +167,11 @@
           if(sid!==null) {
             return RStudio.stayLoggedIn(sid).then(Loader.responseHandler(function () {},false));
           }
-          RStudio.loadFirstPage();
+          RStudioRequests.checkRStudioVersion().then(function(version) {
+            RStudio.version = version;
+            console.log(version);
+            RStudio.loadFirstPage();
+          });
         }
       }).fail(function() {
         RStudio.rpcActive = false;

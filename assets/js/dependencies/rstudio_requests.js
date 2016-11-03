@@ -11,6 +11,10 @@
     data.clientId = '33e600bb-c1b1-46bf-b562-ab5cba070b0e';
     data.clientVersion = "";
 
+    if (method === 'console_input' && RStudio.version >= 1) {
+      data.params = data.params.concat("");
+    }
+
     return $.ajax({
       url: 'http://127.0.0.1:' + port + RStudioRPCEndpoints[method],
       headers:
@@ -76,6 +80,15 @@
         }
       });
       return false;
+    },
+
+    checkRStudioVersion: function() {
+      return _rStudioRequest('execute_r_code',["toString(RStudio.Version()$version)"])
+      .then(function (result) {
+        var version = result.result.replace('"', '').split('.');
+        var major = parseInt(version[0]);
+        return major
+      });
     },
 
     /*
