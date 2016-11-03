@@ -12,6 +12,7 @@
     data.clientVersion = "";
 
     if (method === 'console_input' && RStudio.version >= 1) {
+      //RStudio 1.0 expect 2 parameters, instead of 1 for RStudio < 1.0
       data.params = data.params.concat("");
     }
 
