@@ -169,7 +169,6 @@
           }
           RStudioRequests.checkRStudioVersion().then(function(version) {
             RStudio.version = version;
-            console.log(version);
             RStudio.loadFirstPage();
           });
         }
