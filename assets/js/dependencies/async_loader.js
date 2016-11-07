@@ -128,7 +128,7 @@
   };
 
   RStudio = {
-    rpcActive: false,
+    rpcActive: true,
     stayLoggedIn: function (_sid) {
       sid = _sid;
       return $.ajax({
@@ -167,7 +167,10 @@
           if(sid!==null) {
             return RStudio.stayLoggedIn(sid).then(Loader.responseHandler(function () {},false));
           }
-          RStudio.loadFirstPage();
+          RStudioRequests.checkRStudioVersion().then(function(version) {
+            RStudio.version = version;
+            RStudio.loadFirstPage();
+          });
         }
       }).fail(function() {
         RStudio.rpcActive = false;
