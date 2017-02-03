@@ -3,9 +3,6 @@
  *
  * @description :: Server-side logic for the integration of the campus-app with Rdocs
  */
-var Promise = require('bluebird');
-var _ = require('lodash');
-
 
 module.exports = {
 

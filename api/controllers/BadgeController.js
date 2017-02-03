@@ -5,6 +5,12 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+var formatNumber = function(number){
+  if(number > 999999) return (number/1000000).toFixed(1) + 'M';
+  else if (number >999) return (number/1000).toFixed(1) + 'K';
+  else return number;
+};
+
 module.exports = {
 
 	  /**
@@ -77,9 +83,9 @@ module.exports = {
 					downloads = data["sum_indirect"] + data["sum_direct"]
 					statsName = "total downloads"
 				}
-				length = 20+ (String(downloads).length + period.length+1)*6
-				statistics = {
-					downloads:_formatNumber(downloads),
+				var length = 20+ (String(downloads).length + period.length+1)*6
+				var statistics = {
+					downloads:formatNumber(downloads),
 					statsName:statsName,
 					period:period,
 					length:length
@@ -108,25 +114,19 @@ module.exports = {
   */
   getLatestVersion: function(req, res) {
   	var packageName = req.param("packageName");
-  	Package.getLatestVersionNumber(packageName).then(function(package){
-  		if(package===null){
-  			version="not published";
-  			color="#e05d44";
+  	Package.getLatestVersionNumber(packageName).then(function(_package){
+  		if(_package===null){
+  			var version="not published";
+  			var color="#e05d44";
   		}
   		else{
-  			version=package.latest_version.dataValues.version;
-  			color="#33aacc";
+  			var version=_package.latest_version.dataValues.version;
+  			var color="#33aacc";
   		}
-  		length=40+version.length*6;
+  		var length = 40+version.length*6;
       res.type('image/svg+xml');
       res.locals.layout = null;
   		res.view('badges/version_badge.ejs',{data:{version:version,color:color,length:length}});
   	});
   },
-};
-
-_formatNumber=function(number){
-	if(number > 999999) return (number/1000000).toFixed(1) + 'M';
-	else if (number >999) return (number/1000).toFixed(1) + 'K';
-	else return number;
 };

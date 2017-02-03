@@ -4,7 +4,7 @@
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
-_ = require('lodash');
+var _ = require('lodash');
 var Promise = require('bluebird');
 
 module.exports = {
@@ -89,7 +89,7 @@ module.exports = {
           group:['topic.name','topic.package_version.id','topic.id','Alias.id','topic.package_version.package_latest.name'],
           order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package_latest.last_month_stats.direct_downloads'))]
         }).then(function(data){
-            allResults = _.map(data,function(record){
+            var allResults = _.map(data,function(record){
             return {
               id:record.topic.id,
               package_name:record.topic.package_version.package_name,
@@ -98,7 +98,7 @@ module.exports = {
               function_description:record.topic.description
               };
           })
-          return allResults; 
+          return allResults;
         }).catch(function(err){
           console.log(err.message);
         });
@@ -140,7 +140,7 @@ module.exports = {
           group:['topic.name','topic.package_version.id','topic.id','Alias.id','topic.package_version.package_latest.name'],
           order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package_latest.last_month_stats.direct_downloads'))]
         }).then(function(data){
-            allResults = _.map(data,function(record){
+            var allResults = _.map(data,function(record){
             return {
               id:record.topic.id,
               package_name:record.topic.package_version.package_name,
@@ -149,7 +149,7 @@ module.exports = {
               function_description:record.topic.description
               };
           })
-          return allResults; 
+          return allResults;
         }).catch(function(err){
           console.log(err.message);
         });
@@ -191,11 +191,11 @@ module.exports = {
           group:['name','package_version.id','id','package_version.package_latest.name'],
           order:[sequelize.fn('SUM', sequelize.col('package_version.package_latest.last_month_stats.direct_downloads'))]
         }).then(function(data){
-          allResults= _.map(data,function(record){
+          var allResults= _.map(data,function(record){
             return Alias.findAll({
               where: {topic_id:record.id}
             }).then(function(aliases){
-              alias = (aliases != null && aliases.length > 0)? aliases[0].name : "";
+              var alias = (aliases != null && aliases.length > 0)? aliases[0].name : "";
               return {
                 id:record.id,
                 package_name:record.package_version.package_name,

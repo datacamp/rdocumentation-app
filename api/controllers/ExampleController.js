@@ -14,7 +14,7 @@ module.exports = {
   * @apiGroup Example
   * @apiPermission require to be authenticated
   * @apiDescription Create a new review in the specified topic.
-  * 
+  *
   *
   *
   * @apiParam {Int} topicId Id of the topic to post to review
@@ -80,7 +80,7 @@ module.exports = {
   *
   * @apiParam {Integer}     exampleId     The id of the example.
   * @apiParam {String}      text          Contents of the updated example (styling via markdown).
-  * 
+  *
   * @apiSuccess {String}    status        done when the operation was successful, forbidden if the user isn't properly authenticated.
   */
   updateExample: function(req, res) {
@@ -113,7 +113,6 @@ module.exports = {
     var limit = Utils.parseLimit(req),
       offset = Utils.parseSkip(req),
       sort = Utils.parseSort(req) || 'created_at DESC';
-    var user = req.user;
 
     return Example.findAll({
       where: {

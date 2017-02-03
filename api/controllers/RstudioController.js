@@ -7,6 +7,9 @@
 var Promise = require('bluebird');
 var _ = require('lodash');
 
+var splitByCommaOrNull = function(param){
+  return (typeof param != "undefined" && param.length>0)? param.split(",") : null;
+}
 
 module.exports = {
 
@@ -22,7 +25,7 @@ module.exports = {
 
   **/
   viewResults : function(req,res){
-    matches = req.param("matches")
+    var matches = req.param("matches")
     if(matches === 0){
       return ElasticSearchService.helpSearchQuery(req.param("topic"),['aliases'],true,2).then(function(json){
         return res.ok(json,'rStudio/topic_not_found.ejs');
@@ -54,8 +57,8 @@ module.exports = {
       */
       case "help":
         //parse parameters
-        var packageNames = _splitByCommaOrNull(req.param("packages"));
-        var topicNames = _splitByCommaOrNull(req.param("topic_names"));
+        var packageNames = splitByCommaOrNull(req.param("packages"));
+        var topicNames = splitByCommaOrNull(req.param("topic_names"));
         var topic = req.param("topic");
         var help_data = RStudioService.help(packageNames,topicNames,topic);
         break;
@@ -65,8 +68,8 @@ module.exports = {
       */
       case "help_search":
         //parse parameters
-        var packageNames = _splitByCommaOrNull(req.param('matching_packages'));
-        var topicNames = _splitByCommaOrNull(req.param('matching_titles'));
+        var packageNames = splitByCommaOrNull(req.param('matching_packages'));
+        var topicNames = splitByCommaOrNull(req.param('matching_titles'));
         var pattern = req.param("query");
         var fields = req.param("fields").split(",");
         var fuzzy = (req.param("type") === "fuzzy")? fuzzy = true : fuzzy = false;
@@ -147,6 +150,3 @@ module.exports = {
   }
 };
 
-_splitByCommaOrNull = function(param){
-  return (typeof param != "undefined" && param.length>0)? param.split(",") : null;
-}

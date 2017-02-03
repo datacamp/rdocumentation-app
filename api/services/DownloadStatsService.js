@@ -14,8 +14,8 @@ module.exports = {
       return Promise.resolve(reverseDependencies);
     } else {
       return Dependency.findByDependantForIndependentDownloads(package_name).then(function(rootPackages) {
-        var rootPackageNames = _.map(rootPackages,function(package){
-          return package.package_name;
+        var rootPackageNames = _.map(rootPackages,function(_package){
+          return _package.package_name;
         });
         rootPackageNames = _.sortBy(rootPackageNames);
         DownloadStatsService.reverseDependenciesCache[package_name] = rootPackageNames;
@@ -83,12 +83,12 @@ module.exports = {
   writeSplittedDownloadCounts: function(date,directDownloads,indirectDownloads){
     console.log("writing data");
     return Package.findAll({attributes: ['name']}).then(function(packages) {
-      var records = _.map(packages, function(package) {
+      var records = _.map(packages, function(_package) {
         return {
-          package_name: package.name,
+          package_name: _package.name,
           date: date,
-          indirect_downloads: indirectDownloads[package.name] || 0,
-          direct_downloads: directDownloads[package.name] || 0
+          indirect_downloads: indirectDownloads[_package.name] || 0,
+          direct_downloads: directDownloads[_package.name] || 0
         };
       });
       var groups = _.chunk(records,500);

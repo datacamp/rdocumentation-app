@@ -20,7 +20,7 @@ module.exports = {
       var packageVersion = req.body.package.version;
       var result = Topic.createWithRdFile({input: req.body, packageName: packageName, packageVersion: packageVersion});
       result.then(function(value) {
-        key = 'view_topic_' + value.id;
+        var key = 'view_topic_' + value.id;
         RedisService.del(key);
         res.json(value);
       })
@@ -69,9 +69,9 @@ module.exports = {
         console.log("Nothing new");
         return res.send(200, "done");
       }
-
+      res.send(200, "scheduled");
       DownloadStatsService.reverseDependenciesCache = {}; //clean old cache
-      Promise.map(diffs, function (nDay) {
+      return Promise.map(diffs, function (nDay) {
         console.log("Started indexing for today - " + nDay + "days");
         return CronService.splittedAggregatedDownloadstats(nDay)
           .catch({message: "empty"}, function() {
@@ -86,7 +86,6 @@ module.exports = {
       .then(function (result) {
         console.log("Finished indexing splitted stats");
         DownloadStatsService.reverseDependenciesCache = {}; //clean cache
-        res.send(200, "done");
       }).catch(function(err) {
         return res.negotiate(err);
       });

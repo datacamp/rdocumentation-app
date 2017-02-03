@@ -203,7 +203,7 @@ module.exports = {
         packageVersion.fields.license = packageVersion.fields.license || "";
 
         return sequelize.transaction(function (t) {
-          var package = Repository.findOrCreate({
+          var _package = Repository.findOrCreate({
             where: {name: type},
             transaction: t
           }).spread(function(repoInstance, created){
@@ -224,7 +224,7 @@ module.exports = {
           });
 
 
-          return Promise.join(package, dependencies,
+          return Promise.join(_package, dependencies,
             function(packageInstance) {
 
               return PackageVersion.findOrInitialize(

@@ -53,25 +53,25 @@ module.exports = {
         { model: PackageVersion, as: 'versions' },
       ],
       order: [[sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'ASC' ]]
-    }).then(function(package) {
-      if(package === null) {
+    }).then(function(_package) {
+      if(_package === null) {
         return res.rstudio_redirect(301, '/search?q=' + encodeURIComponent(packageName));
         //there seems to be a problem with redirected requests if text/html is set as contentype for the ajax request, so I just
         //adapt this so Rstudio still gets the html
       } else if(req.wantsJSON &&!req.param("viewer_pane")==1) {
-        return res.json(package);
+        return res.json(_package);
       } else {
-        if (package.versions.length === 0)
+        if (_package.versions.length === 0)
           return Package.findOne({
             where: {name: packageName},
             include: [{ model: PackageVersion, attributes: ['package_name', 'version', 'id'], as: 'reverse_dependencies'}]
           }).then(function(packageInstance) {
             if(packageInstance === null) return res.notFound();
-            var package = packageInstance.toJSON();
-            package.pageTitle = packageInstance.name;
-            return res.ok(package, 'package/show.ejs');
+            var _package = packageInstance.toJSON();
+            _package.pageTitle = packageInstance.name;
+            return res.ok(_package, 'package/show.ejs');
           });
-        else return res.rstudio_redirect(301, package.versions[package.versions.length - 1].uri);
+        else return res.rstudio_redirect(301, _package.versions[_package.versions.length - 1].uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);
@@ -130,8 +130,8 @@ module.exports = {
       include: [
         { model: TaskView, as: 'inViews', attributes:['name'] }
       ]
-    }).then(function(package){
-      var views = package.inViews;
+    }).then(function(_package){
+      var views = _package.inViews;
       views.forEach(function(view){
         RedisService.del('rdocs_view_show_' + view.name);
       });

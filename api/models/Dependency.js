@@ -46,7 +46,7 @@ module.exports = {
         });
       },
 
-      findIndirectDependencies: function(package) {
+      findIndirectDependencies: function(_package) {
         var query = "SELECT  " +
            "   firstlevel.dependency_name as direct_dependencies,  " +
            "   secondlevel.dependency_name as indirect_dependencies  " +
@@ -58,12 +58,12 @@ module.exports = {
            "     (SELECT DISTINCT d.dependency_name FROM Dependencies d INNER JOIN PackageVersions v ON d.`dependant_version_id` = v.id WHERE v.package_name = ?)) secondlevel " +
            "   ON secondlevel.`package_name` = firstlevel.dependency_name; ";
         return sequelize.query(query,{
-          replacements: [package,package],
+          replacements: [_package,_package],
           type: sequelize.QueryTypes.SELECT
         });
       },
 
-      findIndirectReverseDependencies: function(package) {
+      findIndirectReverseDependencies: function(_package) {
         var query = "SELECT  " +
            "   firstlevel.package_name as direct_reverse_dependencies,  " +
            "   secondlevel.package_name as indirect_reverse_dependencies  " +
@@ -75,13 +75,13 @@ module.exports = {
            "     (SELECT DISTINCT v.package_name FROM Dependencies d INNER JOIN PackageVersions v ON d.`dependant_version_id` = v.id WHERE d.`dependency_name` = ?) and s.date >= current_date() - interval '1' month Group BY d.dependency_name, v.package_name ORDER BY total DESC LIMIT 300) secondlevel " +
            "   ON secondlevel.`dependency_name` = firstlevel.package_name; ";
         return sequelize.query(query,{
-          replacements: [package,package],
+          replacements: [_package,_package],
           type: sequelize.QueryTypes.SELECT
         });
       },
 
-      findByDependantForIndependentDownloads: function(package){
-        return sequelize.query("SELECT DISTINCT b.package_name FROM Dependencies a,PackageVersions b where a.dependency_name = :name and a.dependant_version_id=b.id and a.type!='enhances'",{ replacements: { name: package }, type: sequelize.QueryTypes.SELECT });
+      findByDependantForIndependentDownloads: function(_package){
+        return sequelize.query("SELECT DISTINCT b.package_name FROM Dependencies a,PackageVersions b where a.dependency_name = :name and a.dependant_version_id=b.id and a.type!='enhances'",{ replacements: { name: _package }, type: sequelize.QueryTypes.SELECT });
       }
     }
   }

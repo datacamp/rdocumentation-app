@@ -73,7 +73,7 @@ module.exports = {
     else {
       if(descriptionJSON.Author){
         if(descriptionJSON.Author.indexOf("person(") !== -1) {
-          authors.contributors = AuthorService.recoverAuthorsR(json.Author).contributors;
+          authors.contributors = AuthorService.recoverAuthorsR(descriptionJSON.Author).contributors;
         }
         else {
           authors.contributors = AuthorService.authorsSanitizer(descriptionJSON.Author);

@@ -105,8 +105,8 @@ module.exports = {
         return Package.findAll({
           where:{type_id:type}
         }).then(function(packages){
-          return _.map(packages,function(package){
-            return package.dataValues.name;
+          return _.map(packages,function(_package){
+            return _package.dataValues.name;
           })
         })
       },

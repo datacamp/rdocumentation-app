@@ -142,17 +142,17 @@ module.exports = {
         }]
       }).then(function(view) {
         var jsonViews = view.toJSON();
-        var packages = _.map(jsonViews.packages, function(package) {
+        var packages = _.map(jsonViews.packages, function(_package) {
           var rating;
-          if(!package.latest_version || package.latest_version.reviews.length === 0) {
+          if(!_package.latest_version || _package.latest_version.reviews.length === 0) {
             rating = 0;
           } else {
-            rating = _.meanBy(package.latest_version.reviews, function(r) {
+            rating = _.meanBy(_package.latest_version.reviews, function(r) {
               return r.rating;
             });
           }
-          package.rating = rating;
-          return package;
+          _package.rating = rating;
+          return _package;
         });
         jsonViews.packages = packages;
         jsonViews.pageTitle = view.name;

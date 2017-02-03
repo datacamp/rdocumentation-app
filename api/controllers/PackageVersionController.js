@@ -45,7 +45,7 @@ module.exports = {
     var result = PackageVersion.createWithDescriptionFile({input: req.body});
     result.then(function(value) {
       res.location('/api/packages/' + value.package_name + '/versions/' + value.version);
-      key = 'view_package_version_' + value.package_name + '_' + value.version;
+      var key = 'view_package_version_' + value.package_name + '_' + value.version;
       RedisService.del(key);
       res.json(value);
     }).catch(Sequelize.UniqueConstraintError, function (err) {
@@ -165,7 +165,7 @@ module.exports = {
   },
 
   _getDownloadStatistics: function (res, packageName) {
-    key = 'rdocs_download_stats_' + packageName;
+    var key = 'rdocs_download_stats_' + packageName;
 
     return RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
 
@@ -348,7 +348,7 @@ module.exports = {
   * @apiSuccess {Integer}  nodes.group          The group to which this package belongs in the graph. The dependency and his dependencies are grouped together. When conflict the second level dependency is grouped with the most popular dependency.
   * @apiSuccess {Object[]} links                The links in the graph represented as a list.
   * @apiSuccess {Integer}  links.source         The dependant package (as number in the nodes list).
-  * @apiSuccess {Integer}  links.target         The depending package (as number in the nodes list).   
+  * @apiSuccess {Integer}  links.target         The depending package (as number in the nodes list).
   */
   getDependencyGraph: function(req,res) {
     var rootPackage = req.param('name');
@@ -421,7 +421,7 @@ module.exports = {
   * @apiSuccess {Integer}  nodes.group          The group to which this package belongs in the graph. The reverse dependency and his reverse dependencies are grouped together. When conflict the second level reverse dependency is grouped with the most popular reverse dependency.
   * @apiSuccess {Object[]} links                The links in the graph represented as a list.
   * @apiSuccess {Integer}  links.source         The depending package (as number in the nodes list).
-  * @apiSuccess {Integer}  links.target         The dependant package (as number in the nodes list).   
+  * @apiSuccess {Integer}  links.target         The dependant package (as number in the nodes list).
   */
   getReverseDependencyGraph: function(req,res) {
     var rootPackage = req.param('name');

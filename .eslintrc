@@ -1,0 +1,11 @@
+{
+  parserOptions: {
+    ecmaVersion: 5,
+    sourceType: 'module',
+  },
+  rules: {
+    'no-undef': 'error',
+    'no-unused-vars': ['error', { vars: 'local', args: 'after-used' }],
+    'no-use-before-define': 'error'
+  },
+}

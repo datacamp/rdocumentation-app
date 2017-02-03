@@ -11,9 +11,7 @@ var request = require('request');
 var Promise = require('bluebird');
 var numeral = require('numeral');
 
-
-
-var self = module.exports = {
+module.exports = {
 
 
 
@@ -64,14 +62,14 @@ var self = module.exports = {
       if(packages === null) return res.notFound();
       else {
         var json = {name: name };
-        repositories = {
+        var repositories = {
           cran: 0,
           bioconductor: 0,
           github: 0
         };
 
-        Promise.map(packages, function(package) {
-          var latest = package.latest_version.toJSON();
+        Promise.map(packages, function(_package) {
+          var latest = _package.latest_version.toJSON();
           if (latest.maintainer.name === name) {
             latest.is_maintainer = true;
           }
@@ -88,12 +86,12 @@ var self = module.exports = {
           if(!json.email && collaborators.length > 0 && collaborators[0].email) {
             json.email = collaborators[0].email;
           }
-          repositories[package.repository.name] = repositories[package.repository.name]+1 || 1;
+          repositories[_package.repository.name] = repositories[_package.repository.name]+1 || 1;
 
           return Package.getPackagePercentile(latest.package_name).then(function(percentileObject) {
             latest.percentile = isNaN(percentileObject.percentile) ? -1 : percentileObject.percentile;
             latest.totalDownloads = percentileObject.total;
-            latest.repoName = package.repository.name;
+            latest.repoName = _package.repository.name;
             return latest;
           });
 
@@ -121,7 +119,7 @@ var self = module.exports = {
   getNumberOfDirectDownloads: function(req,res){
     var name = req.param('name');
     DownloadStatistic.getNumberOfDirectDownloads(name).then(function(results){
-      row = results[0];
+      var row = results[0];
       row.totalStr = row.total ? numeral(row.total).format('0,0') : '';
       res.json(results[0]);
     });
