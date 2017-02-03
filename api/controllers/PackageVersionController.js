@@ -223,32 +223,7 @@ module.exports = {
     });
 
   },
-/**
-  * @api {get} /packages/:name/bioc/downloads/splitted Splitted downloads of BiocPackage
-  * @apiName Get splitted BiocPackage downloads
-  * @apiDescription Downloads for a Bioconductor package splitted in direct and indirect ones. A package is downloaded indirectly when a reverse dependency of it is downloaded from the same ip within a minute.
-  * @apiGroup Package
-  *
-  * @apiParam {String}     name                 The name of the package.
-  *
-  * @apiSuccess {Integer}  directDownloads      Number of direct downloads.
-  * @apiSuccess {Integer}  total                Total number of downloads.
-  * @apiSuccess {String}   directDownloadsStr   Number of direct downloads.
-  * @apiSuccess {String}   totalStr             Total number of downloads.
-  */
-  getSplittedBiocDownloadStatistics : function(req,res){
-  var packageName = req.param('name');
 
-  BiocDownloadStatistics.getMonthlySplittedDownloads(packageName).then(function(stats){
-    return res.json({
-      directDownloadsStr: numeral(stats[0].distinct_ips).format('0,0'),
-      totalStr: numeral(stats[0].downloads).format('0,0'),
-      directDownloads: stats[0].distinct_ips,
-      total: stats[0].downloads
-    });
-  });
-
-  },
 /**
   * @api {get} /packages/:name/percentile The download percentile of the package.
   * @apiName Get download percentile.

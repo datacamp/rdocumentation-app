@@ -30,15 +30,7 @@
         <% if(inViewerPane) { %>
           <div class="versionCheck"></div>
         <%}%>
-        <%if(pkgVersion.package['type_id'] == 2){ %>
-          <div class="downloads download-task" data-url="/api<%= path %>/bioc/downloads/splitted">
-            <span class="downloads-nr" >
-              <span class='indeps'>0</span>
-              <i class="fa fa-info-circle distinct-ip-downloads" aria-hidden="false"></i>
-            </span>
-            <p>Monthly downloads</p>
-          </div>
-        <%} else if(pkgVersion.package['type_id'] == 1 ){%>
+        <%if(pkgVersion.package['type_id'] == 1 ){%>
           <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
             <span class="downloads-nr" >
               <span class='indeps'>0</span>
