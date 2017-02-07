@@ -2,10 +2,7 @@
 
   window.Examples = {
     bootstrapExamples: function() {
-      if(urlParam("viewer_pane") != 1) {
-        window.initAddedDCLightExercises();
-      }
-      else {
+      if (urlParam("viewer_pane") == 1) {
         $('.run-example').each(function() {
           var packageName = $(this).parent().parent().data('package-name') || $('.packageData').data('package-name');
           $(this).click(function(){
@@ -35,19 +32,19 @@
 
         }
         else if(lang === '{r}' || lang === 'r') {
-          var codeBlock = '<div data-datacamp-exercise data-lang="r">';
-          codeBlock += '<code data-type="sample-code">';
+          var codeBlock = '<pre>';
+          codeBlock += '<code class="R hljs">';
           codeBlock += code;
           codeBlock += '</code>';
-          codeBlock += '</div>';
+          codeBlock += '</pre>';
           return codeBlock;
         }else if(lang === 'python' || lang === '{python}') {
-        var codeBlock = '<div data-datacamp-exercise data-lang="python">';
-        codeBlock += '<code data-type="sample-code">';
-        codeBlock += code;
-        codeBlock += '</code>';
-        codeBlock += '</div>';
-        return codeBlock;
+          var codeBlock = '<pre>';
+          codeBlock += '<code class="python hljs">';
+          codeBlock += code;
+          codeBlock += '</code>';
+          codeBlock += '</pre>';
+          return codeBlock;
         } else {
           return defaultCodeFunction.call(this, code, lang);
         }
