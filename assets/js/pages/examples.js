@@ -86,19 +86,19 @@
     },
 
     validateExample: function(text) {
+      var aliases = $('.topic--aliases li').toArray().map(function(li) {
+        return $(li).text();
+      });
       var predicates = [
         [function(text) { //not empty
           return text.trim() !== ""
         }, "Your example is empty"],
         [function(text) { //actually contains the function name
-          var aliases = $('.topic--aliases li').toArray().map(function(li) {
-            return $(li).text();
-          });
           var present = $.grep(aliases, function(item) {
             return text.indexOf(item) >= 0
           });
           return present.length >= 1;
-        }, "The function is not used is your example, please use the function name in your example"]
+        }, "Your example should use at least one of thoses aliases: " + aliases.join(', ')]
       ];
 
       var result = predicates.reduce(function(acc, predicate) {
