@@ -45,7 +45,7 @@ module.exports = {
   findByName: function(req, res) {
     var packageName = req.param('name');
 
-    Package.findAll({
+    Package.findOne({
       where: {
         name: packageName,
       },
