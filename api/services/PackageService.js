@@ -1,5 +1,5 @@
 // PackageService.js - in api/services
-
+const _ = require('lodash');
 
 
 module.exports = {
@@ -102,6 +102,34 @@ module.exports = {
       dependencies: dependencies
     };
 
+  },
+
+  compareVersions: function(order, property) {
+    const lower = order === 'asc' ? -1 : 1;
+    const higher = order === 'asc' ? 1 : -1;
+     return function (v1, v2) {
+      if (_.isFunction(property)) {
+        v1 = property(v1);
+        v2 = property(v2);
+      } else if (property){
+        v1 = v1[property];
+        v2 = v2[property];
+      }
+      const v1Components = v1.replace('-', '.').split('.');
+      const v2Components = v2.replace('-', '.').split('.');
+      let currentV1 = null;
+      let currentV2 = null;
+      while (true) { //only case where it continue is actually currentV1 === currentV2
+        currentV1 = v1Components.shift();
+        currentV2 = v2Components.shift();
+        let compareValue
+        if (currentV1 === undefined && currentV2 === undefined) return 0;
+        if (currentV1 === undefined && currentV2 !== undefined) return lower;
+        if (currentV1 !== undefined && currentV2 === undefined) return higher;
+        compareValue = currentV1.localeCompare(currentV2, [], { numeric: true });
+        if (compareValue !== 0) return compareValue < 0 ? lower : higher;
+      }
+    }
   }
 
 

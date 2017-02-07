@@ -56,7 +56,8 @@
   "scripts": {
     "debug": "nf start debug",
     "prestart": "node node_modules/db-migrate/bin/db-migrate up",
-    "start": "forever app.js"
+    "start": "forever app.js",
+    "test": "mocha"
   },
   "main": "app.js",
   "repository": {
@@ -71,6 +72,7 @@
     "eslint-config-airbnb": "^13.0.0",
     "eslint-config-airbnb-base": "^10.0.1",
     "eslint-plugin-import": "^2.2.0",
+    "mocha": "^3.2.0",
     "sitemap-stream": "^2.0.1"
   }
 }

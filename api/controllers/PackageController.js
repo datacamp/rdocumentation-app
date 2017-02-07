@@ -45,14 +45,13 @@ module.exports = {
   findByName: function(req, res) {
     var packageName = req.param('name');
 
-    Package.findOne({
+    Package.findAll({
       where: {
         name: packageName,
       },
       include: [
         { model: PackageVersion, as: 'versions' },
       ],
-      order: [[sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'ASC' ]]
     }).then(function(_package) {
       if(_package === null) {
         return res.rstudio_redirect(301, '/search?q=' + encodeURIComponent(packageName));
@@ -71,7 +70,7 @@ module.exports = {
             _package.pageTitle = packageInstance.name;
             return res.ok(_package, 'package/show.ejs');
           });
-        else return res.rstudio_redirect(301, _package.versions[_package.versions.length - 1].uri);
+        else return res.rstudio_redirect(301, _package.versions.sort(PackageService.compareVersions('desc', 'version'))[0].uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);
