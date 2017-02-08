@@ -1,4 +1,4 @@
-<div class="example-wrapper">  
+<div class="example-wrapper">
   <% if(exampleTarget!==null){ %>
     <a href = '<%- exampleTarget.uri %>'><h4><%- exampleTarget.package_version.package_name+": "+exampleTarget.name %></h4></a>
   <% } %>
@@ -18,7 +18,7 @@
         </div>
       <% } %>
     </div>
-    <div class='example--body'>
+    <div class='example--body markdown-body'>
       <p class='example--text tex2jax_ignore' data-raw='<%= user_examples[i].example %>'
       <%if(user_examples[i].topic){%>
         data-package-name = '<%=user_examples[i].topic.package_version.package_name%>'

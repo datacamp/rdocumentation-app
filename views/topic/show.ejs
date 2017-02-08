@@ -117,6 +117,22 @@
     </small>
 
     <% var examplePostAction = '/api/topics/' + data.id + '/examples' %>
-    <%- include ../shared/_post_example.ejs %>
+    <% var user_examples = data.user_examples; %>
+
+    <div class='user-examples' id="postExample">
+      <h3>Community examples</h3>
+      <div class="example-content">
+        <% if(user_examples.length === 0 ) { %>
+          <div class="example--placeholder">Looks like there are no examples yet.</div>
+        <% } %>
+        <% for(var i=0; i < user_examples.length; i++) { %>
+          <% var exampleUser = user_examples[i].user; %>
+          <% var exampleTarget = null; %>
+          <%- include _example.ejs %>
+        <% } %>
+      </div>
+      <%- include ../shared/_post_example.ejs %>
+    </div>
+
   </div>
 </section>

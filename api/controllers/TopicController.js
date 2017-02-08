@@ -120,6 +120,9 @@ module.exports = {
         if(t === null || t === undefined) return null;
         return t.uri;
       });
+
+      var examplesPromise = Example.findPackageExamples(packageName);
+
       var topicPromise = Topic.findOnePopulated({name: topic}, {
         include: [{
           model: PackageVersion,
@@ -146,9 +149,11 @@ module.exports = {
           });
       });
 
-      return Promise.join(topicPromise, canonicalPromise, function(topicJSON, canonicalLink) {
+      return Promise.join(topicPromise, examplesPromise, canonicalPromise, function(topicJSON, examples, canonicalLink) {
         if(topicJSON === null) return null;
         topicJSON.canonicalLink = canonicalLink;
+        var userExamples = examples.sort(PackageService.compareVersions('desc', function(example) { return example.topic.package_version.version }));
+        topicJSON.user_examples = userExamples;
         return topicJSON;
       });
     }).then(function(topicJSON) {
