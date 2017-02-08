@@ -66,6 +66,16 @@
           },
           spellChecker: false,
           status: false,
+          blockStyles: {
+            code: '```'
+          },
+          toolbar: [ "bold", "italic", "heading",
+            "|", "quote", "unordered-list", "ordered-list",
+            "|", "link", "image", "table", "horizontal-rule",
+            "|", "preview", "side-by-side", "fullscreen",
+            "|", "guide",
+            "|", "code"
+          ],
           placeholder: "## New example\nUse markdown to format your example\n\nR code blocks are runnable and interactive:\n```r\na <- 2\nprint(a)\n```\n\nYou can also display normal code blocks\n```\nvar a = b\n```"
         });
         return simplemde;
@@ -74,7 +84,7 @@
 
     renderExample: function($element) {
       var markdown = $element.html();
-      var rendered =  marked(markdown, {renderer: Examples.renderer});
+      var rendered = marked(markdown, {renderer: Examples.renderer});
       $element.html(rendered);
     },
 
