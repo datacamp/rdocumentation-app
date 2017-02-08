@@ -2,10 +2,7 @@
 
   window.Examples = {
     bootstrapExamples: function() {
-      if(urlParam("viewer_pane") != 1) {
-        window.initAddedDCLightExercises();
-      }
-      else {
+      if (urlParam("viewer_pane") == 1) {
         $('.run-example').each(function() {
           var packageName = $(this).parent().parent().data('package-name') || $('.packageData').data('package-name');
           $(this).click(function(){
@@ -35,19 +32,19 @@
 
         }
         else if(lang === '{r}' || lang === 'r') {
-          var codeBlock = '<div data-datacamp-exercise data-lang="r">';
-          codeBlock += '<code data-type="sample-code">';
+          var codeBlock = '<pre>';
+          codeBlock += '<code class="R hljs">';
           codeBlock += code;
           codeBlock += '</code>';
-          codeBlock += '</div>';
+          codeBlock += '</pre>';
           return codeBlock;
         }else if(lang === 'python' || lang === '{python}') {
-        var codeBlock = '<div data-datacamp-exercise data-lang="python">';
-        codeBlock += '<code data-type="sample-code">';
-        codeBlock += code;
-        codeBlock += '</code>';
-        codeBlock += '</div>';
-        return codeBlock;
+          var codeBlock = '<pre>';
+          codeBlock += '<code class="python hljs">';
+          codeBlock += code;
+          codeBlock += '</code>';
+          codeBlock += '</pre>';
+          return codeBlock;
         } else {
           return defaultCodeFunction.call(this, code, lang);
         }
@@ -69,6 +66,16 @@
           },
           spellChecker: false,
           status: false,
+          blockStyles: {
+            code: '```'
+          },
+          toolbar: [ "bold", "italic", "heading",
+            "|", "quote", "unordered-list", "ordered-list",
+            "|", "link", "image", "table", "horizontal-rule",
+            "|", "preview", "side-by-side", "fullscreen",
+            "|", "guide",
+            "|", "code"
+          ],
           placeholder: "## New example\nUse markdown to format your example\n\nR code blocks are runnable and interactive:\n```r\na <- 2\nprint(a)\n```\n\nYou can also display normal code blocks\n```\nvar a = b\n```"
         });
         return simplemde;
@@ -77,7 +84,7 @@
 
     renderExample: function($element) {
       var markdown = $element.html();
-      var rendered =  marked(markdown, {renderer: Examples.renderer});
+      var rendered = marked(markdown, {renderer: Examples.renderer});
       $element.html(rendered);
     },
 
@@ -89,19 +96,19 @@
     },
 
     validateExample: function(text) {
+      var aliases = $('.topic--aliases li').toArray().map(function(li) {
+        return $(li).text();
+      });
       var predicates = [
         [function(text) { //not empty
           return text.trim() !== ""
         }, "Your example is empty"],
         [function(text) { //actually contains the function name
-          var aliases = $('.topic--aliases li').toArray().map(function(li) {
-            return $(li).text();
-          });
           var present = $.grep(aliases, function(item) {
             return text.indexOf(item) >= 0
           });
           return present.length >= 1;
-        }, "The function is not used is your example, please use the function name in your example"]
+        }, "Your example should use at least one of thoses aliases: " + aliases.join(', ')]
       ];
 
       var result = predicates.reduce(function(acc, predicate) {
