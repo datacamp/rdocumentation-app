@@ -127,19 +127,23 @@ module.exports = {
       },
       canonicalLink: function() {
         if(!this.package) return null;
-        if(!this.package.latest_version) return null;
+        if(!this.package.versions) return null;
+        this.package.versions.sort(PackageService.compareVersions('desc', 'version'));
         return sails.getUrlFor({ target: 'PackageVersion.findByNameVersion' })
           .replace(':name', encodeURIComponent(this.getDataValue('package_name')))
-          .replace(':version', encodeURIComponent(this.package.latest_version.version))
+          .replace(':version', encodeURIComponent(this.package.versions[0].version))
           .replace('/api/', '/');
       }
     },
 
     classMethods: {
       getLatestVersion:function(packageName){
-        return PackageVersion.findOne({
-          where:{package_name:packageName},
-          order: [[sequelize.fn('ORDER_VERSION', sequelize.col('PackageVersion.version')), 'DESC' ]]
+        return PackageVersion.findAll({
+          where:{package_name:packageName}
+        }).then(function (versions) {
+          if (versions && versions.length > 0)
+            return versions.sort(PackageService.compareVersions('desc', 'version'))[0];
+          else return null;
         });
       },
 
@@ -181,12 +185,13 @@ module.exports = {
               attributes: ['package_version_id', 'name', 'title', 'id'],
               include:[{model: Review, as: 'reviews'}],
               separate: true }
-          ],
-          order: [[sequelize.fn('ORDER_VERSION', sequelize.col('PackageVersion.version')), 'DESC' ]]
+          ]
         })
         .then(function(versionInstance) {
           if(versionInstance === null) return null;
-          return versionInstance.toJSON();
+          const versionJSON = versionInstance.toJSON()
+          versionJSON.package.versions = versionJSON.package.versions.sort(PackageService.compareVersions('desc', 'version'));
+          return versionJSON;
         })
         .catch(function(err){
           console.log(err.message);
@@ -253,9 +258,14 @@ module.exports = {
                       where: {
                         package_name: packageVersion.package.name
                       },
-                      order: [[sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'DESC' ]],
                       transaction: t
-                    }).then(function(versionInstances) {
+                    })
+                    .then(function(versionInstances) {
+                      return versionInstances.sort(PackageService.compareVersions('desc', function(version) {
+                        return version.version
+                      }));
+                    })
+                    .then(function(versionInstances) {
                       return Package.update({
                           latest_version_id: versionInstances[0].id
                         },
