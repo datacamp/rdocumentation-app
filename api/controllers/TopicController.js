@@ -117,7 +117,7 @@ module.exports = {
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       var canonicalPromise = Topic.findByNameInPackage(packageName, topic).then(function(t) {
-        if(t === null) return null;
+        if(t === null || t === undefined) return null;
         return t.uri;
       });
       var topicPromise = Topic.findOnePopulated({name: topic}, {
@@ -416,7 +416,7 @@ module.exports = {
     if (functionName.endsWith('.html')) functionName = functionName.replace('.html', '');
 
     Topic.findByNameInPackage(packageName, functionName).then(function(topicInstance) {
-      if(topicInstance === null) {
+      if(topicInstance === null || topicInstance === undefined) {
         return Topic.findByAliasInPackage(packageName, functionName);
       } else {
         return topicInstance;

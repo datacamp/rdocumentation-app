@@ -177,11 +177,14 @@ module.exports = {
           },
           include: [
             { model: PackageVersion, as: 'package_version', attributes: ['package_name', 'version'], where: packageCriteria }
-          ],
-          order: [[sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'DESC' ]]
+          ]
         };
 
-        return Topic.findOne(params);
+        return Topic.findAll(params).then(function(topics) {
+          return topics.sort(PackageService.compareVersions('desc', function(topic) {
+            return topic.package_version.version })
+          )[0];
+        });
       },
 
       findByAliasInPackage: function(packageName, alias, version) {
@@ -197,16 +200,13 @@ module.exports = {
           include: [
             { model: PackageVersion, as: 'package_version', attributes: ['package_name', 'version'], where: packageCriteria },
             { model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], where: { name: alias }}
-          ],
-          order: [
-            [
-              sequelize.fn('ORDER_VERSION', sequelize.col('version')), 'DESC'
-            ]
           ]
         };
 
         return Topic.findAll(params).then(function(topicInstances) {
-          if(topicInstances) return topicInstances[0];
+          if(topicInstances) return topicInstances.sort(PackageService.compareVersions('desc', function(topic) {
+            return topic.package_version.version })
+          )[0];
           else return topicInstances;
         });
       },
