@@ -33,9 +33,10 @@ module.exports = {
   * @apiParam {String}   arguments.name        Name of the argument
   * @apiParam {String}   arguments.description Description of the argument
   * @apiParam {String[]} [keywords]            List of topic keywords, either a array of string or a comma separated list, or a combination of both
-  * @apiParam {String[]} [alias]               List of topic aliases, either a array of string or a comma separated list, or a combination of both
-  * @apiParam {Object}   [sectionName]         One or more 'section attributes', the key will be the name of the section, and the value will be the description (must be a string)
-
+  * @apiParam {String[]} [aliases]             List of topic aliases, either a array of string or a comma separated list, or a combination of both
+  * @apiParam {Object[]} [sections]            List of custom sections
+  * @apiParam {String}   sections.name         Name of the section
+  * @apiParam {String}   sections.description  Description of the section
   @apiError 400 ValidationError
   @apiError 404 The specified package version does not exists
   @apiError 409 ConflictError A topic version with the same name already exists within that package version.
