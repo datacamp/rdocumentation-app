@@ -1,32 +1,17 @@
-<% var user_examples = data.user_examples; %>
-
-<div class='user-examples' id="postExample">
-  <h3>Community examples</h3>
-  <div class="example-content">
-    <% if(user_examples.length === 0) { %>
-      <div class="example--placeholder">Looks like there are no examples yet.</div>
-    <% } %>
-    <% for(var i=0; i < user_examples.length; i++) { %>
-      <% var exampleUser = user_examples[i].user; %>
-      <% var exampleTarget = null; %>
-      <%- include _example.ejs %>
-    <% } %>
+<div class="example--form">
+  <div class="example--form-body">
+    <form method="post" action='<%= examplePostAction %>'>
+      <fieldset class="example--form-text">
+        <label for="text"><h3 id="postExampleTitle">Post a new example:</h3></label>
+        <textarea name='text' rows="4" id="postExampleText"></textarea>
+      </fieldset>
+      <fieldset>
+        <% if(user){ %>
+        <button class="btn btn-primary pull-right" type="submit">Submit your example</button>
+        <% }else{ %>
+        <a id="openModalExample" href="/modalLogin" rel = "modal:open"><button class="btn btn-primary pull-right" type="button">Submit your example</button></a>
+        <% } %>
+      </fieldset>
+    </form>
   </div>
-    <div class="example--form">
-      <div class="example--form-body">
-        <form method="post" action='<%= examplePostAction %>'>
-          <fieldset class="example--form-text">
-            <label for="text"><h3 id="postExampleTitle">Post a new example:</h3></label>
-            <textarea name='text' rows="4" id="postExampleText"></textarea>
-          </fieldset>
-          <fieldset>
-            <% if(user){ %>
-            <button class="btn btn-primary pull-right" type="submit">Submit your example</button>
-            <% }else{ %>
-            <a id="openModalExample" href="/modalLogin" rel = "modal:open"><button class="btn btn-primary pull-right" type="button">Submit your example</button></a>
-            <% } %>
-          </fieldset>
-        </form>
-      </div>
-    </div>
 </div>

@@ -33,9 +33,10 @@ module.exports = {
   * @apiParam {String}   arguments.name        Name of the argument
   * @apiParam {String}   arguments.description Description of the argument
   * @apiParam {String[]} [keywords]            List of topic keywords, either a array of string or a comma separated list, or a combination of both
-  * @apiParam {String[]} [alias]               List of topic aliases, either a array of string or a comma separated list, or a combination of both
-  * @apiParam {Object}   [sectionName]         One or more 'section attributes', the key will be the name of the section, and the value will be the description (must be a string)
-
+  * @apiParam {String[]} [aliases]             List of topic aliases, either a array of string or a comma separated list, or a combination of both
+  * @apiParam {Object[]} [sections]            List of custom sections
+  * @apiParam {String}   sections.name         Name of the section
+  * @apiParam {String}   sections.description  Description of the section
   @apiError 400 ValidationError
   @apiError 404 The specified package version does not exists
   @apiError 409 ConflictError A topic version with the same name already exists within that package version.
@@ -120,6 +121,9 @@ module.exports = {
         if(t === null || t === undefined) return null;
         return t.uri;
       });
+
+      var examplesPromise = Example.findPackageExamples(packageName, topic);
+
       var topicPromise = Topic.findOnePopulated({name: topic}, {
         include: [{
           model: PackageVersion,
@@ -146,9 +150,16 @@ module.exports = {
           });
       });
 
-      return Promise.join(topicPromise, canonicalPromise, function(topicJSON, canonicalLink) {
+      return Promise.join(topicPromise, examplesPromise, canonicalPromise, function(topicJSON, examples, canonicalLink) {
         if(topicJSON === null) return null;
         topicJSON.canonicalLink = canonicalLink;
+        var userExamples = examples.sort(function (example1, example2) {
+          const compare = PackageService.compareVersions('desc');
+          const compareValue = compare(example1.topic.package_version.version, example2.topic.package_version.version);
+          if (compareValue === 0) return example2.created_at.getTime() - example1.created_at.getTime();
+          else return compareValue;
+        });
+        topicJSON.user_examples = userExamples;
         return topicJSON;
       });
     }).then(function(topicJSON) {
