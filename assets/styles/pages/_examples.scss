@@ -13,6 +13,10 @@
   border-radius: 4px;
 }
 
+.example.old {
+  border: 2px solid #efefef;
+}
+
 .example--title {
   padding: 1rem;
   background-color: $primary-extra-light;
@@ -20,6 +24,11 @@
   .rating {
     margin: 0 1rem;
   }
+}
+
+.example.old .example--title {
+  border: 2px solid #efefef;
+  background-color: #efefef;
 }
 
 .example--body {

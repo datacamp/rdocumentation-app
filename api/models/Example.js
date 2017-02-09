@@ -34,10 +34,10 @@ module.exports = {
     underscored: true,
 
     classMethods: {
-      findPackageExamples: function(packageName) {
+      findPackageExamples: function(packageName, topic) {
         return Example.findAll({
           include:[
-            { model: Topic, as: 'topic', attributes:['package_version_id'], required:true,
+            { model: Topic, as: 'topic', where: { name: topic }, attributes:['package_version_id'], required:true,
               include: [{ model: PackageVersion, as: 'package_version', where: { package_name: packageName }, required: true }]
             },
             { model: User, as: 'user', attributes: ['username'] }

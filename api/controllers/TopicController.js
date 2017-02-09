@@ -121,7 +121,7 @@ module.exports = {
         return t.uri;
       });
 
-      var examplesPromise = Example.findPackageExamples(packageName);
+      var examplesPromise = Example.findPackageExamples(packageName, topic);
 
       var topicPromise = Topic.findOnePopulated({name: topic}, {
         include: [{
@@ -152,7 +152,12 @@ module.exports = {
       return Promise.join(topicPromise, examplesPromise, canonicalPromise, function(topicJSON, examples, canonicalLink) {
         if(topicJSON === null) return null;
         topicJSON.canonicalLink = canonicalLink;
-        var userExamples = examples.sort(PackageService.compareVersions('desc', function(example) { return example.topic.package_version.version }));
+        var userExamples = examples.sort(function (example1, example2) {
+          const compare = PackageService.compareVersions('desc');
+          const compareValue = compare(example1.topic.package_version.version, example2.topic.package_version.version);
+          if (compareValue === 0) return example2.created_at.getTime() - example1.created_at.getTime();
+          else return compareValue;
+        });
         topicJSON.user_examples = userExamples;
         return topicJSON;
       });

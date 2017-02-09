@@ -2,7 +2,8 @@
   <% if(exampleTarget!==null){ %>
     <a href = '<%- exampleTarget.uri %>'><h4><%- exampleTarget.package_version.package_name+": "+exampleTarget.name %></h4></a>
   <% } %>
-  <div class="example" data-exampleid=<%-user_examples[i].id%>>
+  <div class="example <% if (user_examples[i].topic.package_version.id !== data.package_version.id) {
+    %>old<% } %>" data-exampleid=<%-user_examples[i].id%>>
     <div class='example--title'>
       <span>
         <% if(exampleUser !== null) { %>
@@ -11,12 +12,18 @@
         <% } %>
         <%= dateformat(user_examples[i].created_at, "mediumDate") %>
       </span>
-      <% if(user && user_examples[i].user_id===user.id){ %>
+      <% if(user && user_examples[i].user_id===user.id) { %>
         <div class="buttons">
           <i class="edit-example fa fa-pencil" aria-hidden="true"></i>
           <i class="delete-example fa fa-times" aria-hidden="true"></i>
         </div>
       <% } %>
+      <span class="pull-right">
+        <%= user_examples[i].topic.package_version.package_name  %>
+        <a href="<%=user_examples[i].topic.package_version.uri%>">
+          v<%= user_examples[i].topic.package_version.version  %>
+        </a>
+      </span>
     </div>
     <div class='example--body markdown-body'>
       <p class='example--text tex2jax_ignore' data-raw='<%= user_examples[i].example %>'
