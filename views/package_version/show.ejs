@@ -7,19 +7,33 @@
   class="package packageData">
 
   <%- include ../package_version/_header.ejs %>
-  <%- include ../package_version/_details.ejs %>
 
   <div class="container">
     <section class="package--info">
-      <h4 itemprop="headline"><%- pkgVersion.title %></h4>
+      <h2 itemprop="headline"><%- pkgVersion.title %></h2>
       <p itemprop="description">
-        <%- pkgVersion.description %><br>
-        <% if(pkgVersion.readmemd) { %><a href="<%= path + '/readme'%>">Full Readme</a><% } %>
+        <%= pkgVersion.description %><br>
       </p>
     </section>
 
+    <% if(pkgVersion.readmemd) { %>
+    <section class="package--readme">
+      <h2>Readme</h2>
+        <div class="markdown-container">
+          <div class="markdown-body">
+            <% if(pkgVersion.url) { %>
+               <%- md(pkgVersion.readmemd,pkgVersion.url.autoLink({ target: "_blank", id: "1" })) %>
+            <%} %>
+            <% if(!pkgVersion.url) {%>
+              <%-md(pkgVersion.readmemd,"") %>
+            <% }%>
+         </div>
+        </div>
+    </section>
+    <% } %>
+
     <section class="table-list">
-      <h4 class="table-title">Functions in <%- pkgVersion.package_name %>  </h4>
+      <h2 class="table-title">Functions in <%- pkgVersion.package_name %>  </h2>
       <input id="filter" type="text" placeholder="Search">
       <table class = "packagetable">
         <thead>
@@ -41,8 +55,10 @@
       </table>
     </section>
 
+    <%- include ../package_version/_details.ejs %>
+
     <section class="package--dependencies">
-      <h4>Dependencies</h4>
+      <h2>Dependencies</h2>
       <ul class="inline">
         <% for(var i = 0; i < pkgVersion.dependencies.length; i++) { %>
           <li ><a itemprop="softwareRequirements" href="<%= pkgVersion.dependencies[i].uri %>"><%= pkgVersion.dependencies[i].name %></a></li>
@@ -51,7 +67,7 @@
     </section>
 
     <section class="package--badge">
-      <h5>Get your badge !<h5>
+      <h2>Get your badge !<h2>
       <p><img src="/badges/version/<%= pkgVersion.package_name %>"></p>
       <p>
         <code class = "hljs">

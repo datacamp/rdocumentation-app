@@ -56,6 +56,21 @@ i.fa.fa-user{
   margin-top: $default-space;
 }
 
+.package--details-container {
+  min-height: 400px;
+}
+.package-description {
+  margin-top: $default-space;
+  table {
+    font-size: $small-font-size;
+    tr td {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+}
+
 .rating {
   display: inline-block;
 }
