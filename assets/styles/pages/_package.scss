@@ -4,7 +4,9 @@
   .package--badge {
     margin-top: $default-space;
   }
-
+  .content {
+    margin-top: 1rem;
+  }
 }
 
 i.fa.fa-user{
@@ -53,6 +55,14 @@ i.fa.fa-user{
 }
 
 .package--dependencies {
+  margin-top: $default-space;
+}
+
+.package--details-container {
+  min-height: 400px;
+  margin-top: 1rem;
+}
+.package-description {
   margin-top: $default-space;
 }
 

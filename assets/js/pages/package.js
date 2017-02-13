@@ -6,14 +6,8 @@
       $("#details").find(".hidden").removeClass("hidden");
     });
     window.packageVersionToggleHandler();
-    if(typeof(Set) != "undefined" || $('#tab0')[0]){
-      window.activateTabs("#tabs");
-      window.bindTabs();
-    }
-    else{
-      $('.tabs--content').hide();
-    }
     window.launchFullSearch();
+    window.graphDownloadStatistics();
     if(typeof(Set) == "undefined"){
       $('#tab1').closest('li').hide();
       $('#tab2').closest('li').hide();
@@ -40,6 +34,7 @@
           .showControls(true)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
           .groupSpacing(0.1)    //Distance between each group of bars.
           .stacked(true)
+          .height(400)
           .x(function (d){
             return d.timestamp;
           })
@@ -93,152 +88,6 @@
 
   };
 
-  window.dependencyGraphPackage = function(){
-    var getData = function(data_url, callback) {
-      return $.get(data_url, callback);
-    };
-
-    nv.addGraph({
-      generate: function() {
-        var width = $('#packagedependencygraph').innerWidth(),
-          height = $('#packagedependencygraph').innerHeight();
-        var d3Colors = d3.scale.category20();
-        var chart = nv.models.forceDirectedGraph()
-          .width(width)
-          .height(height)
-          .color(function(d) { return d3Colors(d.group); })
-          .nodeExtras(function(node) {
-            node
-              .append("text")
-              .attr("dx", 12)
-              .attr("dy", ".35em")
-              .text(function(d) { return d.name; });
-          });
-        getData($('#packagedependencygraph').data('url'), function(data) {
-          d3.select('#packagedependencygraph svg')
-            .datum(data)
-            .call(chart);
-        });
-
-        return chart;
-      },
-          callback: function(graph) {
-              window.onresize = function() {
-                 var width = $('#packagedependencygraph').innerWidth(),
-                  height = $('#packagedependencygraph').innerHeight();
-                  graph.width(width).height(height);
-                  d3.select('#packagedependencygraph svg')
-                      .attr('width', width)
-                      .attr('height', height)
-                      .call(graph);
-              };
-          }
-      });
-  };
-
-  window.reverseDependencyGraph = function(){
-    var getData = function(data_url, callback) {
-      return $.get(data_url, callback);
-    };
-
-    nv.addGraph({
-      generate: function() {
-        var width = $('#packagereversedependencygraph').innerWidth(),
-          height = $('#packagereversedependencygraph').innerHeight();
-        var d3Colors = d3.scale.category20();
-        var chart = nv.models.forceDirectedGraph()
-          .width(width)
-          .height(height)
-          .color(function(d) { return d3Colors(d.group) })
-          .nodeExtras(function(node) {
-            node.append("text")
-              .attr("dx", 12)
-              .attr("dy", ".35em")
-              .text(function(d) { return d.name });
-          });
-        getData($('#packagereversedependencygraph').data('url'), function(data) {
-          d3.select('#packagereversedependencygraph svg')
-            .datum(data)
-            .call(chart);
-        });
-
-        return chart;
-      },
-      callback: function(graph) {
-        window.onresize = function() {
-          var width = $('#packagereversedependencygraph').innerWidth(),
-            height = $('#packagereversedependencygraph').innerHeight();
-          graph.width(width).height(height);
-          d3.select('#packagereversedependencygraph svg')
-            .attr('width', width)
-            .attr('height', height)
-            .call(graph);
-        };
-      }
-
-    });
-
-  };
-
-  window.redrawChart = function(days){
-    var getData = function(data_url, callback) {
-      return $.get(data_url, callback);
-    };
-    var url = $('#chart').data('url');
-    url = url.substring(0,url.indexOf('/per_day_last_month'));
-    url = url+'/days/'+days+'/per_day'
-    if(days<31){
-      getData(url, function(data) {
-        var direct_serie = {
-          key: "Direct downloads",
-          values: data.filter(function(e){
-            return e.key=="direct_downloads";
-          })
-        };
-        var indirect_serie = {
-          key: "Indirect downloads",
-          values: data.filter(function(e){
-            return e.key=="indirect_downloads";
-          })
-        };
-        chartData = d3.select('#chart svg').datum(data);
-        chartData.datum([direct_serie,indirect_serie]).transition().duration(500).call(window.chart);
-      });
-    }
-    else{
-      getData(url, function(data) {
-        var total_serie = {
-          key: "Total downloads",
-          values: data.filter(function(e){
-            return e.key=="total_downloads";
-          })
-        };
-        chartData = d3.select('#chart svg').datum(data);
-        chartData.datum([total_serie]).transition().duration(500).call(window.chart);
-      });
-    }
-      nv.utils.windowResize(window.chart.update);
-  };
-
-  window.redrawBiocChart = function(years){
-    var getData = function(data_url, callback) {
-      return $.get(data_url, callback);
-    };
-    var url = $('#bioc_chart').data('url');
-    url = url.substring(0,url.indexOf('/per_month_last_years')-1);
-    url = url+years+'/per_month_last_years'
-    getData(url, function(data) {
-      var serie = {
-        key: "Downloads",
-        values: data
-      };
-      chartData = d3.select('#bioc_chart svg').datum(data);
-      chartData.datum([serie]).transition().duration(500).call(window.chart);
-    });
-    nv.utils.windowResize(window.chart.update);
-  };
-
-
   window.makeSlider = function(){
     $(".slider-icon").click(function(){
       var slider = $(".slider-icon");
@@ -246,32 +95,13 @@
         slider.removeClass("fa-angle-down");
         slider.addClass("fa-angle-up");
         $(".sliding").slideDown();
-        $( '#tab0' ).click();
         if(!$("#chart svg").hasClass("nvd3-svg")){
           window.graphDownloadStatistics();
-        }
-        if(typeof(Set) != "undefined"){
-          window.dependencyGraphPackage();
         }
       }else{
         slider.removeClass("fa-angle-up");
         slider.addClass("fa-angle-down");
         $(".sliding").slideUp();
-      }
-    });
-  };
-
-  window.bindTabs = function() {
-    $("#tab1").click(function(){
-      if(!$("#packagedependencygraph svg").hasClass("nvd3-svg")){
-        window.dependencyGraphPackage();
-        $("#packagedependencygraph").show();
-      }
-    });
-    $("#tab2").click(function(){
-      if(!$("#packagereversedependencygraph svg").hasClass("nvd3-svg")){
-        window.reverseDependencyGraph();
-        $('#packagereversedependencygraph').show();
       }
     });
   };
