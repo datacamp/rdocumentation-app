@@ -27,16 +27,16 @@
     </div> <!-- /.package-details -->
     <div class="col-md-7 package-details-dependencies">
       <table>
-        <% var types = _.groupBy(pkgVersion.dependencies, function(dep) { return dep.Dependency.type }) %>
+        <% var types = _.groupBy(pkgVersion.dependencies, function(dep) { return dep.type }) %>
         <% for ( var depType in types ) { %>
           <tr>
             <td><%= depType %></td>
             <td>
             <% for(var i = 0; i < types[depType].length; i++) { %>
               <a itemprop="softwareRequirements" href="<%= types[depType][i].uri %>">
-              <%= types[depType][i].name %>
-              <% if (types[depType][i].Dependency.version_comparator) { %>
-                (<%= types[depType][i].Dependency.version_comparator %> <%= types[depType][i].Dependency.dependency_version %>)
+              <%= types[depType][i].dependency_name %>
+              <% if (types[depType][i].version_comparator) { %>
+                (<%= types[depType][i].version_comparator %> <%= types[depType][i].dependency_version %>)
               <% } %>
               </a><%= i === types[depType].length - 1 ? "" : ", " %>
             <% } %>

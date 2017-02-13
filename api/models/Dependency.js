@@ -26,6 +26,12 @@ module.exports = {
   },
 
   associations: function() {
+    Dependency.belongsTo(PackageVersion,
+      {
+        as: 'dependant',
+        foreignKey: 'dependant_version_id',
+      }
+    );
   },
 
   options: {
