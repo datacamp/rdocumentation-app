@@ -1,13 +1,26 @@
 <header class="package-header">
-  <div class="container">
+  <div class="container package--navigation">
+    <nav>
+      <ul>
+        <li><a href="<%= path %>#readme" class="btn">Readme</a></li>
+        <li><a href="<%= path %>#functions" class="btn">Functions</a></li>
+        <li><a href="<%= path %>#downloads" class="btn">Downloads</a></li>
+        <li><a href="<%= path %>#details" class="btn">Details</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="package--header-content container">
     <div class="ph-flex-position">
       <div> <!-- Do not remove this div, needed for ph-flex-position -->
         <div class='package--title--container'>
-          <h1 class= 'package--title' itemprop="name"><%- pkgVersion.package_name %></h1>
+          <h1 class= 'package--title' itemprop="name"><%- pkgVersion.package_name %> <span class='package--version--v'><%= pkgVersion.version %></span></h1>
+          <% if(pkgVersion.maintainer) { %>
+            <span class='package--maintainer'>by <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>"><%= pkgVersion.maintainer.name %></a></span>
+          <% } %>
 
           <div class="package--version--select">
-            <span class='package--version--v'>v.&nbsp;</span>
-            <select id="packageVersionSelect">
+            <span>Other versions: </span>
+            <select >
               <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
                 <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
                   value="<%= pkgVersion.package.versions[i].version %>"
@@ -20,9 +33,6 @@
             </select>
           </div>
 
-          <% if(pkgVersion.maintainer) { %>
-            <span class='package--maintainer'>by <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>"><%= pkgVersion.maintainer.name %></a></span>
-          <% } %>
         </div> <!-- /package-title-container -->
       </div> <!-- /Do not remove this div, needed for ph-flex-position -->
 
@@ -65,6 +75,5 @@
       </div> <!-- /Do not remove this div, needed for ph-flex-position -->
 
     </div> <!-- /row -->
-
   </div> <!-- /container -->
 </header>

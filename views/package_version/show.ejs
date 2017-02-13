@@ -8,7 +8,7 @@
 
   <%- include ../package_version/_header.ejs %>
 
-  <div class="container">
+  <div class="content container">
     <section class="package--info">
       <h2 itemprop="headline"><%- pkgVersion.title %></h2>
       <p itemprop="description">
@@ -17,7 +17,7 @@
     </section>
 
     <% if(pkgVersion.readmemd) { %>
-    <section class="package--readme">
+    <section id="readme" class="package--readme">
       <h2>Readme</h2>
         <div class="markdown-container">
           <div class="markdown-body">
@@ -32,7 +32,7 @@
     </section>
     <% } %>
 
-    <section class="table-list">
+    <section id="functions" class="table-list">
       <h2 class="table-title">Functions in <%- pkgVersion.package_name %>  </h2>
       <input id="filter" type="text" placeholder="Search">
       <table class = "packagetable">
@@ -57,17 +57,8 @@
 
     <%- include ../package_version/_details.ejs %>
 
-    <section class="package--dependencies">
-      <h2>Dependencies</h2>
-      <ul class="inline">
-        <% for(var i = 0; i < pkgVersion.dependencies.length; i++) { %>
-          <li ><a itemprop="softwareRequirements" href="<%= pkgVersion.dependencies[i].uri %>"><%= pkgVersion.dependencies[i].name %></a></li>
-        <% } %>
-      </ul>
-    </section>
-
     <section class="package--badge">
-      <h2>Get your badge !<h2>
+      <h2>Include our badge in your README<h2>
       <p><img src="/badges/version/<%= pkgVersion.package_name %>"></p>
       <p>
         <code class = "hljs">

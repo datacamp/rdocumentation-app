@@ -28,21 +28,21 @@
     return p !== '';
   }).join('&');
   if(uri.indexOf('?')>0){
-    var redirectURL = uri.substring(0,uri.indexOf('?')) 
+    var redirectURL = uri.substring(0,uri.indexOf('?'))
   }
   else{
     var redirectURL = uri
   }
-  
 
-  sails.log.silly('res.restudio_redirect() :: Sending '+code+ ' (redirect) response');
+
+  sails.log.silly('res.rstudio_redirect() :: Sending '+code+ ' (redirect) response');
 
   if(fromRstudio) {
     res.location(redirectURL);
     res.set('X-RStudio-Redirect', redirectURL);
     res.json({ status: 'success'});
   } else {
-    res.redirect(code,uri+"?"+ urlParams);
+    res.redirect(code,uri+ (urlParams.length > 0 ? "?"+ urlParams : ""));
   }
 
 };
