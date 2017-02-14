@@ -17,7 +17,7 @@ module.exports = {
   // it will be executed if nothing is found in cache
   getJSONFromCache: function(key, res, expire, missFn) {
     var env = process.env.AWS_ENV || 'dev';
-    if (env === 'dev') return Promise.resolve(missFn());
+    //if (env === 'dev') return Promise.resolve(missFn());
     key = env + '_' + key;
     return RedisClient.getAsync(key).then(function(response){
       if(res) res.set('Cache-Control', 'max-age=' + expire);
