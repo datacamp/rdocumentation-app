@@ -15,11 +15,12 @@
     <div class="ph-flex-position">
       <div> <!-- Do not remove this div, needed for ph-flex-position -->
         <div class='package--title--container'>
-          <h1 class= 'package--title' itemprop="name"><%- pkgVersion.package_name %> <span class='package--version--v'><%= pkgVersion.version %></span></h1>
+          <h1 class= 'package--title' itemprop="name"><%- pkgVersion.package_name %>
+          <span title="<%= pkgVersion.version === pkgVersion.package.versions[0].version ? "Latest version" : "" %>" class='package--version--v'><%= pkgVersion.version %></span></h1>
+
           <% if(pkgVersion.maintainer) { %>
             <span class='package--maintainer'>by <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>"><%= pkgVersion.maintainer.name %></a></span>
           <% } %>
-
           <div class="package--version--select">
             <span>Other versions: </span>
             <select >
@@ -77,5 +78,13 @@
       </div> <!-- /Do not remove this div, needed for ph-flex-position -->
 
     </div> <!-- /row -->
+    <div>
+      <span class="paste-link">
+        <code><%= process.env.BASE_URL + '/packages/' + pkgVersion.package_name %></code>
+        <i class="fa fa-link"
+          aria-hidden="true">
+        </i>
+      </span>
+    </div>
   </div> <!-- /container -->
 </header>

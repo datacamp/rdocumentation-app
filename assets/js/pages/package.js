@@ -13,6 +13,7 @@
       $('#tab2').closest('li').hide();
     }
     window.makeSlider();
+    window.versionTooltip();
   };
   window.packageVersionToggleHandler = function() {
     $('#packageVersionSelect').bind('change',function(){
@@ -156,6 +157,12 @@
       });
     });
   };
+
+  window.versionTooltip = function () {
+    $(".package--version--v").tooltip({
+      placement: 'right'
+    });
+  }
 
   window.triggerIcon = function(){
     $("table").bind("sortEnd",function(){

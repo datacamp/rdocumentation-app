@@ -9,6 +9,12 @@
   }
 }
 
+.anchor {
+  visibility: hidden;
+  top: -70px;
+  position: relative;
+}
+
 i.fa.fa-user{
   font-size: 2rem;
 }

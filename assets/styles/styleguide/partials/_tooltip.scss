@@ -42,9 +42,10 @@
   padding: 0 5px;
 }
 .tooltip-inner {
-  max-width: 200px;
+  max-width: 300px;
   padding: 3px 8px;
   color: #ffffff;
+  word-wrap: break-word;
   text-align: center;
   background-color: #000000;
   border-radius: 4px;
