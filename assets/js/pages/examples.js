@@ -38,13 +38,6 @@
           codeBlock += '</code>';
           codeBlock += '</pre>';
           return codeBlock;
-        }else if(lang === 'python' || lang === '{python}') {
-          var codeBlock = '<pre>';
-          codeBlock += '<code class="python hljs">';
-          codeBlock += code;
-          codeBlock += '</code>';
-          codeBlock += '</pre>';
-          return codeBlock;
         } else {
           return defaultCodeFunction.call(this, code, lang);
         }
