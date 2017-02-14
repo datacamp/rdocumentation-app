@@ -237,7 +237,7 @@ module.exports = {
 
     }).then(function(topicJSON) {
       if(topicJSON === null) return res.notFound();
-      return res.ok(topicJSON, 'topic/show.ejs');
+      return res.rstudio_redirect(301, topicJSON.uri);
     }).catch(function(err) {
       return res.negotiate(err);
     });
