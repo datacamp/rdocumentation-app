@@ -172,8 +172,6 @@ module.exports = {
           where: conditions,
           include: [
             { model: Collaborator, as: 'maintainer' },
-            // { model: Collaborator, as: 'collaborators', separate: true },
-            // { model: Package, as: 'dependencies' },
             { model: Package, as: 'package', include: [
                 { model: PackageVersion, as: 'versions', attributes:['package_name', 'version'], separate: true },
                 { model: Star, as: 'stars', attributes: ['package_name', 'user_id' ] }

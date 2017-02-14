@@ -1,16 +1,4 @@
 <header class="package-header">
-  <div class="package--navigation">
-    <div class="container">
-      <nav>
-        <ul>
-          <li><a href="<%= path %>#readme" class="btn">Readme</a></li>
-          <li><a href="<%= path %>#functions" class="btn">Functions</a></li>
-          <li><a href="<%= path %>#downloads" class="btn">Downloads</a></li>
-          <li><a href="<%= path %>#details" class="btn">Details</a></li>
-        </ul>
-      </nav>
-    </div>
-  </div>
   <div class="package--header-content container">
     <div class="ph-flex-position">
       <div> <!-- Do not remove this div, needed for ph-flex-position -->
@@ -78,13 +66,5 @@
       </div> <!-- /Do not remove this div, needed for ph-flex-position -->
 
     </div> <!-- /row -->
-    <div>
-      <span class="paste-link">
-        <code><%= process.env.BASE_URL + '/packages/' + pkgVersion.package_name %></code>
-        <i class="fa fa-link"
-          aria-hidden="true">
-        </i>
-      </span>
-    </div>
   </div> <!-- /container -->
 </header>
