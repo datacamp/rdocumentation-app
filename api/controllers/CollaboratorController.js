@@ -99,6 +99,7 @@ module.exports = {
           json.gravatar_url = 'https://www.gravatar.com/avatar/' + md5(_.trim(json.email).toLowerCase());
           json.packages = _.orderBy(packages, ['is_maintainer', 'percentile', 'totalDownloads'], ['asc', 'desc', 'desc']);
           json.repositories = repositories;
+          json.pageTitle = name + ' | Collaborator';
           return res.ok(json,"collaborator/show.ejs");
         });
 

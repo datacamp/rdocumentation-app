@@ -34,6 +34,7 @@ module.exports = {
         json.mostPopular = data.results;
       }));
       return Promise.all(promises).then(function(){
+        json.pageTitle = "R Documentation and manuals";
         return json;
       });
 

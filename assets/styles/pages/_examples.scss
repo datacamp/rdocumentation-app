@@ -9,25 +9,39 @@
 // ********************
 .example {
   margin-bottom: 1rem;
-  border: 1px solid $primary-extra-light;
+  border: 2px solid $primary-lighter;
   border-radius: 4px;
+}
+
+.example.old {
+  border: 2px solid #efefef;
 }
 
 .example--title {
   padding: 1rem;
-  background-color: $primary-ultra-light;
-  border-bottom: 1px solid $primary-extra-light;
+  background-color: $primary-extra-light;
+  border-bottom: 2px solid $primary-lighter;
   .rating {
     margin: 0 1rem;
   }
 }
 
+.example.old .example--title {
+  border: 2px solid #efefef;
+  background-color: #efefef;
+}
+
 .example--body {
-  padding: 1rem;
   p {
     margin: 0;
     white-space: pre-wrap;
   }
+}
+.markdown-body {
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 10px 20px;
+  font-size: 14px;
 }
 
 // ********************

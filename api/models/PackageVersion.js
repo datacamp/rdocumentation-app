@@ -167,29 +167,42 @@ module.exports = {
       },
 
       getPackageVersionFromCondition:function(conditions){
-        return PackageVersion.findOne({
+
+        var packagePromise = PackageVersion.findOne({
           where: conditions,
           include: [
             { model: Collaborator, as: 'maintainer' },
-            { model: Collaborator, as: 'collaborators' },
-            { model: Package, as: 'dependencies' },
             { model: Package, as: 'package', include: [
                 { model: PackageVersion, as: 'versions', attributes:['package_name', 'version'], separate: true },
-                { model: PackageVersion, as: 'latest_version', attributes:['package_name', 'version'] },
-                { model: TaskView, as: 'inViews', attributes:['name'] },
-                { model: Star, as: 'stars' }
+                { model: Star, as: 'stars', attributes: ['package_name', 'user_id' ] }
               ],
-              attributes: ['name', 'latest_version_id', 'type_id']
+              attributes: { include: [[sequelize.fn('COUNT', sequelize.col('package.stars.user_id')), 'star_count']] },
+
             },
             { model: Topic, as: 'topics',
               attributes: ['package_version_id', 'name', 'title', 'id'],
-              include:[{model: Review, as: 'reviews'}],
               separate: true }
           ]
         })
-        .then(function(versionInstance) {
+
+        var collaboratorsPromise = Collaborator.findAll({
+          include: [
+            { model: PackageVersion, as: 'maintained_packages', required: true, where: conditions }
+          ]
+        });
+
+        var dependencyPromise = Dependency.findAll({
+          include: [
+            { model: PackageVersion, as: 'dependant', required: true, attributes: ['package_name', 'version'], where: conditions }
+          ],
+        });
+
+        return Promise.join(packagePromise, collaboratorsPromise, dependencyPromise,
+        function(versionInstance, collaboratorsInstances, dependencyInstances) {
           if(versionInstance === null) return null;
           const versionJSON = versionInstance.toJSON()
+          versionJSON.collaborators = collaboratorsInstances.map(function(x) { return x.toJSON(); });
+          versionJSON.dependencies = dependencyInstances.map(function(x) { return x.toJSON(); });
           versionJSON.package.versions = versionJSON.package.versions.sort(PackageService.compareVersions('desc', 'version'));
           return versionJSON;
         })

@@ -29,7 +29,7 @@ module.exports = {
       }).catch(Sequelize.ValidationError, function (err) {
         return res.send(400, err.errors);
       }).catch(function(err){
-          return res.negotiate(err.errors);
+        return res.negotiate(err.errors);
       });
 
     } else if (type === 'version') {

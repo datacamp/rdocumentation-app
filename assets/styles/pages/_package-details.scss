@@ -1,9 +1,7 @@
-.package-details {
+.package--downloads {
+  margin-top: $default-space;
   #chart svg, #trendingdownloads svg, #topkeywords svg{
     height: 400px;
-  }
-  #dependencygraph svg {
-    height: 600px;
   }
 
   .tabs--content {
@@ -12,15 +10,34 @@
 }
 
 .package-details-info {
-  margin-top: 1rem;
   table {
+    border-bottom: none;
     table-layout: fixed;
     overflow: hidden;
+    font-size: 1rem;
     tr td:first-child {
       width: 30%;
+      font-weight: 600;
+    }
+    tr td {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
   }
 }
+.package-details-dependencies {
+  table {
+    border-bottom: none;
+    table-layout: fixed;
+    tr td:first-child {
+      width: 30%;
+      font-weight: 600;
+      text-transform:capitalize;
+    }
+  }
+}
+
 
 .package-details--contr {
   h5 {

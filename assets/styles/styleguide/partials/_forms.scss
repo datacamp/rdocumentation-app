@@ -197,7 +197,7 @@ textarea {
 }
 
 // Select
-select {
+.select {
     background-color: $primary-extra-light;
     background-image: none;
     border: $form-border-width solid $primary-extra-light;
@@ -212,10 +212,10 @@ select {
     transition: background $default-duration ease, border-color $default-duration ease, color $default-duration ease;
     padding-right: 45px;
 }
-select:focus {
+.select:focus {
     outline: none
 }
-select:hover {
+.select:hover {
     background-color: $primary-lighter;
     border-color: $primary-lighter;
     color: $primary

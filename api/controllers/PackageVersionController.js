@@ -108,7 +108,7 @@ module.exports = {
     .then(function(version){
       if(version === null) return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName));
       else {
-        version.pageTitle = version.package_name + ' v' + version.version;
+        version.pageTitle = version.package_name + ' package';
         try {
           version.sourceJSON = JSON.parse(version.sourceJSON);
           version.sourceJSON = _.omit(version.sourceJSON, ['Package',
@@ -154,7 +154,7 @@ module.exports = {
      .then(function(version){
       if(version === null) return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName));
       else {
-        version.pageTitle = version.package_name + ' v' + version.version + ' Readme';
+        version.pageTitle = version.package_name + ' package Readme';
         return res.ok(version, 'package_version/readme.ejs');
       }
     })
