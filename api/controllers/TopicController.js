@@ -145,7 +145,7 @@ module.exports = {
         else if(topicInstance.redirect_uri) return topicInstance;
         else return TopicService.computeLinks('/link/', topicInstance)
           .then(function(topic) {
-            topic.pageTitle = topic.name;
+            topic.pageTitle = topic.name + ' function';
             return topic;
           });
       });
@@ -226,7 +226,7 @@ module.exports = {
           return Topic.findByNameInPackage(topicInstance.package_version.package_name, topicInstance.name).then(function(t) {
             return TopicService.computeLinks('/link/', topicInstance)
               .then(function(topic) {
-                topic.pageTitle = topic.name;
+                topic.pageTitle = topic.name + ' function';
                 topic.canonicalLink = t.uri;
                 return topic;
               });
