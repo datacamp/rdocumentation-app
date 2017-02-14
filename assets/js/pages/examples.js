@@ -92,17 +92,30 @@
       var aliases = $('.topic--aliases li').toArray().map(function(li) {
         return $(li).text();
       });
+
       var predicates = [
         [function(text) { //not empty
           return text.trim() !== ""
         }, "Your example is empty"],
-        [function(text) { //actually contains the function name
+      ];
+
+      var aliasesPredicateText = "Please use "
+      if (aliases.length > 1) {
+        var aliasesWithoutLast = aliases.slice(0, aliases.length - 1);
+        aliasesPredicateText += aliasesWithoutLast.join(', ');
+        aliasesPredicateText += " or " + aliases[aliases.length - 1];
+      } else {
+        aliasesPredicateText += aliases[0]
+      }
+      aliasesPredicateText += " in your example.";
+
+      if(aliases.length > 0)
+        predicates.push([function(text) { //actually contains the function name
           var present = $.grep(aliases, function(item) {
             return text.indexOf(item) >= 0
           });
           return present.length >= 1;
-        }, "Your example should use at least one of thoses aliases: " + aliases.join(', ')]
-      ];
+        }, aliasesPredicateText]);
 
       var result = predicates.reduce(function(acc, predicate) {
         if (acc === true) {
