@@ -11,7 +11,7 @@
           <% } %>
           <div class="package--version--select">
             <span>Other versions: </span>
-            <select >
+            <select id='packageVersionSelect'>
               <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
                 <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
                   value="<%= pkgVersion.package.versions[i].version %>"
