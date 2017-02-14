@@ -39,7 +39,7 @@
     vertical-align: baseline;
   }
   .package--header-content {
-    margin-top: 2rem;
+    padding-top: 45px;
     border-bottom: 2px solid #ebf4f7;
     padding-bottom: 10px;
   }
@@ -59,12 +59,24 @@
 }
 
 .package--navigation {
+  height: 35px;
+  position: fixed;
+  z-index: 9999;
+  background: white;
+  width: 100%;
+  border-bottom: 1px solid #ebf4f7;
   nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-flow: row;
     li {
+      width: 25%;
       display: inline;
+      a {
+        width: 100%;
+      }
     }
   }
 }
