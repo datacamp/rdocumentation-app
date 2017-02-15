@@ -191,6 +191,9 @@ module.exports = {
       json.fromCache ? res.set('X-Cache', 'hit') : res.set('X-Cache', 'miss');
       res.set('Cache-Control', 'max-age=' + RedisService.DAILY);
       return res.json(json);
+    })
+    .catch(function(err) {
+      return res.negotiate(err);
     });
   },
 /**
@@ -220,6 +223,8 @@ module.exports = {
         indirectDownloads: stats[0].indirect_downloads,
         total: stats[0].direct_downloads + stats[0].indirect_downloads
       });
+    }).catch(function(err) {
+      return res.negotiate(err);
     });
 
   },
@@ -251,6 +256,9 @@ module.exports = {
       });
 
       return res.json({total: total, percentile: Math.round(percentile * 100) / 100 });
+    })
+    .catch(function(err) {
+      return res.negotiate(err);
     });
   },
 /**
@@ -281,6 +289,8 @@ module.exports = {
       });
       serie=[].concat.apply([],serie);
       return res.json(serie);
+    }).catch(function(err) {
+      return res.negotiate(err);
     });
   },
 /**
@@ -308,6 +318,8 @@ module.exports = {
         };
       });
       return res.json(serie);
+    }).catch(function(err) {
+      return res.negotiate(err);
     });
   },
 /**
@@ -381,6 +393,8 @@ module.exports = {
         nodes: nodes,
         links: links
       });
+    }).catch(function(err) {
+      return res.negotiate(err);
     });
   },
 /**
@@ -454,6 +468,8 @@ module.exports = {
         nodes: nodes,
         links: links
       });
+    }).catch(function(err) {
+      return res.negotiate(err);
     });
 
   },
@@ -482,6 +498,8 @@ module.exports = {
           };
         });
         return res.json(serie);
+      }).catch(function(err) {
+        return res.negotiate(err);
       });
     }
     else{
@@ -499,6 +517,8 @@ module.exports = {
       });
       serie=[].concat.apply([],serie);
       return res.json(serie);
+      }).catch(function(err) {
+        return res.negotiate(err);
       });
     }
   }

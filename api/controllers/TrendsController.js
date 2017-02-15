@@ -68,7 +68,9 @@ module.exports = {
 			});
 		}).then(function(result){
 			return res.json(result);
-		});
+		}).catch(function(err) {
+      return res.negotiate(err);
+    });
 	},
 	/**
   * @api {get} /trends/keyword Most popular keywords used
@@ -86,7 +88,9 @@ module.exports = {
 			});
 		}).then(function(result){
 			return res.json(result);
-		});
+		}).catch(function(err) {
+      return res.negotiate(err);
+    });
 	},
 	/**
   * @api {get} /trends/perrange packages per range
@@ -102,7 +106,9 @@ module.exports = {
 			return DownloadStatistic.downloadsPerRange();
 	   }).then(function(result){
 			return res.json(result);
-		});
+		}).catch(function(err) {
+      return res.negotiate(err);
+    });
 	},
 	/**
   * @api {get} /trends/graph Dependencies between top 10 packages as graph
@@ -161,7 +167,10 @@ module.exports = {
 			);
 		}).then(function(result){
 			return res.json(result)
-		});
+		})
+    .catch(function(err) {
+      return res.negotiate(err);
+    });
 	},
 	/**
   * @api {get} /trends/newpackages New packages grouped per page
@@ -182,7 +191,10 @@ module.exports = {
 			return res.json({
 				newArrivals: results
 			});
-		});
+		})
+    .catch(function(err) {
+      return res.negotiate(err);
+    });
 	},
 	/**
   * @api {get} /trends/newversion Latest updates
@@ -203,7 +215,9 @@ module.exports = {
 			return res.json({
 				newVersions: results
 			});
-		});
+		}).catch(function(err) {
+      return res.negotiate(err);
+    });
 	},
 	/**
   * @api {get} /trends/mostpopular Most popular
@@ -224,7 +238,9 @@ module.exports = {
 		var sort = req.param("sort")||"direct";
 		DownloadStatistic.getMostPopularPerPage(page,sort).then(function(results){
 			return res.json(results);
-		});
+		}).catch(function(err) {
+      return res.negotiate(err);
+    });
 	},
 	/**
   * @api {get} /trends/topcollaborators Top Collaborators
@@ -245,7 +261,10 @@ module.exports = {
 		var sort = req.param("sort")||"total";
 		Collaborator.topCollaborators(page,sort).then(function(results){
 			return res.json(results);
-		});
+		})
+    .catch(function(err) {
+      return res.negotiate(err);
+    });
 	},
 
 	startPage: function(req,res){
@@ -269,7 +288,10 @@ module.exports = {
         json.collaborator_count = row.collaborator_count;
       })
     );
-		Promise.all(promises).then(function(){return res.ok(json,"trends/show.ejs");});
+		Promise.all(promises).then(function(){return res.ok(json,"trends/show.ejs");})
+    .catch(function(err) {
+      return res.negotiate(err);
+    });
   }
 
 };

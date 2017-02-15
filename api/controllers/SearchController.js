@@ -211,8 +211,6 @@ module.exports = {
           .replace('/api/', '/');
         return { uri: uri,  name: name, package_name: package_name, package_version: version };
       });
-    }).catch(function(err) {
-      return res.negotiate(err);
     });
 
     var coll = Collaborator.quickSearch(token).then(function(result){
@@ -224,6 +222,9 @@ module.exports = {
 
     Promise.all([elastic,coll]).then(function(){
       return res.json({packages: packages, topics: topics, collaborators: collaborators});
+    })
+    .catch(function(err) {
+      return res.negotiate(err);
     });
 
   },
@@ -320,6 +321,9 @@ module.exports = {
         striptags: striptags,
         pageTitle: 'Search Results'
       }, 'search/keyword_result.ejs');
+    })
+    .catch(function(err) {
+      return res.negotiate(err);
     });
 
   },

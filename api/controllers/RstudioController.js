@@ -29,6 +29,8 @@ module.exports = {
     if(matches === 0){
       return ElasticSearchService.helpSearchQuery(req.param("topic"),['aliases'],true,2).then(function(json){
         return res.ok(json,'rStudio/topic_not_found.ejs');
+      }).catch(function(err) {
+        return res.negotiate(err);
       });
     }
     else{
@@ -105,8 +107,8 @@ module.exports = {
           return res.ok(result,'rStudio/view.ejs')
         }
       })
-      .catch(function(err){
-        console.log(err.message)
+      .catch(function(err) {
+        return res.negotiate(err);
       })
     }
     else{

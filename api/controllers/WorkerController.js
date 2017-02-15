@@ -86,10 +86,10 @@ module.exports = {
       .then(function (result) {
         console.log("Finished indexing splitted stats");
         DownloadStatsService.reverseDependenciesCache = {}; //clean cache
-      }).catch(function(err) {
-        return res.negotiate(err);
-      });
+      })
 
+    }).catch(function(err) {
+      return res.negotiate(err);
     });
 
   }
