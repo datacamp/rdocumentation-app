@@ -184,7 +184,7 @@ module.exports = {
 
       list.forEach(function(piece){
         if(piece.match(Utils.emailRegex)) {
-          email = piece.split("\"")[1];
+          email = piece.replace(/"|'/g, "");
         }
         if(piece.indexOf("cre")>=0&&!hasMaintainer) {
           isMaintainer=true;
@@ -192,15 +192,15 @@ module.exports = {
         }
       });
 
-      name = list[0].split("\"")[1];
+      name = list[0].replace(/"|'/g, "").trim();
 
       if(list[0].indexOf("c(")!==-1) {
-        middle = list[1].split("\"")[1];
-        family = list[2].split("\"")[1];
+        middle = list[1].replace(/"|'/g, "").trim();
+        family = list[2].replace(/"|'/g, "").trim();
         fullName = name +" "+ middle + " "+family;
       }
       else {
-        family = list[1].split("\"")[1];
+        family = list[1].replace(/"|'/g, "").trim();
         if (family.trim().match(/^(aut|com|ctb|cph|cre|ctr|dtc|ths|trl)$/))
           fullName = name;
         else
