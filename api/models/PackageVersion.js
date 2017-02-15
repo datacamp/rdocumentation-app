@@ -187,7 +187,7 @@ module.exports = {
 
         var collaboratorsPromise = Collaborator.findAll({
           include: [
-            { model: PackageVersion, as: 'maintained_packages', required: true, where: conditions }
+            { model: PackageVersion, as: 'authored_packages', required: true, where: conditions }
           ]
         });
 
