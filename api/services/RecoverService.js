@@ -32,5 +32,38 @@ module.exports = {
 
       }, {concurrency: 1});
     });
+  },
+
+  recoverPackageLatestVersion: function() {
+    return Package.findAll({
+      include: [{ model: PackageVersion, as: 'versions', attributes: ['id', 'package_name', 'version']}],
+      attributes: ['name'],
+    })
+    .then(function(packages) {
+      var total = packages.length;
+
+      return Promise.map(packages, function(_package, index) {
+        var jsonPackage = _package.toJSON()
+        if(jsonPackage.versions.length === 0) return 0;
+        jsonPackage.versions.sort(PackageService.compareVersions('desc', 'version'))
+
+        var progress = index / total * 100;
+        console.log(100 - progress);
+
+        console.log(jsonPackage);
+
+        return Package.update({
+          lastest_version_id: jsonPackage.versions[0].id
+        }, {
+          where: { name: jsonPackage.name }
+        }).catch(function(err) {
+          console.log(err);
+          return 0;
+        });
+      }, {concurrency: 1});
+    }).catch(function(err) {
+      console.log(err);
+      return 0;
+    });
   }
 };

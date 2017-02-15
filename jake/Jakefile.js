@@ -18,6 +18,12 @@ task('recoverPackageVersions',['sails-load'], {async: true}, function(){
   });
 });
 
+task('recoverPackageLatestVersion',['sails-load'], {async: true}, function(){
+  RecoverService.recoverPackageLatestVersion().then(function() {
+    complete();
+  });
+});
+
 
 task('test-extraction',['sails-load'], function(){
   var nlp = require('nlp_compromise');
