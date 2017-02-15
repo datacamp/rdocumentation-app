@@ -37,7 +37,7 @@ module.exports = {
   recoverPackageLatestVersion: function() {
     return Package.findAll({
       include: [{ model: PackageVersion, as: 'versions', attributes: ['id', 'package_name', 'version']}],
-      attributes: ['name'],
+      attributes: ['name']
     })
     .then(function(packages) {
       var total = packages.length;
@@ -53,14 +53,14 @@ module.exports = {
         console.log(jsonPackage);
 
         return Package.update({
-          lastest_version_id: jsonPackage.versions[0].id
+          latest_version_id: jsonPackage.versions[0].id
         }, {
           where: { name: jsonPackage.name }
         }).catch(function(err) {
           console.log(err);
           return 0;
         });
-      }, {concurrency: 1});
+      }, {concurrency: 3});
     }).catch(function(err) {
       console.log(err);
       return 0;
