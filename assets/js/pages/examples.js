@@ -2,7 +2,10 @@
 
   window.Examples = {
     bootstrapExamples: function() {
-      if (urlParam("viewer_pane") == 1) {
+      if(urlParam("viewer_pane") != 1) {
+        window.initAddedDCLightExercises();
+      }
+      else {
         $('.run-example').each(function() {
           var packageName = $(this).parent().parent().data('package-name') || $('.packageData').data('package-name');
           $(this).click(function(){
@@ -32,11 +35,11 @@
 
         }
         else if(lang === '{r}' || lang === 'r') {
-          var codeBlock = '<pre>';
-          codeBlock += '<code class="R hljs">';
+          var codeBlock = '<div data-datacamp-exercise data-lang="r">';
+          codeBlock += '<code data-type="sample-code">';
           codeBlock += code;
           codeBlock += '</code>';
-          codeBlock += '</pre>';
+          codeBlock += '</div>';
           return codeBlock;
         } else {
           return defaultCodeFunction.call(this, code, lang);

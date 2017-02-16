@@ -7,6 +7,7 @@
   window.boot = function() {
     bootDownloadStats();
     bootListTableFiltering();
+    bootRunExample();
     bootToggle();
     bootCollaborator();
     bootTaskViews();

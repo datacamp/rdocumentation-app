@@ -46,7 +46,7 @@
     </div>
 
     <!--TEMPLATES-->
-    
+
     <!--TEMPLATES END-->
 
     <script src="<%= protocol %>//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -73,6 +73,9 @@
       });
     </script>
     <script src = "<%= protocol %>//cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+    <% if(!inViewerPane) { %>
+      <script src="<%= protocol %>//cdn.datacamp.com/datacamp-light-latest.min.js"></script>
+    <% } %>
     <script type="text/javascript">
       var $jq = jQuery.noConflict();
     </script>
@@ -84,6 +87,7 @@
     <script src="/js/helpers/boot.js"></script>
     <script src="/js/helpers/downloadStats.js"></script>
     <script src="/js/helpers/list-table-filtering.js"></script>
+    <script src="/js/helpers/run-example.js"></script>
     <script src="/js/helpers/toggle.js"></script>
     <script src="/js/helpers/utils.js"></script>
     <script src="/js/libs/countUp.min.js"></script>
