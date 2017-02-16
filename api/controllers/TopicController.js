@@ -129,7 +129,7 @@ module.exports = {
           model: PackageVersion,
           as: 'package_version',
           where: { package_name: packageName, version: packageVersion },
-          include: [{ model: Package, as: 'package', attributes: ['name', 'latest_version_id']},
+          include: [{ model: Package, as: 'package', attributes: ['name', 'latest_version_id', 'type_id' ]},
           { model: Collaborator, as: 'maintainer'}]
         },]
       }).then(function(topicInstance) {
@@ -152,7 +152,7 @@ module.exports = {
 
       var dclPromise = PackageService.isDCLSupported(packageName, packageVersion)
 
-      return Promise.join(topicPromise, examplesPromise, canonicalPromise, function(topicJSON, examples, canonicalLink, dcl) {
+      return Promise.join(topicPromise, examplesPromise, canonicalPromise, dclPromise, function(topicJSON, examples, canonicalLink, dcl) {
         if(topicJSON === null) return null;
         topicJSON.canonicalLink = canonicalLink;
         var userExamples = examples.sort(function (example1, example2) {
@@ -161,7 +161,7 @@ module.exports = {
           if (compareValue === 0) return example2.created_at.getTime() - example1.created_at.getTime();
           else return compareValue;
         });
-        topicJSON.dcl = dcl;
+        topicJSON.dcl = dcl || topicJSON.package_version.package.type_id === 4; //in the list or in base r
         topicJSON.user_examples = userExamples;
         return topicJSON;
       });

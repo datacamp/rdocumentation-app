@@ -107,12 +107,18 @@ module.exports = {
   },
 
   isDCLSupported: function(package, version) {
-    return Promise.promisify(request.get('http://documents.datacamp.com/default_r_packages.txt').end)()
-    .then(function(res) {
-      console.log(res.body);
-      return true;
+    return new Promise(function(resolve, reject) {
+      return request.get('http://documents.datacamp.com/default_r_packages.txt').end(function(err, res) {
+        if(err) return reject(err);
+        return resolve(res);
+      })
+    }).then(function(res) {
+      var regex = new RegExp(_.escapeRegExp(package)+'\s*'+_.escapeRegExp(version))
+      return regex.test(res.text);
+    }).catch(function() {
+      return false;
     });
-  }
+  },
 
   compareVersions: function(order, property) {
     const lower = order === 'asc' ? -1 : 1;
