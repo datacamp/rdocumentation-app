@@ -1,5 +1,7 @@
 // PackageService.js - in api/services
 const _ = require('lodash');
+const Promise = require('bluebird');
+const request = require('superagent');
 
 
 module.exports = {
@@ -103,6 +105,14 @@ module.exports = {
     };
 
   },
+
+  isDCLSupported: function(package, version) {
+    return Promise.promisify(request.get('http://documents.datacamp.com/default_r_packages.txt').end)()
+    .then(function(res) {
+      console.log(res.body);
+      return true;
+    });
+  }
 
   compareVersions: function(order, property) {
     const lower = order === 'asc' ? -1 : 1;
