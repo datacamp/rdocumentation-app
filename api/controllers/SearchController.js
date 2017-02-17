@@ -120,6 +120,7 @@ module.exports = {
                   "multi_match" : {
                     "fields" : ["aliases^2", "name"],
                     "query" : token,
+                    boost: 0.2,
                     "type" : "phrase_prefix"
                   }
                 },
@@ -356,6 +357,14 @@ module.exports = {
                 },
               },
               {
+                match_phrase_prefix : {
+                  "package_name" : {
+                      "query" : query,
+                      "max_expansions" : 20,
+                  }
+                }
+              },
+              {
                 "has_parent" : {
                   "query" : {
                     "function_score" : {
@@ -447,7 +456,7 @@ module.exports = {
       multi_match: {
         query: query,
         type: "best_fields",
-        boost: 0.7,
+        boost: 1,
         fields: [
           'aliases^6',
           'name^2',
@@ -455,6 +464,14 @@ module.exports = {
           'arguments.name', 'arguments.description',
           'details', 'value',
           'note', 'author']
+      }
+    };
+    var prefixQuery = {
+      "multi_match" : {
+        boost: 0.2,
+        "fields" : ["aliases^2", "name"],
+        "query" : query,
+        "type" : "phrase_prefix"
       }
     };
     return es.search({
@@ -480,6 +497,7 @@ module.exports = {
                   ],
                   should: [
                     searchTopicQuery,
+                    prefixQuery,
                     {
                       has_parent : {
                         parent_type : "package_version",
@@ -524,7 +542,7 @@ module.exports = {
                       }
                     }
                   ],
-                  minimum_should_match : 1,
+                  minimum_should_match : 2,
                 }
               }],
             minimum_should_match : 1,
