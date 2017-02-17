@@ -58,6 +58,12 @@
     });
   };
 
+  window.dcFooter = function () {
+    $(".dc-footer--cross").click(function() {
+      $(".dc-footer").remove();
+    })
+  }
+
 
   window.activateTabs = function(id) {
     $(id).find('a').prop('href', function(){

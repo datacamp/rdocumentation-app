@@ -19,6 +19,7 @@
     bindUpvoteButton();
     window.bindFade();
     window.counter();
+    window.dcFooter();
     hljs.initHighlighting.called = false;
     hljs.initHighlighting();
   };
