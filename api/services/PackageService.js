@@ -1,5 +1,7 @@
 // PackageService.js - in api/services
 const _ = require('lodash');
+const Promise = require('bluebird');
+const request = require('superagent');
 
 
 module.exports = {
@@ -102,6 +104,20 @@ module.exports = {
       dependencies: dependencies
     };
 
+  },
+
+  isDCLSupported: function(package, version) {
+    return new Promise(function(resolve, reject) {
+      return request.get('http://documents.datacamp.com/default_r_packages.txt').end(function(err, res) {
+        if(err) return reject(err);
+        return resolve(res);
+      })
+    }).then(function(res) {
+      var regex = new RegExp(_.escapeRegExp(package)+'\s*'+_.escapeRegExp(version))
+      return regex.test(res.text);
+    }).catch(function() {
+      return false;
+    });
   },
 
   compareVersions: function(order, property) {

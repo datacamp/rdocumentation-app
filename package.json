@@ -51,7 +51,8 @@
     "sails": "~0.12.11",
     "sails-hook-sequelize": "^1.0.1",
     "sails-hook-sequelize-blueprints": "^0.3.0",
-    "striptags": "^2.1.1"
+    "striptags": "^2.1.1",
+    "superagent": "^3.4.3"
   },
   "scripts": {
     "debug": "nf start debug",
