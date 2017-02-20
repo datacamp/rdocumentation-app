@@ -44,6 +44,9 @@
     <div id="content">
       <%- partial ('inner_layout.ejs') %>
     </div>
+    <% if(!inCampus) { %>
+      <%- partial ('./shared/_dc_footer.ejs') %>
+    <% } %>
 
     <!--TEMPLATES-->
     

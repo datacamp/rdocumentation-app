@@ -63,6 +63,34 @@
 
 }
 
+.dc-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background-color: #1f697f;
+  color: white;
+  z-index: 1000;
+  text-align: center;
+  .dc-footer--text {
+    line-height: 40px;
+    margin-right: 1rem;
+  }
+  .dc-footer--link {
+    padding: 5px 15px;
+  }
+  .dc-footer--cross {
+    float: right;
+    height: 100%;
+    vertical-align: middle;
+    line-height: 40px;
+    padding: 0px 15px;
+  }
+  .dc-footer--cross:hover {
+    cursor: pointer;
+  }
+}
 
 @media (max-width: 850px){
 	.navbar--title.footer-largescreen{
