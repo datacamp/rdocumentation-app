@@ -68,34 +68,37 @@ module.exports = {
           github: 0
         };
 
-        Promise.map(packages, function(_package) {
-          var latest = _package.latest_version.toJSON();
-          if (latest.maintainer.name === name) {
-            latest.is_maintainer = true;
-          }
-          var collaborators = _.filter(latest.collaborators, function(c) {
-            return c.name === name;
+        return Percentile.findAll().then(function(percentiles) {
+          return Promise.map(packages, function(_package) {
+            var latest = _package.latest_version.toJSON();
+            if (!latest.maintainer) latest.maintainer = {};
+            if (latest.maintainer.name === name) {
+              latest.is_maintainer = true;
+            }
+            var collaborators = _.filter(latest.collaborators, function(c) {
+              return c.name === name;
+            });
+
+            if (collaborators.length > 0) {
+              latest.is_contributor = true;
+            }
+            if(!json.email && latest.is_maintainer && latest.maintainer.email) {
+              json.email = latest.maintainer.email;
+            }
+            if(!json.email && collaborators.length > 0 && collaborators[0].email) {
+              json.email = collaborators[0].email;
+            }
+            repositories[_package.repository.name] = repositories[_package.repository.name]+1 || 1;
+            return Package.getPackagePercentile(latest.package_name, percentiles).then(function(percentileObject) {
+              latest.percentile = isNaN(percentileObject.percentile) ? -1 : percentileObject.percentile;
+              latest.totalDownloads = percentileObject.total;
+              latest.repoName = _package.repository.name;
+              return latest;
+            });
+
           });
-
-          if (collaborators.length > 0) {
-            latest.is_contributor = true;
-          }
-          if(!json.email && latest.is_maintainer && latest.maintainer.email) {
-            json.email = latest.maintainer.email;
-          }
-          if(!json.email && collaborators.length > 0 && collaborators[0].email) {
-            json.email = collaborators[0].email;
-          }
-          repositories[_package.repository.name] = repositories[_package.repository.name]+1 || 1;
-
-          return Package.getPackagePercentile(latest.package_name).then(function(percentileObject) {
-            latest.percentile = isNaN(percentileObject.percentile) ? -1 : percentileObject.percentile;
-            latest.totalDownloads = percentileObject.total;
-            latest.repoName = _package.repository.name;
-            return latest;
-          });
-
         }).then(function(packages) {
+          console.log(packages);
           json.gravatar_url = 'https://www.gravatar.com/avatar/' + md5(_.trim(json.email).toLowerCase());
           json.packages = _.orderBy(packages, ['is_maintainer', 'percentile', 'totalDownloads'], ['asc', 'desc', 'desc']);
           json.repositories = repositories;
@@ -104,6 +107,9 @@ module.exports = {
         });
 
       }
+    })
+    .catch(function(err) {
+      return res.negotiate(err);
     });
   },
 /**

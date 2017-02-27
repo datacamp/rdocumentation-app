@@ -112,21 +112,19 @@ module.exports = {
         })
       },
 
-      getPackagePercentile: function(name) {
-        var lastMonthPercentiles = Percentile.findAll();
-
-        var lastMonthDownload = sails.controllers.packageversion._getDownloadStatistics(undefined, name);
-
-        return Promise.join(lastMonthPercentiles, lastMonthDownload, function(percentilesResponse, downloads) {
+      getPackagePercentile: function(name, percentilesArray) {
+        return sails.controllers.packageversion._getDownloadStatistics(undefined, name)
+        .then(function(downloads) {
           var total = downloads.total;
 
-          var percentiles = _.mapValues(_.keyBy(percentilesResponse,"percentile"),function(a){return a.value;});
+          var percentiles = _.mapValues(_.keyBy(percentilesArray,"percentile"),function(a){return a.value;});
           var percentile = _.findLastKey(percentiles, function(p) {
             return total >= p;
           });
-
           return {total: total, percentile: Math.round(percentile * 100) / 100 };
         });
+
+
       }
     }
   }
