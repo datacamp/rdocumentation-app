@@ -4,11 +4,9 @@
       <div> <!-- Do not remove this div, needed for ph-flex-position -->
         <div class='package--title--container'>
           <h1 class= 'package--title' itemprop="name"><%- pkgVersion.package_name %>
-          <span title="<%= pkgVersion.version === pkgVersion.package.versions[0].version ? "Latest version" : "" %>" class='package--version--v'><%= pkgVersion.version %></span></h1>
+          <span title="<%= pkgVersion.version === pkgVersion.package.versions[0].version ? "Latest version" : "" %>" class='package--version--v'>v<%= pkgVersion.version %></span></h1>
 
-          <% if(pkgVersion.maintainer) { %>
-            <span class='package--maintainer'>by <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>"><%= pkgVersion.maintainer.name %></a></span>
-          <% } %>
+
           <div class="package--version--select">
             <span>Other versions: </span>
             <select id='packageVersionSelect'>
@@ -18,7 +16,7 @@
                   <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %>
                   <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
                   >
-                  <%= pkgVersion.package.versions[i].version %>
+                  v<%= pkgVersion.package.versions[i].version %>
                 </option>
               <% } %>
             </select>
@@ -48,23 +46,25 @@
           <% var percentilePath = "/api" + path + "/percentile" %>
           <%- include ../shared/_percentile.ejs %>
         <%}%>
-
-        <div class="star-count">
-          <% if(user){ %>
-            <span id="upvoteButton" class="upvotePackage"  upvoted="<%= pkgVersion.package.upvoted ? true : false %>" data-action="/api/packages/<%= pkgVersion.package_name %>/toggleStar">
-              <i class="fa fa-heart" aria-hidden="true"></i>
-            </span>
-          <% }else{ %>
-            <a id="openModalUpvote" href="/modalLogin" rel = "modal:open" data-action="/api/packages/<%= pkgVersion.package_name %>/toggleStar">
-              <span class="upvotePackage" upvoted="<%= pkgVersion.package.upvoted ? true : false %>">
-                <i class="fa fa-heart" aria-hidden="true"></i>
-              </span>
-            </a>
-          <% } %>
-          <span class='star-count--number'><%= pkgVersion.package.star_count %></span>
-        </div>
       </div> <!-- /Do not remove this div, needed for ph-flex-position -->
-
     </div> <!-- /row -->
+    <div class="ph-flex-position">
+      <% if(pkgVersion.maintainer) { %>
+        <span class='package--maintainer'>by <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>"><%= pkgVersion.maintainer.name %></a></span>
+      <% } %>
+      <div>
+        <div class="paste-link">
+          <i class="fa fa-link"
+            aria-hidden="true">
+          </i>
+          <% var canonicalLink = process.env.BASE_URL + '/packages/' + pkgVersion.package_name %>
+          <input id="canonical-link-input" type="text" size="<%= canonicalLink.length %>" readonly value="<%= canonicalLink %>">
+          <button title="Copied !" class="copy-btn" data-clipboard-action="copy" data-clipboard-target="#canonical-link-input">
+            Copy
+          </button>
+        </div>
+      </div>
+
+    </div>
   </div> <!-- /container -->
 </header>

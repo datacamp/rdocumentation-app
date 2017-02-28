@@ -55,7 +55,7 @@
 .package--title--container {
   display: flex;
   align-items: baseline;
-  margin-bottom: $default-space;
+  margin-bottom: 1rem;
 }
 
 .package--navigation {
@@ -81,9 +81,18 @@
   }
 }
 
+.paste-link {
+  input {
+    width: inherit;
+    padding: 0.2rem 0.5rem;
+    border-color: #7ecce2;
+    outline: none;
+  }
+}
+
 .package--maintainer {
   font-size: 1rem;
-  margin-left: 0.5rem;
+  margin-left: 0.2rem;
 }
 
 .package--title {
