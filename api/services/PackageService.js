@@ -107,7 +107,7 @@ module.exports = {
   },
 
   isDCLSupported: function(package, version) {
-    RedisService.getJSONFromCache("default_r_packages", null, RedisService.WEEKLY, function() {
+    return RedisService.getJSONFromCache("default_r_packages", null, RedisService.WEEKLY, function() {
       return new Promise(function(resolve, reject) {
         return request.get('http://documents.datacamp.com/default_r_packages.txt').end(function(err, res) {
           if(err) return reject(err);
