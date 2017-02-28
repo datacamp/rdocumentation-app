@@ -15,7 +15,7 @@
       }
     },
 
-    renderer: (function() {
+    renderer: function(dcl) {
       var renderer = new marked.Renderer();
       var defaultCodeFunction = renderer.code;
 
@@ -34,7 +34,7 @@
           return $block.prop('outerHTML');
 
         }
-        else if(lang === '{r}' || lang === 'r') {
+        else if(lang === '{r}' || lang === 'r' && dcl) {
           var codeBlock = '<div data-datacamp-exercise data-lang="r">';
           codeBlock += '<code data-type="sample-code">';
           codeBlock += code;
@@ -46,7 +46,7 @@
         }
       };
       return renderer;
-    })(),
+    },
 
     loadMDEWidget: function($textarea) {
       if($textarea) {
@@ -54,7 +54,7 @@
           element: $textarea,
           previewRender: function(plainText, preview) {
             setTimeout(function() {
-              var rendered = marked(plainText, {renderer: Examples.renderer});
+              var rendered = marked(plainText, {renderer: Examples.renderer($('.topic').data('dcl'))});
               $(preview).html(rendered);
                 Examples.bootstrapExamples();
             }, 0);
@@ -80,7 +80,7 @@
 
     renderExample: function($element) {
       var markdown = $element.html();
-      var rendered = marked(markdown, {renderer: Examples.renderer});
+      var rendered = marked(markdown, {renderer: Examples.renderer($('.topic').data('dcl'))});
       $element.html(rendered);
     },
 

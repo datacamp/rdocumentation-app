@@ -5,6 +5,17 @@
       $("#show").hide();
       $("#details").find(".hidden").removeClass("hidden");
     });
+
+    new Clipboard('.copy-btn');
+    $(".copy-btn").tooltip({
+      animation: true,
+      trigger: 'manual'
+    }).click(function() {
+      $(".copy-btn").tooltip('show');
+    }).on('mouseleave', function() {
+      setTimeout(function() { $(".copy-btn").tooltip('hide'); }, 500);
+    });
+
     window.packageVersionToggleHandler();
     window.launchFullSearch();
     window.graphDownloadStatistics();
