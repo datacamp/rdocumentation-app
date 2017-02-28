@@ -42,7 +42,7 @@
           codeBlock += '</div>';
           return codeBlock;
         } else {
-          return defaultCodeFunction.call(this, code, lang);
+          return defaultCodeFunction.call(renderer, code, lang, true);
         }
       };
       return renderer;
