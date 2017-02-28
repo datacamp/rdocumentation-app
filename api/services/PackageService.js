@@ -107,13 +107,16 @@ module.exports = {
   },
 
   isDCLSupported: function(package, version) {
-    return new Promise(function(resolve, reject) {
-      return request.get('http://documents.datacamp.com/default_r_packages.txt').end(function(err, res) {
-        if(err) return reject(err);
-        return resolve(res);
+    RedisService.getJSONFromCache("default_r_packages", null, RedisService.WEEKLY, function() {
+      return new Promise(function(resolve, reject) {
+        return request.get('http://documents.datacamp.com/default_r_packages.txt').end(function(err, res) {
+          if(err) return reject(err);
+          return resolve({ text: res.text });
+        })
       })
-    }).then(function(res) {
-      var regex = new RegExp(_.escapeRegExp(package)+'\s*'+_.escapeRegExp(version))
+    })
+    .then(function(res) {
+      var regex = new RegExp(_.escapeRegExp(package)+'\\s*'+_.escapeRegExp(version))
       return regex.test(res.text);
     }).catch(function() {
       return false;
