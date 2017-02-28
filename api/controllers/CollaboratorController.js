@@ -129,6 +129,8 @@ module.exports = {
       var row = results[0];
       row.totalStr = row.total ? numeral(row.total).format('0,0') : '';
       res.json(results[0]);
+    }).catch(function(err) {
+      return res.negotiate(err);
     });
   },
 /**
