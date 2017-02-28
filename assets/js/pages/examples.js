@@ -34,7 +34,7 @@
           return $block.prop('outerHTML');
 
         }
-        else if(lang === '{r}' || lang === 'r' && dcl) {
+        else if((lang === '{r}' || lang === 'r') && dcl) {
           var codeBlock = '<div data-datacamp-exercise data-lang="r">';
           codeBlock += '<code data-type="sample-code">';
           codeBlock += code;

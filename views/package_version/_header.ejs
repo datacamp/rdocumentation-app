@@ -8,15 +8,14 @@
 
 
           <div class="package--version--select">
-            <span>Other versions: </span>
             <select id='packageVersionSelect'>
               <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
                 <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
                   value="<%= pkgVersion.package.versions[i].version %>"
-                  <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %>
+                  <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected disabled' : '' %>
                   <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
                   >
-                  v<%= pkgVersion.package.versions[i].version %>
+                  <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'Other' : 'v' + pkgVersion.package.versions[i].version %>
                 </option>
               <% } %>
             </select>
@@ -57,7 +56,7 @@
           <i class="fa fa-link"
             aria-hidden="true">
           </i>
-          <% var canonicalLink = process.env.BASE_URL + '/packages/' + pkgVersion.package_name %>
+          <% var canonicalLink = 'https:' + process.env.BASE_URL + '/packages/' + pkgVersion.package_name %>
           <input id="canonical-link-input" type="text" size="<%= canonicalLink.length %>" readonly value="<%= canonicalLink %>">
           <button title="Copied !" class="copy-btn" data-clipboard-action="copy" data-clipboard-target="#canonical-link-input">
             Copy
