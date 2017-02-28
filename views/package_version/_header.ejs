@@ -57,7 +57,7 @@
           <i class="fa fa-link"
             aria-hidden="true">
           </i>
-          <% var canonicalLink = process.env.BASE_URL + '/packages/' + pkgVersion.package_name %>
+          <% var canonicalLink = 'https:' + process.env.BASE_URL + '/packages/' + pkgVersion.package_name %>
           <input id="canonical-link-input" type="text" size="<%= canonicalLink.length %>" readonly value="<%= canonicalLink %>">
           <button title="Copied !" class="copy-btn" data-clipboard-action="copy" data-clipboard-target="#canonical-link-input">
             Copy
