@@ -15,7 +15,7 @@
                   <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected disabled' : '' %>
                   <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
                   >
-                  <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'Other' : 'v' + pkgVersion.package.versions[i].version %>
+                  <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'Other versions' : 'v' + pkgVersion.package.versions[i].version %>
                 </option>
               <% } %>
             </select>
