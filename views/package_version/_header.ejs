@@ -8,15 +8,14 @@
 
 
           <div class="package--version--select">
-            <span>Other versions: </span>
             <select id='packageVersionSelect'>
               <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
                 <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
                   value="<%= pkgVersion.package.versions[i].version %>"
-                  <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected' : '' %>
+                  <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected disabled' : '' %>
                   <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
                   >
-                  v<%= pkgVersion.package.versions[i].version %>
+                  <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'Other' : 'v' + pkgVersion.package.versions[i].version %>
                 </option>
               <% } %>
             </select>
