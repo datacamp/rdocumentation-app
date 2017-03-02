@@ -1,4 +1,4 @@
-FROM node:slim
+FROM node:7.6
 
 MAINTAINER Ludovic Vannoorenberghe <ludo@datacamp.com>
 
