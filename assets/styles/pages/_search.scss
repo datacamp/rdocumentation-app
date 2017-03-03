@@ -4,6 +4,12 @@
     margin-right: $default-space;
     margin-left: $default-space;
   }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
   h4{
     margin-bottom: 1em;
     margin-top : 0em;
