@@ -38,7 +38,8 @@
             <td><%= depType %></td>
             <td>
             <% for(var i = 0; i < types[depType].length; i++) { %>
-              <a itemprop="softwareRequirements" href="<%= types[depType][i].uri %>">
+              <% var uri ='/packages/' + types[depType][i].dependency_name; %>
+              <a itemprop="softwareRequirements" href="<%= uri %>">
               <%= types[depType][i].dependency_name %>
               <% if (types[depType][i].version_comparator) { %>
                 (<%= types[depType][i].version_comparator %> <%= types[depType][i].dependency_version %>)
