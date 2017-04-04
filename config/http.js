@@ -12,7 +12,7 @@ var dateFormat = require('dateformat');
 var autoLink = require('autolink-js');
 var marked = require('marked');
 var cheerio = require ('cheerio');
-
+var morgan = require('morgan');
 
 
 module.exports.http = {
@@ -38,6 +38,7 @@ module.exports.http = {
 
     order: [
       'startRequestTimer',
+      'logger',
       'cookieParser',
       'readRstudioSession',
       'session',
@@ -85,6 +86,8 @@ module.exports.http = {
     res.locals.user = req.user;
     return next();
   },
+
+  logger: morgan("short"),
 
   paramsInjector: function (req, res, next) {
     res.locals.inViewerPane = (req.param('viewer_pane') === '1') ? true : false;
