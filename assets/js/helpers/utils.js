@@ -60,7 +60,7 @@
 
   window.dcFooter = function () {
     $(".dc-footer--cross").click(function() {
-      $.cookie("banner-closed", 'true');
+      $.cookie("banner-closed", 'true', { expires: 1 });
       $(".dc-footer").remove();
     })
   }
