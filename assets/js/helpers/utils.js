@@ -60,6 +60,7 @@
 
   window.dcFooter = function () {
     $(".dc-footer--cross").click(function() {
+      $.cookie("banner-closed", 'true');
       $(".dc-footer").remove();
     })
   }
