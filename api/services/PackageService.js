@@ -69,17 +69,16 @@ module.exports = {
 
     var authors = {contributors : []};
 
-    if(descriptionJSON["Authors@R"] && descriptionJSON["Authors@R"].indexOf("as.person(")==-1) {
-      authors = AuthorService.recoverAuthorsR(descriptionJSON["Authors@R"]);
+    if(descriptionJSON.jsonAuthors) {
+      console.log(descriptionJSON.jsonAuthors);
+      var partition = _.partition(descriptionJSON.jsonAuthors, function(a) { return a.maintainer });
+      authors.maintainer = partition[0][0];
+      authors.contributors = partition[1];
+      console.log(authors);
     }
     else {
       if(descriptionJSON.Author){
-        if(descriptionJSON.Author.indexOf("person(") !== -1) {
-          authors.contributors = AuthorService.recoverAuthorsR(descriptionJSON.Author).contributors;
-        }
-        else {
-          authors.contributors = AuthorService.authorsSanitizer(descriptionJSON.Author);
-        }
+        authors.contributors = AuthorService.authorsSanitizer(descriptionJSON.Author);
       }
       if(descriptionJSON.Maintainer) {
         authors.maintainer = AuthorService.authorsSanitizer(descriptionJSON.Maintainer)[0];
