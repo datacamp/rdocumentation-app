@@ -99,6 +99,7 @@ module.exports.http = {
     res.locals.autoLink = autoLink;
     res.locals.lodash = require('lodash');
     res.locals.striptags = require('striptags');
+    res.locals.dcBanner = req.cookies['banner-closed'] !== 'true';
 
     res.locals.md = function (md,baseLink) {
       //when multiple bases, pick the one from github
