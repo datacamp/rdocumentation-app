@@ -128,11 +128,6 @@ module.exports = {
         } else return sails.getUrlFor({ target: 'Topic.findById' })
           .replace(':id', encodeURIComponent(this.id));
       },
-      details: function() {
-        var old = this.getDataValue('details');
-        if(old) return old.replace(/\n\n/g, "<br />");
-        else return old;
-      }
     },
 
     classMethods: {
