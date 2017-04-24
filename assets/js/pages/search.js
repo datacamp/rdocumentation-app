@@ -30,6 +30,7 @@
       $('.functiondata').hide();
   		$('.functiondata').html(result);
       $('.functiondata').fadeIn('fast');
+      window.bindFade();
       rebind(currentFunctionPage, currentPackagePage);
       $(document).trigger('content-changed');
   	});

@@ -102,10 +102,22 @@ span.margin-left {
   line-height: 1.5rem;
   min-height: 4.5rem;
   overflow:hidden;
-  display: inline-block;
+  display: block;
   cursor: pointer;
 }
 
+.search-result--title {
+  margin-bottom: 21px;
+}
+
+.functiondata {
+  .search-result--description {
+    min-height: 1.5rem;
+  }
+  .fading-text {
+    height: 1.5rem;
+  }
+}
 
 .search-result--index {
   color: $text-secondary;
