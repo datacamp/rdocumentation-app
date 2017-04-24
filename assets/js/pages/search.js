@@ -83,7 +83,7 @@
       var currentPage = parseInt(urlParam("page")) || 1;
       var currentPackagePage = parseInt(urlParam("packagePage")) || currentPage;
       var currentFunctionPage = parseInt(urlParam("functionPage")) || currentPage;
-      $("#searchbar").val(urlParam('q'));
+      $("#searchbar").val(decodeURIComponent(urlParam('q')));
       window.activateTabs("#searchtabs");
       reloadPackages(currentFunctionPage, currentPackagePage);
       reloadFunctions(currentFunctionPage, currentPackagePage);
