@@ -123,7 +123,9 @@ module.exports = {
             'Depends',
             'Imports',
             'Suggests',
-            'Enhances']);
+            'Enhances',
+            'jsonAuthors',
+            'tarballUrl']);
         } catch(err) {
           console.log(err.message);
           version.sourceJSON = {};
