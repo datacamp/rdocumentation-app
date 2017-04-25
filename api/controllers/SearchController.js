@@ -332,7 +332,7 @@ module.exports = {
   packageSearch: function(req,res){
     var query = req.param('q');
     var page = parseInt(req.param('page')) || 1;
-    var perPage = parseInt(req.param('perPage')) || 10;
+    var perPage = parseInt(req.param('perPage')) || 15;
     var offset = (page - 1) * perPage;
 
     return es.search({
@@ -450,7 +450,7 @@ module.exports = {
   functionSearch: function(req,res){
     var query = req.param('q');
     var page = parseInt(req.param('page')) || 1;
-    var perPage = parseInt(req.param('perPage')) || 10;
+    var perPage = parseInt(req.param('perPage')) || 15;
     var offset = (page - 1) * perPage;
     var searchTopicQuery = {
       multi_match: {
