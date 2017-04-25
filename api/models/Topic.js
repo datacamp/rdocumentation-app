@@ -167,12 +167,13 @@ module.exports = {
         }
 
         var params = {
-          where: {
-            name: name
-          },
           include: [
-            { model: PackageVersion, as: 'package_version', attributes: ['package_name', 'version'], where: packageCriteria }
-          ]
+            { model: PackageVersion, as: 'package_version', attributes: ['package_name', 'version'], where: packageCriteria },
+            { model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], required: false }
+          ],
+          where: {
+            $or: [{ name: name }, { '$`aliases`.`name`$': name }]
+          },
         };
 
         return Topic.findAll(params).then(function(topics) {
