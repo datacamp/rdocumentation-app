@@ -46,7 +46,13 @@
           .addClass("counter")
           .attr("data-count", data.directDownloads);
         window.counter();
-        $(".fa-info-circle").attr("title","Monthly downloads are direct downloads. The package also had " + data.indirectDownloadsStr + " dependent downloads for a total of " + data.totalStr +".");
+        $(".fa-info-circle").attr(
+          "title","Monthly downloads are direct downloads. The package also had "
+          + data.indirectDownloadsStr +
+          " dependent downloads for a total of "
+          + data.totalStr + "."
+          + " Percentiles are computed over total downloads."
+        );
         $(".distinct-ip-downloads").attr("title","Monthly downloads are downloads from distinct ip's.");
         $(".fa-info-circle").tooltip({
           placement: 'bottom'
