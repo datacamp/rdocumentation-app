@@ -228,7 +228,7 @@ module.exports = {
           var arrayToString = function(val) {
             if (val instanceof Array) {
               if(_.isEmpty(val)) return "";
-              else return val.join(" ");
+              else return val.join("\n\n");
             } else return val;
           };
 
