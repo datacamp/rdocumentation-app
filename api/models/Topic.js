@@ -167,17 +167,17 @@ module.exports = {
         }
 
         var params = {
+          where: { name: name },
           include: [
-            { model: PackageVersion, as: 'package_version', attributes: ['package_name', 'version'], where: packageCriteria },
-            { model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], required: false }
+            { model: PackageVersion, as: 'package_version', attributes: ['package_name', 'version'], where: packageCriteria }
           ],
-          where: {
-            $or: [{ name: name }, { '$`aliases`.`name`$': name }]
-          },
         };
 
-        return Topic.findAll(params).then(function(topics) {
-          return topics.sort(PackageService.compareVersions('desc', function(topic) {
+        return Promise.join(
+          Topic.findAll(params),
+          Topic.findByAliasInPackage(packageName, name, version),
+        function(topics, aliasesTopics) {
+          return topics.concat(aliasesTopics).sort(PackageService.compareVersions('desc', function(topic) {
             return topic.package_version.version })
           )[0];
         });
