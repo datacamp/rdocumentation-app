@@ -58,7 +58,7 @@
   "scripts": {
     "debug": "nf start debug",
     "prestart": "node node_modules/db-migrate/bin/db-migrate up",
-    "start": "forever app.js",
+    "start": "node --trace_gc app.js",
     "test": "mocha"
   },
   "main": "app.js",

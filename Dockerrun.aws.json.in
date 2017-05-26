@@ -26,6 +26,10 @@
         {
           "hostPort": 1337,
           "containerPort": 1337
+        },
+        {
+          "hostPort": 8080,
+          "containerPort": 8080
         }
       ],
       "mountPoints": [ ]
