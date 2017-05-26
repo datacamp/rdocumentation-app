@@ -161,7 +161,7 @@ module.exports = {
           if (compareValue === 0) return example2.created_at.getTime() - example1.created_at.getTime();
           else return compareValue;
         });
-        topicJSON.dcl = dcl || topicJSON.package_version.package.type_id === 4; //in the list or in base r
+        topicJSON.dcl = dcl || (topicJSON.package_version && topicJSON.package_version.package.type_id === 4); //in the list or in base r
         topicJSON.user_examples = userExamples;
         return topicJSON;
       });
