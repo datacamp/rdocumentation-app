@@ -307,7 +307,6 @@ module.exports = {
                       return _.includes(depsNameArray, alias.topic.package_version.package_name);
                     });
                     if (alias) {
-                      console.info("link found in " + alias.topic.package_version.package_name);
                       return alias.topic.uri;
                     } else throw {dependencies: depsNameArray};
                   });
@@ -326,8 +325,7 @@ module.exports = {
               return searchInDependencies([fromPackage.package_name], 0).then(function(uri) {
                 return {uri: uri};
               }).catch(function(err) {
-                console.info(err);
-                console.info("link not found, go to: " + aliases[0].topic.uri);
+                console.error(err);
                 return { uri: aliases[0].topic.uri}; // no match in dependencies, just redirect to first one
               });
 

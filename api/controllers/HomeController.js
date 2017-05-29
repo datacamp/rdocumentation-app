@@ -10,8 +10,6 @@
 module.exports = {
 
   index: function(req, res) {
-    console.log('index');
-
     RedisService.getJSONFromCache("home_page_info", res, RedisService.DAILY, function() {
       var json = {};
       json.description = "Search current and past R documentation and R manuals from CRAN, GitHub and Bioconductor. Use the Rdocumentation package for easy access inside RStudio.";
