@@ -54,8 +54,8 @@ module.exports = {
       ],
       where: {
         $or:[
-          sequelize.literal("`latest_version.maintainer`.`name` = '" + name + "'"),
-          sequelize.literal("`latest_version.collaborators`.`name` = '" + name + "'"),
+          sequelize.literal("`latest_version.maintainer`.`name` = '" + name.replace("'", "\\'") + "'"),
+          sequelize.literal("`latest_version.collaborators`.`name` = '" + name.replace("'", "\\'") + "'"),
         ]
       }
     }).then(function(packages) {
