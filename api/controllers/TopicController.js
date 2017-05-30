@@ -143,7 +143,7 @@ module.exports = {
       }).then(function(topicInstance) {
         if(topicInstance === null) return null;
         else if(topicInstance.redirect_uri) return topicInstance;
-        else return TopicService.computeLinks('/link/', topicInstance)
+        else return TopicService.processHrefs(topicInstance)
           .then(function(topic) {
             topic.pageTitle = topic.name + ' function';
             return topic;
@@ -227,7 +227,7 @@ module.exports = {
         if(topicInstance === null) return null;
         else {
           return Topic.findByNameInPackage(topicInstance.package_version.package_name, topicInstance.name).then(function(t) {
-            return TopicService.computeLinks('/link/', topicInstance)
+            return TopicService.processHrefs(topicInstance)
               .then(function(topic) {
                 topic.pageTitle = topic.name + ' function';
                 topic.canonicalLink = t.uri;
@@ -443,7 +443,14 @@ module.exports = {
     }).catch(function(err) {
       return res.negotiate(err);
     });
-  }
+  },
+
+  figure: function(req, res) {
+    const packageName = req.param('package');
+    const version = req.param('version');
+    const path = req.param('path');
+    res.redirect(302, `https://s3.amazonaws.com/assets.rdocumentation.org/rpackages/unarchived/${packageName}/${version}/figures/${path}`);
+  },
 
 };
 

@@ -102,6 +102,8 @@ module.exports.routes = {
     'get /packages/:name/functions/:function': 'Topic.redirect',
     'get /packages/:name/html/:function': 'Topic.redirect',
     'get /goto/:name/:function': 'Topic.redirect',
+
+    'get r|^/figures/(.*)|path': 'Topic.figure',
   //***** /Topic *****
 
   //***** Collaborator *****
