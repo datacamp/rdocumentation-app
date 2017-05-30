@@ -60,7 +60,7 @@ _processResults=function(results){
 		return Topic.findOnePopulated({id: results[0].id}).then(function(topic) {
 	        if(topic === null) return [];
 	        else {
-	          return TopicService.computeLinks('/link/', topic)
+	          return TopicService.processHrefs(topic)
 	            .then(function(topic) {
 	              topic.pageTitle = topic.name;
 	              return [topic];
