@@ -58,7 +58,7 @@
   "scripts": {
     "debug": "nf start debug",
     "prestart": "node node_modules/db-migrate/bin/db-migrate up",
-    "start": "forever -c \"node --max_old_space_size=512\" app.js",
+    "start": "forever app.js",
     "test": "mocha"
   },
   "main": "app.js",
