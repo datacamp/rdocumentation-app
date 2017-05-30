@@ -1,6 +1,5 @@
 var Promise = require('bluebird');
 var _ = require('lodash');
-cheerio = require('cheerio');
 
 module.exports = {
 	helpFindByTopicsAndPackages :function(topicNames,packageNames){

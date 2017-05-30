@@ -95,13 +95,13 @@ module.exports = {
 				res.view('badges/downloads_badge.ejs',{data:statistics});
 			}
 		})
-		.catch(function(err){
-			console.log(err.message);
-		});
-	}).catch(function(err){
-		console.log(err.message);
+		.catch(function(err) {
+      return res.negotiate(err);
+    });
+	}).catch(function(err) {
+		return res.negotiate(err);
 	});
-  },
+},
 	  /**
   * @api {post} /badges/version/:packageName get version badge for rdocumentation
   * @apiName get version badge for rdocumentation
@@ -127,6 +127,9 @@ module.exports = {
       res.type('image/svg+xml');
       res.locals.layout = null;
   		res.view('badges/version_badge.ejs',{data:{version:version,color:color,length:length}});
-  	});
+  	})
+		.catch(function(err) {
+      return res.negotiate(err);
+    });
   },
 };

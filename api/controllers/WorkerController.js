@@ -21,7 +21,7 @@ module.exports = {
       var result = Topic.createWithRdFile({input: req.body, packageName: packageName, packageVersion: packageVersion});
       result.then(function(value) {
         var key = 'view_topic_' + value.id;
-        RedisService.del(key);
+        RedisService.invalidateTopicById(key);
         res.json(value);
       })
       .catch(Sequelize.UniqueConstraintError, function (err) {
