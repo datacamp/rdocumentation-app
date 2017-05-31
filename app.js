@@ -22,7 +22,7 @@
 // no matter where we actually lift from.
 process.chdir(__dirname);
 // Ensure a "sails" can be located:
-var newrelic = require('newrelic');
+//var newrelic = require('newrelic');
 require('dotenv').config({silent: true});
 
 (function() {
