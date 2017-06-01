@@ -56,12 +56,12 @@ module.exports = {
 
     Package.belongsToMany(PackageVersion, { as: 'reverse_dependencies', foreignKey: 'dependency_name', through: Dependency, constraints: false});
 
-    Package.hasOne(DownloadStatistic,
+    Package.hasMany(DownloadStatistic,
       {
-        as: 'last_month_stats',
+        as: 'download_stats',
         foreignKey: {
           name: 'package_name',
-          as: 'last_month_stats'
+          as: 'download_stats'
         }
       }
     );

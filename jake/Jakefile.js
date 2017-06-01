@@ -48,43 +48,72 @@ task('sitemap', ['sails-load'], {async: true}, function () {
   //set concurrency to maximum number of connection to database
   var concurrency = sails.config.connections.sequelize_mysql.options.pool.max;
 
-  Package.findAll({
-    include: [{
-      model: PackageVersion,
-      as: "latest_version",
-      attributes: [ "id", "version", "package_name" ],
-      required: true
-    }],
-    attributes:['name', 'latest_version_id']
-  }).map(function(package){
-    var p = package.latest_version;
-    var package_json = p.toJSON();
-    var url =  package_json.uri;
+  var lastMonthPercentiles = Percentile.findAll();
+  
+  var packages = Package.findAll({
+    include: [
+      {
+        model: PackageVersion,
+        as: "latest_version",
+        attributes: [ "id", "version", "package_name" ],
+        required: true,
+      },
+      {
+        model: DownloadStatistic,
+        as: "download_stats",
+        attributes: [[sequelize.fn('SUM', sequelize.col('download_stats.indirect_downloads')), 'indirect'], [sequelize.fn('SUM', sequelize.col('download_stats.direct_downloads')), 'direct']],
+        where: {
 
-    sg.inject(host + url);
-
-    return p.getTopics({
-      attributes: ['id', 'package_version_id', 'name']
-    }).map(function(t) {
-      var topic_json = t.toJSON();
-      var url = '/packages/'+
-        encodeURIComponent(package_json.package_name)+
-        '/versions/'+
-        encodeURIComponent(package_json.version)+
-        '/topics/' +
-        encodeURIComponent(topic_json.name);
-      var item = {
-        url: host + url,
-        changeFreq: "weekly"
-      };
-      sg.inject(item);
-      return 1;
-    });
-
-  }, {concurrency: concurrency})
-  .then(function() {
-    return sg.done();
+          date: {
+            $gte:new Date(new Date()-30*24*60*60*1000)
+          }
+        }
+      }
+    ],
+    group: ['download_stats.package_name'],
+    attributes:['name', 'latest_version_id'],
   });
+
+  Promise.join(lastMonthPercentiles, packages, function(percentilesResponse, packages) {
+    var percentiles = _.mapValues(_.keyBy(percentilesResponse,"percentile"),function(a){return a.value;});
+
+    return Promise.map(packages, function(package){
+      console.log(package.toJSON());
+      var stats = package.toJSON().download_stats;
+      var p = package.latest_version;
+      var package_json = p.toJSON();
+      var url =  package_json.uri;
+
+      var total = stats[0].indirect + stats[0].direct;
+      var percentile = _.findLastKey(percentiles, function(p) {
+        return total >= p;
+      }) || 0;
+      
+      sg.inject(host + url);
+
+      return p.getTopics({
+        attributes: ['id', 'package_version_id', 'name']
+      }).map(function(t) {
+        var topic_json = t.toJSON();
+        var url = '/packages/'+
+          encodeURIComponent(package_json.package_name)+
+          '/topics/' +
+          encodeURIComponent(topic_json.name);
+        var item = {
+          url: host + url,
+          changeFreq: "weekly",
+          priority: Math.round(percentile) / 100.0
+        };
+        sg.inject(item);
+        return 1;
+      });
+
+    }, {concurrency: concurrency})
+    .then(function() {
+      return sg.done();
+    });
+  });
+  
 
   sg.on('drain', function() {
     console.info('drain');
