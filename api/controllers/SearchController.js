@@ -449,6 +449,7 @@ module.exports = {
 
   functionSearch: function(req,res){
     var query = req.param('q');
+    var package = req.param('package');
     var page = parseInt(req.param('page')) || 1;
     var perPage = parseInt(req.param('perPage')) || 15;
     var offset = (page - 1) * perPage;
@@ -474,6 +475,31 @@ module.exports = {
         "type" : "phrase_prefix"
       }
     };
+    var packageMatchQuery = {
+      has_parent : {
+        parent_type : "package_version",
+        query : {
+          "bool" : {
+            "must" : [
+              {
+                term : { latest_version : 1 }
+              },
+              {
+                term : { package_name: package }
+              }
+            ]
+          }
+        }
+      }
+    };
+    if(package === undefined){
+      packageMatchQuery = {
+        has_parent : {
+          parent_type : "package_version",
+          query : {  term : { latest_version : 1 } }
+        }
+      };
+    }
     return es.search({
       index: 'rdoc',
       body: {
@@ -488,12 +514,7 @@ module.exports = {
                         value : "topic"
                       }
                     },
-                    {
-                      has_parent : {
-                        parent_type : "package_version",
-                        query : {  term : { latest_version : 1 } }
-                      }
-                    }
+                    packageMatchQuery
                   ],
                   should: [
                     searchTopicQuery,
