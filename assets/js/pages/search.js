@@ -19,7 +19,8 @@
       });
     }
     else{
-      $('.packagedata').hide();
+      $('.package-column').hide();
+      $('.topic-column').css('width', '100%');
     }
   };
 
