@@ -10,11 +10,11 @@ var striptags = require('striptags');
 var querystring = require('querystring');
 var numeral = require('numeral');
 
-isInPackageSearch = function(query){
+var isInPackageSearch = function(query){
   return splitInPackageAndFunction(query).length == 2;
 }
 
-splitInPackageAndFunction = function(query){
+var splitInPackageAndFunction = function(query){
   return decodeURIComponent(query).split("::");
 }
 

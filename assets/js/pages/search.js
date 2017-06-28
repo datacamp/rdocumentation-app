@@ -113,11 +113,11 @@
     }
   };
 
-  isInPackageSearch = function(query){
+  var isInPackageSearch = function(query){
     return splitInPackageAndFunction(query).length == 2;
   }
 
-  splitInPackageAndFunction = function(query){
+  var splitInPackageAndFunction = function(query){
     return decodeURIComponent(query).split("::");
   }
 
