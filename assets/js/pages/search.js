@@ -12,15 +12,20 @@
         $('.packagedata').hide();
         $('.packagedata').html(result);
         $('.packagedata').fadeIn('fast');
+        $('#packagetab').show();
+        $('#packages').show();
         window.getPercentiles();
         window.bindFade();
         rebind(currentFunctionPage, currentPackagePage);
         $(document).trigger('content-changed');
       });
     }
-    else{
+    else{      
       $('.package-column').hide();
+      $('#packages').hide();
+      $('#packagetab').hide();
       $('.topic-column').css('width', '100%');
+      $("#searchtabs").tabs("option", "active", 1);
     }
   };
 
