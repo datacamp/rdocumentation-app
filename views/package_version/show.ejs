@@ -1,4 +1,5 @@
 <% var pkgVersion = data; %>
+<% path = path.replace(new RegExp('[\/]$'),''); %>
 <section
   data-package-name="<%=pkgVersion.package_name%>"
   data-type-id="<%=pkgVersion.package['type_id']%>"
