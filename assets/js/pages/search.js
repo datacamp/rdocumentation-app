@@ -1,27 +1,45 @@
 (function($) {
   window.reloadPackages = function(currentFunctionPage, currentPackagePage){
-    $('html, body').animate({ scrollTop: 0 }, 'slow');
-  	$.ajax({
-  		url: "/search_packages?q="+urlParam('q') + "&page=" + currentPackagePage,
-      crossDomain:true,
-      xhrFields: {
-        withCredentials: true
-      }
-  	}).done(function(result){
-      $('.packagedata').hide();
-      $('.packagedata').html(result);
-      $('.packagedata').fadeIn('fast');
-      window.getPercentiles();
-      window.bindFade();
-      rebind(currentFunctionPage, currentPackagePage);
-      $(document).trigger('content-changed');
-  	});
+    if(!isInPackageSearch(urlParam('q'))){
+      $('html, body').animate({ scrollTop: 0 }, 'slow');
+      $.ajax({
+        url: "/search_packages?q="+urlParam('q') + "&page=" + currentPackagePage,
+        crossDomain:true,
+        xhrFields: {
+          withCredentials: true
+        }
+      }).done(function(result){
+        $('.packagedata').hide();
+        $('.packagedata').html(result);
+        $('.packagedata').fadeIn('fast');
+        $('#packagetab').show();
+        $('#packages').show();
+        window.getPercentiles();
+        window.bindFade();
+        rebind(currentFunctionPage, currentPackagePage);
+        $(document).trigger('content-changed');
+      });
+    }
+    else{      
+      $('.package-column').hide();
+      $('#packages').hide();
+      $('#packagetab').hide();
+      $('.topic-column').css('width', '100%');
+      $("#searchtabs").tabs("option", "active", 1);
+    }
   };
 
   window.reloadFunctions = function(currentFunctionPage, currentPackagePage){
     $('html, body').animate({ scrollTop: 0 }, 'slow');
+    var query = urlParam('q');
+    var packageParam = "";
+    if(isInPackageSearch(urlParam('q'))){
+      var packageAndFunction = splitInPackageAndFunction(urlParam('q'));
+      packageParam = "&package=" + packageAndFunction[0];
+      query = packageAndFunction[1];
+    }
   	$.ajax({
-  		url: "/search_functions?q="+ urlParam('q') + "&page=" + currentFunctionPage,
+  		url: "/search_functions?q="+ query + packageParam + "&page=" + currentFunctionPage,
     	crossDomain:true,
       xhrFields: {
         withCredentials: true
@@ -94,5 +112,13 @@
       };
     }
   };
+
+  var isInPackageSearch = function(query){
+    return splitInPackageAndFunction(query).length == 2;
+  }
+
+  var splitInPackageAndFunction = function(query){
+    return decodeURIComponent(query).split("::");
+  }
 
 })($jq);

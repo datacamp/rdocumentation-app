@@ -10,6 +10,14 @@ var striptags = require('striptags');
 var querystring = require('querystring');
 var numeral = require('numeral');
 
+var isInPackageSearch = function(query){
+  return splitInPackageAndFunction(query).length == 2;
+}
+
+var splitInPackageAndFunction = function(query){
+  return decodeURIComponent(query).split("::");
+}
+
 module.exports = {
 /**
   * @api {post} /quick_search Quick search
@@ -33,6 +41,54 @@ module.exports = {
   */
   quickSearch: function(req, res) {
     var token = req.body.token;
+    var topic = token;
+    
+    var packageMatchQuery = {
+      has_parent : {
+        parent_type : "package_version",
+        query : {  term : { latest_version : 1 } },
+        inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
+      }
+    };
+
+    var packageMatchQueryForPackage = {
+      match_phrase_prefix : {
+        "package_name" : {
+            "query" : token,
+            "max_expansions" : 20,
+        }
+      }
+    }
+
+    if(isInPackageSearch(token)){
+      var packageAndFunction = splitInPackageAndFunction(token);
+      topic = packageAndFunction[1];
+      packageMatchQuery = {
+        has_parent : {
+          parent_type : "package_version",
+          query : {
+            "bool" : {
+              "must" : [
+                {
+                  term : { latest_version : 1 }
+                },
+                {
+                  term : { package_name: packageAndFunction[0] }
+                }
+              ]
+            }
+          },
+          inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
+        }
+      };
+      packageMatchQueryForPackage = {
+        match : {
+          "package_name" : {
+              "query" : packageAndFunction[0]
+          }
+        }
+      }      
+    }
 
     var packages, topics, collaborators;
 
@@ -84,14 +140,7 @@ module.exports = {
               filter: {
                 bool: {
                   must: [
-                    {
-                      match_phrase_prefix : {
-                        "package_name" : {
-                            "query" : token,
-                            "max_expansions" : 20,
-                        }
-                      }
-                    },
+                    packageMatchQueryForPackage,
                     {
                       term: { latest_version: 1 }
                     }
@@ -112,14 +161,14 @@ module.exports = {
               should: [
                 {
                   "multi_match" : {
-                    "query":    token,
+                    "query":    topic,
                     "fields": [ "aliases^2", "name" ]
                   }
                 },
                 {
                   "multi_match" : {
                     "fields" : ["aliases^2", "name"],
-                    "query" : token,
+                    "query" : topic,
                     boost: 0.2,
                     "type" : "phrase_prefix"
                   }
@@ -168,17 +217,7 @@ module.exports = {
                 }
               ],
               "minimum_number_should_match": 1,
-              filter: {
-                has_parent : {
-                  parent_type : "package_version",
-                  query : {
-                    term : {
-                        latest_version : 1
-                    }
-                  },
-                  inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
-                }
-              }
+              filter: packageMatchQuery
             }
 
           },
@@ -449,6 +488,7 @@ module.exports = {
 
   functionSearch: function(req,res){
     var query = req.param('q');
+    var package = req.param('package');
     var page = parseInt(req.param('page')) || 1;
     var perPage = parseInt(req.param('perPage')) || 15;
     var offset = (page - 1) * perPage;
@@ -474,6 +514,31 @@ module.exports = {
         "type" : "phrase_prefix"
       }
     };
+    var packageMatchQuery = {
+      has_parent : {
+        parent_type : "package_version",
+        query : {
+          "bool" : {
+            "must" : [
+              {
+                term : { latest_version : 1 }
+              },
+              {
+                term : { package_name: package }
+              }
+            ]
+          }
+        }
+      }
+    };
+    if(package === undefined){
+      packageMatchQuery = {
+        has_parent : {
+          parent_type : "package_version",
+          query : {  term : { latest_version : 1 } }
+        }
+      };
+    }
     return es.search({
       index: 'rdoc',
       body: {
@@ -488,12 +553,7 @@ module.exports = {
                         value : "topic"
                       }
                     },
-                    {
-                      has_parent : {
-                        parent_type : "package_version",
-                        query : {  term : { latest_version : 1 } }
-                      }
-                    }
+                    packageMatchQuery
                   ],
                   should: [
                     searchTopicQuery,
