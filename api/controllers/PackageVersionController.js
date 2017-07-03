@@ -93,7 +93,8 @@ module.exports = {
   * @apiSuccess {String}   collaborators.name   Name of this collaborator of the package version
   * @apiSuccess {String}   collaborators.email  Email of this collaborator of the package version
   * @apiSuccess {Object[]} topics           List of topics (only name and title) (limited to 30)
-  * @apiSuccess {JSON}     package          All information as retreived from ´api/packages/:name´
+  * @apiSuccess {JSON}     package          All information as retreived from ´api/packages/:name
+  * @apiSuccess {Object[]} vignettes        List of vignettes with their key and url
   */
   findByNameVersion: function(req, res) {
     var packageName = req.param('name'),
