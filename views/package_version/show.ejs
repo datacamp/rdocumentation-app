@@ -58,6 +58,7 @@
       </table>
     </section>
 
+    <% if(pkgVersion.vignettes.length > 0){ %>
     <section class="table-list">
       <div class="anchor" id="vignettes"></div>
       <h2 class="table-title">Vignettes of <%- pkgVersion.package_name %>  </h2>
@@ -78,6 +79,7 @@
         </tbody>
       </table>
     </section>
+    <% } %>
 
     <%- include ../package_version/_details.ejs %>
 
