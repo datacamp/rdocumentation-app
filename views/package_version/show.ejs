@@ -72,7 +72,7 @@
           <% for(var i = 0; i < pkgVersion.vignettes.length; i++) { %>
             <% var vignette = pkgVersion.vignettes[i]; %>
             <tr>
-              <td><a target="_blank" href="<%= vignette.url %>"><%= vignette.key %></a></td>
+              <td><a href="<%= vignette.url %>"><%= vignette.name %></a></td>
             </tr>
           <% } %>
           <tr class="no-results"><td colspan="3">No Results!</td></tr>

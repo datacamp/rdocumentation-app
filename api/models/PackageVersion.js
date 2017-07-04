@@ -199,7 +199,7 @@ module.exports = {
 
         var prefix = "rpackages/unarchived/" + conditions.package_name + "/" + conditions.version + "/" + "vignettes/";
         var params = {
-          Bucket: "assets.rdocumentation.org",
+          Bucket: process.env.AWS_BUCKET,
           Delimiter: '/',
           Prefix: prefix
         };
@@ -216,9 +216,14 @@ module.exports = {
           versionJSON.vignettes = [];
           versionJSON.vignettes = s3Data.Contents.map(function(item){
                 var splited = item.Key.split('/');
+                var url = 'https://s3.amazonaws.com/assets.rdocumentation.org/' + item.Key;
+                var name = splited[splited.length-1]
+                if(name.match("(.Rmd)$") !== null)
+                  url = process.env.BASE_URL + "/packages/" + conditions.package_name
+                        + "/versions/" + conditions.version + "/vignettes/" + name;
                 return {
-                  'key': splited[splited.length-1],
-                  'url': 'https://s3.amazonaws.com/assets.rdocumentation.org/' + item.Key
+                  'name': name,
+                  'url': url
                 }
               });
           

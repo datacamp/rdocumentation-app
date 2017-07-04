@@ -9,6 +9,8 @@ var _ = require('lodash');
 var numeral = require('numeral');
 var Promise = require('bluebird');
 var autoLink = require('autolink-js');
+var marked = require('marked');
+var frontMatter = require('front-matter');
 
 
 module.exports = {
@@ -524,7 +526,50 @@ module.exports = {
         return res.negotiate(err);
       });
     }
-  }
+  },
+  getVignette: function(req,res) {
+    var package_name = req.param('name');
+    var version = req.param('version');
+    var vignette = req.param('key');
 
+    var key = "rpackages/unarchived/" + package_name + "/" + version + "/" + "vignettes/" + vignette;
+      var params = {
+        Bucket: process.env.AWS_BUCKET,
+        Key: key,
+        ResponseContentType: 'text/plain',
+    };
+        
+    s3.getObject(params).promise()
+      .then(function(object){
+        var title = vignette;
+
+        // Convert result to utf-8 string
+        var file = object.Body.toString('utf-8');
+
+        // Replace things like {r setup, include = FALSE} with {r}
+        // Marked doesn't recognise those as the start of a code block.
+        file = file.replace(/{r.*}/gi, "{r}");
+
+        // Split yaml part and markdown part
+        var content = frontMatter(file);
+        if(content.attributes.title !== undefined)
+          title = content.attributes.title;
+
+        // Parse markdown
+        file = marked(content.body, {renderer: Utils.markdown_renderer(true)});
+        
+        return res.ok(
+          {
+            file: file,
+            title: title
+          }, 'package_version/vignette.ejs'
+        )
+      })
+      .catch(function(err) {
+        console.log(err.message);
+        return res.negotiate(err);
+      });
+
+  }
 };
 

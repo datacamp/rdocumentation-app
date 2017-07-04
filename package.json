@@ -20,6 +20,7 @@
     "elasticsearch": "^11.0.1",
     "foreman": "1.4.1",
     "forever": "^0.15.3",
+    "front-matter": "^2.1.2",
     "grunt": "0.4.5",
     "grunt-apidoc": "^0.11.0",
     "grunt-contrib-clean": "0.6.0",
