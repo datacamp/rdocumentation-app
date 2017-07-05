@@ -532,43 +532,50 @@ module.exports = {
     var version = req.param('version');
     var vignette = req.param('key');
 
-    var key = "rpackages/unarchived/" + package_name + "/" + version + "/" + "vignettes/" + vignette;
-      var params = {
-        Bucket: process.env.AWS_BUCKET,
-        Key: key,
-        ResponseContentType: 'text/plain',
-    };
+    var key = 'rdocs_vignette_' + package_name + '_' + version + '_' + vignette;
+
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+        var S3Key = "rpackages/unarchived/" + package_name + "/" + version + "/" + "vignettes/" + vignette;
+        var params = {
+          Bucket: process.env.AWS_BUCKET,
+          Key: S3Key,
+          ResponseContentType: 'text/plain',
+        };
         
-    s3.getObject(params).promise()
-      .then(function(object){
-        var title = vignette;
+         return s3.getObject(params).promise()
+          .then(function(object){
+          var title = vignette;
 
-        // Convert result to utf-8 string
-        var file = object.Body.toString('utf-8');
+          // Convert result to utf-8 string
+          var file = object.Body.toString('utf-8');
 
-        // Replace things like {r setup, include = FALSE} with {r}
-        // Marked doesn't recognise those as the start of a code block.
-        file = file.replace(/{r.*}/gi, "{r}");
+          // Replace things like {r setup, include = FALSE} with {r}
+          // Marked doesn't recognise those as the start of a code block.
+          file = file.replace(/{r.*}/gi, "{r}");
 
-        // Split yaml part and markdown part
-        var content = frontMatter(file);
-        if(content.attributes.title !== undefined)
-          title = content.attributes.title;
+          // Split yaml part and markdown part
+          var content = frontMatter(file);
+          if(content.attributes.title !== undefined)
+            title = content.attributes.title;
 
-        // Parse markdown
-        file = marked(content.body, {renderer: Utils.markdown_renderer(true)});
+          // Parse markdown
+          file = marked(content.body, {renderer: Utils.markdown_renderer(true)});
+          
+          return {
+                    file: file,
+                    title: title
+                };
+        });  
         
-        return res.ok(
-          {
-            file: file,
-            title: title
-          }, 'package_version/vignette.ejs'
-        )
-      })
-      .catch(function(err) {
-        console.log(err.message);
-        return res.negotiate(err);
-      });
+    }).then(function(response){
+      return res.ok(response, 'package_version/vignette.ejs')
+    })
+    .catch(function(err) {
+      console.log(err.message);
+      return res.negotiate(err);
+    });
+
+    
 
   }
 };
