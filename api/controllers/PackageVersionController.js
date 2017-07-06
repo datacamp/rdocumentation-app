@@ -594,22 +594,24 @@ module.exports = {
             .then(function(data){
               var url = process.env.BASE_URL + "/packages/" + package_name + "/versions/" + version
                  + "/source/";
-              var list = data.list.map(function(item){
-                var splited = item.Key.split('/');
-                var name = item.Key.substring(prefix.length, item.Key.length);
+              var list = data.folders.map(function(folder){
+                // Get name of folder (without trailing slash)
+                var name = folder.Prefix.substring(prefix.length, folder.Prefix.length-1);
                 return {
                   'name': name,
-                  'url': url + filename + name
-                }
-              });
-              list = list.concat(data.folders.map(function(folder){
-                var name = folder.Prefix.substring(prefix.length, folder.Prefix.length);
+                  'url': url + filename + name + "/"
+                 }
+              })
+              list = list.concat(
+                data.list.map(function(item){
+                  var splited = item.Key.split('/');
+                  var name = item.Key.substring(prefix.length, item.Key.length);
                   return {
                     'name': name,
                     'url': url + filename + name
                   }
                 })
-              );
+              );              
 
               return {
                 isFile: false,
