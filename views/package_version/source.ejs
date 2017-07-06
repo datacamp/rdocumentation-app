@@ -1,20 +1,20 @@
-<% var file = data; %>
+<% var source = data; %>
 <section class="package">
   <header class="vignette-header">
     <div class="vignette--header-content container">
       <div class="ph-flex-position">
         <div> <!-- Do not remove this div, needed for ph-flex-position -->
           <div class='vignette--title--container'>
-            <h1 class= 'vignette--title' itemprop="name"><%- file.filename %>
+            <h1 class= 'vignette--title' itemprop="name">TODO
           </div>
         </div>
       </div>
     </div>
   </header>
-</section>
+  <div id="tree"></div>
   <div class="container">
     <!-- Don't add a space or return within the pre tags -->
-        <pre><code class="R"><%- file.source %></code></pre>
+        <pre><code class="R" id="code"></code></pre>
   </div>
 
 </section>

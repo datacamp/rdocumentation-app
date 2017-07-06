@@ -16,6 +16,7 @@
     bootExamples();
     bootTrending();
     bootUser();
+    bootSource();
     bindUpvoteButton();
     window.bindFade();
     window.counter();
