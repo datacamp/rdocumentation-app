@@ -577,7 +577,7 @@ module.exports = {
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       var prefix = "rpackages/unarchived/" + package_name + "/" + version + "/R/" + filename;
-      if(filename.endsWith('.R')){          
+      if(filename.match(/\.r$/gi) != null){          
           return s3Service.getObject(prefix)
             .then(function(source){
               return {
