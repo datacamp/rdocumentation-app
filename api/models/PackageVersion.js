@@ -199,7 +199,7 @@ module.exports = {
 
         var prefix = "rpackages/unarchived/" + conditions.package_name + "/" + conditions.version + "/" + "vignettes/";
                 
-        var s3Promise = s3Service.getAllFilesInFolder(prefix);
+        var s3Promise = s3Service.getAllFilesInFolder(prefix, true);
 
         return Promise.join(packagePromise, collaboratorsPromise, dependencyPromise, s3Promise,
         function(versionInstance, collaboratorsInstances, dependencyInstances, s3Data) {
@@ -209,7 +209,7 @@ module.exports = {
           versionJSON.dependencies = dependencyInstances.map(function(x) { return x.toJSON(); });
           versionJSON.package.versions = versionJSON.package.versions.sort(PackageService.compareVersions('desc', 'version'));
           versionJSON.vignettes = [];
-          versionJSON.vignettes = s3Data.map(function(item){
+          versionJSON.vignettes = s3Data.list.map(function(item){
                 var splited = item.Key.split('/');
                 var url = 'https://s3.amazonaws.com/assets.rdocumentation.org/' + item.Key;
                 var name = item.Key.substring(prefix.length, item.Key.length);

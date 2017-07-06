@@ -535,19 +535,11 @@ module.exports = {
     var key = 'rdocs_vignette_' + package_name + '_' + version + '_' + vignette;
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
-        var S3Key = "rpackages/unarchived/" + package_name + "/" + version + "/" + "vignettes/" + vignette;
-        var params = {
-          Bucket: process.env.AWS_BUCKET,
-          Key: S3Key,
-          ResponseContentType: 'text/plain',
-        };
-        
-         return s3.getObject(params).promise()
-          .then(function(object){
+        var s3Key = "rpackages/unarchived/" + package_name + "/" + version + "/" + "vignettes/" + vignette;
+                
+         return s3Service.getObject(s3Key)
+          .then(function(file){
           var title = vignette;
-
-          // Convert result to utf-8 string
-          var file = object.Body.toString('utf-8');
 
           // Replace things like {r setup, include = FALSE} with {r}
           // Marked doesn't recognise those as the start of a code block.
@@ -573,10 +565,71 @@ module.exports = {
     .catch(function(err) {
       console.log(err.message);
       return res.negotiate(err);
-    });
+    });    
 
-    
+  },
+  getSource: function(req,res) {
+    var package_name = req.param('name');
+    var version = req.param('version');
+    var filename = req.param('filename');
 
+    var key = 'rdocs_source_' + package_name + '_' + version + '_' + filename;
+
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+      var prefix = "rpackages/unarchived/" + package_name + "/" + version + "/R/" + filename;
+      if(filename.endsWith('.R')){          
+          return s3Service.getObject(prefix)
+            .then(function(source){
+              return {
+                isFile: true,
+                file: {
+                  filename: filename,
+                  source: source
+                }
+              }
+            });
+      }
+      else{
+          return s3Service.getAllFilesInFolder(prefix)
+            .then(function(data){
+              var url = process.env.BASE_URL + "/packages/" + package_name + "/versions/" + version
+                 + "/source/";
+              var list = data.list.map(function(item){
+                var splited = item.Key.split('/');
+                var name = item.Key.substring(prefix.length, item.Key.length);
+                return {
+                  'name': name,
+                  'url': url + filename + name
+                }
+              });
+              list = list.concat(data.folders.map(function(folder){
+                var name = folder.Prefix.substring(prefix.length, folder.Prefix.length);
+                  return {
+                    'name': name,
+                    'url': url + filename + name
+                  }
+                })
+              );
+
+              return {
+                isFile: false,
+                file: {
+                  dir: filename,
+                  fileList: list
+                }
+              }
+            });
+      }
+    }).then(function(response){
+      if(response.isFile)
+        return res.ok(response.file, 'package_version/source_file.ejs');
+      else
+        return res.ok(response.file, 'package_version/source_list.ejs');
+    })
+    .catch(function(err) {
+      console.log(err.message);
+      return res.negotiate(err);
+    }); 
   }
 };
 

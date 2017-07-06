@@ -1,0 +1,21 @@
+<% var file = data; %>
+<section class="package">
+  <header class="vignette-header">
+    <div class="vignette--header-content container">
+      <div class="ph-flex-position">
+        <div> <!-- Do not remove this div, needed for ph-flex-position -->
+          <div class='vignette--title--container'>
+            <h1 class= 'vignette--title' itemprop="name"><%- file.filename %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+</section>
+  <div class="container">
+      <div class="package--vignette">
+        <%- file.source %>
+    </div>
+  </div>
+
+</section>
