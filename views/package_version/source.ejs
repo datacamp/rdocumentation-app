@@ -14,9 +14,9 @@
     </div>
   </header>
   
-  <div id="parent">
-    <div id="tree" data-package-name="<%= pkgVersion.package_name %>" data-package-version="<%= pkgVersion.version %>"></div>
-    <div id="source-container">
+  <div id="parent" class="container">
+    <div id="tree" class="scroll" data-package-name="<%= pkgVersion.package_name %>" data-package-version="<%= pkgVersion.version %>"></div>
+    <div id="source-container" class="scroll">
       <!-- Don't add a space or return within the pre tags -->
           <pre><code class="R" id="code"></code></pre>
     </div>

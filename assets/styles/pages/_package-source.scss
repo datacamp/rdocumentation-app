@@ -5,11 +5,11 @@
 #tree {
   width: 200px;
   overflow: hidden;
-  margin-left: 20px;
   display: none;
   overflow: auto;
   height: auto;
   .list-group {
+    margin-top: -0.5px;
     overflow: hidden;
     li:last-child {
       margin-bottom: 0px;
@@ -23,15 +23,29 @@
 }
 #source-container {
   flex: 1;
-  margin-right: 20px;
   height: auto;
   overflow: auto;
   display: none;
+  pre{ 
+    margin-top: 0px;
+  }
 }
 #source-not-found {
   display:none;
-  margin: 20px;
 }
 .source{
     max-height: calc(100vh - 100px);
+}
+
+.scroll::-webkit-scrollbar {
+  width: 5px;
+  margin-top: -5px;
+}
+ 
+.scroll::-webkit-scrollbar-track {
+  background: #ddd;
+}
+ 
+.scroll::-webkit-scrollbar-thumb {
+  background: #666; 
 }
