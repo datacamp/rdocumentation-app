@@ -5,21 +5,27 @@
                 url: "api/packages/" + $('#tree').data("package-name") + "/versions/" + $('#tree').data('package-version') + "/sourceTree",
                 crossDomain:true,
                 xhrFields: {
-                withCredentials: true
+                    withCredentials: true
                 }
             }).done(function(result){
-                $('#tree').treeview(
-                    {
-                        data: result.tree,
-                        levels: 1,
-                        emptyIcon: "glyphicon glyphicon-file",
-                        expandIcon: "glyphicon glyphicon-folder-close",
-                        collapseIcon: "glyphicon glyphicon-folder-open",
-                        onNodeSelected: function(event, data) {
-                            loadSource(data.href);
-                        }
-                    });
-                $('#tree').fadeIn();        
+                if(result.tree.length > 0){
+                    $('#tree').treeview(
+                        {
+                            data: result.tree,
+                            levels: 1,
+                            emptyIcon: "glyphicon glyphicon-file",
+                            expandIcon: "glyphicon glyphicon-folder-close",
+                            collapseIcon: "glyphicon glyphicon-folder-open",
+                            onNodeSelected: function(event, data) {
+                                loadSource(data.href);
+                            }
+                        });
+                    $('#tree').fadeIn();  
+                }
+                else{                    
+                    $('#source-not-found').fadeIn();
+                }
+                  
             });
         };
     };
