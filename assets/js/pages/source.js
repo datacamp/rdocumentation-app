@@ -1,6 +1,6 @@
 (function($) {
     window.bootSource = function() {
-        if(getCurrentPath().match(/source(|\/)$/gi) !== null) {
+        if(window.location.pathname.match(/source\/{0,1}$/gi) !== null) {
             $.ajax({
                 url: "api/packages/" + $('#tree').data("package-name") + "/versions/" + $('#tree').data('package-version') + "/sourceTree",
                 crossDomain:true,
