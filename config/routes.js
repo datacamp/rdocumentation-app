@@ -81,7 +81,7 @@ module.exports.routes = {
     'get /api/packages/:name/dependencies': 'PackageVersionController.getDependencyGraph',
     'get /api/packages/:name/versions/:version/reversedependencies': 'PackageVersionController.getReverseDependencyGraph',
     'get /api/packages/:name/reversedependencies': 'PackageVersionController.getReverseDependencyGraph',
-    'get r|\/api\/packages\/([^\/]+)\/versions\/([^\/]+)\/source\/(.*\.R|r$)|name,version,filename': 'PackageVersionController.getSource',
+    'get r|\/api\/packages\/([^\/]+)\/versions\/([^\/]+)\/source\/(.*\.[R|r]$)|name,version,filename': 'PackageVersionController.getSource',
     'get r|\/api\/packages\/([^\/]+)\/versions\/([^\/]+)\/sourceTree|name,version': 'PackageVersionController.getSourceTree',
         
 
