@@ -570,7 +570,13 @@ module.exports = {
   },
 
   sourcePage: function(req, res){
-    res.ok({}, 'package_version/source.ejs');
+    var package_name = req.param('name');
+    var version = req.param('version');
+    var response = {
+      package_name: package_name,
+      version: version
+    }
+    res.ok(response, 'package_version/source.ejs');
   },
 
   getSourceTree: function(req,res) {

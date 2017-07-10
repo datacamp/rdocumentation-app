@@ -1,11 +1,13 @@
-<% var source = data; %>
+<% var pkgVersion = data; %>
 <section class="package">
   <header class="vignette-header">
     <div class="vignette--header-content container">
       <div class="ph-flex-position">
         <div> <!-- Do not remove this div, needed for ph-flex-position -->
           <div class='vignette--title--container'>
-            <h1 class= 'vignette--title' itemprop="name">TODO
+          <h1 class= 'package--title' itemprop="name"><%- pkgVersion.package_name %>
+          <span class='package--version--v'>v<%= pkgVersion.version %></span></h1>
+              
           </div>
         </div>
       </div>
@@ -13,7 +15,7 @@
   </header>
   
   <div id="parent">
-    <div id="tree"></div>
+    <div id="tree" data-package-name="<%= pkgVersion.package_name %>" data-package-version="<%= pkgVersion.version %>"></div>
     <div id="source-container">
       <!-- Don't add a space or return within the pre tags -->
           <pre><code class="R" id="code"></code></pre>
