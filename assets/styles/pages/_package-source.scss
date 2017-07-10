@@ -1,23 +1,38 @@
 #parent {
   display: flex;
+  max-height: calc(100vh - 200px);
 }
 #tree {
   width: 200px;
   overflow: hidden;
-  margin: 20px;
+  margin-left: 20px;
   display: none;
   overflow: auto;
-  height: 400px;
+  height: auto;
   .list-group {
     overflow: hidden;
+    li:last-child {
+      margin-bottom: 0px;
+    }
+  }
+  .node-tree:not(.node-selected){
+    .glyphicon:before{
+      color: #3ac;
+    }
   }
 }
 #source-container {
   flex: 1;
   margin-right: 20px;
+  height: auto;
+  overflow: auto;
   display: none;
 }
 #source-not-found {
   display:none;
   margin: 20px;
+}
+.source{
+    max-height: calc(100vh - 30px);
+    min-height: calc(100vh - 30px);
 }
