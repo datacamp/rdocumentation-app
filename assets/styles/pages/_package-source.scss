@@ -6,6 +6,11 @@
   overflow: hidden;
   margin: 20px;
   display: none;
+  overflow: auto;
+  height: 400px;
+  .list-group {
+    overflow: hidden;
+  }
 }
 #source-container {
   flex: 1;
