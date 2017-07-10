@@ -49,7 +49,6 @@ module.exports = {
     },
 
     getObject: function(prefix){
-        console.log("key " + prefix);
         var params = {
           Bucket: process.env.AWS_BUCKET,
           Key: prefix,
