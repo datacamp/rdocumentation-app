@@ -15,11 +15,12 @@
                     loadSource(data.href);
                 }
             });
-        
+            $('#tree').fadeIn();        
       });
     };
 
     var loadSource = function(href){
+        $('#source-container').hide();
         $.ajax({
             url: "api/packages/glue/versions/1.1.1/source/" + href,
             crossDomain:true,
@@ -27,7 +28,10 @@
             withCredentials: true
             }
         }).done(function(result){
-            $('#code').html(result.source);
+            if(result.source !== undefined){
+                $('#code').html(result.source);
+                $('#source-container').fadeIn();
+            }
         });
     }
 
