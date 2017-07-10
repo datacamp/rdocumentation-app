@@ -665,7 +665,10 @@ var toTreeStructure = function(tree, data){
     toTreeStructure(nodes, data[key]);
     var node = {
       text: key,
-      selectable: nodes.length === 0
+      selectable: nodes.length === 0,
+      state: {
+        selected: false
+      }
     };
     if(nodes.length === 0)
       node.href = data[key];

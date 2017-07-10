@@ -9,6 +9,14 @@
                 }
             }).done(function(result){
                 if(result.tree.length > 0){
+                    // Select the first file in 'root'
+                    for(var node of result.tree){
+                        if(node.nodes === undefined){
+                            node.state.selected = true;
+                            loadSource(node.href);
+                            break;
+                        }
+                    }
                     $('#tree').treeview(
                         {
                             data: result.tree,
