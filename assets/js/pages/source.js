@@ -12,6 +12,9 @@
                     {
                         data: result.tree,
                         levels: 1,
+                        emptyIcon: "glyphicon glyphicon-file",
+                        expandIcon: "glyphicon glyphicon-folder-close",
+                        collapseIcon: "glyphicon glyphicon-folder-open",
                         onNodeSelected: function(event, data) {
                             loadSource(data.href);
                         }

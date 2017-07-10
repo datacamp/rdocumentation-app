@@ -665,11 +665,12 @@ var toTreeStructure = function(tree, data){
     toTreeStructure(nodes, data[key]);
     var node = {
       text: key,
-      nodes: nodes,
       selectable: nodes.length === 0
     };
     if(nodes.length === 0)
       node.href = data[key];
+    else
+      node.nodes = nodes;
     tree.push(node);
   }
 }
