@@ -569,7 +569,7 @@ module.exports = {
 
   },
 
-  getSource: function(req, res){
+  sourcePage: function(req, res){
     res.ok({}, 'package_version/source.ejs');
   },
 
@@ -596,7 +596,7 @@ module.exports = {
           });
           var data = {};
           for(var item of list){
-              setObjectValue(data, item.parts, 1);
+            setObjectValue(data, item.parts, item.name);
           }
           var tree = [];
           toTreeStructure(tree, data);
@@ -605,6 +605,30 @@ module.exports = {
           }
         });
       
+    }).then(function(response){
+      res.json(response);
+    })
+    .catch(function(err) {
+      console.log(err.message);
+      return res.negotiate(err);
+    }); 
+  },
+
+  getSource: function(req,res) {
+    var package_name = req.param('name');
+    var version = req.param('version');
+    var filename = req.param('filename');
+
+    var key = 'rdocs_source_' + package_name + '_' + version + '_' + filename;
+
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+      var prefix = "rpackages/unarchived/" + package_name + "/" + version + "/R/" + filename;
+       return s3Service.getObject(prefix) 
+            .then(function(source){ 
+              return {  
+                  source: source 
+                } 
+            });      
     }).then(function(response){
       res.json(response);
     })
@@ -628,13 +652,19 @@ var setObjectValue = function(obj, indices, value) {
 }
 
 var toTreeStructure = function(tree, data){
+  if(typeof(data) !== 'object')
+    return;
   for(var key of Object.keys(data)){
     var nodes = [];
     toTreeStructure(nodes, data[key]);
-    tree.push({
+    var node = {
       text: key,
-      nodes: nodes
-    });
+      nodes: nodes,
+      selectable: nodes.length === 0
+    };
+    if(nodes.length === 0)
+      node.href = data[key];
+    tree.push(node);
   }
 }
 
