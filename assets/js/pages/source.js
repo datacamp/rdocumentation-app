@@ -42,6 +42,11 @@
             if(result.source !== undefined){
                 $('#code').html(result.source);
                 $('#source-container').fadeIn();
+
+                // Highlight code
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
             }
         });
     }
