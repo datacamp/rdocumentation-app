@@ -51,6 +51,9 @@
     pre code.hljs{
       padding: 0px;
     }
+    tr:nth-of-type(2n){
+        background: #f6f7f9;
+    }
 }
 #source-not-found {
   display:none;
