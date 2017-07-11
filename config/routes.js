@@ -85,6 +85,7 @@ module.exports.routes = {
     // HTML
     'get /packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
     'get /packages/:name/versions/:version/readme': 'PackageVersion.readmePage',
+    'get /packages/:name/versions/:version/vignettes/:key': 'PackageVersionController.getVignette',
   //***** /PackageVersion *****
 
   //***** Topic *****

@@ -9,6 +9,8 @@ var _ = require('lodash');
 var numeral = require('numeral');
 var Promise = require('bluebird');
 var autoLink = require('autolink-js');
+var marked = require('marked');
+var frontMatter = require('front-matter');
 
 
 module.exports = {
@@ -93,7 +95,8 @@ module.exports = {
   * @apiSuccess {String}   collaborators.name   Name of this collaborator of the package version
   * @apiSuccess {String}   collaborators.email  Email of this collaborator of the package version
   * @apiSuccess {Object[]} topics           List of topics (only name and title) (limited to 30)
-  * @apiSuccess {JSON}     package          All information as retreived from ´api/packages/:name´
+  * @apiSuccess {JSON}     package          All information as retreived from ´api/packages/:name
+  * @apiSuccess {Object[]} vignettes        List of vignettes with their key and url
   */
   findByNameVersion: function(req, res) {
     var packageName = req.param('name'),
@@ -523,7 +526,57 @@ module.exports = {
         return res.negotiate(err);
       });
     }
-  }
+  },
+  getVignette: function(req,res) {
+    var package_name = req.param('name');
+    var version = req.param('version');
+    var vignette = req.param('key');
 
+    var key = 'rdocs_vignette_' + package_name + '_' + version + '_' + vignette;
+
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+        var S3Key = "rpackages/unarchived/" + package_name + "/" + version + "/" + "vignettes/" + vignette;
+        var params = {
+          Bucket: process.env.AWS_BUCKET,
+          Key: S3Key,
+          ResponseContentType: 'text/plain',
+        };
+        
+         return s3.getObject(params).promise()
+          .then(function(object){
+          var title = vignette;
+
+          // Convert result to utf-8 string
+          var file = object.Body.toString('utf-8');
+
+          // Replace things like {r setup, include = FALSE} with {r}
+          // Marked doesn't recognise those as the start of a code block.
+          file = file.replace(/{r.*}/gi, "{r}");
+
+          // Split yaml part and markdown part
+          var content = frontMatter(file);
+          if(content.attributes.title !== undefined)
+            title = content.attributes.title;
+
+          // Parse markdown
+          file = marked(content.body, {renderer: Utils.markdown_renderer(true)});
+          
+          return {
+                    file: file,
+                    title: title
+                };
+        });  
+        
+    }).then(function(response){
+      return res.ok(response, 'package_version/vignette.ejs')
+    })
+    .catch(function(err) {
+      console.log(err.message);
+      return res.negotiate(err);
+    });
+
+    
+
+  }
 };
 

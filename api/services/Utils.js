@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var marked = require('marked');
 
 module.exports = {
 
@@ -112,7 +113,34 @@ module.exports = {
     var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
     return Math.floor((utc2 - utc1) / _MS_PER_DAY);
-  }
+  },
+
+
+  markdown_renderer: function(dcl) {
+      var renderer = new marked.Renderer();
+      var defaultCodeFunction = renderer.code;
+
+      renderer.code = function(code, lang) {
+        if((lang === '{r}' || lang === 'r') && dcl) {
+          var codeBlock = '<div data-datacamp-exercise data-lang="r">';
+          codeBlock += '<code data-type="sample-code">';
+          codeBlock += code;
+          codeBlock += '</code>';
+          codeBlock += '</div>';
+          return codeBlock;
+        }
+        else if((lang === 'r' || lang === '{r}')) {
+          var codeBlock = '<pre><code>' + code + '</code></pre>';
+          codeBlock += '<button type="button" class="visible-installed btn btn-primary js-external run-example">Run codeblock </button>';
+          return codeBlock;
+
+        }
+        else {
+          return defaultCodeFunction.call(renderer, code, lang, true);
+        }
+      };
+      return renderer;
+    }
 
 
 
