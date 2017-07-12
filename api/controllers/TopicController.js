@@ -445,6 +445,30 @@ module.exports = {
     });
   },
 
+  lightTopicSearch: function(req,res) {
+    var packageName = req.param('name'),
+        topic = req.param('function');
+
+    var key = 'light_' + packageName + '_' + topic;
+    if (topic.endsWith('.html')) topic = topic.replace('.html', '');
+
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+      return Topic.findByNameInPackage(packageName, topic)
+      .then(function(topic) {
+        var part = {};
+        part.title = topic.title;
+        part.description = topic.description;
+        return part;
+      });
+    })
+    .then(function(topic){
+      return res.json(topic);
+    })
+    .catch(function(err) {
+      return res.negotiate(err);
+    });
+  },
+
   figure: function(req, res) {
     const packageName = req.param('package');
     const version = req.param('version');
