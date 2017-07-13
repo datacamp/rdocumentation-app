@@ -459,18 +459,19 @@ module.exports = {
   */
   lightTopicSearch: function(req,res) {
     var packageName = req.param('name'),
-        topic = req.param('function');
+        topic_name = req.param('function');
 
-    var key = 'light_' + packageName + '_' + topic;
-    if (topic.endsWith('.html')) topic = topic.replace('.html', '');
+    var key = 'light_' + packageName + '_' + topic_name;
+    if (topic_name.endsWith('.html')) topic_name = topic_name.replace('.html', '');
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
-      return Topic.findByNameInPackage(packageName, topic)
+      return Topic.findByNameInPackage(packageName, topic_name)
       .then(function(topic) {
         var part = {};
         if(topic !== undefined){
           part.title = topic.title;
           part.description = topic.description;
+          part.uri = 'https:' + process.env.BASE_URL + topic.package_version.uri + '/topics/' + topic_name;
         }
         return part;
       });
