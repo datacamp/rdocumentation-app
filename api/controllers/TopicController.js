@@ -445,6 +445,18 @@ module.exports = {
     });
   },
 
+
+  /**
+  * @api {get} api/light/packages/:name/topics/:function Request Topic Information for Rdocs light
+  * @apiName Get Topic in package (latest version which contains the topic)
+  * @apiGroup Light
+  *
+  * @apiParam {String} Name of the package
+  * @apiParam {String} Name of the topic
+  *
+  * @apiSuccess {String}   title         Title of the topic
+  * @apiSuccess {String}   description   Description of the topic
+  */
   lightTopicSearch: function(req,res) {
     var packageName = req.param('name'),
         topic = req.param('function');

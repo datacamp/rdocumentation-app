@@ -164,6 +164,56 @@ module.exports = {
     }).catch(function(err) {
       return res.negotiate(err);
     });
+  },
+
+  /**
+  * @api {get} api/light/packages/:name Request Package Information for Rdocs light
+  * @apiName Get Package
+  * @apiGroup Light
+  *
+  * @apiParam {String} name Name of the package
+  *
+  * @apiSuccess {String}   name          Package name
+  * @apiSuccess {String}   uri           Url to latest version
+  * @apiSuccess {String}   version       String describing the latest version of the package
+  * @apiSuccess {String}   title         Title of the latest version
+  * @apiSuccess {String}   description   Description of the latest package version
+  */
+  lightPackageSearch: function(req, res) {
+    var packageName = req.param('name');
+
+    var key = 'light_' + packageName;
+    if (packageName.endsWith('.html')) packageName = packageName.replace('.html', '');
+
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+      return Package.findOne({
+        include:[{
+          model:PackageVersion,
+          as:'latest_version',
+          required:true
+        }],
+        where:{
+          name:packageName
+        }
+      })
+      .then(function(package){
+        var version = {};
+        version.package_name = package.name;
+        version.uri = 'https:' + process.env.BASE_URL + package.latest_version.uri;
+        version.version = package.latest_version.version;
+        version.title = package.latest_version.title;
+        version.description = package.latest_version.description;
+
+        return version;
+      });
+    })
+    .then(function(version){
+      return res.json(version);
+    })
+    .catch(function(err) {
+      return res.negotiate(err);
+    });
+
   }
 };
 
