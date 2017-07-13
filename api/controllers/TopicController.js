@@ -456,8 +456,10 @@ module.exports = {
       return Topic.findByNameInPackage(packageName, topic)
       .then(function(topic) {
         var part = {};
-        part.title = topic.title;
-        part.description = topic.description;
+        if(topic !== undefined){
+          part.title = topic.title;
+          part.description = topic.description;
+        }
         return part;
       });
     })
