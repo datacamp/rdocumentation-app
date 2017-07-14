@@ -454,8 +454,14 @@ module.exports = {
   * @apiParam {String} Name of the package
   * @apiParam {String} Name of the topic
   *
-  * @apiSuccess {String}   title         Title of the topic
-  * @apiSuccess {String}   description   Description of the topic
+  * @apiSuccess {String}   name                          Name of this topic
+  * @apiSuccess {String}   title                         Title of the topic
+  * @apiSuccess {String}   description                   Description of the topic
+  * @apiSuccess {String}   url                           The Url to `self`
+  * @apiSuccess {Object}   package_version               Informations about the version of the package
+  * @apiSuccess {String}   package_version.url           Url to this version
+  * @apiSuccess {String}   package_version.package_name  Name of the package of this version
+  * @apiSuccess {String}   package_version.version       String describing the version of the package
   */
   lightTopicSearch: function(req,res) {
     var packageName = req.param('name'),
@@ -469,9 +475,15 @@ module.exports = {
       .then(function(topic) {
         var part = {};
         if(topic !== undefined){
+          part.name = topic.name;
           part.title = topic.title;
           part.description = topic.description;
-          part.uri = 'https:' + process.env.BASE_URL + topic.package_version.uri + '/topics/' + topic_name;
+          part.url = 'https:' + process.env.BASE_URL + topic.package_version.uri + '/topics/' + topic_name;
+          part.package_version = {
+            package_name: topic.package_version.package_name,
+            version: topic.package_version.version,
+            url: 'https:' + process.env.BASE_URL + topic.package_version.uri,
+          };
         }
         return part;
       });
