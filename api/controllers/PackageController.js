@@ -173,11 +173,13 @@ module.exports = {
   *
   * @apiParam {String} name Name of the package
   *
-  * @apiSuccess {String}   name          Package name
-  * @apiSuccess {String}   uri           Url to latest version
-  * @apiSuccess {String}   version       String describing the latest version of the package
-  * @apiSuccess {String}   title         Title of the latest version
-  * @apiSuccess {String}   description   Description of the latest package version
+  * @apiSuccess {String}   name             Package name
+  * @apiSuccess {String}   url              Url to the package
+  * @apiSuccess {Object}   version          Information about the version of the package
+  * @apiSuccess {String}   version.version  String describing the latest version of the package
+  * @apiSuccess {String}   version.url      Url to the version
+  * @apiSuccess {String}   title            Title of the latest version
+  * @apiSuccess {String}   description      Description of the latest package version
   */
   lightPackageSearch: function(req, res) {
     var packageName = req.param('name');
@@ -199,8 +201,11 @@ module.exports = {
       .then(function(package){
         var version = {};
         version.package_name = package.name;
-        version.uri = 'https:' + process.env.BASE_URL + package.latest_version.uri;
-        version.version = package.latest_version.version;
+        version.url = 'https:' + process.env.BASE_URL + package.uri;
+        version.version = {
+          version: package.latest_version.version,
+          url: 'https:' + process.env.BASE_URL + package.latest_version.uri
+        };
         version.title = package.latest_version.title;
         version.description = package.latest_version.description;
 
