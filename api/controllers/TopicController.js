@@ -498,7 +498,7 @@ module.exports = {
             return topic.package_version.version }))[0];
       }).then(function(topic) {
         var part = {};
-        if(topic !== null){
+        if(topic !== null && topic !== undefined){
           part.name = topic.name;
           part.title = topic.title;
           part.description = topic.description;

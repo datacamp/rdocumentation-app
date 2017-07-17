@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing packages
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+var Promise = require('bluebird');
 
 module.exports = {
 
@@ -188,28 +189,52 @@ module.exports = {
     if (packageName.endsWith('.html')) packageName = packageName.replace('.html', '');
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
-      return Package.findOne({
-        include:[{
-          model:PackageVersion,
-          as:'latest_version',
-          required:true
-        }],
-        where:{
-          name:packageName
-        }
-      })
-      .then(function(package){
-        var version = {};
-        version.package_name = package.name;
-        version.url = 'https:' + process.env.BASE_URL + package.uri;
-        version.version = {
-          version: package.latest_version.version,
-          url: 'https:' + process.env.BASE_URL + package.latest_version.uri
+      return Package.getLatestVersionNumber(packageName).then(function(version){
+        console.log(version.latest_version.version);
+        var prefix = "rpackages/unarchived/" + packageName + "/" + version.latest_version.version + "/" + "vignettes/";
+        var params = {
+          Bucket: process.env.AWS_BUCKET,
+          Delimiter: '/',
+          Prefix: prefix
         };
-        version.title = package.latest_version.title;
-        version.description = package.latest_version.description;
 
-        return version;
+        var vignettesPromise = s3.listObjects(params).promise();
+
+        var packagePromise = Package.findOne({
+          include:[{
+            model:PackageVersion,
+            as:'latest_version',
+            required:true,
+            include: [
+              { model: Topic, as: 'topics',
+                attributes: ['package_version_id', 'name', 'title', 'id'],
+                separate: true }
+            ]
+          }],
+          where:{
+            name:packageName
+          }
+        });
+        return Promise.join(vignettesPromise, packagePromise, function(vignettes, package){
+          var version = {};
+          version.package_name = package.name;
+          version.url = 'https:' + process.env.BASE_URL + package.uri;
+          version.version = {
+            version: package.latest_version.version,
+            url: 'https:' + process.env.BASE_URL + package.latest_version.uri
+          };
+          version.title = package.latest_version.title;
+          version.description = package.latest_version.description;
+
+          version.anchors = [];
+          TopicService.addAnchorItem(version.anchors, package.latest_version.readmemd, "readme", "readme");
+          TopicService.addAnchorItem(version.anchors, package.latest_version.topics, "topics", "functions");
+          TopicService.addAnchorItem(version.anchors, vignettes.Contents, "vignettes", "vignettes");
+          TopicService.addAnchorItem(version.anchors, [true], "downloads", "downloads");
+          TopicService.addAnchorItem(version.anchors, [true], "details", "details");
+
+          return version;
+        });
       });
     })
     .then(function(version){
