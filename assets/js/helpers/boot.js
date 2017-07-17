@@ -23,6 +23,8 @@
     window.dcFooter();
     hljs.initHighlighting.called = false;
     hljs.initHighlighting();
+    rdl.initRDocsLight(document.getElementById('content'));
+    rdl.setTopOffset(0);
   };
 
 })($jq);
