@@ -471,10 +471,34 @@ module.exports = {
     if (topic_name.endsWith('.html')) topic_name = topic_name.replace('.html', '');
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
-      return Topic.findByNameInPackage(packageName, topic_name)
-      .then(function(topic) {
+      return Topic.findAll({
+        where: {name: topic_name},
+        include: [{
+          model: PackageVersion,
+          as: 'package_version',
+          where: { package_name: packageName },
+          include: [
+            { model: Package, as: 'package', attributes: ['name', 'latest_version_id', 'type_id' ]},
+          ]
+        },
+        {model: Argument, as: 'arguments', attributes: ['name', 'description', 'topic_id'], separate:true },
+        {model: Section, as: 'sections', attributes: ['name', 'description', 'topic_id'], separate:true },
+        {model: Tag, as: 'keywords', attributes: ['name']},
+        {model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], separate: true },
+        ]
+      }).then(function(topicInstances) {
+        if(topicInstances === null) {
+          return Topic.findByAliasInPackage(packageName, topic).then(function(topicInstances) {
+            if(!topicInstances) return null;
+            else return topicInstances.sort(PackageService.compareVersions('desc', function(topic) {
+            return topic.package_version.version }))[0];
+          });
+        }
+        else return topicInstances.sort(PackageService.compareVersions('desc', function(topic) {
+            return topic.package_version.version }))[0];
+      }).then(function(topic) {
         var part = {};
-        if(topic !== undefined){
+        if(topic !== null){
           part.name = topic.name;
           part.title = topic.title;
           part.description = topic.description;
@@ -484,6 +508,20 @@ module.exports = {
             version: topic.package_version.version,
             url: 'https:' + process.env.BASE_URL + topic.package_version.uri,
           };
+
+          part.anchors = [];
+          TopicService.addAnchorItem(part.anchors, topic.keywords, "keywords", "kywrds");
+          TopicService.addAnchorItem(part.anchors, topic.usage, "usage", "usg");
+          TopicService.addAnchorItem(part.anchors, topic.arguments, "arguments", "argmnts");
+          TopicService.addAnchorItem(part.anchors, topic.details, "details", "dtls");
+          TopicService.addAnchorItem(part.anchors, topic.value, "value", "vl");
+          TopicService.addAnchorItem(part.anchors, topic.note, "note", "nt");
+          TopicService.addAnchorItem(part.anchors, topic.sections, "sections", "sctns");
+          TopicService.addAnchorItem(part.anchors, topic.references, "references", "rfrncs");
+          TopicService.addAnchorItem(part.anchors, topic.seealso, "see also", "sls");
+          // TopicService.addAnchorItem(part.anchors, topic.aliases, "aliases", "alss");
+          TopicService.addAnchorItem(part.anchors, topic.examples, "examples", "exmpls");
+
         }
         return part;
       });

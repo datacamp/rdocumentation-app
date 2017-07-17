@@ -13,6 +13,7 @@
     </section>
 
     <% if(topic.keywords && topic.keywords.length>0){ %>
+      <a class="html-anchor" name="kywrds"></a>
       <section class="topic--keywords">
         <dl>
           <dt>Keywords</dt>
@@ -25,13 +26,15 @@
     <%}%>
 
     <% if(topic.usage) { %>
-      <section>
+      <a class="html-anchor" id="usg"></a>
+      <section id="usage">
         <h5 class="topic--title">Usage</h5>
         <pre><code class="R"><%- topic.usage %></code></pre>
       </section>
     <% } %>
 
     <% if(topic.arguments && topic.arguments.length>0){ %>
+      <a class="html-anchor" id="argmnts"></a>
       <section class="topic--arguments">
         <h5 class="topic--title">Arguments</h5>
         <dl>
@@ -45,6 +48,7 @@
 
     <!-- Other info -->
     <% if(topic.details) { %>
+      <a class="html-anchor" id="dtls"></a>
       <section>
         <h5 class="topic--title">Details</h5>
         <p><%- topic.details %></p>
@@ -52,6 +56,7 @@
     <% } %>
 
     <% if(topic.value) { %>
+      <a class="html-anchor" id="vl"></a>
       <section class="topic--value">
         <h5 class="topic--title">Value</h5>
         <p><%- topic.value %></p>
@@ -59,6 +64,7 @@
     <% } %>
 
     <% if(topic.note) { %>
+      <a class="html-anchor" id="nt"></a>
       <section>
         <h5 class="topic--title">Note</h5>
         <p><%- topic.note %></p>
@@ -66,6 +72,7 @@
     <% } %>
 
     <% if(topic.sections) { %>
+      <a class="html-anchor" id="sctns"></a>
       <% for(var i = 0; i < topic.sections.length; i++) { %>
         <% var section = topic.sections[i]; %>
         <section>
@@ -76,6 +83,7 @@
     <% } %>
 
     <% if(topic.references) { %>
+      <a class="html-anchor" id="rfrncs"></a>
       <section>
         <h5 class="topic--title">References</h5>
         <p><%- topic.references %></p>
@@ -83,6 +91,7 @@
     <% } %>
 
     <% if(topic.seealso) { %>
+      <a class="html-anchor" id="sls"></a>
       <section>
         <h5 class="topic--title">See Also</h5>
         <p><%- topic.seealso %></p>
@@ -90,6 +99,7 @@
     <% } %>
 
     <% if(topic.aliases) { %>
+      <a class="html-anchor" id="alss"></a>
       <section style="display: none;">
         <h5 class="topic--title">Aliases</h5>
         <ul class="topic--aliases">
@@ -101,6 +111,7 @@
     <% } %>
 
     <% if(topic.examples) { %>
+      <a class="html-anchor" id="exmpls"></a>
       <section>
         <h5 class="topic--title">Examples</h5>
           <% if(topic.dcl) { %>
