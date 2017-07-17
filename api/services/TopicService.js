@@ -17,17 +17,20 @@ module.exports = {
         $(elem).attr('href', url.resolve(basePath, encodeURIComponent(current)) +
           '?package=' + encodeURIComponent(packageVersion.package_name) +
           '\&version=' + encodeURIComponent(packageVersion.version));
+        $(elem).attr('data-mini-rdoc', `${packageVersion.package_name}::${current}`);
       } else {
         if (rdOptions.split(':') > 1) {
           $(elem).attr('href', url.resolve(basePath, encodeURIComponent(rdOptions[1])) +
             '?package=' + encodeURIComponent(packageVersion.package_name) +
             '\&version=' + encodeURIComponent(packageVersion.version) +
             '\&to=' + encodeURIComponent(rdOptions[0]));
+            $(elem).attr('data-mini-rdoc', `${rdOptions[0]}::${rdOptions[1]}`);
         } else {
           $(elem).attr('href', url.resolve(basePath, encodeURIComponent(current)) +
             '?package=' + encodeURIComponent(packageVersion.package_name) +
             '\&version=' + encodeURIComponent(packageVersion.version) +
             '\&to=' + encodeURIComponent(rdOptions));
+            $(elem).attr('data-mini-rdoc', `${rdOptions}::${current}`);
         }
       }
 
