@@ -5,8 +5,10 @@ var _ = require('lodash'),
 
 module.exports = {
 
-  replaceLinks: function($, packageVersion) {
-    const basePath = '/link/';
+  replaceLinks: function($, packageVersion, relative = true) {
+    let basePath = '/link/';
+    if(!relative)
+      basePath = 'https:' + process.env.BASE_URL + basePath;
     $('a').each(function(i, elem) {
       var current = $(elem).attr('href');
       var rdOptions = $(elem).attr('rd-options');
@@ -49,7 +51,7 @@ module.exports = {
     })
   },
 
-  processHrefs: function(topicInstance) {
+  processHrefs: function(topicInstance, relative = true) {
     var topic = topicInstance.toJSON();
     var toSearch = _.pick(topic, [
       'name',
@@ -74,7 +76,7 @@ module.exports = {
                               .replace(/\n\n/g, '</p><p>');
 
           var $ = cheerio.load(escapedStr, { decodeEntities: false });
-          TopicService.replaceLinks($, packageVersion);
+          TopicService.replaceLinks($, packageVersion, relative);
           TopicService.replaceFigures($, packageVersion);
           return $.html();
         };

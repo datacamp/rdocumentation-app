@@ -496,9 +496,12 @@ module.exports = {
         }
         else return topicInstances.sort(PackageService.compareVersions('desc', function(topic) {
             return topic.package_version.version }))[0];
+      }).then(function(topic){
+        if(topic === undefined || topic === null) return null;
+        return TopicService.processHrefs(topic, false);
       }).then(function(topic) {
         var part = {};
-        if(topic !== null && topic !== undefined){
+        if(topic !== null){
           part.name = topic.name;
           part.title = topic.title;
           part.description = topic.description;
