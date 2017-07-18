@@ -106,73 +106,93 @@ module.exports = {
   * @apiName Get Package
   * @apiGroup Light
   *
-  * @apiParam {String} name Name of the package
+  * @apiParam {String}     name               Name of the package
+  * @apiParam {String}     version            Version of the package {optional}
   *
-  * @apiSuccess {String}   name             Package name
-  * @apiSuccess {String}   url              Url to the package
-  * @apiSuccess {Object}   version          Information about the version of the package
-  * @apiSuccess {String}   version.version  String describing the latest version of the package
-  * @apiSuccess {String}   version.url      Url to the version
-  * @apiSuccess {String}   title            Title of the latest version
-  * @apiSuccess {String}   description      Description of the latest package version
-  * @apiSuccess {Object[]} anchors                       Anchors shown at the bottom of the widget
-  * @apiSuccess {String}   anchors.title                 The title to be shown
-  * @apiSuccess {String}   anchors.anchor                The Html-anchor linking to the section
+  * @apiSuccess {String}   name               Package name
+  * @apiSuccess {String}   url                Url to the package
+  * @apiSuccess {Object}   version            Information about the version of the package
+  * @apiSuccess {String}   version.version    String describing the latest version of the package
+  * @apiSuccess {String}   version.url        Url to the version
+  * @apiSuccess {String}   title              Title of the latest version
+  * @apiSuccess {String}   description        Description of the latest package version
+  * @apiSuccess {Object[]} anchors            Anchors shown at the bottom of the widget
+  * @apiSuccess {String}   anchors.title      The title to be shown
+  * @apiSuccess {String}   anchors.anchor     The Html-anchor linking to the section
   */
   packageSearch: function(req, res) {
     var packageName = req.param('name');
+    var version = req.param('version');
+    console.log(version);
 
-    var key = 'light_' + packageName;
     if (packageName.endsWith('.html')) packageName = packageName.replace('.html', '');
+    var key = 'light_' + packageName;
+    var latest_version = undefined;
+    if(version){
+      key += '_' + version;
+      latest_version = {
+        latest_version: {
+          version: version
+        }
+      }
+    }
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
-      return Package.getLatestVersionNumber(packageName).then(function(version){
-        console.log(version.latest_version.version);
-        var prefix = "rpackages/unarchived/" + packageName + "/" + version.latest_version.version + "/" + "vignettes/";
-        var params = {
-          Bucket: process.env.AWS_BUCKET,
-          Delimiter: '/',
-          Prefix: prefix
-        };
+      return Promise.resolve(latest_version || Package.getLatestVersionNumber(packageName))
+        .then(function(version){
+          if(!version) return null;
 
-        var vignettesPromise = s3.listObjects(params).promise();
-
-        var packagePromise = Package.findOne({
-          include:[{
-            model:PackageVersion,
-            as:'latest_version',
-            required:true,
-            include: [
-              { model: Topic, as: 'topics',
-                attributes: ['package_version_id', 'name', 'title', 'id'],
-                separate: true }
-            ]
-          }],
-          where:{
-            name:packageName
-          }
-        });
-        return Promise.join(vignettesPromise, packagePromise, function(vignettes, package){
-          var version = {};
-          version.package_name = package.name;
-          version.url = 'https:' + process.env.BASE_URL + package.uri;
-          version.version = {
-            version: package.latest_version.version,
-            url: 'https:' + process.env.BASE_URL + package.latest_version.uri
+          var prefix = "rpackages/unarchived/" + packageName + "/" + version.latest_version.version + "/" + "vignettes/";
+          var params = {
+            Bucket: process.env.AWS_BUCKET,
+            Delimiter: '/',
+            Prefix: prefix
           };
-          version.title = package.latest_version.title;
-          version.description = package.latest_version.description;
 
-          version.anchors = [];
-          LightService.addAnchorItem(version.anchors, package.latest_version.readmemd, "readme", "readme");
-          LightService.addAnchorItem(version.anchors, package.latest_version.topics, "topics", "functions");
-          LightService.addAnchorItem(version.anchors, vignettes.Contents, "vignettes", "vignettes");
-          LightService.addAnchorItem(version.anchors, [true], "downloads", "downloads");
-          LightService.addAnchorItem(version.anchors, [true], "details", "details");
+          var vignettesPromise = s3.listObjects(params).promise();
 
-          return version;
+          var packagePromise = Package.findOne({
+            include:[{
+              model:PackageVersion,
+              as:'versions',
+              required:true,
+              include: [
+                { model: Topic, as: 'topics',
+                  attributes: ['package_version_id', 'name', 'title', 'id'],
+                  separate: true }
+              ],
+              where:{
+                version: version.latest_version.version
+              }
+            }],
+            where:{
+              name:packageName
+            }
+          });
+          return Promise.join(vignettesPromise, packagePromise, function(vignettes, package){
+            if(!package)
+              return {};
+            package.version = package.versions[0];
+            var version = {};
+            version.package_name = package.name;
+            version.url = 'https:' + process.env.BASE_URL + package.uri;
+            version.version = {
+              version: package.version.version,
+              url: 'https:' + process.env.BASE_URL + package.version.uri
+            };
+            version.title = package.version.title;
+            version.description = package.version.description;
+
+            version.anchors = [];
+            LightService.addAnchorItem(version.anchors, package.version.readmemd, "readme", "readme");
+            LightService.addAnchorItem(version.anchors, package.version.topics, "topics", "functions");
+            LightService.addAnchorItem(version.anchors, vignettes.Contents, "vignettes", "vignettes");
+            LightService.addAnchorItem(version.anchors, [true], "downloads", "downloads");
+            LightService.addAnchorItem(version.anchors, [true], "details", "details");
+
+            return version;
+          });
         });
-      });
     })
     .then(function(version){
       return res.json(version);

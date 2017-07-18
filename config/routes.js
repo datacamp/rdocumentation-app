@@ -180,5 +180,6 @@ module.exports.routes = {
   // Rdocs Light
   'get /api/light/packages/:name/topics/:function': 'LightController.topicSearch',
   'get /api/light/packages/:name': 'LightController.packageSearch',
+  'get /api/light/packages/:name/versions/:version': 'LightController.packageSearch',
 
 };
