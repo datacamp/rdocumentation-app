@@ -8,12 +8,13 @@ var Promise = require('bluebird');
 
 module.exports = {
   /**
-  * @api {get} api/light/packages/:name/topics/:function Request Topic Information for Rdocs light
+  * @api {get} api/light/packages/:name/versions/:version/topics/:function Request Topic Information for Rdocs light
   * @apiName Get Topic in package (latest version which contains the topic)
   * @apiGroup Light
   *
-  * @apiParam {String} Name of the package
-  * @apiParam {String} Name of the topic
+  * @apiParam   {String}   name                          Name of the package
+  * @apiParam   {String}   function                      Name of the topic
+  * @apiParam   {String}   version                       Version of the package {optional}
   *
   * @apiSuccess {String}   name                          Name of this topic
   * @apiSuccess {String}   title                         Title of the topic
@@ -29,68 +30,81 @@ module.exports = {
   */
   topicSearch: function(req,res) {
     var packageName = req.param('name'),
-        topic_name = req.param('function');
+        topic_name = req.param('function'),
+        version = req.param('version');
 
-    var key = 'light_' + packageName + '_' + topic_name;
     if (topic_name.endsWith('.html')) topic_name = topic_name.replace('.html', '');
+    var key = 'light_' + packageName;
+    var latest_version = undefined;
+    if(version){
+      key += '_' + version;
+      latest_version = {
+        latest_version: {
+          version: version
+        }
+      }
+    }
+    key += '_' + topic_name;
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
-      return Topic.findAll({
-        where: {name: topic_name},
-        include: [{
-          model: PackageVersion,
-          as: 'package_version',
-          where: { package_name: packageName },
-          include: [
-            { model: Package, as: 'package', attributes: ['name', 'latest_version_id', 'type_id' ]},
+      return Promise.resolve(latest_version || Package.getLatestVersionNumber(packageName))
+      .then(function(version){
+        return Topic.findOne({
+          where: {name: topic_name},
+          include: [{
+            model: PackageVersion,
+            as: 'package_version',
+            where: { package_name: packageName,
+                    version: version.latest_version.version },
+            include: [
+              { model: Package, as: 'package', attributes: ['name', 'latest_version_id', 'type_id' ]},
+            ]
+          },
+          {model: Argument, as: 'arguments', attributes: ['name', 'description', 'topic_id'], separate:true },
+          {model: Section, as: 'sections', attributes: ['name', 'description', 'topic_id'], separate:true },
+          {model: Tag, as: 'keywords', attributes: ['name']},
+          {model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], separate: true },
           ]
-        },
-        {model: Argument, as: 'arguments', attributes: ['name', 'description', 'topic_id'], separate:true },
-        {model: Section, as: 'sections', attributes: ['name', 'description', 'topic_id'], separate:true },
-        {model: Tag, as: 'keywords', attributes: ['name']},
-        {model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], separate: true },
-        ]
-      }).then(function(topicInstances) {
-        if(topicInstances === null) {
-          return Topic.findByAliasInPackage(packageName, topic).then(function(topicInstances) {
-            if(!topicInstances) return null;
-            else return topicInstances.sort(PackageService.compareVersions('desc', function(topic) {
-            return topic.package_version.version }))[0];
-          });
-        }
-        else return topicInstances.sort(PackageService.compareVersions('desc', function(topic) {
-            return topic.package_version.version }))[0];
-      }).then(function(topic){
-        if(topic === undefined || topic === null) return null;
-        return TopicService.processHrefs(topic, false);
-      }).then(function(topic) {
-        var part = {};
-        if(topic !== null){
-          part.name = topic.name;
-          part.title = topic.title;
-          part.description = topic.description;
-          part.url = 'https:' + process.env.BASE_URL + topic.package_version.uri + '/topics/' + topic_name;
-          part.package_version = {
-            package_name: topic.package_version.package_name,
-            version: topic.package_version.version,
-            url: 'https:' + process.env.BASE_URL + topic.package_version.uri,
-          };
+        }).then(function(topicInstance) {
+          if(topicInstance === null) {
+            return Topic.findByAliasInPackage(packageName, topicInstance, version.latest_version.version).then(function(topicInstances) {
+              if(!topicInstance) return null;
+              else topicInstance;
+            });
+          }
+          else return topicInstance;
+        }).then(function(topic){
+          if(topic === undefined || topic === null) return null;
+          return TopicService.processHrefs(topic, false);
+        }).then(function(topic) {
+          var part = {};
+          if(topic !== null){
+            part.name = topic.name;
+            part.title = topic.title;
+            part.description = topic.description;
+            part.url = 'https:' + process.env.BASE_URL + topic.package_version.uri + '/topics/' + topic_name;
+            part.package_version = {
+              package_name: topic.package_version.package_name,
+              version: topic.package_version.version,
+              url: 'https:' + process.env.BASE_URL + topic.package_version.uri,
+            };
 
-          part.anchors = [];
-          LightService.addAnchorItem(part.anchors, topic.keywords, "keywords", "kywrds");
-          LightService.addAnchorItem(part.anchors, topic.usage, "usage", "usg");
-          LightService.addAnchorItem(part.anchors, topic.arguments, "arguments", "argmnts");
-          LightService.addAnchorItem(part.anchors, topic.details, "details", "dtls");
-          LightService.addAnchorItem(part.anchors, topic.value, "value", "vl");
-          LightService.addAnchorItem(part.anchors, topic.note, "note", "nt");
-          LightService.addAnchorItem(part.anchors, topic.sections, "sections", "sctns");
-          LightService.addAnchorItem(part.anchors, topic.references, "references", "rfrncs");
-          LightService.addAnchorItem(part.anchors, topic.seealso, "see also", "sls");
-          // LightService.addAnchorItem(part.anchors, topic.aliases, "aliases", "alss");
-          LightService.addAnchorItem(part.anchors, topic.examples, "examples", "exmpls");
+            part.anchors = [];
+            LightService.addAnchorItem(part.anchors, topic.keywords, "keywords", "kywrds");
+            LightService.addAnchorItem(part.anchors, topic.usage, "usage", "usg");
+            LightService.addAnchorItem(part.anchors, topic.arguments, "arguments", "argmnts");
+            LightService.addAnchorItem(part.anchors, topic.details, "details", "dtls");
+            LightService.addAnchorItem(part.anchors, topic.value, "value", "vl");
+            LightService.addAnchorItem(part.anchors, topic.note, "note", "nt");
+            LightService.addAnchorItem(part.anchors, topic.sections, "sections", "sctns");
+            LightService.addAnchorItem(part.anchors, topic.references, "references", "rfrncs");
+            LightService.addAnchorItem(part.anchors, topic.seealso, "see also", "sls");
+            // LightService.addAnchorItem(part.anchors, topic.aliases, "aliases", "alss");
+            LightService.addAnchorItem(part.anchors, topic.examples, "examples", "exmpls");
 
-        }
-        return part;
+          }
+          return part;
+        });
       });
     })
     .then(function(topic){
@@ -106,8 +120,8 @@ module.exports = {
   * @apiName Get Package
   * @apiGroup Light
   *
-  * @apiParam {String}     name               Name of the package
-  * @apiParam {String}     version            Version of the package {optional}
+  * @apiParam   {String}   name               Name of the package
+  * @apiParam   {String}   version            Version of the package {optional}
   *
   * @apiSuccess {String}   name               Package name
   * @apiSuccess {String}   url                Url to the package
@@ -123,7 +137,6 @@ module.exports = {
   packageSearch: function(req, res) {
     var packageName = req.param('name');
     var version = req.param('version');
-    console.log(version);
 
     if (packageName.endsWith('.html')) packageName = packageName.replace('.html', '');
     var key = 'light_' + packageName;
