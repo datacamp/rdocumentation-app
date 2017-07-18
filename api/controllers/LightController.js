@@ -150,7 +150,7 @@ module.exports = {
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       return Promise.resolve(latest_version || Package.getLatestVersionNumber(packageName))
         .then(function(version){
-          if(!version) return null;
+          if(!version) return {};
 
           var prefix = "rpackages/unarchived/" + packageName + "/" + version.latest_version.version + "/" + "vignettes/";
           var params = {
