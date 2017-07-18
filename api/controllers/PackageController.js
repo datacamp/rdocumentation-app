@@ -4,7 +4,6 @@
  * @description :: Server-side logic for managing packages
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
-var Promise = require('bluebird');
 
 module.exports = {
 
@@ -165,6 +164,6 @@ module.exports = {
     }).catch(function(err) {
       return res.negotiate(err);
     });
-  },
+  }
 };
 
