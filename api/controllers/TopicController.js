@@ -462,6 +462,9 @@ module.exports = {
   * @apiSuccess {String}   package_version.url           Url to this version
   * @apiSuccess {String}   package_version.package_name  Name of the package of this version
   * @apiSuccess {String}   package_version.version       String describing the version of the package
+  * @apiSuccess {Object[]} anchors                       Anchors shown at the bottom of the widget
+  * @apiSuccess {String}   anchors.title                 The title to be shown
+  * @apiSuccess {String}   anchors.anchor                The Html-anchor linking to the section
   */
   lightTopicSearch: function(req,res) {
     var packageName = req.param('name'),
