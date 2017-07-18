@@ -36,75 +36,72 @@ module.exports = {
     if (topic_name.endsWith('.html')) topic_name = topic_name.replace('.html', '');
     var key = 'light_' + packageName;
     var latest_version = undefined;
+    const packageVersionWhere = {
+      package_name: packageName,
+    }
     if(version){
       key += '_' + version;
-      latest_version = {
-        latest_version: {
-          version: version
-        }
-      }
+      packageVersionWhere.version = version;
     }
     key += '_' + topic_name;
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
-      return Promise.resolve(latest_version || Package.getLatestVersionNumber(packageName))
-      .then(function(version){
-        return Topic.findOne({
-          where: {name: topic_name},
-          include: [{
-            model: PackageVersion,
-            as: 'package_version',
-            where: { package_name: packageName,
-                    version: version.latest_version.version },
-            include: [
-              { model: Package, as: 'package', attributes: ['name', 'latest_version_id', 'type_id' ]},
-            ]
-          },
-          {model: Argument, as: 'arguments', attributes: ['name', 'description', 'topic_id'], separate:true },
-          {model: Section, as: 'sections', attributes: ['name', 'description', 'topic_id'], separate:true },
-          {model: Tag, as: 'keywords', attributes: ['name']},
-          {model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], separate: true },
+      return Topic.findAll({
+        where: {name: topic_name},
+        include: [{
+          model: PackageVersion,
+          as: 'package_version',
+          where: packageVersionWhere,
+          include: [
+            { model: Package, as: 'package', attributes: ['name', 'latest_version_id', 'type_id' ]},
           ]
-        }).then(function(topicInstance) {
-          if(topicInstance === null) {
-            return Topic.findByAliasInPackage(packageName, topicInstance, version.latest_version.version).then(function(topicInstances) {
-              if(!topicInstance) return null;
-              else topicInstance;
-            });
-          }
-          else return topicInstance;
-        }).then(function(topic){
-          if(topic === undefined || topic === null) return null;
-          return TopicService.processHrefs(topic, false);
-        }).then(function(topic) {
-          var part = {};
-          if(topic !== null){
-            part.name = topic.name;
-            part.title = topic.title;
-            part.description = topic.description;
-            part.url = 'https:' + process.env.BASE_URL + topic.package_version.uri + '/topics/' + topic_name;
-            part.package_version = {
-              package_name: topic.package_version.package_name,
-              version: topic.package_version.version,
-              url: 'https:' + process.env.BASE_URL + topic.package_version.uri,
-            };
+        },
+        {model: Argument, as: 'arguments', attributes: ['name', 'description', 'topic_id'], separate:true },
+        {model: Section, as: 'sections', attributes: ['name', 'description', 'topic_id'], separate:true },
+        {model: Tag, as: 'keywords', attributes: ['name']},
+        {model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], separate: true },
+        ]
+      }).then(function(topicInstances) {
+        if(topicInstances === null) {
+          return Topic.findByAliasInPackage(packageName, topic, version).then(function(topicInstances) {
+            if(!topicInstances) return null;
+            else return topicInstances.sort(PackageService.compareVersions('desc', function(topic) {
+            return topic.package_version.version }))[0];
+          });
+        }
+        else return topicInstances.sort(PackageService.compareVersions('desc', function(topic) {
+            return topic.package_version.version }))[0];
+      }).then(function(topic){
+        if(topic === undefined || topic === null) return null;
+        return TopicService.processHrefs(topic, false);
+      }).then(function(topic) {
+        var part = {};
+        if(topic !== null){
+          part.name = topic.name;
+          part.title = topic.title;
+          part.description = topic.description;
+          part.url = 'https:' + process.env.BASE_URL + topic.package_version.uri + '/topics/' + topic_name;
+          part.package_version = {
+            package_name: topic.package_version.package_name,
+            version: topic.package_version.version,
+            url: 'https:' + process.env.BASE_URL + topic.package_version.uri,
+          };
 
-            part.anchors = [];
-            LightService.addAnchorItem(part.anchors, topic.keywords, "keywords", "kywrds");
-            LightService.addAnchorItem(part.anchors, topic.usage, "usage", "usg");
-            LightService.addAnchorItem(part.anchors, topic.arguments, "arguments", "argmnts");
-            LightService.addAnchorItem(part.anchors, topic.details, "details", "dtls");
-            LightService.addAnchorItem(part.anchors, topic.value, "value", "vl");
-            LightService.addAnchorItem(part.anchors, topic.note, "note", "nt");
-            LightService.addAnchorItem(part.anchors, topic.sections, "sections", "sctns");
-            LightService.addAnchorItem(part.anchors, topic.references, "references", "rfrncs");
-            LightService.addAnchorItem(part.anchors, topic.seealso, "see also", "sls");
-            // LightService.addAnchorItem(part.anchors, topic.aliases, "aliases", "alss");
-            LightService.addAnchorItem(part.anchors, topic.examples, "examples", "exmpls");
+          part.anchors = [];
+          LightService.addAnchorItem(part.anchors, topic.keywords, "keywords", "kywrds");
+          LightService.addAnchorItem(part.anchors, topic.usage, "usage", "usg");
+          LightService.addAnchorItem(part.anchors, topic.arguments, "arguments", "argmnts");
+          LightService.addAnchorItem(part.anchors, topic.details, "details", "dtls");
+          LightService.addAnchorItem(part.anchors, topic.value, "value", "vl");
+          LightService.addAnchorItem(part.anchors, topic.note, "note", "nt");
+          LightService.addAnchorItem(part.anchors, topic.sections, "sections", "sctns");
+          LightService.addAnchorItem(part.anchors, topic.references, "references", "rfrncs");
+          LightService.addAnchorItem(part.anchors, topic.seealso, "see also", "sls");
+          // LightService.addAnchorItem(part.anchors, topic.aliases, "aliases", "alss");
+          LightService.addAnchorItem(part.anchors, topic.examples, "examples", "exmpls");
 
-          }
-          return part;
-        });
+        }
+        return part;
       });
     })
     .then(function(topic){
