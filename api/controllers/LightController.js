@@ -87,6 +87,9 @@ module.exports = {
             url: 'https:' + process.env.BASE_URL + topic.package_version.uri,
           };
 
+          part.usage = topic.usage;
+          part.arguments = topic.arguments;
+
           part.anchors = [];
           LightService.addAnchorItem(part.anchors, topic.keywords, "keywords", "kywrds");
           LightService.addAnchorItem(part.anchors, topic.usage, "usage", "usg");
