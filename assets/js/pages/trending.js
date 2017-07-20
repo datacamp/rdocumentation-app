@@ -141,6 +141,7 @@
   };
 
   window.reloadMostPopular = function(page1,sort1,page2,sort2,page3,page4){
+    $("#top10downloads .transp").css('display', 'block');
     $.ajax({
       url : "/api/trends/mostpopular?page=" + page1 + "&sort=" + sort1
     }).done(function(result){
@@ -148,12 +149,14 @@
       result.results.forEach(function(result,i){
         $("#top10downloads tbody").append("<tr><td>"+((page1-1)*10+i+1)+". "+"<a href = '/packages/"+result.package_name+"'>"+result.package_name+"</a></td><td>"+result.directStr+"</td><td>"+result.indirectStr+"</td><td>"+result.totalStr+ "</td></tr>");
       });
+      $("#top10downloads .transp").css('display', 'none');
       $(document).trigger('content-changed');
     });
     window.rebindTrending(page1,sort1,page2,sort2,page3,page4);
   };
 
   window.reloadTopCollaborators = function(page1,sort1,page2,sort2,page3,page4){
+    $("#top10maintainers .transp").css('display', 'block');
     $.ajax({
       url : "/api/trends/topcollaborators?page=" + page2 + "&sort=" + sort2
     }).done(function(result){
@@ -161,12 +164,14 @@
       result.results.forEach(function(result,i){
         $("#top10maintainers tbody").append("<tr><td>"+((page2-1)*10+i+1)+". "+"<a href = '/collaborators/name/"+encodeURIComponent(result.name)+"'>"+result.name+"</a></td><td>"+result.directStr+"</td><td>"+result.indirectStr+"</td><td>"+result.totalStr+ "</td></tr>");
       });
+      $("#top10maintainers .transp").css('display', 'none');
       $(document).trigger('content-changed');
     });
     window.rebindTrending(page1,sort1,page2,sort2,page3,page4);
   };
 
   window.reloadNewPackages = function(page1,sort1,page2,sort2,page3,page4){
+    $("#top10new .transp").css('display', 'block');
     $.ajax({
       url : "/api/trends/newpackages?page=" + page3
     }).done(function(result){
@@ -174,12 +179,14 @@
       result.newArrivals.forEach(function(arrival){
         $("#top10new tbody").append("<tr><td><a href = '/packages/"+arrival.package_name+"'>"+arrival.package_name+"</a></td><td><p class = 'info-trends'>"+arrival.rel+"</p></td></tr>");
       });
+      $("#top10new .transp").css('display', 'none');
       $(document).trigger('content-changed');
     });
     window.rebindTrending(page1,sort1,page2,sort2,page3,page4);
   };
 
   window.reloadNewVersions = function(page1,sort1,page2,sort2,page3,page4){
+    $("#top10renew .transp").css('display', 'block');
     $.ajax({
       url : "/api/trends/newversions?page=" + page4
     }).done(function(result){
@@ -188,6 +195,7 @@
         var release = new Date(arrival.rel);
         $("#top10renew tbody").append("<tr><td><a href = '/packages/"+arrival.package_name+"'>"+arrival.package_name+"</a></td><td><p class = 'info-trends'>"+arrival.rel+"</p></td></tr>");
       });
+      $("#top10renew .transp").css('display', 'none');
       $(document).trigger('content-changed');
     });
     window.rebindTrending(page1,sort1,page2,sort2,page3,page4);
