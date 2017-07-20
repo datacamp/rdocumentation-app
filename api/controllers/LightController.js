@@ -20,6 +20,10 @@ module.exports = {
   * @apiSuccess {String}   title                         Title of the topic
   * @apiSuccess {String}   description                   Description of the topic
   * @apiSuccess {String}   url                           The Url to `self`
+  * @apiSuccess {String}   usage                         `Usage` section of this topic
+  * @apiSuccess {Object[]} arguments                     List of topic arguments
+  * @apiSuccess {String}   arguments.name                Name of the argument
+  * @apiSuccess {String}   arguments.description         Description of the argument
   * @apiSuccess {Object}   package_version               Informations about the version of the package
   * @apiSuccess {String}   package_version.url           Url to this version
   * @apiSuccess {String}   package_version.package_name  Name of the package of this version
