@@ -14,6 +14,7 @@
 
     <% if(topic.keywords && topic.keywords.length>0){ %>
       <section class="topic--keywords">
+        <div class="anchor" id="kywrds"></div>
         <dl>
           <dt>Keywords</dt>
           <% var keywords = topic.keywords.map(function(keyword) {
@@ -25,7 +26,8 @@
     <%}%>
 
     <% if(topic.usage) { %>
-      <section>
+      <section id="usage">
+        <div class="anchor" id="usg"></div>
         <h5 class="topic--title">Usage</h5>
         <pre><code class="R"><%- topic.usage %></code></pre>
       </section>
@@ -33,6 +35,7 @@
 
     <% if(topic.arguments && topic.arguments.length>0){ %>
       <section class="topic--arguments">
+        <div class="anchor" id="argmnts"></div>
         <h5 class="topic--title">Arguments</h5>
         <dl>
           <% for(var i = 0; i < topic.arguments.length; i++) { %>
@@ -46,6 +49,7 @@
     <!-- Other info -->
     <% if(topic.details) { %>
       <section>
+        <div class="anchor" id="dtls"></div>
         <h5 class="topic--title">Details</h5>
         <p><%- topic.details %></p>
       </section>
@@ -53,6 +57,7 @@
 
     <% if(topic.value) { %>
       <section class="topic--value">
+        <div class="anchor" id="vl"></div>
         <h5 class="topic--title">Value</h5>
         <p><%- topic.value %></p>
       </section>
@@ -60,12 +65,14 @@
 
     <% if(topic.note) { %>
       <section>
+        <div class="anchor" id="nt"></div>
         <h5 class="topic--title">Note</h5>
         <p><%- topic.note %></p>
       </section>
     <% } %>
 
     <% if(topic.sections) { %>
+      <div class="anchor" id="sctns"></div>
       <% for(var i = 0; i < topic.sections.length; i++) { %>
         <% var section = topic.sections[i]; %>
         <section>
@@ -77,6 +84,7 @@
 
     <% if(topic.references) { %>
       <section>
+        <div class="anchor" id="rfrncs"></div>
         <h5 class="topic--title">References</h5>
         <p><%- topic.references %></p>
       </section>
@@ -84,6 +92,7 @@
 
     <% if(topic.seealso) { %>
       <section>
+        <div class="anchor" id="sls"></div>
         <h5 class="topic--title">See Also</h5>
         <p><%- topic.seealso %></p>
       </section>
@@ -91,6 +100,7 @@
 
     <% if(topic.aliases) { %>
       <section style="display: none;">
+        <div class="anchor" id="alss"></div>
         <h5 class="topic--title">Aliases</h5>
         <ul class="topic--aliases">
         <% for(var i = 0; i < topic.aliases.length; i++) { %>
@@ -102,6 +112,7 @@
 
     <% if(topic.examples) { %>
       <section>
+        <div class="anchor" id="exmpls"></div>
         <h5 class="topic--title">Examples</h5>
           <% if(topic.dcl) { %>
             <div data-datacamp-exercise data-lang='r'>

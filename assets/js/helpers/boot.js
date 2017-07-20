@@ -22,6 +22,11 @@
     window.dcFooter();
     hljs.initHighlighting.called = false;
     hljs.initHighlighting();
+    rdl.initRDocsLight({
+      container: document.getElementById('content'),
+      showTopicUsageSection: true,
+      showTopicArgumentsSection: true,
+    });
   };
 
 })($jq);
