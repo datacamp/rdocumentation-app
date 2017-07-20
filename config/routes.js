@@ -176,11 +176,4 @@ module.exports.routes = {
   'get /api/searchfunctions' : 'SearchController.functionSearch',
   'get /search_packages' : 'SearchController.packageSearch',
   'get /search_functions' : 'SearchController.functionSearch',
-
-  // Rdocs Light
-  'get /api/light/packages/:name/topics/:function': 'LightController.topicSearch',
-  'get /api/light/packages/:name/versions/:version/topics/:function': 'LightController.topicSearch',
-  'get /api/light/packages/:name': 'LightController.packageSearch',
-  'get /api/light/packages/:name/versions/:version': 'LightController.packageSearch',
-
 };
