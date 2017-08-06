@@ -10,7 +10,8 @@
             }).done(function(result){
                 if(result.tree.length > 0){
                     // Select the first file in 'root'
-                    for(var node of result.tree){
+                    for(var i = 0; i < result.tree.length; i++) {
+                        var node = result.tree[i];
                         if(node.nodes === undefined){
                             node.state.selected = true;
                             loadSource(node.href);
