@@ -203,24 +203,24 @@ module.exports = {
 
         return Promise.join(packagePromise, collaboratorsPromise, dependencyPromise, s3Promise,
         function(versionInstance, collaboratorsInstances, dependencyInstances, s3Data) {
-          if(versionInstance === null) return null;
+          if(versionInstance === null || versionInstance.package === null) return null;
           const versionJSON = versionInstance.toJSON()
           versionJSON.collaborators = collaboratorsInstances.map(function(x) { return x.toJSON(); });
           versionJSON.dependencies = dependencyInstances.map(function(x) { return x.toJSON(); });
           versionJSON.package.versions = versionJSON.package.versions.sort(PackageService.compareVersions('desc', 'version'));
           versionJSON.vignettes = [];
           versionJSON.vignettes = s3Data.list.map(function(item){
-                var splited = item.Key.split('/');
-                var url = 'https://s3.amazonaws.com/assets.rdocumentation.org/' + item.Key;
-                var name = item.Key.substring(prefix.length, item.Key.length);
-                if(name.match("(.Rmd)$") !== null)
-                  url = process.env.BASE_URL + "/packages/" + conditions.package_name
-                        + "/versions/" + conditions.version + "/vignettes/" + name;
-                return {
-                  'name': name,
-                  'url': url
-                }
-              });
+            var splited = item.Key.split('/');
+            var url = 'https://s3.amazonaws.com/assets.rdocumentation.org/' + item.Key;
+            var name = item.Key.substring(prefix.length, item.Key.length);
+            if(name.match("(.Rmd)$") !== null)
+              url = process.env.BASE_URL + "/packages/" + conditions.package_name
+                    + "/versions/" + conditions.version + "/vignettes/" + name;
+            return {
+              'name': name,
+              'url': url
+            }
+          });
           
           return versionJSON;
         })
