@@ -119,6 +119,7 @@ module.exports = {
   * @apiSuccess {Object[]} topics           List of topics (only name and title) (limited to 30)
   * @apiSuccess {JSON}     package          All information as retreived from ´api/packages/:name
   * @apiSuccess {Object[]} vignettes        List of vignettes with their key and url
+  * @apiSuccess {String}   type             Always 'package_version'
   */
   findByNameVersion: function(req, res) {
     var packageName = req.param('name'),
@@ -133,6 +134,7 @@ module.exports = {
     .then(function(version){
       if(version === null) return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName));
       else {
+        version.type = 'package_version';
         version.pageTitle = version.package_name + ' package';
         try {
           version.sourceJSON = JSON.parse(version.sourceJSON);
@@ -574,13 +576,13 @@ module.exports = {
 
           // Parse markdown
           file = marked(content.body, {renderer: Utils.markdown_renderer(true)});
-          
+
           return {
                     file: file,
                     title: title
                 };
-        });  
-        
+        });
+
     }).then(function(response){
       return res.ok(response, 'package_version/vignette.ejs')
     })

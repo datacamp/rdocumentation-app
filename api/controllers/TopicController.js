@@ -106,6 +106,7 @@ module.exports = {
   * @apiSuccess {Date}     package_version.release_date  Release date of the package version
   * @apiSuccess {String}   package_version.license       License of the package version
   * @apiSuccess {String}   package_version.maintainer_id Id of the maintainer of the package version
+  * @apiSuccess {String}   type                          Always equals 'topic'
   */
 
   findByName: function(req, res) {
@@ -139,13 +140,16 @@ module.exports = {
             else return { redirect_uri: topicInstance.uri };
           });
         }
-        else return topicInstance;
+        else{
+          return topicInstance;
+        }
       }).then(function(topicInstance) {
         if(topicInstance === null) return null;
         else if(topicInstance.redirect_uri) return topicInstance;
         else return TopicService.processHrefs(topicInstance)
           .then(function(topic) {
             topic.pageTitle = topic.name + ' function';
+            topic.type = 'topic';
             return topic;
           });
       });

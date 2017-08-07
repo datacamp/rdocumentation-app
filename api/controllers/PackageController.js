@@ -41,6 +41,7 @@ module.exports = {
   * @apiSuccess {Date}     created_at             The moment at which the record was created.
   * @apiSuccess {Date}     updated_at             The moment at which the most recent update to the record occured.
   * @apiSuccess {Integer}  versions.maintainer_id Id of the maintainer of the package version
+  * @apiSuccess {String}   type                   Always 'package'
   */
 
   findByName: function(req, res) {
@@ -58,7 +59,9 @@ module.exports = {
         return res.rstudio_redirect(301, '/search?q=' + encodeURIComponent(packageName));
         //there seems to be a problem with redirected requests if text/html is set as contentype for the ajax request, so I just
         //adapt this so Rstudio still gets the html
-      } else if(req.wantsJSON &&!req.param("viewer_pane")==1) {
+      } else if(req.wantsJSON && !req.param("viewer_pane") == 1) {
+        _package = _package.toJSON();
+        _package.type = 'package';
         return res.json(_package);
       } else {
         if (_package.versions.length === 0)
