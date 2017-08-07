@@ -27,6 +27,55 @@ module.exports = {
     }
   },
 
+  binarySearchIncludes: function (haystack, needle) {
+    return _.sortedIndexOf(haystack, needle) !== -1 ;
+  },
+
+  processDailyDownloads: function(downloads) {
+    console.info('Processing downloads ...');
+    var indirectDownloads = {};
+    var directDownloads = {};
+    Promise.map(downloads, function(download, i) {
+      var package_name = download.package;
+      //execute queries to find inverse dependencies for all hits asynchronous, and find indirect hits before and after in ordered records
+      return DownloadStatsService.getReverseDependencies(package_name).then(function(rootPackageNames) {
+
+        var indirect = false;
+        var j=i+1;
+
+        var downloadTime = download.dateTime.getTime();
+
+        for(j= i + 1; j < downloads.length; j++) {
+          if(indirect || downloads[j].dateTime.getTime() > downloadTime + 60 * 1000)
+            break;
+          if(downloads[j].ip_id === download.ip_id && DownloadStatsService.binarySearchIncludes(rootPackageNames, downloads[j].package)){
+            indirectDownloads[package_name] = indirectDownloads[package_name] + 1 || 1;
+            indirect = true;
+          }
+        }
+
+        for(j= i - 1; j >= 0; j--) {
+          if(indirect || downloads[j].dateTime.getTime() < downloadTime - 60 * 1000)
+            break;
+          if(downloads[j].ip_id === download.ip_id && DownloadStatsService.binarySearchIncludes(rootPackageNames, downloads[j].package)){
+            indirectDownloads[package_name] = indirectDownloads[package_name] + 1 || 1;
+            indirect = true;
+          }
+        }
+
+        if(!indirect){
+          directDownloads[package_name] = directDownloads[package_name] + 1 || 1;
+        }
+      });
+    }, {concurrency: 10})
+    .then(function(){
+        console.log(directDownloads['R6']);
+        console.log(indirectDownloads['R6']);
+        console.log(directDownloads['dplyr']);
+        console.log(indirectDownloads['dplyr']);
+    });
+  },
+
   getDailyDownloads: function () {
     var today = new Date();
     var yesterday = new Date();
@@ -41,24 +90,27 @@ module.exports = {
     };
 
     r(requestSettings, function(error, response, buf) {
+      console.info('Unzipping ...');
       zlib.gunzip(buf, function(err, dezipped) {
-        var rows = CSV.parse(dezipped.toString());
-        rows.shift();
-        var rows = _.map(rows, function(row){
+        console.info('Parsing csv ...');
+        var downloads = CSV.parse(dezipped.toString());
+        downloads.shift(); // remove header line
+        var downloads = _.map(downloads, function(download){
           return {
-            date: row[0],
-            time: row[1],
-            package: row[6],
-            ip_id: row[9]
+            date: download[0],
+            time: download[1],
+            dateTime: new Date(`${download[0]}T${download[1]}Z`),
+            package: download[6],
+            ip_id: download[9]
           }
         });
+        downloads.sort(function(download1, download2){
+          return download1.dateTime.getTime - download2.dateTime.getTime;
+        });
+        DownloadStatsService.processDailyDownloads(downloads);
       });
     });
 
-  },
-
-  binarySearchIncludes: function (haystack, needle) {
-    return _.sortedIndexOf(haystack, needle) !== -1 ;
   },
 
   processDownloads:function(response,directDownloads,indirectDownloads,total,callback) {
