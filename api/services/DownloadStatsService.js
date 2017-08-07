@@ -1,6 +1,9 @@
 var _ = require('lodash');
 var Promise = require('bluebird');
 var dateFormat = require('dateformat');
+var CSV = require('csv-js');
+var r = require('request');
+var zlib = require('zlib');
 
 module.exports = {
 
@@ -22,6 +25,36 @@ module.exports = {
         return rootPackageNames;
       });
     }
+  },
+
+  getDailyDownloads: function () {
+    var today = new Date();
+    var yesterday = new Date();
+    yesterday.setDate(today.getDate() - 2);
+    var yesterdayDateString = dateFormat(yesterday, "yyyy-mm-dd").toString();
+    var url = `http://cran-logs.rstudio.com/${yesterday.getFullYear()}/${yesterdayDateString}.csv.gz`;
+
+    var requestSettings = {
+      method: 'GET',
+      url,
+      encoding: null,
+    };
+
+    r(requestSettings, function(error, response, buf) {
+      zlib.gunzip(buf, function(err, dezipped) {
+        var rows = CSV.parse(dezipped.toString());
+        rows.shift();
+        var rows = _.map(rows, function(row){
+          return {
+            date: row[0],
+            time: row[1],
+            package: row[6],
+            ip_id: row[9]
+          }
+        });
+      });
+    });
+
   },
 
   binarySearchIncludes: function (haystack, needle) {
