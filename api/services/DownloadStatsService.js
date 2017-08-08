@@ -31,55 +31,10 @@ module.exports = {
     return _.sortedIndexOf(haystack, needle) !== -1 ;
   },
 
-  processDailyDownloads: function(downloads) {
-    console.info('Processing downloads ...');
-    var indirectDownloads = {};
-    var directDownloads = {};
-    Promise.map(downloads, function(download, i) {
-      var package_name = download.package;
-      //execute queries to find inverse dependencies for all hits asynchronous, and find indirect hits before and after in ordered records
-      return DownloadStatsService.getReverseDependencies(package_name).then(function(rootPackageNames) {
-
-        var indirect = false;
-        var j=i+1;
-
-        var downloadTime = download.dateTime.getTime();
-
-        for(j= i + 1; j < downloads.length; j++) {
-          if(indirect || downloads[j].dateTime.getTime() > downloadTime + 60 * 1000)
-            break;
-          if(downloads[j].ip_id === download.ip_id && DownloadStatsService.binarySearchIncludes(rootPackageNames, downloads[j].package)){
-            indirectDownloads[package_name] = indirectDownloads[package_name] + 1 || 1;
-            indirect = true;
-          }
-        }
-
-        for(j= i - 1; j >= 0; j--) {
-          if(indirect || downloads[j].dateTime.getTime() < downloadTime - 60 * 1000)
-            break;
-          if(downloads[j].ip_id === download.ip_id && DownloadStatsService.binarySearchIncludes(rootPackageNames, downloads[j].package)){
-            indirectDownloads[package_name] = indirectDownloads[package_name] + 1 || 1;
-            indirect = true;
-          }
-        }
-
-        if(!indirect){
-          directDownloads[package_name] = directDownloads[package_name] + 1 || 1;
-        }
-      });
-    }, {concurrency: 10})
-    .then(function(){
-        console.log(directDownloads['R6']);
-        console.log(indirectDownloads['R6']);
-        console.log(directDownloads['dplyr']);
-        console.log(indirectDownloads['dplyr']);
-    });
-  },
-
   getDailyDownloads: function () {
     var today = new Date();
     var yesterday = new Date();
-    yesterday.setDate(today.getDate() - 2);
+    yesterday.setDate(today.getDate() - 3);
     var yesterdayDateString = dateFormat(yesterday, "yyyy-mm-dd").toString();
     var url = `http://cran-logs.rstudio.com/${yesterday.getFullYear()}/${yesterdayDateString}.csv.gz`;
 
@@ -107,10 +62,84 @@ module.exports = {
         downloads.sort(function(download1, download2){
           return download1.dateTime.getTime - download2.dateTime.getTime;
         });
-        DownloadStatsService.processDailyDownloads(downloads);
+        DownloadStatsService.processDailyDownloads(yesterday, downloads);
       });
     });
 
+  },
+
+  processDailyDownloads: function(date, downloads) {
+    console.info('Processing downloads ...');
+    var indirectDownloads = {};
+    var directDownloads = {};
+    Promise.map(downloads, function(download, i) {
+      var package_name = download.package;
+      //execute queries to find inverse dependencies for all hits asynchronous, and find indirect hits before and after in ordered records
+      return DownloadStatsService.getReverseDependencies(package_name).then(function(rootPackageNames) {
+
+        var indirect = false;
+        var j=i+1;
+
+        var downloadTime = download.dateTime.getTime();
+
+        for(j= i + 1; j < downloads.length; j++) {
+          if(indirect || downloads[j].dateTime.getTime() > downloadTime + 60 * 1000)
+            break;
+          if(downloads[j].ip_id === download.ip_id && DownloadStatsService.binarySearchIncludes(rootPackageNames, downloads[j].package)){
+            if(!indirectDownloads[package_name])
+              indirectDownloads[package_name] = new Set();
+            indirectDownloads[package_name].add(download.ip_id);
+            indirect = true;
+          }
+        }
+
+        for(j= i - 1; j >= 0; j--) {
+          if(indirect || downloads[j].dateTime.getTime() < downloadTime - 60 * 1000)
+            break;
+          if(downloads[j].ip_id === download.ip_id && DownloadStatsService.binarySearchIncludes(rootPackageNames, downloads[j].package)){
+            if(!indirectDownloads[package_name])
+              indirectDownloads[package_name] = new Set();
+            indirectDownloads[package_name].add(download.ip_id);
+            indirect = true;
+          }
+        }
+
+        if(!indirect){
+          if(!directDownloads[package_name])
+            directDownloads[package_name] = new Set();
+          else
+            directDownloads[package_name].add(download.ip_id);
+        }
+      });
+    }, {concurrency: 10})
+    .then(function(){
+        console.log(directDownloads['R6'].size);
+        console.log(indirectDownloads['R6'].size);
+        console.log(directDownloads['dplyr'].size);
+        console.log((indirectDownloads['dplyr'] || new Set()).size);
+        DownloadStatsService.writeDownloadsToDB(date, directDownloads, indirectDownloads)
+    });
+  },
+
+  writeDownloadsToDB: function(date,directDownloads,indirectDownloads){
+    console.info("Writing data to database");
+    return Package.findAll({attributes: ['name']}).then(function(packages) {
+      var records = _.map(packages, function(_package) {
+        return {
+          package_name: _package.name,
+          date: date,
+          indirect_downloads: (indirectDownloads[_package.name] || new Set()).size,
+          direct_downloads: (directDownloads[_package.name] || new Set()).size
+        };
+      });
+      var groups = _.chunk(records,500);
+
+      return Promise.map(groups, function(group) {
+        return DownloadStatistic.bulkCreate(group, {
+          updateOnDuplicate:true
+        });
+      }, {concurrency: 1});
+    });
   },
 
   processDownloads:function(response,directDownloads,indirectDownloads,total,callback) {
