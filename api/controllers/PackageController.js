@@ -164,6 +164,7 @@ module.exports = {
         attributes: [[sequelize.fn('SUM', sequelize.col('direct_downloads')), 'total_direct'],
                     [sequelize.fn('SUM', sequelize.col('indirect_downloads')), 'total_indirect']],
         group: ['DownloadStatistic.package_name'],
+        where: [{'date': { '$gt': sequelize.literal("DATE(NOW() - INTERVAL 1 MONTH)")}}],
         order: [[sequelize.fn('SUM', sequelize.col('direct_downloads')), "DESC"]]
 
       }).then(function(packages){
