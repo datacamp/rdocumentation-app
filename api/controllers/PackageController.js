@@ -107,6 +107,12 @@ module.exports = {
       sort = Utils.parseSort(req),
       criteria = Utils.parseCriteria(req);
 
+    var packageVersionCriteria = {};
+    if(criteria.parser_version)
+      packageVersionCriteria.parser_version = criteria.parser_version;
+    var packageCriteria = criteria;
+    delete packageCriteria.parser_version;
+
     var queryPromise;
 
     var isPopularitySort = (sort === 'popularity');
@@ -119,9 +125,10 @@ module.exports = {
       });
     }
 
+
     if(!isPopularitySort){
       queryPromise = Package.findAll({
-        where: criteria,
+        where: packageCriteria,
         limit: limit,
         offset: offset,
         order: sort,
@@ -131,6 +138,7 @@ module.exports = {
             as: 'latest_version',
             attributes: ['version'],
             required: true,
+            where: packageVersionCriteria,
           }
         ]
       }).then(function(packages){
@@ -147,13 +155,14 @@ module.exports = {
         {
             model: Package,
             as: "package",
-            where: criteria,
+            where: packageCriteria,
             include: [
               {
                 model: PackageVersion,
                 as: 'latest_version',
                 attributes: ['version'],
                 required: true,
+                where: packageVersionCriteria
               }
             ],
             required: true

@@ -56,6 +56,10 @@ module.exports = {
     sourceJSON: {
       type: Sequelize.TEXT,
       allowNull: true
+    },
+
+    parser_version: {
+      type: Sequelize.INTEGER
     }
 
 
@@ -198,7 +202,7 @@ module.exports = {
         });
 
         var prefix = "rpackages/unarchived/" + conditions.package_name + "/" + conditions.version + "/" + "vignettes/";
-                
+
         var s3Promise = s3Service.getAllFilesInFolder(prefix, true);
 
         return Promise.join(packagePromise, collaboratorsPromise, dependencyPromise, s3Promise,
@@ -221,7 +225,7 @@ module.exports = {
                   'url': url
                 }
               });
-          
+
           return versionJSON;
         })
         .catch(function(err){
