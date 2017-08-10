@@ -1,9 +1,12 @@
 (function($) {
+  var started = false;
+
   window.reloadPackages = function(currentFunctionPage, currentPackagePage){
     if(!isInPackageSearch(urlParam('q'))){
       $('html, body').animate({ scrollTop: 0 }, 'slow');
       $.ajax({
-        url: "/search_packages?q="+urlParam('q') + "&page=" + currentPackagePage,
+        url: "/search_packages?q="+urlParam('q') + "&page=" + currentPackagePage 
+            + "&latest=" + searchLatestOnly(),
         crossDomain:true,
         xhrFields: {
           withCredentials: true
@@ -39,7 +42,8 @@
       query = packageAndFunction[1];
     }
   	$.ajax({
-  		url: "/search_functions?q="+ query + packageParam + "&page=" + currentFunctionPage,
+  		url: "/search_functions?q="+ query + packageParam + "&page=" 
+          + currentFunctionPage + "&latest=" + searchLatestOnly(),
     	crossDomain:true,
       xhrFields: {
         withCredentials: true
@@ -89,16 +93,24 @@
 
   window.updateHistory = function(newFunctionPage, newPackagePage) {
     var url = window.location.protocol+ "//" +
-     window.location.host +
-     window.location.pathname +
-     '?q=' + urlParam('q') +
-     '&packagePage=' + newPackagePage +
-     '&functionPage=' + newFunctionPage;
+      window.location.host +
+      window.location.pathname +
+      '?q=' + urlParam('q') +
+      '&latest=' + searchLatestOnly();
+
+    if(newPackagePage !== undefined && newFunctionPage !== undefined)
+      url += '&packagePage=' + newPackagePage +
+      '&functionPage=' + newFunctionPage;
      history.pushState({packagePage: newPackagePage, functionPage: newFunctionPage}, jQuery(document).find('title').text(), url);
   };
 
   window.launchFullSearch = function() {
     if(getCurrentPath().indexOf('search')==0) { // check if we're on the right page
+      if(!started){
+        $("#older").prop( "checked", (urlParam('latest') === "0") ? true : false);
+        $('#hidden_latest').val(searchLatestOnly);
+        started = true;
+      }
       var currentPage = parseInt(urlParam("page")) || 1;
       var currentPackagePage = parseInt(urlParam("packagePage")) || currentPage;
       var currentFunctionPage = parseInt(urlParam("functionPage")) || currentPage;
@@ -112,6 +124,18 @@
       };
     }
   };
+
+  $('#older').change(function() {
+    if(started){      
+      $('#hidden_latest').val(searchLatestOnly);
+      updateHistory();
+      launchFullSearch();
+    }
+  });
+
+  var searchLatestOnly = function(){
+    return ($('#older').is(':checked')) ? 0 : 1;
+  }
 
   var isInPackageSearch = function(query){
     return splitInPackageAndFunction(query).length == 2;

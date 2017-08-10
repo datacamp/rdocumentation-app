@@ -15,6 +15,13 @@
     margin-top : 0em;
     display: inline-block;
   }
+  .older{
+    input[type='checkbox']{
+      width: auto !important;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+  }
 
 }
 
@@ -61,7 +68,7 @@
 
 .search-result--results {
   max-height:200%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 

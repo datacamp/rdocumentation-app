@@ -15,7 +15,7 @@
 
   #dependencygraph {
     height: 900px;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   .graph {
@@ -41,6 +41,16 @@
     float: right;
     margin-top :0em;
     margin-bottom :0em;
+  }
+
+  .transp {
+    display: none;
+    position:absolute;
+    left:0;
+    top:0;
+    background: rgba(255,255,255,.5);
+    width:100%;
+    height:100%;
   }
 }
 

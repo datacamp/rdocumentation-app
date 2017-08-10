@@ -187,12 +187,14 @@ module.exports = {
   */
 	newPackages: function(req,res){
 		var page = req.param("page")||1;
-		PackageVersion.getNewestPackages(page).then(function(results){
+    var key = "trends_new_packages_" + page;
+    return RedisService.getJSONFromCache(key,res,RedisService.DAILY,function(){
+		  return PackageVersion.getNewestPackages(page);
+    }).then(function(results){
 			return res.json({
 				newArrivals: results
-			});
-		})
-    .catch(function(err) {
+      });
+		}).catch(function(err) {
       return res.negotiate(err);
     });
 	},
@@ -211,10 +213,13 @@ module.exports = {
   */
 	newVersions: function(req,res){
 		var page = req.param("page")||1;
-		PackageVersion.getLatestUpdates(page).then(function(results){
+    var key = "trends_new_versions_" + page;
+    return RedisService.getJSONFromCache(key,res,RedisService.DAILY,function(){
+		  return PackageVersion.getLatestUpdates(page);
+    }).then(function(results){
 			return res.json({
 				newVersions: results
-			});
+      });
 		}).catch(function(err) {
       return res.negotiate(err);
     });
@@ -236,7 +241,10 @@ module.exports = {
 	lastMonthMostDownloaded: function(req,res){
 		var page = req.param("page")||1;
 		var sort = req.param("sort")||"direct";
-		DownloadStatistic.getMostPopularPerPage(page,sort).then(function(results){
+    var key = "trends_most_downloaded_" + page + "_" + sort;
+    return RedisService.getJSONFromCache(key,res,RedisService.DAILY,function(){
+		  return DownloadStatistic.getMostPopularPerPage(page,sort);
+    }).then(function(results){
 			return res.json(results);
 		}).catch(function(err) {
       return res.negotiate(err);
@@ -259,10 +267,12 @@ module.exports = {
 	topCollaborators: function(req,res){
 		var page = req.param("page")||1;
 		var sort = req.param("sort")||"total";
-		Collaborator.topCollaborators(page,sort).then(function(results){
+    var key = "trends_collaborators_" + page + "_" + sort;
+    return RedisService.getJSONFromCache(key,res,RedisService.DAILY,function(){
+		  return Collaborator.topCollaborators(page,sort);
+    }).then(function(results){
 			return res.json(results);
-		})
-    .catch(function(err) {
+    }).catch(function(err) {
       return res.negotiate(err);
     });
 	},

@@ -81,11 +81,15 @@ module.exports.routes = {
     'get /api/packages/:name/dependencies': 'PackageVersionController.getDependencyGraph',
     'get /api/packages/:name/versions/:version/reversedependencies': 'PackageVersionController.getReverseDependencyGraph',
     'get /api/packages/:name/reversedependencies': 'PackageVersionController.getReverseDependencyGraph',
+    'get r|\/api\/packages\/([^\/]+)\/versions\/([^\/]+)\/source\/(.*\.[R|r]$)|name,version,filename': 'PackageVersionController.getSource',
+    'get r|\/api\/packages\/([^\/]+)\/versions\/([^\/]+)\/sourceTree|name,version': 'PackageVersionController.getSourceTree',
+        
 
     // HTML
     'get /packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
     'get /packages/:name/versions/:version/readme': 'PackageVersion.readmePage',
-    'get /packages/:name/versions/:version/vignettes/:key': 'PackageVersionController.getVignette',
+    'get r|\/packages\/([^\/]+)\/versions\/([^\/]+)\/vignettes\/(.*)|name,version,key': 'PackageVersionController.getVignette',
+    'get r|^\/packages\/([^\/]+)\/versions\/([^\/]+)\/source|name,version': 'PackageVersionController.sourcePage',
   //***** /PackageVersion *****
 
   //***** Topic *****

@@ -372,21 +372,26 @@ module.exports = {
     var query = req.param('q');
     var page = parseInt(req.param('page')) || 1;
     var perPage = parseInt(req.param('perPage')) || 15;
+    var onlyLatestVersion = (parseInt(req.param('latest'))) === 1;
     var offset = (page - 1) * perPage;
+
+    var packageVersionFilter = [
+      {
+        type: {
+          value: "package_version"
+        }
+      }      
+    ];
+    if(onlyLatestVersion){
+      packageVersionFilter.push({ term: { latest_version: 1 } });
+    }
 
     return es.search({
       index: 'rdoc',
       body: {
         query: {
           bool: {
-            filter:[
-              {
-                type : {
-                  value : "package_version"
-                }
-              },
-              { term: { latest_version: 1 } }
-            ],
+            filter: packageVersionFilter,
             should:[
               {
                 multi_match: {
@@ -491,6 +496,7 @@ module.exports = {
     var package = req.param('package');
     var page = parseInt(req.param('page')) || 1;
     var perPage = parseInt(req.param('perPage')) || 15;
+    var onlyLatestVersion = (parseInt(req.param('latest'))) === 1;
     var offset = (page - 1) * perPage;
     var searchTopicQuery = {
       multi_match: {
@@ -514,31 +520,48 @@ module.exports = {
         "type" : "phrase_prefix"
       }
     };
-    var packageMatchQuery = {
-      has_parent : {
-        parent_type : "package_version",
-        query : {
-          "bool" : {
-            "must" : [
-              {
-                term : { latest_version : 1 }
-              },
-              {
-                term : { package_name: package }
-              }
-            ]
-          }
+        
+    var topicFilter = [
+      {
+        type : {
+          value : "topic"
         }
       }
-    };
+    ];
+
+    var packageMatchQuery;
     if(package === undefined){
       packageMatchQuery = {
         has_parent : {
-          parent_type : "package_version",
-          query : {  term : { latest_version : 1 } }
+          parent_type : "package_version"
         }
       };
+      if(onlyLatestVersion){
+        packageMatchQuery.has_parent.query = {  term : { latest_version : 1 } };
+        topicFilter.push(packageMatchQuery);
+      }
     }
+    else{
+      packageMatchQuery = {
+        has_parent : {
+          parent_type : "package_version",
+          query : {
+            "bool" : {
+              "must" : [
+                {
+                  term : { package_name: package }
+                }
+              ]
+            }
+          }
+        }
+      };
+      if(onlyLatestVersion)
+        packageMatchQuery.has_parent.query.bool.must.push({term : { latest_version : 1 }})
+
+      topicFilter.push(packageMatchQuery);  
+    }
+
     return es.search({
       index: 'rdoc',
       body: {
@@ -547,14 +570,7 @@ module.exports = {
             should : [
               {
                 bool: {
-                  filter:[
-                    {
-                      type : {
-                        value : "topic"
-                      }
-                    },
-                    packageMatchQuery
-                  ],
+                  filter: topicFilter,
                   should: [
                     searchTopicQuery,
                     prefixQuery,

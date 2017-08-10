@@ -535,19 +535,11 @@ module.exports = {
     var key = 'rdocs_vignette_' + package_name + '_' + version + '_' + vignette;
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
-        var S3Key = "rpackages/unarchived/" + package_name + "/" + version + "/" + "vignettes/" + vignette;
-        var params = {
-          Bucket: process.env.AWS_BUCKET,
-          Key: S3Key,
-          ResponseContentType: 'text/plain',
-        };
-        
-         return s3.getObject(params).promise()
-          .then(function(object){
+        var s3Key = "rpackages/unarchived/" + package_name + "/" + version + "/" + "vignettes/" + vignette;
+                
+         return s3Service.getObject(s3Key)
+          .then(function(file){
           var title = vignette;
-
-          // Convert result to utf-8 string
-          var file = object.Body.toString('utf-8');
 
           // Replace things like {r setup, include = FALSE} with {r}
           // Marked doesn't recognise those as the start of a code block.
@@ -573,10 +565,116 @@ module.exports = {
     .catch(function(err) {
       console.log(err.message);
       return res.negotiate(err);
-    });
+    });    
 
-    
+  },
 
+  sourcePage: function(req, res){
+    var package_name = req.param('name');
+    var version = req.param('version');
+    var response = {
+      package_name: package_name,
+      version: version
+    }
+    res.ok(response, 'package_version/source.ejs');
+  },
+
+  getSourceTree: function(req,res) {
+    var package_name = req.param('name');
+    var version = req.param('version');
+
+    var key = 'rdocs_source_' + package_name + '_' + version + '_tree';
+
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+      var prefix = "rpackages/unarchived/" + package_name + "/" + version + "/R/";
+      return s3Service.getAllFilesInFolder(prefix, true)
+        .then(function(data){
+          var url = process.env.BASE_URL + "/packages/" + package_name + "/versions/" + version
+              + "/source/";
+          
+          var list = data.list.map(function(item){
+            var name = item.Key.substring(prefix.length, item.Key.length);
+            var parts = name.split('/');
+            return {
+              'name': name,
+              'parts': parts
+            }
+          });
+          var data = {};
+          for(var item of list){
+            setObjectValue(data, item.parts, item.name);
+          }
+          var tree = [];
+          toTreeStructure(tree, data);
+          return {
+              tree: tree
+          }
+        });
+      
+    }).then(function(response){
+      res.json(response);
+    })
+    .catch(function(err) {
+      console.log(err.message);
+      return res.negotiate(err);
+    }); 
+  },
+
+  getSource: function(req,res) {
+    var package_name = req.param('name');
+    var version = req.param('version');
+    var filename = req.param('filename');
+
+    var key = 'rdocs_source_' + package_name + '_' + version + '_' + filename;
+
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+      var prefix = "rpackages/unarchived/" + package_name + "/" + version + "/R/" + filename;
+       return s3Service.getObject(prefix) 
+            .then(function(source){ 
+              return {  
+                  source: source 
+                } 
+            });      
+    }).then(function(response){
+      res.json(response);
+    })
+    .catch(function(err) {
+      console.log(err.message);
+      return res.negotiate(err);
+    }); 
   }
 };
+
+var setObjectValue = function(obj, indices, value) {
+    if (indices.length==1)
+        return obj[indices[0]] = value;
+    else if (indices.length==0)
+        return obj;
+    else{
+        if(obj[indices[0]] === undefined)
+          obj[indices[0]] = {};
+        return setObjectValue(obj[indices[0]],indices.slice(1), value);
+    }
+}
+
+var toTreeStructure = function(tree, data){
+  if(typeof(data) !== 'object')
+    return;
+  for(var key of Object.keys(data)){
+    var nodes = [];
+    toTreeStructure(nodes, data[key]);
+    var node = {
+      text: key,
+      selectable: nodes.length === 0,
+      state: {
+        selected: false
+      }
+    };
+    if(nodes.length === 0)
+      node.href = data[key];
+    else
+      node.nodes = nodes;
+    tree.push(node);
+  }
+}
 
