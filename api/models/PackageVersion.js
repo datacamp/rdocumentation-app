@@ -241,6 +241,7 @@ module.exports = {
         packageVersion.fields.sourceJSON = JSON.stringify(description);
         packageVersion.fields.readmemd = readmemd;
         packageVersion.fields.license = packageVersion.fields.license || "";
+        packageVersion.fields.parser_version = description.parserVersion || 0;
 
         return sequelize.transaction(function (t) {
           var _package = Repository.findOrCreate({
