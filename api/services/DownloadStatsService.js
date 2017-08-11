@@ -83,6 +83,12 @@ module.exports = {
     Promise.map(downloads, function(download, i) {
       var package_name = download.package;
 
+      function addDownloadTo(hash, download) {
+        if(!hash[package_name])
+          hash[package_name] = new Set();
+        hash[package_name].add(download.ip_id);
+      }
+
       return DownloadStatsService.getReverseDependencies(package_name).then(function(rootPackageNames) {
 
         var indirect = false;
@@ -94,9 +100,7 @@ module.exports = {
           if(indirect || downloads[j].dateTime.getTime() > downloadTime + 60 * 1000)
             break;
           if(downloads[j].ip_id === download.ip_id && DownloadStatsService.binarySearchIncludes(rootPackageNames, downloads[j].package)){
-            if(!indirectDownloads[package_name])
-              indirectDownloads[package_name] = new Set();
-            indirectDownloads[package_name].add(download.ip_id);
+            addDownloadTo(indirectDownloads, download)
             indirect = true;
           }
         }
@@ -105,18 +109,13 @@ module.exports = {
           if(indirect || downloads[j].dateTime.getTime() < downloadTime - 60 * 1000)
             break;
           if(downloads[j].ip_id === download.ip_id && DownloadStatsService.binarySearchIncludes(rootPackageNames, downloads[j].package)){
-            if(!indirectDownloads[package_name])
-              indirectDownloads[package_name] = new Set();
-            indirectDownloads[package_name].add(download.ip_id);
+            addDownloadTo(indirectDownloads, download)
             indirect = true;
           }
         }
 
         if(!indirect){
-          if(!directDownloads[package_name])
-            directDownloads[package_name] = new Set();
-          else
-            directDownloads[package_name].add(download.ip_id);
+          addDownloadTo(directDownloads, download)
         }
       });
     }, {concurrency: 10})
