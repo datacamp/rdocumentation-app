@@ -39,15 +39,6 @@ module.exports = {
     }
   },
 
-  indexStats: function(req, res) {
-    CronService.indexAggregatedDownloadStats().then(function(result) {
-      console.log("Finished indexing stats");
-      res.send(200, "done");
-    }).catch(function(err){
-      return res.negotiate(err.errors);
-    });
-  },
-
   updatePercentile: function(req, res) {
     ElasticSearchService.updateLastMonthPercentiles().then(function(){
       console.log("Finished updating percentiles");
@@ -61,8 +52,7 @@ module.exports = {
     DownloadStatistic.getNotIndexedDates().then(function(days) {
       return days.map(function(day) {
         var date = new Date(day.absents);
-        var now = new Date();
-        return Utils.dateDiffInDays(date, now);
+        return date;
       });
     }).then(function(diffs) {
       if (diffs.length <= 0) {
@@ -71,9 +61,9 @@ module.exports = {
       }
       res.send(200, "scheduled");
       DownloadStatsService.reverseDependenciesCache = {}; //clean old cache
-      return Promise.map(diffs, function (nDay) {
-        console.log("Started indexing for today - " + nDay + "days");
-        return CronService.splittedAggregatedDownloadstats(nDay)
+      return Promise.map(diffs, function (day) {
+        console.log(`Started indexing for ${day}.`);
+        return CronService.splittedAggregatedDownloadstats(day)
           .catch({message: "empty"}, function() {
             console.log("No stats for this time range yet");
             return 1;
