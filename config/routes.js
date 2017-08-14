@@ -83,7 +83,7 @@ module.exports.routes = {
     'get /api/packages/:name/reversedependencies': 'PackageVersionController.getReverseDependencyGraph',
     'get r|\/api\/packages\/([^\/]+)\/versions\/([^\/]+)\/source\/(.*\.[R|r]$)|name,version,filename': 'PackageVersionController.getSource',
     'get r|\/api\/packages\/([^\/]+)\/versions\/([^\/]+)\/sourceTree|name,version': 'PackageVersionController.getSourceTree',
-        
+
 
     // HTML
     'get /packages/:name/versions/:version': 'PackageVersion.findByNameVersion',
@@ -181,6 +181,7 @@ module.exports.routes = {
   'get /search_packages' : 'SearchController.packageSearch',
   'get /search_functions' : 'SearchController.functionSearch',
 
-  // Parser
-  'get /parser/list': 'ParserController.list',
+  // Parsing
+  'get /api/parsing/jobs': 'PackageController.toParse',
+
 };
