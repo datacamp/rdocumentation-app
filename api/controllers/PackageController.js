@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing packages
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+_ = require('lodash');
 
 module.exports = {
 
@@ -161,6 +162,20 @@ module.exports = {
         });
 
       });
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
+  },
+
+  toParse: function(req, res) {
+    var limit = Utils.parseLimit(req),
+      offset = Utils.parseSkip(req),
+      parser_version = req.param('parser_version');
+
+    Package
+    .findMostPopularUnfailedOldPackages(parser_version, limit, offset)
+    .then(function(packages) {
+      return res.json(packages);
     }).catch(function(err) {
       return res.negotiate(err);
     });

@@ -58,7 +58,6 @@ module.exports = {
       allowNull: true
     }
 
-
   },
   associations: function() {
     PackageVersion.belongsTo(Package,
@@ -198,7 +197,7 @@ module.exports = {
         });
 
         var prefix = "rpackages/unarchived/" + conditions.package_name + "/" + conditions.version + "/" + "vignettes/";
-                
+
         var s3Promise = s3Service.getAllFilesInFolder(prefix, true);
 
         return Promise.join(packagePromise, collaboratorsPromise, dependencyPromise, s3Promise,
@@ -221,7 +220,7 @@ module.exports = {
               'url': url
             }
           });
-          
+
           return versionJSON;
         })
         .catch(function(err){
