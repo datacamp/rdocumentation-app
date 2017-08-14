@@ -98,7 +98,6 @@ module.exports = {
   * @apiSuccess {String}   type_id                Represents the repository from which the package is retrieved (1 for cran, 2 for bioconductor and 3 for github).
   * @apiSuccess {Date}     created_at             The moment at which the record was created.
   * @apiSuccess {Date}     updated_at             The moment at which the most recent update to the record occured.
-  * @apiSuccess {String}   latest_version         String description of the last version (more recent) of this package
   * @apiUse Timestamps
   */
   find: function(req, res) {
@@ -107,87 +106,13 @@ module.exports = {
       sort = Utils.parseSort(req),
       criteria = Utils.parseCriteria(req);
 
-    var packageVersionCriteria = {};
-    if(criteria.parser_version)
-      packageVersionCriteria.parser_version = criteria.parser_version;
-    var packageCriteria = criteria;
-    delete packageCriteria.parser_version;
-
-    var queryPromise;
-
-    var isPopularitySort = (sort === 'popularity');
-    if( Object.prototype.toString.call(sort ) === '[object Array]'){
-      isPopularitySort = sort.some(function(item){
-        if((Object.prototype.toString.call(item) === '[object Array]' && item[0] === 'popularity') || item === 'popularity'){
-          return true;
-        }
-        return false;
-      });
-    }
-
-
-    if(!isPopularitySort){
-      queryPromise = Package.findAll({
-        where: packageCriteria,
-        limit: limit,
-        offset: offset,
-        order: sort,
-        include: [
-          {
-            model: PackageVersion,
-            as: 'latest_version',
-            attributes: ['version'],
-            required: true,
-            where: packageVersionCriteria,
-          }
-        ]
-      }).then(function(packages){
-        return _.map(packages, function(package){
-          package = package.toJSON();
-          package.latest_version = package.latest_version.version;
-          return package;
-        });
-    })
-
-    } else {
-      queryPromise = DownloadStatistic.findAll({
-        include: [
-        {
-            model: Package,
-            as: "package",
-            where: packageCriteria,
-            include: [
-              {
-                model: PackageVersion,
-                as: 'latest_version',
-                attributes: ['version'],
-                required: true,
-                where: packageVersionCriteria
-              }
-            ],
-            required: true
-        },
-        ],
-        limit,
-        offset,
-        attributes: [[sequelize.fn('SUM', sequelize.col('direct_downloads')), 'total_direct'],
-                    [sequelize.fn('SUM', sequelize.col('indirect_downloads')), 'total_indirect']],
-        group: ['DownloadStatistic.package_name'],
-        where: [{'date': { '$gt': sequelize.literal("DATE(NOW() - INTERVAL 1 MONTH)")}}],
-        order: [[sequelize.fn('SUM', sequelize.col('direct_downloads')), "DESC"]]
-
-      }).then(function(packages){
-        return _.map(packages, function(package){
-          package = package.toJSON();
-          package.package['direct_downloads'] = package.total_direct;
-          package.package['indirect_downloads'] = package.total_indirect;
-          package.package.latest_version = package.package.latest_version.version;
-          return package.package;
-        });
-    })
-    }
-
-    queryPromise.then(function(packages) {
+    Package.findAll({
+      where: criteria,
+      limit: limit,
+      offset: offset,
+      order: sort,
+      include: []
+    }).then(function(packages) {
       return res.json(packages);
     }).catch(function(err) {
       return res.negotiate(err);

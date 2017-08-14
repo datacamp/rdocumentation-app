@@ -44,12 +44,34 @@ module.exports = {
 
   */
   postDescription: function(req, res) {
-    var result = PackageVersion.createWithDescriptionFile({input: req.body});
-    result.then(function(value) {
-      res.location('/api/packages/' + value.package_name + '/versions/' + value.version);
-      var key = 'view_package_version_' + value.package_name + '_' + value.version;
-      RedisService.del(key);
-      res.json(value);
+    var jobInfo = req.body.jobInfo;
+    var failed = jobInfo.parsingStatus === "failed";
+    var result = Promise.resolve();
+    if(! failed)
+      result = PackageVersion.createWithDescriptionFile({input: req.body});
+
+    var error = null;
+    if (jobInfo.error)
+      error = jobInfo.error;
+
+    var addJob = ParsingJob.upsert({
+      package_name: jobInfo.package,
+      package_version: jobInfo.version,
+      parser_version: jobInfo.parserVersion,
+      parsed_at: jobInfo.parsedAt,
+      parsing_status: jobInfo.parsingStatus,
+      error: error,
+    });
+
+    Promise.join(result, addJob, function(value, jobResult) {
+      if(value){
+        res.location('/api/packages/' + value.package_name + '/versions/' + value.version);
+        var key = 'view_package_version_' + value.package_name + '_' + value.version;
+        RedisService.del(key);
+        res.json(value);
+      }
+      else
+        res.json(undefined);
     }).catch(Sequelize.UniqueConstraintError, function (err) {
       return res.send(409, err.errors);
     }).catch(Sequelize.ValidationError, function (err) {
