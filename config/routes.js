@@ -179,6 +179,8 @@ module.exports.routes = {
   'get /api/searchpackages' : 'SearchController.packageSearch',
   'get /api/searchfunctions' : 'SearchController.functionSearch',
   'get /search_packages' : 'SearchController.packageSearch',
-  'get /search_functions' : 'SearchController.functionSearch'
+  'get /search_functions' : 'SearchController.functionSearch',
 
+  // Parser
+  'get /parser/list': 'ParserController.list',
 };
