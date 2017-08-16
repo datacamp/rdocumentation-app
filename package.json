@@ -5,6 +5,7 @@
   "description": "Rdocumentation",
   "keywords": [],
   "dependencies": {
+    "@datacamp/rdocs-light": "1.0.6",
     "autolink-js": "^1.0.2",
     "aws-sdk": "^2.79.0",
     "axios": "^0.12.0",
