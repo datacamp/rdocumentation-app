@@ -598,7 +598,8 @@ module.exports = {
     var version = req.param('version');
     var response = {
       package_name: package_name,
-      version: version
+      version: version,
+      uri: "/packages/" + package_name + "/versions/" + version
     }
     res.ok(response, 'package_version/source.ejs');
   },

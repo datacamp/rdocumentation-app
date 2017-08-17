@@ -23,6 +23,28 @@
     }
   }
 }
+.source-header {
+  @include clearfix;
+  width: 100%;
+
+  h1 {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0.25em 0;
+  }
+
+  .source-header-content {
+    width: 100%;
+    padding-top: 15px;
+    border-bottom: 2px solid #ebf4f7;
+    padding-bottom: 10px;
+  }
+}
+.source--title--container {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 1rem;
+}
 #source-container {
   flex: 1;
   height: auto;
