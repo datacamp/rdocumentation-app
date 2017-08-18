@@ -127,15 +127,19 @@ module.exports = {
         key = 'view_package_version_' + packageName + '_' + packageVersion;
     var user = req.user;
 
-    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+    var packageVersionPromise = RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       return PackageVersion.getPackageVersionFromCondition({package_name:packageName, version:packageVersion});
-    })
+    });
+
+    var sourcePromise = PackageVersionService.getSourceList(res, packageName, packageVersion);
+
     // The method above will be cached
-    .then(function(version){
+    Promise.join(packageVersionPromise, sourcePromise, function(version, sourceList){
       if(version === null) return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName));
       else {
         version.type = 'package_version';
         version.pageTitle = version.package_name + ' package';
+        version.hasSource = sourceList.tree.length > 0;
         try {
           version.sourceJSON = JSON.parse(version.sourceJSON);
           version.sourceJSON = _.omit(version.sourceJSON, ['Package',
@@ -560,7 +564,7 @@ module.exports = {
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
         var s3Key = "rpackages/unarchived/" + package_name + "/" + version + "/" + "vignettes/" + vignette;
-                
+
          return s3Service.getObject(s3Key)
           .then(function(file){
           var title = vignette;
@@ -589,7 +593,7 @@ module.exports = {
     .catch(function(err) {
       console.log(err.message);
       return res.negotiate(err);
-    });    
+    });
 
   },
 
@@ -608,41 +612,14 @@ module.exports = {
     var package_name = req.param('name');
     var version = req.param('version');
 
-    var key = 'rdocs_source_' + package_name + '_' + version + '_tree';
-
-    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
-      var prefix = "rpackages/unarchived/" + package_name + "/" + version + "/R/";
-      return s3Service.getAllFilesInFolder(prefix, true)
-        .then(function(data){
-          var url = process.env.BASE_URL + "/packages/" + package_name + "/versions/" + version
-              + "/source/";
-          
-          var list = data.list.map(function(item){
-            var name = item.Key.substring(prefix.length, item.Key.length);
-            var parts = name.split('/');
-            return {
-              'name': name,
-              'parts': parts
-            }
-          });
-          var data = {};
-          for(var item of list){
-            setObjectValue(data, item.parts, item.name);
-          }
-          var tree = [];
-          toTreeStructure(tree, data);
-          return {
-              tree: tree
-          }
-        });
-      
-    }).then(function(response){
+    PackageVersionService.getSourceList(res, package_name, version)
+    .then(function(response){
       res.json(response);
     })
     .catch(function(err) {
       console.log(err.message);
       return res.negotiate(err);
-    }); 
+    });
   },
 
   getSource: function(req,res) {
@@ -654,52 +631,19 @@ module.exports = {
 
     RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
       var prefix = "rpackages/unarchived/" + package_name + "/" + version + "/R/" + filename;
-       return s3Service.getObject(prefix) 
-            .then(function(source){ 
-              return {  
-                  source: source 
-                } 
-            });      
+       return s3Service.getObject(prefix)
+            .then(function(source){
+              return {
+                  source: source
+                }
+            });
     }).then(function(response){
       res.json(response);
     })
     .catch(function(err) {
       console.log(err.message);
       return res.negotiate(err);
-    }); 
+    });
   }
+
 };
-
-var setObjectValue = function(obj, indices, value) {
-    if (indices.length==1)
-        return obj[indices[0]] = value;
-    else if (indices.length==0)
-        return obj;
-    else{
-        if(obj[indices[0]] === undefined)
-          obj[indices[0]] = {};
-        return setObjectValue(obj[indices[0]],indices.slice(1), value);
-    }
-}
-
-var toTreeStructure = function(tree, data){
-  if(typeof(data) !== 'object')
-    return;
-  for(var key of Object.keys(data)){
-    var nodes = [];
-    toTreeStructure(nodes, data[key]);
-    var node = {
-      text: key,
-      selectable: nodes.length === 0,
-      state: {
-        selected: false
-      }
-    };
-    if(nodes.length === 0)
-      node.href = data[key];
-    else
-      node.nodes = nodes;
-    tree.push(node);
-  }
-}
-
