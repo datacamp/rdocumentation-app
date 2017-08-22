@@ -1,6 +1,8 @@
 #parent {
+  padding: 10px;
+  width: 100%;
   display: flex;
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 180px);
 }
 #tree {
   width: 200px;
@@ -21,12 +23,34 @@
     }
   }
 }
+.source-header {
+  @include clearfix;
+  width: 100%;
+
+  h1 {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0.25em 0;
+  }
+
+  .source-header-content {
+    width: 100%;
+    padding-top: 15px;
+    border-bottom: 2px solid #ebf4f7;
+    padding-bottom: 10px;
+  }
+}
+.source--title--container {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 1rem;
+}
 #source-container {
   flex: 1;
   height: auto;
   overflow: auto;
   display: none;
-  pre{ 
+  pre{
     margin-top: 0px;
   }
   td.hljs-ln-numbers {
@@ -41,12 +65,12 @@
 	  color: #ccc;
 	  border-right: 1px solid #CCC;
 	  vertical-align: top;
-	  padding-right: 5px; 
+	  padding-right: 5px;
 
 	  /* your custom style here */
     }
     td.hljs-ln-code {
-	  padding-left: 10px;
+	    padding-left: 10px;
     }
     pre code.hljs{
       padding: 0px;
@@ -66,11 +90,11 @@
   width: 5px;
   margin-top: -5px;
 }
- 
+
 .scroll::-webkit-scrollbar-track {
   background: #ddd;
 }
- 
+
 .scroll::-webkit-scrollbar-thumb {
-  background: #666; 
+  background: #666;
 }

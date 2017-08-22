@@ -52,10 +52,13 @@
       <% if(pkgVersion.maintainer) { %>
         <span class='package--maintainer'>by <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>"><%= pkgVersion.maintainer.name %></a></span>
       <% } %>
-       <% var sourceLink = '/packages/' + pkgVersion.package_name
+       <%
+       if(pkgVersion.hasSource) {
+       var sourceLink = '/packages/' + pkgVersion.package_name
        + '/versions/' + pkgVersion.version + '/source'; %>
         <span class='package--maintainer'><a href="<%= sourceLink %>">View Source</a></span>
-     
+      <% } %>
+
       <div>
         <div class="paste-link">
           <i class="fa fa-link"
