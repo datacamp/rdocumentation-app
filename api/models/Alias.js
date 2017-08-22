@@ -75,7 +75,7 @@ module.exports = {
                 attributes:['latest_version_id'],
                 include:[{
                   model:DownloadStatistic,
-                  as:'last_month_stats',
+                  as:'download_stats',
                   required : false,
                   attributes:[],
                   where:{date :{
@@ -87,7 +87,7 @@ module.exports = {
           }],
           where:{name:alias},
           group:['topic.name','topic.package_version.id','topic.id','Alias.id','topic.package_version.package_latest.name'],
-          order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package_latest.last_month_stats.direct_downloads'))]
+          order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package_latest.download_stats.direct_downloads'))]
         }).then(function(data){
             var allResults = _.map(data,function(record){
             return {
@@ -121,7 +121,7 @@ module.exports = {
                 attributes:['latest_version_id'],
                 include:[{
                   model:DownloadStatistic,
-                  as:'last_month_stats',
+                  as:'download_stats',
                   required:false,
                   attributes:[],
                   where:{date :{
@@ -138,7 +138,7 @@ module.exports = {
           }],
           where:{name:alias},
           group:['topic.name','topic.package_version.id','topic.id','Alias.id','topic.package_version.package_latest.name'],
-          order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package_latest.last_month_stats.direct_downloads'))]
+          order:[sequelize.fn('SUM', sequelize.col('topic.package_version.package_latest.download_stats.direct_downloads'))]
         }).then(function(data){
             var allResults = _.map(data,function(record){
             return {
@@ -169,7 +169,7 @@ module.exports = {
               attributes:['latest_version_id'],
               include:[{
                 model:DownloadStatistic,
-                as:'last_month_stats',
+                as:'download_stats',
                 required:false,
                 attributes:[],
                 where:{date :{
@@ -189,7 +189,7 @@ module.exports = {
             }
           },
           group:['name','package_version.id','id','package_version.package_latest.name'],
-          order:[sequelize.fn('SUM', sequelize.col('package_version.package_latest.last_month_stats.direct_downloads'))]
+          order:[sequelize.fn('SUM', sequelize.col('package_version.package_latest.download_stats.direct_downloads'))]
         }).then(function(data){
           var allResults= _.map(data,function(record){
             return Alias.findAll({

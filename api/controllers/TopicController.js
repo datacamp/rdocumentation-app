@@ -265,6 +265,9 @@ module.exports = {
     var fromPackageVersion = req.param('version');
     var alias = req.param('alias');
     var toPackage = req.param('to');
+    var json = req.param('json');
+
+    var api = (json === "1") ? "/api" : "";
 
     if(toPackage) {
       var splitted = toPackage.split(':');
@@ -280,7 +283,7 @@ module.exports = {
 
     RedisService.getJSONFromCache(req.url, res, RedisService.WEEKLY, function() {
 
-      return Topic.findOne({
+      var aliasQuery = Topic.findOne({
         include: [{
           model: Alias,
           as: 'aliases',
@@ -293,9 +296,23 @@ module.exports = {
           model: PackageVersion,
           as: 'package_version',
           where: packageCriteria
-        }]
-      }).then(function(topic) {
-        if(topic !== null) return {uri: topic.uri};
+        }],
+
+      });
+
+      var topicQuery = Topic.findOne({
+        include: [
+        {
+          model: PackageVersion,
+          as: 'package_version',
+          where: packageCriteria
+        }],
+        where: { name: alias}
+      });
+
+      return Promise.join(topicQuery, aliasQuery, function(topicResult, aliasResult) {
+        if(topicResult !== null) return {uri: topicResult.uri};
+        else if(aliasResult !== null) return {uri: aliasResult.uri}
         else {
           return Alias.findByNameInLatestVersions(alias).then(function(aliases) {
             if (aliases.length === 0) return null; //no match found anywhere, 404
@@ -340,9 +357,9 @@ module.exports = {
 
     }).then(function(json) {
       if(json === null) {
-        return res.rstudio_redirect(302,'/packages/' + fromPackageName + '/versions/' + fromPackageVersion);
+        return res.rstudio_redirect(302, api + '/packages/' + fromPackageName + '/versions/' + fromPackageVersion);
       } else {
-        return res.rstudio_redirect(301,json.uri);
+        return res.rstudio_redirect(301, api + json.uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);

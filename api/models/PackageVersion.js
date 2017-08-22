@@ -200,6 +200,9 @@ module.exports = {
 
         var s3Promise = s3Service.getAllFilesInFolder(prefix, true);
 
+        // s3 can throw an exception `The difference between the request time and the current time is too large.`
+        // This can happen when your pc with a running docker installation went into sleep mode
+        // Restarting docker resolves this problem.
         return Promise.join(packagePromise, collaboratorsPromise, dependencyPromise, s3Promise,
         function(versionInstance, collaboratorsInstances, dependencyInstances, s3Data) {
           if(versionInstance === null || versionInstance.package === null) return null;

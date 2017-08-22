@@ -14,7 +14,6 @@ module.exports = {
     package_name: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: true
     },
 
     date: {
