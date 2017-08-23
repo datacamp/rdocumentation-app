@@ -7,11 +7,11 @@
 }
 
 .page-wrap {
-  min-height: 100%;
-  padding-top: 30px;
-  box-sizing:border-box;
-  margin-bottom: -80px;
-  padding-bottom:80px;
+  bottom: 55px;
+  top: 30px;
+  left: 0;
+  right: 0;
+  position: fixed;
 }
 
 

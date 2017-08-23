@@ -1,15 +1,19 @@
-#parent {
-  padding: 10px;
-  width: 100%;
+.source--explorer {
+  flex: 1 1 auto;
   display: flex;
-  max-height: calc(100vh - 180px);
+  margin-bottom: 5px;
+}
+.source--tree {
+  overflow-y: scroll;
+  width: 240px;
+}
+
+.source--code {
+  overflow-y: scroll;
+  flex-grow: 1;
+  background-color: #f6f7f9;
 }
 #tree {
-  width: 200px;
-  overflow: hidden;
-  display: none;
-  overflow: auto;
-  height: auto;
   .list-group {
     margin-top: -0.5px;
     overflow: hidden;
@@ -24,32 +28,12 @@
   }
 }
 .source-header {
-  @include clearfix;
   width: 100%;
-
-  h1 {
-    display: inline-block;
-    vertical-align: middle;
-    margin: 0.25em 0;
-  }
-
-  .source-header-content {
-    width: 100%;
-    padding-top: 15px;
-    border-bottom: 2px solid #ebf4f7;
-    padding-bottom: 10px;
-  }
+  height: 45px;
+  flex-shrink: 0;
 }
-.source--title--container {
-  display: flex;
-  align-items: baseline;
-  margin-bottom: 1rem;
-}
+
 #source-container {
-  flex: 1;
-  height: auto;
-  overflow: auto;
-  display: none;
   pre{
     margin-top: 0px;
   }
@@ -83,7 +67,9 @@
   display:none;
 }
 .source{
-    max-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .scroll::-webkit-scrollbar {

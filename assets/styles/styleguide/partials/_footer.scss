@@ -1,6 +1,9 @@
 .footer {
 	padding: $header-margin 0;
-	margin-top: $default-space;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  background-color: white;
 	border-top: 1px solid $primary-extra-light;
 
 	@include clearfix;
