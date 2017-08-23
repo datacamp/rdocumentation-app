@@ -47,7 +47,7 @@ module.exports = {
       return;
     for(var key of Object.keys(data)){
       var nodes = [];
-      toTreeStructure(nodes, data[key]);
+      PackageVersionService.toTreeStructure(nodes, data[key]);
       var node = {
         text: key,
         selectable: nodes.length === 0,
