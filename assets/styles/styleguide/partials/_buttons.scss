@@ -43,6 +43,10 @@
     @include color-button($primary, $text-invert, $primary-light);
 }
 
+.btn-secondary-dark {
+    @include color-button($primary-dark, $text-invert, $primary-light)
+}
+
 .btn-secondary-light {
     @include color-button($primary-light, $text-invert, $primary-lighter);
     &:hover { color: $primary-dark; }
