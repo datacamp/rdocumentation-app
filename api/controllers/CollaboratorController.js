@@ -21,7 +21,7 @@ module.exports = {
       }
     }).then(function(collaboratorInstance) {
       if (collaboratorInstance === null) return res.notFound();
-      return res.rstudio_redirect(301, collaboratorInstance.uri);
+      return res.redirect(collaboratorInstance.uri);
     }).catch(function(err) {
       return res.negotiate(err);
     });

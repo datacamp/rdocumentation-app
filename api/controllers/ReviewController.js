@@ -54,13 +54,13 @@ module.exports = {
         return res.created(instance.toJSON());
       }
       FlashService.success(req, 'Review successfully added.');
-      return res.rstudio_redirect(301, sails.getUrlFor({ target: 'Topic.findById' })
+      return res.status(301).redirect(sails.getUrlFor({ target: 'Topic.findById' })
         .replace(':id', topicId)
         .replace('/api/', '/')
       );
     }).catch(Sequelize.UniqueConstraintError, function(err) {
       FlashService.error(req, 'You already reviewed this topic');
-      return res.rstudio_redirect(301, sails.getUrlFor({ target: 'Topic.findById' })
+      return res.status(301).redirect(sails.getUrlFor({ target: 'Topic.findById' })
           .replace(':id', topicId)
           .replace('/api/', '/')
         );
@@ -185,10 +185,10 @@ module.exports = {
           return res.created(instance.toJSON());
         }
         FlashService.success(req, 'Review successfully added.');
-        return res.rstudio_redirect(301, packageVersionInstance.uri);
+        return res.status(301).redirect(packageVersionInstance.uri);
       }).catch(Sequelize.UniqueConstraintError, function() {
         FlashService.error(req, 'You already reviewed this package');
-        return res.rstudio_redirect(301, packageVersionInstance.uri);
+        return res.status(301).redirect(packageVersionInstance.uri);
       });
     }).catch(function(err) {
       return res.negotiate(err);
