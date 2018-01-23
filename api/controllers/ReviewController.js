@@ -18,7 +18,7 @@ module.exports = {
   *
   * @apiParam {Int} id Id of the review to get
   */
-  //findById (blueprint)
+  // findById (blueprint)
 
   /**
   * @api {post} /topics/:topicId/reviews/ Post a review to a topic
@@ -43,25 +43,24 @@ module.exports = {
 
     return Review.create({
       rating: rating,
-      title:reviewTitle,
+      title: reviewTitle,
       text: reviewText,
       user_id: user.id,
       reviewable: scope.reviewable,
       reviewable_id: topicId
     }).then(function(instance) {
       RedisService.del('view_topic_' + topicId);
-      if(req.wantsJSON) {
+      if (req.wantsJSON) {
         return res.created(instance.toJSON());
-      } else {
-        FlashService.success(req, 'Review successfully added.');
-        return res.rstudio_redirect(301,sails.getUrlFor({ target: 'Topic.findById' })
-          .replace(':id', topicId)
-          .replace('/api/', '/')
-        );
       }
-    }).catch(Sequelize.UniqueConstraintError, function (err) {
+      FlashService.success(req, 'Review successfully added.');
+      return res.rstudio_redirect(301, sails.getUrlFor({ target: 'Topic.findById' })
+        .replace(':id', topicId)
+        .replace('/api/', '/')
+      );
+    }).catch(Sequelize.UniqueConstraintError, function(err) {
       FlashService.error(req, 'You already reviewed this topic');
-      return res.rstudio_redirect(301,sails.getUrlFor({ target: 'Topic.findById' })
+      return res.rstudio_redirect(301, sails.getUrlFor({ target: 'Topic.findById' })
           .replace(':id', topicId)
           .replace('/api/', '/')
         );
@@ -69,12 +68,8 @@ module.exports = {
       return res.negotiate(err);
     });
   },
-
-
-
-
-
-   /**
+  
+  /**
   * @api {get} /topics/:topicId/reviews/ Get list of topic's review
   * @apiName Review by topic
   * @apiGroup Review
@@ -85,10 +80,9 @@ module.exports = {
   */
   findByTopic: function(req, res) {
     var topicId = req.param('topicId');
-    var limit = Utils.parseLimit(req),
-      offset = Utils.parseSkip(req),
-      sort = Utils.parseSort(req) || 'created_at DESC';
-    var user = req.user;
+    var limit = Utils.parseLimit(req);
+    var offset = Utils.parseSkip(req);
+    var sort = Utils.parseSort(req) || 'created_at DESC';
 
     var scope = sails.models.topic.associations.reviews.scope;
 
@@ -101,8 +95,8 @@ module.exports = {
       limit: limit,
       offset: offset
     }).then(function(instances) {
-      if(instances === null) res.send([]);
-      res.ok(instances.map(function(instance) {return instance.toJSON();}));
+      if (instances === null) res.send([]);
+      res.ok(instances.map(function(instance) { return instance.toJSON(); }));
     }).catch(function(err) {
       return res.negotiate(err);
     });
@@ -122,10 +116,9 @@ module.exports = {
   findByVersion: function(req, res) {
     var packageName = req.param('name');
     var packageVersion = req.param('version');
-    var limit = Utils.parseLimit(req),
-      offset = Utils.parseSkip(req),
-      sort = Utils.parseSort(req) || 'created_at DESC';
-    var user = req.user;
+    var limit = Utils.parseLimit(req);
+    var offset = Utils.parseSkip(req);
+    var sort = Utils.parseSort(req) || 'created_at DESC';
 
     var scope = sails.models.packageversion.associations.reviews.scope;
 
@@ -142,7 +135,7 @@ module.exports = {
       limit: limit,
       offset: offset
     }).then(function(instances) {
-      if(instances === null) res.send([]);
+      if (instances === null) res.send([]);
       res.ok(instances.map(function(instance) {return instance.toJSON();}));
     }).catch(function(err) {
       return res.negotiate(err);
@@ -181,22 +174,21 @@ module.exports = {
     }).then(function(packageVersionInstance) {
       return Review.create({
         rating: rating,
-        title:reviewTitle,
+        title: reviewTitle,
         text: reviewText,
         user_id: user.id,
         reviewable: scope.reviewable,
         reviewable_id: packageVersionInstance.id
       }).then(function(instance) {
         RedisService.del('view_package_version_' + packageName + '_' + packageVersion);
-        if(req.wantsJSON) {
+        if (req.wantsJSON) {
           return res.created(instance.toJSON());
-        } else {
-          FlashService.success(req, 'Review successfully added.');
-          return res.rstudio_redirect(301,packageVersionInstance.uri);
         }
-      }).catch(Sequelize.UniqueConstraintError, function (err) {
+        FlashService.success(req, 'Review successfully added.');
+        return res.rstudio_redirect(301, packageVersionInstance.uri);
+      }).catch(Sequelize.UniqueConstraintError, function() {
         FlashService.error(req, 'You already reviewed this package');
-        return res.rstudio_redirect(301,packageVersionInstance.uri);
+        return res.rstudio_redirect(301, packageVersionInstance.uri);
       });
     }).catch(function(err) {
       return res.negotiate(err);

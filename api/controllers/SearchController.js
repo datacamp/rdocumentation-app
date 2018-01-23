@@ -10,16 +10,16 @@ var striptags = require('striptags');
 var querystring = require('querystring');
 var numeral = require('numeral');
 
-var isInPackageSearch = function(query){
-  return splitInPackageAndFunction(query).length == 2;
-}
+var splitInPackageAndFunction = function(query) {
+  return decodeURIComponent(query).split('::');
+};
 
-var splitInPackageAndFunction = function(query){
-  return decodeURIComponent(query).split("::");
-}
+var isInPackageSearch = function(query) {
+  return splitInPackageAndFunction(query).length === 2;
+};
 
 module.exports = {
-/**
+  /**
   * @api {post} /quick_search Quick search
   * @apiName quick search
   * @apiGroup Search
@@ -44,53 +44,53 @@ module.exports = {
     var topic = token;
     
     var packageMatchQuery = {
-      has_parent : {
-        parent_type : "package_version",
-        query : {  term : { latest_version : 1 } },
-        inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
+      has_parent: {
+        parent_type: 'package_version',
+        query: { term: { latest_version: 1 } },
+        inner_hits: { fields: ['package_name', 'version', 'latest_version'] }
       }
     };
 
     var packageMatchQueryForPackage = {
-      match_phrase_prefix : {
-        "package_name" : {
-            "query" : token,
-            "max_expansions" : 20,
+      match_phrase_prefix: {
+        package_name: {
+          query: token,
+          max_expansions: 20
         }
       }
-    }
+    };
 
-    if(isInPackageSearch(token)){
+    if (isInPackageSearch(token)){
       var packageAndFunction = splitInPackageAndFunction(token);
       topic = packageAndFunction[1];
       packageMatchQuery = {
-        has_parent : {
-          parent_type : "package_version",
-          query : {
-            "bool" : {
-              "must" : [
+        has_parent: {
+          parent_type: 'package_version',
+          query: {
+            bool: {
+              must: [
                 {
-                  term : { latest_version : 1 }
+                  term: { latest_version: 1 }
                 },
                 {
-                  term : { package_name: packageAndFunction[0] }
+                  term: { package_name: packageAndFunction[0] }
                 }
               ]
             }
           },
-          inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
+          inner_hits: { fields: ['package_name', 'version', 'latest_version'] }
         }
       };
       packageMatchQueryForPackage = {
-        match : {
-          "package_name" : {
-              "query" : packageAndFunction[0]
+        match: {
+          package_name: {
+            query: packageAndFunction[0]
           }
         }
-      }      
+      };
     }
 
-    var packages, topics, collaborators;
+    var packages; var topics; var collaborators;
 
     var elastic = es.msearch({
       body: [
