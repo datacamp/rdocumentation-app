@@ -16,15 +16,15 @@ module.exports = {
    * Set the default database connection for models in the development       *
    * environment (see config/connections.js and config/models.js )           *
    ***************************************************************************/
-   connections: {
+  connections: {
     sequelize_mysql: {
-      database: 'rdocsv2',
-      user: 'root',
-      password: '',
+      database: process.env.DATABASE_NAME,
+      user: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
       options: {
         dialect: 'mysql',
-        host   : '127.0.0.1',
-        port   : 3306,
+        host: process.env.DATABASE_HOST,
+        port: process.env.DATABASE_PORT,
         pool: {
           max: 10,
           min: 4,
@@ -46,7 +46,7 @@ module.exports = {
 
     logging: true,
 
-    url: 'redis://localhost:6379'
+    url: process.env.REDIS_URL
 
   },
 

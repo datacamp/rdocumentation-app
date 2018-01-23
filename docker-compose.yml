@@ -3,25 +3,11 @@ db:
   ports:
     - "3306:3306"
   environment:
-    - MYSQL_ROOT_PASSWORD=password
-    - MYSQL_DATABASE=rdoc
+    MYSQL_ROOT_PASSWORD: password
+    MYSQL_USER: rdoc
+    MYSQL_PASSWORD: password
+    MYSQL_DATABASE: rdocs
 redis:
   image: redis
   ports:
     - "6379:6379"
-server:
-  #Docker-sails supports several different tags:
-  #0.10.32/33/34 (node 0.10.32), stable (latest node 0.10.x), latest (latest node 0.11.x)
-  #0.10.32/33/34-pm2 (node 0.10.32), stable-pm2 (latest node 0.10.x), latest-pm2 (latest node 0.11.x)
-  build: .
-  volumes:
-    - .:/opt/app
-    - /opt/app/node_modules/
-  ports:
-    - "1337:1337"
-  env_file: .env
-  environment:
-    NODE_ENV: docker
-  links:
-    - db
-    - redis

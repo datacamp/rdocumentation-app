@@ -1,21 +1,23 @@
 {
-  "defaultEnv": {"ENV": "NODE_ENV"},
+  "defaultEnv": "development",
 
   "docker": {
     "driver": "mysql",
-    "host": "db",
-    "user": "root",
-    "password": "password",
-    "database": "rdoc",
+    "host": { "ENV": "DATABASE_HOST" },
+    "user": { "ENV": "DATABASE_USERNAME" },
+    "password": { "ENV": "DATABASE_PASSWORD" },
+    "database": { "ENV": "DATABASE_NAME" },
+    "port": { "ENV": "DATABASE_PORT" },
     "multipleStatements": true
   },
 
   "development": {
     "driver": "mysql",
-    "host": "127.0.0.1",
-    "user": "root",
-    "password": "",
-    "database": "rdocsv2",
+    "host": { "ENV": "DATABASE_HOST" },
+    "user": { "ENV": "DATABASE_USERNAME" },
+    "password": { "ENV": "DATABASE_PASSWORD" },
+    "database": { "ENV": "DATABASE_NAME" },
+    "port": { "ENV": "DATABASE_PORT" },
     "multipleStatements": true
   },
 

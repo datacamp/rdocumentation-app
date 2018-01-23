@@ -33,18 +33,13 @@ Please post a new issue at https://github.com/datacamp/rdocumentation-app/issues
 ## Development
 
 ### Using docker
-- Install the docker toolbox
-- `docker-compose build` to build your local docker image
-- Execute `docker-compose run server npm install --no-bin-links` to install npm dependencies.
-- Run the database migrations by doing `docker-compose run server node node_modules/db-migrate/bin/db-migrate up`.
-- `docker-compose up`
+You'll need docker and docker-compose to run this stack locally
 
-### Without docker
-- Install MySQL and Node.js on your system
-- Run `npm install`
-- Create an empty database `rdocsv2`
-- Execute the migrations: `NODE_ENV=development node node_modules/db-migrate/bin/db-migrate up`
-- `node app.js` (or if you have nodemon installed: `nodemon app.js`)
+- Copy the .env.sample to .env and change relevant variables
+- `docker-compose create` to create the redis and mysql container
+- `docker-compose start` to fire up a local redis an mysql
+- Run the database migrations by doing `npm run migrate`
+- `npm run start-dev`
 
 
 ## License

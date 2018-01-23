@@ -55,16 +55,18 @@
     "rc": "1.0.1",
     "redis": "^2.6.2",
     "request": "^2.81.0",
-    "sails": "~0.12.11",
-    "sails-hook-sequelize": "^1.0.1",
-    "sails-hook-sequelize-blueprints": "^0.3.0",
+    "sails": "0.12.11",
+    "sails-hook-sequelize": "1.0.1",
+    "sails-hook-sequelize-blueprints": "0.3.0",
     "striptags": "^2.1.1",
     "superagent": "^3.4.3"
   },
   "scripts": {
     "debug": "nf start debug",
+    "migrate": "db-migrate up",
     "prestart": "node node_modules/db-migrate/bin/db-migrate up",
-    "start": "forever app.js",
+    "start-dev": "PORT=3000 node app.js",
+    "start": "node app.js",
     "test": "mocha"
   },
   "main": "app.js",
