@@ -27,4 +27,4 @@ ADD . /opt/app
 #Expose port
 EXPOSE 1337
 
-CMD eval $(aws-env) && npm start
+CMD bash -c "eval $(aws-env) && npm start"

@@ -22,7 +22,7 @@
   },
   "ruleConditions": [
     {
-      "hostname": "demo",
+      "hostname": "rdocumentation",
       "listeners": [
         "https"
       ]
