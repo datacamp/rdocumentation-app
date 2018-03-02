@@ -41,6 +41,10 @@ module.exports = {
     }).catch(function(err) {
       return res.negotiate(err);
     });
+  },
+
+  status: function(req, res) {
+    return res.ok();
   }
 };
 

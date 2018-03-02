@@ -23,6 +23,7 @@
 module.exports.routes = {
   // Homepage
   'get /': 'HomeController.index',
+  'get /status': 'HomeController.status',
 
   // Authentication
   'get /login': 'AuthController.login',

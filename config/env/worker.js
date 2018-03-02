@@ -37,7 +37,8 @@ module.exports = {
   routes: {
     'post /tasks': 'WorkerController.processMessage',
     'post /last-day-splitted-stats': 'WorkerController.lastDaySplittedDownloads',
-    'post /update-percentile': 'WorkerController.updatePercentile'
+    'post /update-percentile': 'WorkerController.updatePercentile',
+    'get /status': 'HomeController.status'
   }
 
 };

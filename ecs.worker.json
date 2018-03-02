@@ -5,11 +5,11 @@
   "desiredCount": ${DESIRED_COUNT},
   "containers": [
     {
-      "containerName": "${SERVICE}",
+      "containerName": "${SERVICE}-worker",
       "containerImage": "${CONTAINER_IMAGE}",
       "containerTag": "${CIRCLE_SHA1}",
       "containerPort": 1337,
-      "memoryReservation": 256,
+      "memoryReservation": 1024,
       "essential": true
     }
   ],
@@ -22,7 +22,7 @@
   },
   "ruleConditions": [
     {
-      "hostname": "rdocumentation",
+      "hostname": "rdoc-worker",
       "listeners": [
         "https"
       ]
