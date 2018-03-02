@@ -44,7 +44,7 @@ module.exports = {
   },
 
   status: function(req, res) {
-    return res.ok();
+    return res.send(200, 'ok');
   }
 };
 
