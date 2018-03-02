@@ -11,6 +11,13 @@
       "containerPort": 1337,
       "memoryReservation": 1024,
       "essential": true
+    },
+    {
+      "containerName": "${SERVICE}-sqsd",
+      "containerImage": "sqsd",
+      "containerTag": "latest",
+      "memoryReservation": 128,
+      "essential": true
     }
   ],
   "healthCheck": {
