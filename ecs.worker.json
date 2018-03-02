@@ -17,7 +17,12 @@
       "containerImage": "sqsd",
       "containerTag": "latest",
       "memoryReservation": 128,
-      "essential": true
+      "essential": true,
+      "containerCommand": [
+        "bash",
+        "-c",
+        "eval $(aws-env) && node run-cli.js"
+      ]
     }
   ],
   "healthCheck": {
