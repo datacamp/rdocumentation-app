@@ -28,13 +28,7 @@ module.exports = function(grunt) {
         cwd: './assets',
         src: ['**/*.!(coffee|scss)'],
         dest: '.tmp/public'
-      },
-      {
-        expand:true,
-        cwd: './node_modules/@datacamp/rdocs-light/lib',
-        src: ['rdocs-light.min.js'],
-        dest: '.tmp/public/js/dependencies'
-        }
+      }
       ]
     },
     build: {
