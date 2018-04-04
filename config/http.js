@@ -38,8 +38,8 @@ module.exports.http = {
     order: [
       'startRequestTimer',
       'cookieParser',
-      'forceDomain',
-      'httpsRedirect',
+      process.env.NODE_ENV === 'production' ? 'forceDomain' : false,
+      // process.env.NODE_ENV === 'production' ? 'httpsRedirect' : false,
       'readRstudioSession',
       'session',
       'passportInit',
@@ -59,12 +59,6 @@ module.exports.http = {
       '404',
       '500'
     ],
-
-  /****************************************************************************
-  *                                                                           *
-  * Example custom middleware; logs each request to the console.              *
-  *                                                                           *
-  ****************************************************************************/
 
   readRstudioSession: function(req, res, next) {
     if(req.headers['x-rstudio-ajax'] === 'true') {
