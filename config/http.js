@@ -38,7 +38,7 @@ module.exports.http = {
     order: [
       'startRequestTimer',
       'cookieParser',
-      'forceDomain',
+      process.env.NODE_ENV === 'production' ? 'forceDomain' : false,
       // process.env.NODE_ENV === 'production' ? 'httpsRedirect' : false,
       'readRstudioSession',
       'session',

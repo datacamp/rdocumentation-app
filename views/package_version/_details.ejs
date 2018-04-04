@@ -24,10 +24,12 @@
     <div class='col-md-5 package-details-info'>
       <table>
           <% for(prop in pkgVersion.sourceJSON) { %>
-            <tr>
-              <td><%= prop %></td>
-              <td><%- pkgVersion.sourceJSON[prop].autoLink({ target: "_blank"}) %></td>
-            </tr>
+            <% if (typeof pkgVersion.sourceJSON[prop] === 'string') { %>
+              <tr>
+                <td><%= prop %></td>
+                <td><%- pkgVersion.sourceJSON[prop].autoLink({ target: "_blank"}) %></td>
+              </tr>
+             <% } %>
           <% } %>
       </table>
     </div> <!-- /.package-details -->
