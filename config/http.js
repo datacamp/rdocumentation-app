@@ -40,6 +40,8 @@ module.exports.http = {
       'startRequestTimer',
       'logger',
       'cookieParser',
+      'forceDomain',
+      'httpsRedirect',
       'readRstudioSession',
       'session',
       'passportInit',
@@ -214,10 +216,12 @@ module.exports.http = {
 
     // bodyParser: require('skipper')({strict: true})
 
-  passportInit    : require('passport').initialize(),
-  passportSession : require('passport').session(),
-
-
+    passportInit: require('passport').initialize(),
+    passportSession: require('passport').session(),
+    httpsRedirect: require('express-https-redirect')(),
+    forceDomain: require('forcedomain')({
+      protocol: 'https'
+    })
   },
 
   locals: {
