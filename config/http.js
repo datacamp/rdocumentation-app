@@ -38,7 +38,7 @@ module.exports.http = {
     order: [
       'startRequestTimer',
       'cookieParser',
-      process.env.NODE_ENV === 'production' ? 'forceDomain' : false,
+      'forceDomain',
       // process.env.NODE_ENV === 'production' ? 'httpsRedirect' : false,
       'readRstudioSession',
       'session',
@@ -210,9 +210,14 @@ module.exports.http = {
     passportInit: require('passport').initialize(),
     passportSession: require('passport').session(),
     httpsRedirect: require('express-https-redirect')(),
-    forceDomain: require('forcedomain')({
-      protocol: 'https'
-    })
+    forceDomain: function(req, res, next) {
+      var host = req.header('host');
+      if (host.match(/^www.rdocumentation\.org$/i)) {
+        next();
+      } else {
+        res.redirect(301, 'https://www.rdocumentation.org' + req.url);
+      }
+    }
   },
 
   locals: {
