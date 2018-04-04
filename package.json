@@ -54,6 +54,7 @@
     "passport": "^0.3.2",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
+    "percentile": "1.2.0",
     "rc": "1.0.1",
     "redis": "^2.6.2",
     "request": "^2.81.0",

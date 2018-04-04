@@ -151,6 +151,10 @@ module.exports = {
         return sequelize.query("SELECT SUM(direct_downloads) AS total FROM Packages p INNER JOIN PackageVersions v ON p.latest_version_id = v.id INNER JOIN DownloadStatistics s ON s.package_name = p.name INNER JOIN Collaborators c ON v.maintainer_id = c.id WHERE c.name = ? and s.date >= current_date() - interval '1' month",{  replacements: [name], type: sequelize.QueryTypes.SELECT});
       },
 
+      getLastMonthValues: function() {
+        return sequelize.query("SELECT SUM(indirect_downloads) AS indirect_downloads,SUM(direct_downloads) AS direct_downloads, (SUM(indirect_downloads) + SUM(direct_downloads)) AS total_downloads, package_name FROM DownloadStatistics WHERE date >= current_date() - interval '1' month GROUP BY package_name ORDER BY total_downloads DESC", { type: sequelize.QueryTypes.SELECT });
+      },
+
       getNotIndexedDates:function() {
         return sequelize.query("SELECT MonthDate.Date AS absents "+
                                "FROM ( "+
