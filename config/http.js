@@ -12,7 +12,6 @@ var dateFormat = require('dateformat');
 var autoLink = require('autolink-js');
 var marked = require('marked');
 var cheerio = require ('cheerio');
-var morgan = require('morgan');
 
 
 module.exports.http = {
@@ -38,7 +37,6 @@ module.exports.http = {
 
     order: [
       'startRequestTimer',
-      'logger',
       'cookieParser',
       'forceDomain',
       'httpsRedirect',
@@ -89,7 +87,6 @@ module.exports.http = {
     return next();
   },
 
-  logger: morgan("short"),
 
   paramsInjector: function (req, res, next) {
     res.locals.inViewerPane = (req.param('viewer_pane') === '1') ? true : false;
