@@ -11,8 +11,8 @@
 var dateFormat = require('dateformat');
 var autoLink = require('autolink-js');
 var marked = require('marked');
-var cheerio = require ('cheerio');
-
+var cheerio = require('cheerio');
+var forceHttpsSchema = require('express-force-https-schema').forceHttpsSchema;
 
 module.exports.http = {
 
@@ -209,7 +209,7 @@ module.exports.http = {
 
     passportInit: require('passport').initialize(),
     passportSession: require('passport').session(),
-    httpsRedirect: require('express-force-https-schema')({
+    httpsRedirect: forceHttpsSchema({
       enable: true
     }),
     forceDomain: function(req, res, next) {
