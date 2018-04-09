@@ -209,7 +209,9 @@ module.exports.http = {
 
     passportInit: require('passport').initialize(),
     passportSession: require('passport').session(),
-    httpsRedirect: require('express-https-redirect')(),
+    httpsRedirect: require('express-force-https-schema')({
+      enable: true
+    }),
     forceDomain: function(req, res, next) {
       var host = req.header('host');
       if (host.match(/^www.rdocumentation\.org$/i)) {

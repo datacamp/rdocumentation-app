@@ -20,7 +20,7 @@
     "dotenv": "^2.0.0",
     "ejs": "2.3.4",
     "elasticsearch": "^11.0.1",
-    "express-https-redirect": "1.0.0",
+    "express-force-https-schema": "1.0.3",
     "forcedomain": "0.8.1",
     "foreman": "1.4.1",
     "forever": "^0.15.3",
