@@ -3,6 +3,7 @@
   "servicePort": 1337,
   "serviceProtocol": "HTTP",
   "desiredCount": ${DESIRED_COUNT},
+  "loadBalancer": "datacamp-rdocumentation",
   "containers": [
     {
       "containerName": "${SERVICE}",
