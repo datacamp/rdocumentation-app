@@ -39,7 +39,7 @@ module.exports.http = {
       'startRequestTimer',
       'cookieParser',
       process.env.NODE_ENV === 'production' ? 'forceDomain' : false,
-      // process.env.NODE_ENV === 'production' ? 'httpsRedirect' : false,
+      process.env.NODE_ENV === 'production' ? 'httpsRedirect' : false,
       'readRstudioSession',
       'session',
       'passportInit',
