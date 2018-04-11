@@ -220,7 +220,7 @@ module.exports = {
 
   redirect: function(req, res) {
     var view = req.param('view');
-    return res.status(301).redirect('/taskviews/' + view);
+    return res.rstudio_redirect(301,'/taskviews/' + view);
   }
 
 

@@ -131,7 +131,7 @@ module.exports = {
 
     // The method above will be cached
     Promise.join(packageVersionPromise, sourcePromise, function(version, sourceList) {
-      if (version === null) return res.status(301).redirect('/packages/' + encodeURIComponent(packageName));
+      if (version === null) return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName));
       version.type = 'package_version';
       version.pageTitle = version.package_name + ' package';
       version.hasSource = sourceList.tree.length > 0;
@@ -179,7 +179,7 @@ module.exports = {
     })
     .then(function(version)  {
       if (version === null) {
-        return res.status(301).redirect('/packages/' + encodeURIComponent(packageName));
+        return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName));
       }
       version.pageTitle = version.package_name + ' package Readme';
       return res.ok(version, 'package_version/readme.ejs');

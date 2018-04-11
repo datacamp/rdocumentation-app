@@ -35,7 +35,7 @@ module.exports = {
         return res.created(instance.toJSON());
       }
       FlashService.success(req, 'Example successfully added.');
-      return res.redirect(sails.getUrlFor({ target: 'Topic.findById' })
+      return res.rstudio_redirect(301, sails.getUrlFor({ target: 'Topic.findById' })
         .replace(':id', topicId)
         .replace('/api/', '/')
       );

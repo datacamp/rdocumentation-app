@@ -170,8 +170,8 @@ module.exports = {
         return topicJSON;
       });
     }).then(function(topicJSON) {
-      if (topicJSON === null) return res.status(301).redirect('/packages/' + encodeURIComponent(packageName) + '/versions/' + encodeURIComponent(packageVersion));
-      else if (topicJSON.redirect_uri) return res.status(301).redirect(topicJSON.redirect_uri);
+      if(topicJSON === null) return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName) + '/versions/' + encodeURIComponent(packageVersion));
+      else if(topicJSON.redirect_uri) return res.rstudio_redirect(301, topicJSON.redirect_uri);
       return res.ok(topicJSON, 'topic/show.ejs');
     }).catch(function(err) {
       return res.negotiate(err);
@@ -244,7 +244,7 @@ module.exports = {
 
     }).then(function(topicJSON) {
       if(topicJSON === null) return res.notFound();
-      return res.status(301).redirect(topicJSON.uri);
+      return res.rstudio_redirect(301, topicJSON.uri);
     }).catch(function(err) {
       return res.negotiate(err);
     });
@@ -357,9 +357,9 @@ module.exports = {
 
     }).then(function(json) {
       if(json === null) {
-        return res.status(301).redirect(api + '/packages/' + fromPackageName + '/versions/' + fromPackageVersion);
+        return res.rstudio_redirect(302, api + '/packages/' + fromPackageName + '/versions/' + fromPackageVersion);
       } else {
-        return res.status(301).redirect(api + json.uri);
+        return res.rstudio_redirect(301, api + json.uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);
@@ -456,10 +456,10 @@ module.exports = {
       }
     }).then(function(topicInstance) {
       if(!topicInstance) {
-        return res.status(301).redirect('/packages/' + encodeURIComponent(packageName));
+        return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName));
       } else {
         var prefix = req.path.startsWith('/api/') ? '/api' : '';
-        return res.status(301).redirect(prefix + topicInstance.uri);
+        return res.rstudio_redirect(301, prefix + topicInstance.uri);
       }
     }).catch(function(err) {
       return res.negotiate(err);

@@ -1,6 +1,7 @@
 (function ($) {
-  
-  var containerType = 'web-iframe';
+
+  var sid = '';
+  var containerType = $('.rstudio-data')[0] ? 'rstudio' : 'web-iframe';
   var booted = false;
 
   Loader = {
@@ -12,13 +13,18 @@
       to give back the rstudio-layout
       */
       $.ajaxSetup({
-        cache: false,
-        crossDomain: true
+        beforeSend: function (xhr)
+        {
+           xhr.setRequestHeader("X-RStudio-Session", sid);
+           xhr.setRequestHeader("X-RStudio-Ajax",'true');
+        },
+        cache:false,
+        crossDomain:true
       });
       /*
       Need to rebind everything when the DOM changes
       */
-      $(document).bind("content-changed", function () {
+      $(document).bind("content-changed",function () {
         Binder.bindGlobalClickHandler();
       });
 
@@ -28,7 +34,14 @@
     */
     responseHandler: function (successFn, addToHistory) {
       return function (data, textStatus, xhr) {
-        successFn(data, textStatus, xhr);
+        var location = xhr.getResponseHeader('X-RStudio-Redirect');
+        var sessionid = xhr.getResponseHeader('X-RStudio-Session');
+        sid = sessionid;
+        if(location) {
+          Loader.replacePage(location,addToHistory);
+        } else {
+          successFn(data, textStatus, xhr);
+        }
       };
     },
 
@@ -83,18 +96,26 @@
     help function to add the parameters to the url
     */
     addParams: function (url) {
-      var urlWParams = (url.indexOf('?') > -1) ? url + '&' : url + '?';
-      return urlWParams + 'viewer_pane=1&campus_app=1';
+      var urlWParams = (url.indexOf('?')>-1)? url+"&" : url +"?";
+      if(containerType === 'rstudio') {
+        return urlWParams +'rstudio_layout=1&viewer_pane=1&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+"&Rstudio_port=" + urlParam("Rstudio_port");
+      } else {
+        return urlWParams + 'viewer_pane=1&campus_app=1';
+      }
     },
 
     runExample: function (packageName, code) {
-      var payload = 'require(' + packageName + ')\n' + code;
-      parent.postMessage(payload, '*');
+      if(containerType === 'rstudio') {
+        RStudioRequests.executePackageCode(packageName, code);
+      } else {
+        var payload = "require("+packageName+")\n"+code;
+        parent.postMessage(payload, '*');
+      }
     }
   };
 
   Campus = {
-    start: function () {
+    start:function () {
       var packageName = $('.campus-data').data("package");
       var topic = $('.campus-data').data("topic");
 
@@ -104,6 +125,84 @@
         $('.rstudio-data').remove();
       });
     }
+  };
+
+  RStudio = {
+    rpcActive: true,
+    stayLoggedIn: function (_sid) {
+      sid = _sid;
+      return $.ajax({
+        type: 'GET',
+        url: '/users/me',
+        contentType:"application/x-www-form-urlencoded"
+      });
+    },
+
+    configureLogin: function() {
+     $( document ).ajaxSend(function(event, jqxhr, settings ) {
+        if(settings.type === "POST" && settings.url.indexOf('/login')>-1 && RStudio.rpcActive){
+          console.log("Logging in");
+          jqxhr.then(function(res) {
+            console.log("Logged");
+            RStudioRequests.logInForRstudio(sid).then(function(response){
+              if(response.status && response.status === "invalid"){
+                if ($(".flash-error").length === 0){
+                  $(".authentication").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
+                }
+              }
+            });
+          });
+        }
+      });
+    },
+
+    start: function () {
+      /*
+      execute an ajax post request to login, this request must give back a 200 status code,
+      otherwise it gets cancelled and the ajax doesn't keep the cookie
+      */
+      RStudioRequests.checkRDocumentationPackageVersion().then(function (upToDate) {
+        if(upToDate) {
+          var sid = urlParam('sid');
+          if(sid!==null) {
+            return RStudio.stayLoggedIn(sid).then(Loader.responseHandler(function () {},false));
+          }
+          RStudioRequests.checkRStudioVersion().then(function(version) {
+            RStudio.version = version;
+            RStudio.loadFirstPage();
+          });
+        }
+      }).fail(function() {
+        RStudio.rpcActive = false;
+        RStudio.loadFirstPage();
+      });
+    },
+
+     /*
+    first page is specified by the view function of the Rstudiocontroller in data attributes,
+    execute a post request to the specified page with the attributes on first page load.
+    */
+    loadFirstPage: function () {
+      var data = $('.rstudio-data').data();
+      var url = Loader.addParams('/rstudio/'+data.called_function);
+      return $.ajax({
+        url : url,
+        type: 'POST',
+        contentType:"application/json",
+        data: JSON.stringify(data),
+        Accept:"text/html",
+        success: Loader.responseHandler(function (data, textStatus, xhr) {
+          Loader.rerenderBody(data,url);
+        },false)
+      })
+      .fail(function (error) {console.log(error.responseJSON); }).then(function () {
+        /*
+        remove the data tags
+        */
+        $('.rstudio-data').remove();
+      });
+    }
+
   };
 
   /************************************************************************************************************************************************
@@ -150,6 +249,20 @@
           rebind(this, 'click', Loader.asyncClickHandler);
         }
       });
+    },
+
+    bindRStudioButtons: function () {
+      if(RStudio.rpcActive) {
+        RStudioRequests.packageVersionControl();
+        rebind('#js-examples', 'click', RStudioRequests.runExamples);
+        rebind('#js-install', 'click', RStudioRequests.installpackage);
+        rebind('#js-hideviewer','click', RStudioRequests.hideViewer);
+        rebind('#js-makedefault','click', RStudioRequests.setDefault);
+        rebind('#js-update_rdoc', 'click', RStudioRequests.updateRDoc);
+      } else {
+        $('#js-examples').remove();
+        $('#js-install').remove();
+      }
     },
 
     bindExampleButton: function () {
@@ -203,8 +316,17 @@
             $.post("/modalLogin",auth,function (json, status, xhr) {
               var status = json.status;
               if(status === "success") {
-                $.modal.close();
-                callback();
+                if(containerType === 'rstudio') {
+                  var sessionid = xhr.getResponseHeader('X-RStudio-Session');
+                  RStudioRequests.logInForRstudio(sessionid).then(function () {
+                    $.modal.close();
+                    callback();
+                  });
+                }
+                else{
+                  $.modal.close();
+                  callback();
+                }
               }else if(status === "invalid") {
                 if($(".modal").find(".flash-error").length === 0) {
                 $(".modal").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
@@ -242,7 +364,10 @@
         }
 
         dataToWrite = dataToWrite+
-          '&viewer_pane=1';
+          '&viewer_pane=1'+
+          '&RS_SHARED_SECRET=' + urlParam("RS_SHARED_SECRET")+
+          "&Rstudio_port=" + urlParam("Rstudio_port");
+
         $.ajax({
           type: type,
           url: action,
@@ -269,7 +394,14 @@
 
       Binder.bindLinks();
 
-      Binder.bindExampleButton();
+      if(containerType === 'rstudio') {
+        /*
+        check if the user has the latest version of the package if on package-page
+        */
+        Binder.bindRStudioButtons();
+      } else {
+        Binder.bindExampleButton();
+      }
 
       Binder.bindElements();
 
@@ -290,7 +422,14 @@
       console.log('*********************** AJAX MODE ***********************');
       booted = true;
       Loader.configure(containerType);
-      Campus.start();
+
+      if(containerType === 'rstudio') {
+        RStudio.configureLogin();
+        RStudio.start();
+      } else {
+        Campus.start();
+      }
+
     }
   };
 
