@@ -67,7 +67,6 @@ workflows:
             branches:
               only:
                 - master
-                - cleanup
       - deploy-to-prod:
           context: org-global
           filters:
