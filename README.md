@@ -23,9 +23,14 @@ The RDocs project is completely open-source. This repository contains the source
 
 ![screen shot 2016-08-25 at 14 14 37](https://cloud.githubusercontent.com/assets/1741726/17968654/492bb8f2-6ace-11e6-8a64-c620e9e98efa.png)
 
-## API
 
-DataCamp encourages the reuse of the data from rdocumentation.org, a public API is available. More info at http://www.rdocumentation.org/docs/
+## What this app does
+
+This application is part the rdocumentation project. This app is responsible for storing the RDocumentation data, and bring it to the users through a web interface (the rdocumentation.org site) or through an api (See https://www.rdocumentation.org/docs/ for the public API)
+
+## Documentation
+
+Documentation of the differents endpoints can be found here: http://www.rdocumentation.org/docs/
 
 ## Issue/Feature request
 Please post a new issue at https://github.com/datacamp/rdocumentation-app/issues for any bug that you encounter or a feature that you would like to see in rdocumetation.org.
@@ -41,6 +46,27 @@ You'll need docker and docker-compose to run this stack locally
 - Run the database migrations by doing `npm run migrate`
 - `npm run start-dev`
 
+## How to deploy
+
+- To deploy to stating (rdocumentation.datacamp-staging.com), merge to master
+- To deploy to production, add a tag which starts with `release-`
+
+The rdocumentation app is hosted on DataCamp's infrastructure, on our AWS ECS cluster.
+
+## What the CI does
+
+This application runs on the DataCamp infrastructure. Our custom CI flow will:
+- Build a docker image
+- Upload it the ECR
+- Deploy the new version to ECS
+
+## How to contribute
+
+We welcome any contributions that could improves rdocumentation.org. There is multiple ways of contributing:
+- Report when some packages are missing/outdated/incorrect by creating an issue.
+- Report bugs.
+- Help us improves by proposing features.
+- Directly contribute by forking the repo and making changes.
 
 ## License
 
