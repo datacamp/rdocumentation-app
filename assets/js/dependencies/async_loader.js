@@ -106,7 +106,7 @@
 
     runExample: function (packageName, code) {
       if(containerType === 'rstudio') {
-        RStudioRequests.executePackageCode(packageName, code);
+        return;
       } else {
         var payload = "require("+packageName+")\n"+code;
         parent.postMessage(payload, '*');
@@ -128,54 +128,16 @@
   };
 
   RStudio = {
-    rpcActive: true,
-    stayLoggedIn: function (_sid) {
-      sid = _sid;
-      return $.ajax({
-        type: 'GET',
-        url: '/users/me',
-        contentType:"application/x-www-form-urlencoded"
-      });
-    },
+    rpcActive: false,
 
-    configureLogin: function() {
-     $( document ).ajaxSend(function(event, jqxhr, settings ) {
-        if(settings.type === "POST" && settings.url.indexOf('/login')>-1 && RStudio.rpcActive){
-          console.log("Logging in");
-          jqxhr.then(function(res) {
-            console.log("Logged");
-            RStudioRequests.logInForRstudio(sid).then(function(response){
-              if(response.status && response.status === "invalid"){
-                if ($(".flash-error").length === 0){
-                  $(".authentication").prepend("<div class = 'flash flash-error'>Invalid username or password.</div>");
-                }
-              }
-            });
-          });
-        }
-      });
+    removeElements: function() {
+      $('.example--form').remove();
+      $('#js-examples').remove();
+      $('#js-install').remove();
     },
 
     start: function () {
-      /*
-      execute an ajax post request to login, this request must give back a 200 status code,
-      otherwise it gets cancelled and the ajax doesn't keep the cookie
-      */
-      RStudioRequests.checkRDocumentationPackageVersion().then(function (upToDate) {
-        if(upToDate) {
-          var sid = urlParam('sid');
-          if(sid!==null) {
-            return RStudio.stayLoggedIn(sid).then(Loader.responseHandler(function () {},false));
-          }
-          RStudioRequests.checkRStudioVersion().then(function(version) {
-            RStudio.version = version;
-            RStudio.loadFirstPage();
-          });
-        }
-      }).fail(function() {
-        RStudio.rpcActive = false;
-        RStudio.loadFirstPage();
-      });
+      RStudio.loadFirstPage();
     },
 
      /*
@@ -251,20 +213,6 @@
       });
     },
 
-    bindRStudioButtons: function () {
-      if(RStudio.rpcActive) {
-        RStudioRequests.packageVersionControl();
-        rebind('#js-examples', 'click', RStudioRequests.runExamples);
-        rebind('#js-install', 'click', RStudioRequests.installpackage);
-        rebind('#js-hideviewer','click', RStudioRequests.hideViewer);
-        rebind('#js-makedefault','click', RStudioRequests.setDefault);
-        rebind('#js-update_rdoc', 'click', RStudioRequests.updateRDoc);
-      } else {
-        $('#js-examples').remove();
-        $('#js-install').remove();
-      }
-    },
-
     bindExampleButton: function () {
       rebind('#js-examples', 'click', function (e) {
         e.preventDefault();
@@ -317,11 +265,7 @@
               var status = json.status;
               if(status === "success") {
                 if(containerType === 'rstudio') {
-                  var sessionid = xhr.getResponseHeader('X-RStudio-Session');
-                  RStudioRequests.logInForRstudio(sessionid).then(function () {
-                    $.modal.close();
-                    callback();
-                  });
+                  callback();
                 }
                 else{
                   $.modal.close();
@@ -394,19 +338,16 @@
 
       Binder.bindLinks();
 
-      if(containerType === 'rstudio') {
-        /*
-        check if the user has the latest version of the package if on package-page
-        */
-        Binder.bindRStudioButtons();
-      } else {
+      if(containerType === 'web-iframe') {
         Binder.bindExampleButton();
+      } else {
+        RStudio.removeElements();
       }
 
       Binder.bindElements();
 
       bindHistoryNavigation();
-
+      
       Binder.bindModals();
       Binder.bindForms();
     }
@@ -424,7 +365,6 @@
       Loader.configure(containerType);
 
       if(containerType === 'rstudio') {
-        RStudio.configureLogin();
         RStudio.start();
       } else {
         Campus.start();

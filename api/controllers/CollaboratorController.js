@@ -12,10 +12,7 @@ var Promise = require('bluebird');
 var numeral = require('numeral');
 
 module.exports = {
-
-
-
-	findById: function(req, res) {
+  findById: function(req, res) {
     var id = req.param('id');
 
     Collaborator.findOne({
@@ -23,21 +20,16 @@ module.exports = {
         id: id
       }
     }).then(function(collaboratorInstance) {
-      if(collaboratorInstance === null) return res.notFound();
-      else {
-        return res.rstudio_redirect(301, collaboratorInstance.uri);
-      }
+      if (collaboratorInstance === null) return res.notFound();
+      return res.rstudio_redirect(301, collaboratorInstance.uri);
     }).catch(function(err) {
       return res.negotiate(err);
     });
-
   },
 
 
   findByName: function(req, res) {
     var name = req.param('name');
-
-
     Package.findAll({
       include: [
         { model: Repository,
@@ -45,7 +37,7 @@ module.exports = {
         },
         { model: PackageVersion,
           as: 'latest_version',
-          attributes:['id', 'package_name', 'version', 'title', 'description', 'release_date', 'license', 'url', 'maintainer_id'],
+          attributes: ['id', 'package_name', 'version', 'title', 'description', 'release_date', 'license', 'url', 'maintainer_id'],
           include: [
             { model: Collaborator, as: 'maintainer' },
             { model: Collaborator, as: 'collaborators'},
@@ -53,65 +45,62 @@ module.exports = {
         }
       ],
       where: {
-        $or:[
+        $or: [
           sequelize.literal("`latest_version.maintainer`.`name` = '" + name.replace("'", "\\'") + "'"),
           sequelize.literal("`latest_version.collaborators`.`name` = '" + name.replace("'", "\\'") + "'"),
         ]
       }
     }).then(function(packages) {
-      if(packages === null) return res.notFound();
-      else {
-        var json = {name: name };
-        var repositories = {
-          cran: 0,
-          bioconductor: 0,
-          github: 0
-        };
+      if (packages === null) return res.notFound();
+      var json = {name: name };
+      var repositories = {
+        cran: 0,
+        bioconductor: 0,
+        github: 0
+      };
 
-        return Percentile.findAll().then(function(percentiles) {
-          return Promise.map(packages, function(_package) {
-            var latest = _package.latest_version.toJSON();
-            if (!latest.maintainer) latest.maintainer = {};
-            if (latest.maintainer.name === name) {
-              latest.is_maintainer = true;
-            }
-            var collaborators = _.filter(latest.collaborators, function(c) {
-              return c.name === name;
-            });
-
-            if (collaborators.length > 0) {
-              latest.is_contributor = true;
-            }
-            if(!json.email && latest.is_maintainer && latest.maintainer.email) {
-              json.email = latest.maintainer.email;
-            }
-            if(!json.email && collaborators.length > 0 && collaborators[0].email) {
-              json.email = collaborators[0].email;
-            }
-            repositories[_package.repository.name] = repositories[_package.repository.name]+1 || 1;
-            return Package.getPackagePercentile(latest.package_name, percentiles).then(function(percentileObject) {
-              latest.percentile = isNaN(percentileObject.percentile) ? -1 : percentileObject.percentile;
-              latest.totalDownloads = percentileObject.total;
-              latest.repoName = _package.repository.name;
-              return latest;
-            });
-
+      return Percentile.findAll().then(function(percentiles) {
+        return Promise.map(packages, function(_package) {
+          var latest = _package.latest_version.toJSON();
+          if (!latest.maintainer) latest.maintainer = {};
+          if (latest.maintainer.name === name) {
+            latest.is_maintainer = true;
+          }
+          var collaborators = _.filter(latest.collaborators, function(c) {
+            return c.name === name;
           });
-        }).then(function(packages) {
-          json.gravatar_url = 'https://www.gravatar.com/avatar/' + md5(_.trim(json.email).toLowerCase());
-          json.packages = _.orderBy(packages, ['is_maintainer', 'percentile', 'totalDownloads'], ['asc', 'desc', 'desc']);
-          json.repositories = repositories;
-          json.pageTitle = name + ' | Collaborator';
-          return res.ok(json,"collaborator/show.ejs");
-        });
 
-      }
+          if (collaborators.length > 0) {
+            latest.is_contributor = true;
+          }
+          if (!json.email && latest.is_maintainer && latest.maintainer.email) {
+            json.email = latest.maintainer.email;
+          }
+          if (!json.email && collaborators.length > 0 && collaborators[0].email) {
+            json.email = collaborators[0].email;
+          }
+          repositories[_package.repository.name] = repositories[_package.repository.name]+1 || 1;
+          return Package.getPackagePercentile(latest.package_name, percentiles).then(function(percentileObject) {
+            latest.percentile = isNaN(percentileObject.percentile) ? -1 : percentileObject.percentile;
+            latest.totalDownloads = percentileObject.total;
+            latest.repoName = _package.repository.name;
+            return latest;
+          });
+        });
+      }).then(function(packages) {
+        json.gravatar_url = 'https://www.gravatar.com/avatar/' + md5(_.trim(json.email).toLowerCase());
+        json.packages = _.orderBy(packages, ['is_maintainer', 'percentile', 'totalDownloads'], ['asc', 'desc', 'desc']);
+        json.repositories = repositories;
+        json.pageTitle = name + ' | Collaborator';
+        return res.ok(json, 'collaborator/show.ejs');
+      });
     })
     .catch(function(err) {
       return res.negotiate(err);
     });
   },
-/**
+
+  /**
   * @api {get} /collaborators/name/:name/downloads Maintainer downloads
   * @apiName The downloads of a maintainer
   * @apiGroup Collaborator
@@ -122,9 +111,9 @@ module.exports = {
   * @apiSuccess {Integer}   total     The total amount of direct downloads as described.
   * @apiSuccess {String}    totalStr  The total given as as string.
   */
-  getNumberOfDirectDownloads: function(req,res){
+  getNumberOfDirectDownloads: function(req, res) {
     var name = req.param('name');
-    DownloadStatistic.getNumberOfDirectDownloads(name).then(function(results){
+    DownloadStatistic.getNumberOfDirectDownloads(name).then(function(results) {
       var row = results[0];
       row.totalStr = row.total ? numeral(row.total).format('0,0') : '';
       res.json(results[0]);
@@ -132,7 +121,7 @@ module.exports = {
       return res.negotiate(err);
     });
   },
-/**
+  /**
   * @api {get} /collaborators/name/:name/downloads Maintainer downloads
   * @apiName The downloads of a maintainer
   * @apiGroup Collaborator
@@ -143,26 +132,24 @@ module.exports = {
   * @apiSuccess {Integer}   total     The total amount of direct downloads as described.
   * @apiSuccess {String}    totalStr  The total given as as string.
   */
-  getDepsyData: function(req,res){
+  getDepsyData: function(req, res) {
     var name = req.param('name');
-    request("http://depsy.org/api/search/"+name,function(error,response,body){
-      if(!error && response.statusCode == 200){
+    request('http://depsy.org/api/search/' + name, function cb(error, response, body) {
+      if (!error && response.statusCode === 200) {
         var resjson = JSON.parse(body);
-        if(resjson.count>0){
+        if (resjson.count > 0) {
           var id = resjson.list[0].id;
-          request("http://depsy.org/api/person/"+id,function(error,response,body){
-          if(!error && response.statusCode == 200){
-            var json = JSON.parse(body);
-            return res.json(json);
-          }else{
+          request('http://depsy.org/api/person/' + id, function cb(error, response, body) {
+            if (!error && response.statusCode === 200) {
+              var json = JSON.parse(body);
+              return res.json(json);
+            }
             return res.json({});
-          }
           });
-        }else{
+        } else {
           return res.json({});
         }
-      }
-      else{
+      } else {
         return res.json({});
       }
     });

@@ -4,7 +4,6 @@
  * @description :: Server-side logic for managing packages
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
-_ = require('lodash');
 
 module.exports = {
 
@@ -49,17 +48,17 @@ module.exports = {
 
     Package.findOne({
       where: {
-        name: packageName,
+        name: packageName
       },
       include: [
-        { model: PackageVersion, as: 'versions' },
-      ],
+        { model: PackageVersion, as: 'versions' }
+      ]
     }).then(function(_package) {
-      if(_package === null) {
+      if (_package === null) {
         return res.rstudio_redirect(301, '/search?q=' + encodeURIComponent(packageName));
-        //there seems to be a problem with redirected requests if text/html is set as contentype for the ajax request, so I just
-        //adapt this so Rstudio still gets the html
-      } else if(req.wantsJSON && !req.param("viewer_pane") == 1) {
+        // there seems to be a problem with redirected requests if text/html is set as contentype for the ajax request, so I just
+        // adapt this so Rstudio still gets the html
+      } else if (req.wantsJSON && !req.param('viewer_pane') == 1) {
         _package = _package.toJSON();
         _package.type = 'package';
         return res.json(_package);
@@ -69,7 +68,7 @@ module.exports = {
             where: {name: packageName},
             include: [{ model: PackageVersion, attributes: ['package_name', 'version', 'id'], as: 'reverse_dependencies'}]
           }).then(function(packageInstance) {
-            if(packageInstance === null) return res.notFound();
+            if (packageInstance === null) return res.notFound();
             var _package = packageInstance.toJSON();
             _package.pageTitle = packageInstance.name;
             return res.ok(_package, 'package/show.ejs');
@@ -104,10 +103,10 @@ module.exports = {
   * @apiUse Timestamps
   */
   find: function(req, res) {
-    var limit = Utils.parseLimit(req),
-      offset = Utils.parseSkip(req),
-      sort = Utils.parseSort(req),
-      criteria = Utils.parseCriteria(req);
+    var limit = Utils.parseLimit(req);
+    var offset = Utils.parseSkip(req);
+    var sort = Utils.parseSort(req);
+    var criteria = Utils.parseCriteria(req);
 
     Package.findAll({
       where: criteria,
@@ -120,22 +119,21 @@ module.exports = {
     }).catch(function(err) {
       return res.negotiate(err);
     });
-
   },
 
   toggleStar: function(req, res) {
     var packageName = req.param('name');
     var user = req.user;
 
-    RedisService.delPrefix("view_package_version_"+packageName);
+    RedisService.delPrefix('view_package_version_' + packageName);
     Package.findOne({
       where: {name: packageName},
       include: [
-        { model: TaskView, as: 'inViews', attributes:['name'] }
+        { model: TaskView, as: 'inViews', attributes: ['name'] }
       ]
-    }).then(function(_package){
+    }).then(function(_package) {
       var views = _package.inViews;
-      views.forEach(function(view){
+      views.forEach(function(view) {
         RedisService.del('rdocs_view_show_' + view.name);
       });
     });
@@ -153,17 +151,16 @@ module.exports = {
         }).then(function(stars) {
           var newCount = stars.length;
           if (created) {
-            res.created({
+            return res.created({
               newCount: newCount,
               star: instance
             });
-          } else
-            return res.send(200, {
-              newCount: newCount,
-              star: 'deleted'
-            });
+          }
+          return res.send(200, {
+            newCount: newCount,
+            star: 'deleted'
+          });
         });
-
       });
     }).catch(function(err) {
       return res.negotiate(err);
@@ -171,12 +168,12 @@ module.exports = {
   },
 
   toParse: function(req, res) {
-    var limit = Utils.parseLimit(req),
-      offset = Utils.parseSkip(req),
-      parser_version = req.param('parser_version');
+    var limit = Utils.parseLimit(req);
+    var offset = Utils.parseSkip(req);
+    var parserVersion = req.param('parser_version');
 
     Package
-    .findMostPopularUnfailedOldPackages(parser_version, limit, offset)
+    .findMostPopularUnfailedOldPackages(parserVersion, limit, offset)
     .then(function(packages) {
       return res.json(packages);
     }).catch(function(err) {

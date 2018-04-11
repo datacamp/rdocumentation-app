@@ -1,5 +1,6 @@
 // SearchService.js - in api/services
 var _ = require('lodash');
+var percentile = require('percentile');
 module.exports = {
 
   DAILY: 86400,
@@ -280,22 +281,7 @@ module.exports = {
     });
   },
 
-  lastMonthPercentiles: function() {
-    var body = {
-      "query": ElasticSearchService.queries.filters.lastMonthStats,
-      "size": 0, // do not retrieve data, we are only interested in aggregation data
-      "aggs" : _.pick(ElasticSearchService.queries.aggregations, ['download_per_package', 'download_percentiles'])
-    };
-
-    return es.search({
-      index: 'stats',
-      requestCache: true, //cache the result
-      body: body
-    }).then(function(response) {
-      return response.aggregations.download_percentiles.values;
-    });
-
-  },
+  
 
   lastMonthDownloadCount: function() {
     var body = {
@@ -388,17 +374,6 @@ module.exports = {
     });
   },
 
-
-  updateLastMonthPercentiles: function() {
-    return ElasticSearchService.lastMonthPercentiles().then(function(result){
-      var mapped = _.map(result,function(value,key){
-        return {  'percentile': Math.round(parseFloat(key)*100)/100,
-                  'value': value
-                };
-      });
-      return Percentile.bulkCreate(mapped,{updateOnDuplicate:["value","updated_at"]});
-    });
-  },
 
   helpSearchQuery:function(pattern,fields,fuzzy,max_dist){
     var highlighting = false;

@@ -1,11 +1,38 @@
 {
-  parserOptions: {
-    ecmaVersion: 5,
-    sourceType: 'module',
+  "extends": "eslint-config-es5",
+  "globals": {
+    "BiocDownloadStatistics": false,
+    "Package": false,
+    "PackageVersion": false,
+    "ElasticSearchService": false,
+    "Collaborator": false,
+    "Dependency": false,
+    "Repository": false,
+    "Percentile": false,
+    "PackageService": false,
+    "PackageVersionService": false,
+    "DownloadStatistic": false,
+    "Example": false,
+    "RedisService": false,
+    "FlashService": false,
+    "Utils": false,
+    "TaskView": false,
+    "Star": false,
+    "Promise": false,
+    "ParsingJob": false,
+    "sequelize": false,
+    "Sequelize": false,
+    "sails": false,
+    "s3Service": false,
+    "Review": false,
+    "es": false
   },
-  rules: {
-    'no-undef': 'error',
-    'no-unused-vars': ['error', { vars: 'local', args: 'after-used' }],
-    'no-use-before-define': 'error'
-  },
+  "rules": {
+    "no-shadow": [
+      2,
+      {
+        "allow": ["packages"]
+      }
+    ]
+  }
 }

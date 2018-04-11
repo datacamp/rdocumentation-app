@@ -1,0 +1,44 @@
+{
+  "cluster": "${CLUSTER}",
+  "servicePort": 1337,
+  "serviceProtocol": "HTTP",
+  "desiredCount": ${DESIRED_COUNT},
+  "loadBalancer": "datacamp-services-internal",
+  "containers": [
+    {
+      "containerName": "${SERVICE}-worker",
+      "containerImage": "${CONTAINER_IMAGE}",
+      "containerTag": "${CIRCLE_SHA1}",
+      "containerPort": 1337,
+      "memoryReservation": 1024,
+      "essential": true
+    },
+    {
+      "containerName": "${SERVICE}-sqsd",
+      "containerImage": "sqsd",
+      "containerTag": "latest",
+      "memoryReservation": 128,
+      "essential": true,
+      "containerCommand": [
+        "bash",
+        "-c",
+        "eval $(aws-env) && node run-cli.js"
+      ]
+    }
+  ],
+  "healthCheck": {
+    "healthyThreshold": 3,
+    "unhealthyThreshold": 5,
+    "path": "/status",
+    "interval": 60,
+    "matcher": "200"
+  },
+  "ruleConditions": [
+    {
+      "hostname": "rdoc-worker",
+      "listeners": [
+        "https"
+      ]
+    }
+  ]
+}

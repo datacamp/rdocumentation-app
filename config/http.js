@@ -11,9 +11,8 @@
 var dateFormat = require('dateformat');
 var autoLink = require('autolink-js');
 var marked = require('marked');
-var cheerio = require ('cheerio');
-var morgan = require('morgan');
-
+var cheerio = require('cheerio');
+var forceHttpsSchema = require('express-force-https-schema').forceHttpsSchema;
 
 module.exports.http = {
 
@@ -38,8 +37,9 @@ module.exports.http = {
 
     order: [
       'startRequestTimer',
-      'logger',
       'cookieParser',
+      process.env.NODE_ENV === 'production' ? 'forceDomain' : false,
+      process.env.NODE_ENV === 'production' ? 'httpsRedirect' : false,
       'readRstudioSession',
       'session',
       'passportInit',
@@ -59,12 +59,6 @@ module.exports.http = {
       '404',
       '500'
     ],
-
-  /****************************************************************************
-  *                                                                           *
-  * Example custom middleware; logs each request to the console.              *
-  *                                                                           *
-  ****************************************************************************/
 
   readRstudioSession: function(req, res, next) {
     if(req.headers['x-rstudio-ajax'] === 'true') {
@@ -87,7 +81,6 @@ module.exports.http = {
     return next();
   },
 
-  logger: morgan("short"),
 
   paramsInjector: function (req, res, next) {
     res.locals.inViewerPane = (req.param('viewer_pane') === '1') ? true : false;
@@ -214,10 +207,19 @@ module.exports.http = {
 
     // bodyParser: require('skipper')({strict: true})
 
-  passportInit    : require('passport').initialize(),
-  passportSession : require('passport').session(),
-
-
+    passportInit: require('passport').initialize(),
+    passportSession: require('passport').session(),
+    httpsRedirect: forceHttpsSchema({
+      enable: true
+    }),
+    forceDomain: function(req, res, next) {
+      var host = req.header('host');
+      if (host.match(/^www.rdocumentation\.org$/i)) {
+        next();
+      } else {
+        res.redirect(301, 'https://www.rdocumentation.org' + req.url);
+      }
+    }
   },
 
   locals: {

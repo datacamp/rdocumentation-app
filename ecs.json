@@ -1,0 +1,32 @@
+{
+  "cluster": "${CLUSTER}",
+  "servicePort": 1337,
+  "serviceProtocol": "HTTP",
+  "desiredCount": ${DESIRED_COUNT},
+  "loadBalancer": "datacamp-rdocumentation",
+  "containers": [
+    {
+      "containerName": "${SERVICE}",
+      "containerImage": "${CONTAINER_IMAGE}",
+      "containerTag": "${CIRCLE_SHA1}",
+      "containerPort": 1337,
+      "memoryReservation": 256,
+      "essential": true
+    }
+  ],
+  "healthCheck": {
+    "healthyThreshold": 3,
+    "unhealthyThreshold": 5,
+    "path": "/status",
+    "interval": 60,
+    "matcher": "200"
+  },
+  "ruleConditions": [
+    {
+      "hostname": "rdocumentation",
+      "listeners": [
+        "https"
+      ]
+    }
+  ]
+}

@@ -13,12 +13,14 @@ module.exports = {
   *
   * @apiParam {String} query
   */
-  help : function(req,res){
-    res.ok({package:req.param("package"),topic:req.param("topic")},'campus/help');
+  help: function(req, res) {
+    res.ok({
+      package: req.param('package'),
+      topic: req.param('topic')
+    }, 'campus/help');
   },
 
   path: function(req, res) {
-    res.ok({path:req.param("path")},'campus/help');
+    res.ok({ path: req.param('path')}, 'campus/help');
   }
-
 };

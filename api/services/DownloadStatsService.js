@@ -4,6 +4,8 @@ var dateFormat = require('dateformat');
 var CSV = require('csv-js');
 var r = require('request');
 var zlib = require('zlib');
+var percentile = require('percentile');
+
 
 module.exports = {
 
@@ -147,5 +149,25 @@ module.exports = {
         });
       }, {concurrency: 1});
     });
-  }
+  },
+
+  lastMonthPercentiles: function () {
+    return DownloadStatistic.getLastMonthValues().then(function (values) {
+      var totalDownloadValues = _.map(values, 'total_downloads');
+      console.log(totalDownloadValues);
+      var percentiles = _.map(_.range(1, 100, 1).concat([99.5, 99.9, 99.99]), function (p) {
+        return {
+          'percentile': Math.round(parseFloat(p) * 100) / 100,
+          'value': percentile(p, totalDownloadValues)
+        };
+      })
+      return percentiles;
+    });
+  },
+
+  updateLastMonthPercentiles: function () {
+    return DownloadStatsService.lastMonthPercentiles().then(function (result) {
+      return Percentile.bulkCreate(result, { updateOnDuplicate: ["value", "updated_at"] });
+    });
+  },
 };

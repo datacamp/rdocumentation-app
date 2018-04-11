@@ -30,12 +30,12 @@ module.exports = {
   },
 
   associations: function() {
-    DownloadStatistic.belongsTo(Package,
+    BiocDownloadStatistics.belongsTo(Package,
       {
         as: 'package',
         foreignKey: {
           allowNull: false,
-          name:'package_name',
+          name: 'package_name',
           as: 'package'
         },
         onDelete: 'CASCADE'
