@@ -6,10 +6,7 @@
     <% } else { %>
       <title><%= data.pageTitle %> | R Documentation</title>
     <% } %>
-    <% var protocol = '' %>
-    <% if( !process.env.BASE_URL.startsWith('http') ) { %>
-      <% protocol = fromRStudio ? 'http:' : 'https:' %>
-    <% } %>
+    <% var protocol = 'https:' %>
     <base href="<%= process.env.BASE_URL ? protocol + process.env.BASE_URL : '/' %>">
 
     <!-- Viewport mobile tag for sensible mobile support -->
