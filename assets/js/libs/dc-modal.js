@@ -2,13 +2,13 @@
 
   window.Modal = {
     NUMBER_OF_SECONDS_TO_DELAY_MODAL: 5,
-    DOM_ID: 'dc-modal',
+    DOM_IDENTIFIER: '.js-dc-modal',
     DAYS_BETWEEN_MODAL_DISPLAYS: 5,
     PROPORTION_OF_USERS_WHO_SHOULD_SEE_MODAL: 0.5,
 
     openWithDelay: function() {
       window.setTimeout(function() {
-        $('#' + window.Modal.DOM_ID).modal({
+        $(window.Modal.DOM_IDENTIFIER).modal({
           fadeDuration: 250,
           fadeDelay: 0.8
         });
@@ -42,11 +42,11 @@
     },
 
     setTrackingEvents: function() {
-      $('#' + this.DOM_ID).on($.modal.BEFORE_OPEN, function(event, modal) {
+      $(this.DOM_IDENTIFIER).on($.modal.BEFORE_OPEN, function(event, modal) {
         window.snowplow('trackStructEvent', 'rdocs', 'modal-open', 'generic', '', '0.0');
       });
 
-      $('#' + this.DOM_ID).on($.modal.BEFORE_CLOSE, function(event, modal) {
+      $(this.DOM_IDENTIFIER).on($.modal.BEFORE_CLOSE, function(event, modal) {
         window.snowplow('trackStructEvent', 'rdocs', 'modal-close', 'generic', '', '0.0');
       });
     }

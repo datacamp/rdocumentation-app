@@ -1,26 +1,26 @@
-<div class="modal" id="dc-modal">
+<div class="modal" class="dc-modal js-dc-modal">
   <img src="https://assets.datacamp.com/production/tracks/19/badges/original/R-career-track-data-programmer_2x-final.png" />
   <h2 id="modal-headline">
     Learn the Tidyverse
   </h2>
   <p>Learn R's most popular packages (such as ggplot2, dplyr, stringr, and more) straight from the experts who built them.</p>
-  <a href='https://www.datacamp.com/tidyverse-tutorials' id="modal-cta" class="ds-snowplow-link-rdocs-modal-cta">Try it free</a>
+  <a href='https://www.datacamp.com/tidyverse-tutorials' class="dc-modal-cta ds-snowplow-link-rdocs-modal-cta">Try it free</a>
   <a href='#close' rel="modal:close" class="dc-modal-close">(no thanks)</a>
 </div>
 
 <style>
-  #dc-modal {
+  .dc-modal {
     background-image: linear-gradient(47deg, #2388b0, #3ac);
     padding: 30px 8px 16px;
     text-align: center;
   }
 
-  #dc-modal img {
+  .dc-modal img {
     height: 150px;
     margin-bottom: 18px;
   }
 
-  #dc-modal h2 {
+  .dc-modal h2 {
     color: #fff;
     font-size: 32px;
     font-weight: 700;
@@ -28,14 +28,14 @@
     max-width: 550px;
   }
 
-  #dc-modal p {
+  .dc-modal p {
     color: #fff;
     font-size: 16px;
     margin: 10px 0 24px;
     line-height: 1.6;
   }
 
-  #dc-modal #modal-cta {
+  .dc-modal .dc-modal-cta {
     -webkit-font-smoothing: antialiased;
     background-color: #ffc844;
     border: none;
@@ -52,11 +52,11 @@
       color 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
-  #dc-modal #modal-cta:hover {
+  .dc-modal .dc-modal-cta:hover {
     background: #fbe28d;
   }
 
-  #dc-modal .dc-modal-close {
+  .dc-modal .dc-modal-close {
     border: none;
     color: #fff;
     display: block;
@@ -66,7 +66,7 @@
     transition: opacity 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
-  #dc-modal .dc-modal-close:hover {
+  .dc-modal .dc-modal-close:hover {
     color: #fff;
     opacity: 0.8;
   }
