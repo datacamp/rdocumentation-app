@@ -4,7 +4,6 @@
     NUMBER_OF_SECONDS_TO_DELAY_MODAL: 5,
     DOM_IDENTIFIER: '.js-dc-modal',
     DAYS_BETWEEN_MODAL_DISPLAYS: 5,
-    PROPORTION_OF_USERS_WHO_SHOULD_SEE_MODAL: 0.5,
 
     execute: function(variant) {
       if(variant === 'generic' && window.Modal.shouldRender()) {
