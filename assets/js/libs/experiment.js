@@ -5,6 +5,7 @@
     this.experimentClass = experimentClass;
 
     this.addVariant = function(name, weight) {
+      if(weight < 1) { return alert('Snowplow requires weights to be integers.'); }
       this.variants.push({
         experiment_name: this.EXPERIMENT_NAME,
         name: name,
