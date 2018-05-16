@@ -4,7 +4,13 @@
     NUMBER_OF_SECONDS_TO_DELAY_MODAL: 5,
     DOM_IDENTIFIER: '.js-dc-modal',
     DAYS_BETWEEN_MODAL_DISPLAYS: 5,
-    PROPORTION_OF_USERS_WHO_SHOULD_SEE_MODAL: 0.5,
+
+    execute: function(variant) {
+      if(variant === 'generic' && window.Modal.shouldRender()) {
+        window.Modal.setTrackingEvents();
+        window.Modal.openWithDelay();
+      }
+    },
 
     openWithDelay: function() {
       window.setTimeout(function() {
@@ -18,21 +24,10 @@
 
     shouldRender: function() {
       var endOfNoDisplayPeriod = localStorage.getItem('modal-expiration');
-      if(endOfNoDisplayPeriod) { return (new Date()).getTime() >= JSON.parse(endOfNoDisplayPeriod) }
-      if(this.treatmentGroup() === 'generic') { return true }
-      return false;
-    },
-
-    treatmentGroup: function() {
-      var treatmentGroup = window.localStorage.getItem('modal-treatment-group-v1')
-      if(treatmentGroup) { return treatmentGroup }
-      return this.setAndReturnTreatmentGroup();
-    },
-
-    setAndReturnTreatmentGroup: function() {
-      var treatmentGroup = Math.random() <= this.PROPORTION_OF_USERS_WHO_SHOULD_SEE_MODAL ? 'generic' : 'control';
-      window.localStorage.setItem('modal-treatment-group-v1', treatmentGroup);
-      return treatmentGroup;
+      if(endOfNoDisplayPeriod) {
+        return (new Date()).getTime() >= JSON.parse(endOfNoDisplayPeriod)
+      }
+      return true;
     },
 
     setLocalStorageExpiration: function() {
@@ -50,10 +45,5 @@
         window.snowplow('trackStructEvent', 'rdocs', 'modal-close', 'generic', '', '0.0');
       });
     }
-  }
-
-  if(window.Modal.shouldRender()) {
-    window.Modal.setTrackingEvents();
-    window.Modal.openWithDelay();
   }
 })($jq);
