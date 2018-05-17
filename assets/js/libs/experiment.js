@@ -5,7 +5,6 @@
     this.experimentClass = experimentClass;
 
     this.addVariant = function(name, weight) {
-      if(weight < 1) { return alert('Snowplow requires weights to be integers.'); }
       this.variants.push({
         experiment_name: this.EXPERIMENT_NAME,
         name: name,
@@ -18,14 +17,17 @@
       if(savedVariant) { return savedVariant }
 
       // Use a CDF to select a variant based on weight.
-      var total = this.variants.reduce(function(total, variant) {
-        return total + variant.weight;
-      }, 0);
-      var random = Math.floor(Math.random() * (total + 1));
-      var selectedVariant = this.variants.find(function(variant) {
-        random -= variant.weight;
-        return random <= 0;
+      var total = 0;
+      var weights = [];
+      for(i = 0; i < this.variants.length; i++) {
+        total += this.variants[i].weight;
+        weights[i] = total;
+      }
+      var random = Math.random() * weights[weights.length - 1];
+      selectedVariantIndex = weights.findIndex(function(weight) {
+        return random < weight;
       });
+      var selectedVariant = this.variants[selectedVariantIndex];
       this.variant = selectedVariant;
       window.localStorage.setItem(this.EXPERIMENT_NAME, selectedVariant.name);
       this.sendSnowplowTrackingEvent();
@@ -33,6 +35,11 @@
     }
 
     this.sendSnowplowTrackingEvent = function() {
+      // Snowplow requires variant weights to be integers, so let's 10x them until they are.
+      while(this.variants.some(function(variant) { return variant.weight % 1 !== 0 })) {
+        this.variants.forEach(function(variant) { variant.weight *= 10 })
+      }
+
       window.snowplow('trackSelfDescribingEvent', {
         schema: 'iglu:com.datacamp/experiment/jsonschema/1-0-0',
         data: {
