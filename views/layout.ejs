@@ -54,7 +54,7 @@
     <% } %>
 
     <!--TEMPLATES-->
-    
+
     <!--TEMPLATES END-->
 
     <script src="<%= protocol %>//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -100,7 +100,6 @@
     <script src="/js/helpers/utils.js"></script>
     <script src="/js/libs/bootstrap-treeview.js"></script>
     <script src="/js/libs/countUp.min.js"></script>
-    <script src="/js/libs/dc-modal.js"></script>
     <script src="/js/libs/experiment.js"></script>
     <script src="/js/libs/jquery.cookie-1.4.1.min.js"></script>
     <script src="/js/libs/marked.min.js"></script>
@@ -126,13 +125,5 @@
       ga('create', 'UA-41577880-1', 'rdocumentation.org');
       ga('send', 'pageview');
     </script>
-
-    <script>
-      var tidyverseModalExperiment = new window.Experiment('tidyverse-modal-experiment', window.Modal);
-      tidyverseModalExperiment.addVariant('control', 50);
-      tidyverseModalExperiment.addVariant('generic', 50);
-      tidyverseModalExperiment.execute();
-    </script>
-
   </body>
 </html>
