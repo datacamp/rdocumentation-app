@@ -12,18 +12,6 @@ task('sails-load', {async: true}, function(){
   });
 });
 
-task('recoverPackageVersions',['sails-load'], {async: true}, function(){
-  RecoverService.recoverPackageVersionFromSourceJSON().then(function() {
-    complete();
-  });
-});
-
-task('recoverPackageLatestVersion',['sails-load'], {async: true}, function(){
-  RecoverService.recoverPackageLatestVersion().then(function() {
-    complete();
-  });
-});
-
 
 task('test-extraction',['sails-load'], function(){
   var nlp = require('nlp_compromise');
@@ -223,29 +211,13 @@ task('url-checker', ['sails-load'], {async: true}, function () {
 });
 
 task('download-statistics', ['sails-load'], {async: true}, function () {
-  CronService.splittedAggregatedDownloadstats(1).then(function(resp) {
+  CronService.indexDownloadCounts().then(function(resp) {
     console.log("Done !");
     complete();
   }).catch({message: "empty"}, function() {
     console.log("No stats for this time range yet");
     complete();
   });
-});
-
-task('bootstrap-splitted-download-statistics', ['sails-load'], {async: true}, function () {
-  var lastMonth = _.range(3, 28);
-  Promise.map(lastMonth, function(day) {
-    return CronService.splittedAggregatedDownloadstats(day).then(function(resp) {
-      console.log("Done " + day);
-      return 1;
-    }).catch({message: "empty"}, function() {
-      console.log("No stats for this time range yet");
-      return 0;
-    });
-  }, {concurrency: 1}).then(function () {
-    complete();
-  });
-
 });
 
 jake.addListener('complete', function () {
