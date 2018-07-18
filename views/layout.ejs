@@ -50,6 +50,7 @@
     </div>
     <% if(!inCampus) { %>
       <%- partial ('./shared/_dc_footer.ejs') %>
+      <%- partial('./shared/_leadform.ejs') %>
     <% } %>
 
     <!--TEMPLATES-->
@@ -114,7 +115,6 @@
     <script src="/js/search.js"></script>
     <!--SCRIPTS END-->
 
-    <%- partial('./shared/_leadform.ejs') %>
     <%- partial('./shared/_snowplow.ejs') %>
 
     <script>
