@@ -27,5 +27,18 @@
         }
       }
     ]);
+
+    var config = {
+      forms: {
+        whitelist: ["snowplow_tracked"]
+      },
+      fields: {
+        fields: {
+          blacklist: ['password', 'password_confirmation']
+        }
+      }
+    };
+
+    window.snowplow('enableFormTracking', config);
 </script>
 <!-- Snowplow stop plowing -->

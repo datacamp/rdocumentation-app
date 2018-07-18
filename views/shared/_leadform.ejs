@@ -1,12 +1,12 @@
-<div class="modal js-demo-modal demo-modal">
+<div class="modal js-demo-modal demo-modal" id="demo-modal">
   <div class="demo-modal__header">
     <h2>
       Learn R at Work.
     </h2>
-    <p>See how the world's most forward-thinking compaies are preparing their employees for the future with DataCamp for Business.</p>
+    <p>See how the world's most forward-thinking companies are preparing their employees for the future with DataCamp for Business.</p>
   </div>
 
-  <form class="demo-modal__form">
+  <form class="demo-modal__form snowplow_tracked js-demo-form">
     <div class="demo-modal__form-group">
       <label for="first_name">First Name</label>
       <input type="text" name="first_name" id="first_name" required />
@@ -21,7 +21,7 @@
     </div>
     <div class="demo-modal__form-group">
       <label for="phone">Phone</label>
-      <input type="phone" name="phone" id="phone" required />
+      <input type="phone" name="phone" id="phone" />
     </div>
     <div class="demo-modal__form-group">
       <label for="company">Company</label>
@@ -56,7 +56,7 @@
 
   .demo-modal__header {
     background-image: linear-gradient(268deg, #405f8f, #1c3050);
-    padding: 40px 30px 15px;
+    padding: 40px 28px 14px;
     border-radius: 5px 5px 0 0;
   }
 
@@ -80,9 +80,9 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    padding: 20px 20px 10px;
+    padding: 0 10px 10px;
     background: #FAFAFA;
-    border-radius: 0 10px 10px;
+    border-radius: 0 0 10px 10px;
   }
 
   .demo-modal__logo {
@@ -138,9 +138,33 @@
     color: #3d4251;
   }
 
+  .demo-form__success {
+    text-align: center;
+    padding: 40px 0 30px;
+  }
+
+  .demo-form__success p {
+    color: #333;
+    margin: 0;
+  }
+
   @media screen and (max-width: 600px) {
     .demo-modal__form-group {
       width: 90%;
     }
   }
 </style>
+
+<script>
+  $jq('.js-demo-form').on('submit', function(e) {
+    e.preventDefault();
+    $jq.ajax({
+      method: "POST",
+      url: "https://hooks.zapier.com/hooks/catch/2383820/wv86oo/",
+      data: $('.js-demo-form').serializeArray()
+    }).done(function(msg) {
+      $('.js-demo-form').html("<div class='demo-form__success'><h3>Thanks!</h3><p>We'll be in touch.</p></div>");
+      window.snowplow('trackStructEvent', 'form', 'submit', 'rdocs_demo_form', '', 0.0);
+    });
+  });
+</script>
