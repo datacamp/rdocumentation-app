@@ -3,7 +3,7 @@
     <h2>
       Learn R at Work.
     </h2>
-    <p>See how the world's most forward-thinking companies are preparing their employees for the future with DataCamp for Business.</p>
+    <p>See how the world's most forward-thinking companies are preparing their employees for the future with <a href="https://www.datacamp.com/groups/business?utm_source=rdocumentation&utm_medium=product&utm_campaign=rdocs_leadform" target="new">DataCamp for Business</a>.</p>
   </div>
 
   <form class="demo-modal__form snowplow_tracked js-demo-form">
@@ -28,8 +28,8 @@
       <input type="text" name="company" id="company" required />
     </div>
     <div class="demo-modal__form-group">
-      <label for="seats">Number of Seats</label>
-      <input type="number" name="seats" id="seats" required />
+      <label for="seats">Number of Seats <i class="fa fa-question-circle js-phone-label-question-mark" aria-hidden="false" title="" data-original-title="How many people at your company do you think might be interested in learning R at work? (A rough estimate is totally fine!)"></i></label>
+      <input type="number" name="seats" id="seats" min="2" required />
     </div>
     <div class="demo-modal__form-group">
       <input type="submit" value="Request Demo" class="demo-form__cta" />
@@ -58,6 +58,12 @@
     background-image: linear-gradient(268deg, #405f8f, #1c3050);
     padding: 40px 28px 14px;
     border-radius: 5px 5px 0 0;
+  }
+
+  .demo-modal a {
+    color: #fff;
+    border-color: white;
+    font-weight: 600;
   }
 
   .demo-modal h2 {
@@ -167,4 +173,6 @@
       window.snowplow('trackStructEvent', 'form', 'submit', 'rdocs_demo_form', '', 0.0);
     });
   });
+
+  $jq('.js-phone-label-question-mark').tooltip();
 </script>
