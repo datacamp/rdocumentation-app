@@ -10,7 +10,7 @@
       "containerImage": "${CONTAINER_IMAGE}",
       "containerTag": "${CIRCLE_SHA1}",
       "containerPort": 1337,
-      "memoryReservation": 1024,
+      "memoryReservation": 2000,
       "essential": true
     },
     {
