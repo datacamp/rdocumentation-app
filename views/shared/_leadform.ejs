@@ -1,0 +1,162 @@
+<div class="modal js-demo-modal demo-modal" id="demo-modal">
+  <div class="demo-modal__header">
+    <h2>
+      Learn R at Work.
+    </h2>
+    <p>See how the world's most forward-thinking companies are preparing their employees for the future with <a href="https://www.datacamp.com/groups/business?utm_source=rdocumentation&utm_medium=product&utm_campaign=rdocs_leadform" target="new">DataCamp for Business</a>.</p>
+  </div>
+
+  <form class="demo-modal__form snowplow_tracked js-demo-form">
+    <div class="demo-modal__form-group">
+      <label for="first_name">First Name</label>
+      <input type="text" name="first_name" id="first_name" required />
+    </div>
+    <div class="demo-modal__form-group">
+      <label for="last_name">Last Name</label>
+      <input type="text" name="last_name" id="last_name" required />
+    </div>
+    <div class="demo-modal__form-group">
+      <label for="work_email">Work Email</label>
+      <input type="email" name="work_email" id="work_email" required />
+    </div>
+    <div class="demo-modal__form-group">
+      <label for="phone">Phone</label>
+      <input type="phone" name="phone" id="phone" />
+    </div>
+    <div class="demo-modal__form-group">
+      <label for="company">Company</label>
+      <input type="text" name="company" id="company" required />
+    </div>
+    <div class="demo-modal__form-group">
+      <label for="seats">Number of Seats <i class="fa fa-question-circle js-phone-label-question-mark" aria-hidden="false" title="" data-original-title="How many people at your company do you think might be interested in learning R at work? (A rough estimate is totally fine!)"></i></label>
+      <input type="number" name="seats" id="seats" min="2" required />
+    </div>
+    <div class="demo-modal__form-group">
+      <input type="submit" value="Request Demo" class="demo-form__cta" />
+    </div>
+  </form>
+
+  <div class="demo-modal__logos">
+    <div class="demo-modal__logo"><img src="/images/groups/uber.svg" /></div>
+    <div class="demo-modal__logo"><img src="/images/groups/deloitte.svg" /></div>
+    <div class="demo-modal__logo"><img src="/images/groups/nielsen.svg" /></div>
+    <div class="demo-modal__logo"><img src="/images/groups/paypal.svg" /></div>
+    <div class="demo-modal__logo"><img src="/images/groups/intel.svg" /></div>
+    <div class="demo-modal__logo"><img src="/images/groups/airbnb.svg" /></div>
+  </div>
+</div>
+
+<style>
+  .demo-modal {
+    padding: 0;
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+  }
+
+  .demo-modal__header {
+    background-image: linear-gradient(268deg, #405f8f, #1c3050);
+    padding: 40px 28px 14px;
+    border-radius: 5px 5px 0 0;
+  }
+
+  .demo-modal a {
+    color: #fff;
+    border-color: white;
+    font-weight: 600;
+  }
+
+  .demo-modal h2 {
+    color: #fff;
+    font-size: 32px;
+    font-weight: 700;
+    margin: auto;
+  }
+
+  .demo-modal p {
+    color: #fff;
+    font-size: 16px;
+    margin: 10px 0 24px;
+    line-height: 1.6;
+  }
+
+  .demo-modal__logos {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px 10px;
+    background: #FAFAFA;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .demo-modal__logo {
+    margin: 5px 20px;
+    display: flex;
+    align-items: center;
+    height: 60px;
+  }
+
+  .demo-modal__logos img {
+    max-width: 100%;
+  }
+
+  .demo-modal__form-group label {
+    text-align: left;
+    margin
+  }
+
+  .demo-modal__form {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 10px 0 20px;
+  }
+
+  .demo-modal__form-group {
+    width: 45%;
+  }
+
+  .demo-modal__form-group label {
+    display: block;
+    text-align: left;
+    margin: 12px 0 2px;
+    font-weight: 400;
+    color: #888;
+    font-size: 13px;
+  }
+
+  .demo-form__cta {
+    background-color: #ffc844;
+    border-color: #ffc844;
+    color: #3d4251;
+    margin-top: 20px;
+    font-weight: 700;
+    padding-bottom: 14px;
+    transition: background-color .3s cubic-bezier(.77,0,.175,1),border-color .3s cubic-bezier(.77,0,.175,1),color .3s cubic-bezier(.77,0,.175,1);
+  }
+
+  .demo-form__cta:hover {
+    background-color: #fbe28d;
+    border-color: #fbe28d;
+    color: #3d4251;
+  }
+
+  .demo-form__success {
+    text-align: center;
+    padding: 40px 0 30px;
+  }
+
+  .demo-form__success p {
+    color: #333;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 600px) {
+    .demo-modal__form-group {
+      width: 90%;
+    }
+  }
+</style>
