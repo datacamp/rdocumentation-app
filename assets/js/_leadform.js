@@ -14,4 +14,4 @@
   $(document).ready(function() {
     $('.js-phone-label-question-mark').tooltip();
   })
-})($jq)
+})($jq);
