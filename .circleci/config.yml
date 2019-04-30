@@ -13,6 +13,7 @@ workflows:
           aws-secret-access-key: $STAGING_AWS_SECRET_ACCESS_KEY
           account-url: $STAGING_ECR_URL
           extra-docker-args: "--build-arg NPM_TOKEN=${NPM_TOKEN}"
+          repo: rdoc-app
       - datacamp-deploy/deploy: # Staging
           context: org-global
           requires:
@@ -25,6 +26,7 @@ workflows:
                 - master
       - datacamp-ecr/pull_push_to_account:
           context: org-global
+          repo: rdoc-app
           filters:
             tags:
               only: /^release-.*/
