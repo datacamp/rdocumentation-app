@@ -1,9 +1,8 @@
 {
   "services": [{
     "cluster": "datacamp-services",
-    "servicePort": 1337,
     "serviceName": "rdoc-app",
-    "serviceProtocol": "HTTP",
+    "serviceProtocol": "none",
     "desiredCount": 1,
     "loadBalancer": "datacamp-rdocumentation",
     "containers": [
@@ -33,8 +32,7 @@
   {
     "cluster": "datacamp-services",
     "serviceName": "rdoc-app-worker",
-    "servicePort": 1337,
-    "serviceProtocol": "HTTP",
+    "serviceProtocol": "none",
     "desiredCount": 1,
     "loadBalancer": "datacamp-services-internal",
     "containers": [
