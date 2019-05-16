@@ -65,6 +65,10 @@ module.exports = {
       FlashService.error(req, 'Cannot verify recaptcha');
       return res.rstudio_redirect(301,'/register');
     });
+  },
+
+  show: function(req, res) {
+    return res.forbidden();
   }
 
 };
