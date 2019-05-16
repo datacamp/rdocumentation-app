@@ -185,4 +185,6 @@ module.exports.routes = {
   // Parsing
   'get /api/parsing/jobs': 'PackageController.toParse',
 
+  'get /api/users/*': 'UserController.show',
+
 };
