@@ -19,6 +19,11 @@
       <link href="<%= data.canonicalLink %>" rel="canonical" />
     <% } %>
 
+    <!-- No index if not staging -->
+    <% if(process.env.NODE_ENV !== 'production') { %>
+      <meta name="robots" content="noindex">
+    <% } %>
+
     <!--STYLES-->
     <link rel="stylesheet" href="/styles/application.css">
     <link rel="stylesheet" href="/styles/widgets/mono-blue.css">
