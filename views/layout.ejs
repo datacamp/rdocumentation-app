@@ -19,7 +19,7 @@
       <link href="<%= data.canonicalLink %>" rel="canonical" />
     <% } %>
 
-    <!-- No index if not staging -->
+    <!-- No index if not production -->
     <% if(process.env.NODE_ENV !== 'production') { %>
       <meta name="robots" content="noindex">
     <% } %>
