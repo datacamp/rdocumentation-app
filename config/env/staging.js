@@ -43,6 +43,15 @@ module.exports = {
 
   grunt: {
     _hookTimeout: 60000
+  },
+
+  cors: {
+    allRoutes: true,
+    origin: '*',
+    credentials: true,
+    exposeHeaders: 'X-RStudio-Ajax, X-RStudio-Redirect, X-Rstudio-Session',
+    methods: 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
+    headers: 'Content-Type, Accept-Encoding, X-Shared-Secret, X-Requested-With, Cache-Control, X-RStudio-Ajax, X-RStudio-Redirect, X-Rstudio-Session'
   }
 
 };
