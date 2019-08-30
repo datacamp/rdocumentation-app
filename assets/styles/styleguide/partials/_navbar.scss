@@ -12,28 +12,31 @@
 
 .navbar-color {
   background-color: $primary;
-  background-image: linear-gradient(transparent 90%, rgba(0,0,0,0.01)),linear-gradient(173deg, #3AAACA, #2389B1);
+  background-image: linear-gradient(transparent 90%, rgba(0, 0, 0, 0.01)),
+    linear-gradient(173deg, #3aaaca, #2389b1);
   color: $text-invert;
 
   .navbar--title .logo-title {
     color: $text-invert;
-    &:hover, &:focus {color: $text-invert }
+    &:hover,
+    &:focus {
+      color: $text-invert;
+    }
   }
 
   .navbar--navigation .link {
-      color: white;
-      border-bottom-color: white;
-      &:focus,
-      &:hover {
-          color: inherit;
-      }
+    color: white;
+    border-bottom-color: white;
+    &:focus,
+    &:hover {
+      color: inherit;
+    }
   }
-
 }
 
 .navbar-fixed-top {
   top: 0;
-  position: fixed;
+  position: static; /* TODO: Remove after promo? */
   right: 0;
   left: 0;
   z-index: 1030;
@@ -54,25 +57,25 @@
     border-bottom: none;
     margin-left: 1rem;
   }
-  a:focus{
+  a:focus {
     border-bottom: none;
   }
   .logo {
-      background: url("../images/logo.png") no-repeat center center;
-      background-size: contain;
-      width: 17px;
-      vertical-align: middle;
-      display: table-cell;
-      position:relative;
-      top: -1px;
+    background: url("../images/logo.png") no-repeat center center;
+    background-size: contain;
+    width: 17px;
+    vertical-align: middle;
+    display: table-cell;
+    position: relative;
+    top: -1px;
   }
   .github {
-      background: url("../images/GitHub-Mark-32px.png") no-repeat center center;
-      display: inline-block;
-      background-size: contain;
-      height: 21px;
-      width: 21px;
-      vertical-align: middle;
+    background: url("../images/GitHub-Mark-32px.png") no-repeat center center;
+    display: inline-block;
+    background-size: contain;
+    height: 21px;
+    width: 21px;
+    vertical-align: middle;
   }
 
   .logo-title {
@@ -92,49 +95,48 @@ $navbar-search-results-width: 32%px;
   transform: translateX(-50%);
 
   input {
-      padding: 0.1rem 0.5rem;
-      border: 1px solid $primary;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid $primary;
   }
 
   .search .results {
-      width: $navbar-search-results-width;
-      left: ($navbar-search-width - $navbar-search-results-width) / 2.0;
+    width: $navbar-search-results-width;
+    left: ($navbar-search-width - $navbar-search-results-width) / 2;
   }
 }
-button.rstudio-navbutton{
-    padding:5px;
-    padding-bottom:0px;
-    background-color: transparent;
-    color: $primary;
+button.rstudio-navbutton {
+  padding: 5px;
+  padding-bottom: 0px;
+  background-color: transparent;
+  color: $primary;
 }
 
-@media (max-width: 670px){
-  .navbar--navigation.largescreen{
+@media (max-width: 670px) {
+  .navbar--navigation.largescreen {
     display: none;
   }
-  .navbar--title.largescreen{
+  .navbar--title.largescreen {
     display: none;
   }
-  .logo-title.largescreen{
+  .logo-title.largescreen {
     display: none;
   }
-  .navbar--search{
+  .navbar--search {
     width: 50%;
     transform: translateX(0%);
     left: 47%;
   }
 }
-@media (max-width: 402px){
-  .navbar--title .logo-title{
+@media (max-width: 402px) {
+  .navbar--title .logo-title {
     display: none;
   }
-  .navbar--search{
+  .navbar--search {
     width: 70%;
     transform: translateX(0%);
     left: 28%;
   }
 }
-
 
 .navbar--navigation {
   @extend ul.inline;

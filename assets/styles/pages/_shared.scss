@@ -11,20 +11,18 @@
   top: 30px;
   left: 0;
   right: 0;
-  position: fixed;
+  position: static; /* TODO: Remove after promo? */
   overflow-y: scroll;
 }
 
-
 .stats {
   dd a {
-    margin-right: $default-space / 3.0;
+    margin-right: $default-space / 3;
     &:last-child {
       margin-right: 0;
     }
   }
 }
-
 
 .no-padding {
   padding: 0;
@@ -44,19 +42,24 @@
   right: 0;
   width: 70%;
   height: 1.5rem;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 1) 50%
+  );
 }
 
-.downloads, .percentile-widget {
+.downloads,
+.percentile-widget {
   visibility: hidden;
   vertical-align: middle;
   margin-left: 0.2rem;
   display: inline-block;
-  p{
+  p {
     -webkit-margin-before: -0.7em;
     -webkit-margin-after: 0em;
   }
-  i{
+  i {
     font-size: 1.4rem;
     margin-left: 0.6rem;
   }
@@ -66,7 +69,8 @@
   visibility: hidden;
 }
 
-.downloads-nr, .percentile-th {
+.downloads-nr,
+.percentile-th {
   display: flex;
   align-items: center;
   span:first-child {
@@ -92,6 +96,6 @@
   input {
     width: 300px;
     padding: 0.375em 0.75em;
-    margin: $default-space  auto $default-space / 2.0 auto;
+    margin: $default-space auto $default-space / 2 auto;
   }
 }
