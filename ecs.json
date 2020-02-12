@@ -4,6 +4,12 @@
     "serviceName": "rdoc-app",
     "serviceProtocol": "none",
     "desiredCount": 1,
+    "deployment": {
+      "parameters": {
+        "slackChannel": "comm-deploys",
+        "customMessage": "Deploying ${CIRCLE_BUILD_URL}"
+      }
+    },
     "loadBalancer": "datacamp-rdocumentation",
     "containers": [
       {
