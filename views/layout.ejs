@@ -69,23 +69,24 @@
     <script src="<%= protocol %>//cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.6.0/clipboard.min.js"></script>
     <script src="<%= protocol %>//cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
     <script src = "<%= protocol %>//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        messageStyle: "none",
-        jax: ["input/TeX","output/CommonHTML"],
-        extensions: ["tex2jax.js","MathMenu.js","MathZoom.js"],
-        TeX: {
-          extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
-        },
-        tex2jax: {
+    <script>
+      window.MathJax = {
+        tex: {
           inlineMath: [ ['$','$'], ['\\(','\\)']  ],
           displayMath: [ ['$$','$$'] ],
           processEscapes: true,
-          preview: 'none'
+          packages: ['base', 'ams', 'noerrors', 'noundefined']
+        },
+        options: {
+          ignoreHtmlClass: 'tex2jax_ignore',
+          processHtmlClass: 'tex2jax_process'
+        },
+        loader: {
+          load: ['[tex]/noerrors']
         }
-      });
+      };
     </script>
-    <script src = "<%= protocol %>//cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+    <script src="<%= protocol %>//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
     <% if(!inViewerPane) { %>
       <script src="<%= protocol %>//cdn.datacamp.com/datacamp-light-latest.min.js"></script>
     <% } %>
