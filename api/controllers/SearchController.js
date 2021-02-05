@@ -42,7 +42,7 @@ module.exports = {
   quickSearch: function(req, res) {
     var token = req.body.token;
     var topic = token;
-    
+
     var packageMatchQuery = {
       has_parent: {
         parent_type: 'package_version',
@@ -60,7 +60,7 @@ module.exports = {
       }
     };
 
-    if (isInPackageSearch(token)){
+    if (isInPackageSearch(token)) {
       var packageAndFunction = splitInPackageAndFunction(token);
       topic = packageAndFunction[1];
       packageMatchQuery = {
@@ -96,60 +96,60 @@ module.exports = {
       body: [
         { index: 'rdoc', type: 'package_version' },
         { query: {
-            bool: {
-              should: [
+          bool: {
+            should: [
 
-                {
-                  "has_parent" : {
-                    "query" : {
-                      "function_score" : {
-                        "functions": [
-                          {
-                            "filter": { "missing" : { "field" : "part_of_r" } },
-                            "field_value_factor": {
-                              "field":    "last_month_downloads",
-                              "modifier": "log1p"
-                            }
-                          },
-                          {
-                            "filter": { "term" : { "part_of_r" : 0 } },
-                            "field_value_factor": {
-                              "field":    "last_month_downloads",
-                              "modifier": "log1p"
-                            }
-                          },
-                          {
-                            "filter": { "term" : { "part_of_r" : 1 } },
-                            "field_value_factor": {
-                              "field":    "part_of_r",
-                              "modifier": "log1p",
-                              "factor": 300000
-                            }
+              {
+                'has_parent': {
+                  'query': {
+                    'function_score': {
+                      'functions': [
+                        {
+                          'filter': { 'missing': { 'field': 'part_of_r' } },
+                          'field_value_factor': {
+                            'field': 'last_month_downloads',
+                            'modifier': 'log1p'
                           }
-                        ],
-                        "boost_mode": "multiply"
-                      }
-                    },
-
-                    "parent_type" : "package",
-                    "score_mode" : "score"
-                  }
-                }
-              ],
-              "minimum_number_should_match": 2,
-              filter: {
-                bool: {
-                  must: [
-                    packageMatchQueryForPackage,
-                    {
-                      term: { latest_version: 1 }
+                        },
+                        {
+                          'filter': { 'term': { 'part_of_r': 0 } },
+                          'field_value_factor': {
+                            'field': 'last_month_downloads',
+                            'modifier': 'log1p'
+                          }
+                        },
+                        {
+                          'filter': { 'term': { 'part_of_r': 1 } },
+                          'field_value_factor': {
+                            'field': 'part_of_r',
+                            'modifier': 'log1p',
+                            'factor': 300000
+                          }
+                        }
+                      ],
+                      'boost_mode': 'multiply'
                     }
-                  ]
-                }
+                  },
 
+                  'parent_type': 'package',
+                  'score_mode': 'score'
+                }
               }
+            ],
+            'minimum_number_should_match': 2,
+            filter: {
+              bool: {
+                must: [
+                  packageMatchQueryForPackage,
+                  {
+                    term: { latest_version: 1 }
+                  }
+                ]
+              }
+
             }
-          },
+          }
+        },
           size: 5,
           fields: ['package_name', 'version']
         },
@@ -157,116 +157,115 @@ module.exports = {
         { index: 'rdoc', type: 'topic' },
         { query: {
 
-            bool: {
-              should: [
-                {
-                  "multi_match" : {
-                    "query":    topic,
-                    "fields": [ "aliases^2", "name" ]
-                  }
-                },
-                {
-                  "multi_match" : {
-                    "fields" : ["aliases^2", "name"],
-                    "query" : topic,
-                    boost: 0.2,
-                    "type" : "phrase_prefix"
-                  }
-                },
-                {
-                  has_parent : {
-                    "parent_type" : "package_version",
-                    "score_mode": "score",
-                    query : {
-                      "has_parent" : {
-                        "query" : {
-                          "function_score" : {
-                            "functions": [
-                              {
-                                "filter": { "missing" : { "field" : "part_of_r" } },
-                                "field_value_factor": {
-                                  "field":    "last_month_downloads",
-                                  "modifier": "log1p"
-                                }
-                              },
-                              {
-                                "filter": { "term" : { "part_of_r" : 0 } },
-                                "field_value_factor": {
-                                  "field":    "last_month_downloads",
-                                  "modifier": "log1p"
-                                }
-                              },
-                              {
-                                "filter": { "term" : { "part_of_r" : 1 } },
-                                "field_value_factor": {
-                                  "field":    "part_of_r",
-                                  "modifier": "log1p",
-                                  "factor": 300000
-                                }
+          bool: {
+            should: [
+              {
+                'multi_match': {
+                  'query': topic,
+                  'fields': [ 'aliases^2', 'name' ]
+                }
+              },
+              {
+                'multi_match': {
+                  'fields': ['aliases^2', 'name'],
+                  'query': topic,
+                  boost: 0.2,
+                  'type': 'phrase_prefix'
+                }
+              },
+              {
+                has_parent: {
+                  'parent_type': 'package_version',
+                  'score_mode': 'score',
+                  query: {
+                    'has_parent': {
+                      'query': {
+                        'function_score': {
+                          'functions': [
+                            {
+                              'filter': { 'missing': { 'field': 'part_of_r' } },
+                              'field_value_factor': {
+                                'field': 'last_month_downloads',
+                                'modifier': 'log1p'
                               }
-                            ],
-                            "boost_mode": "replace"
-                          }
-                        },
+                            },
+                            {
+                              'filter': { 'term': { 'part_of_r': 0 } },
+                              'field_value_factor': {
+                                'field': 'last_month_downloads',
+                                'modifier': 'log1p'
+                              }
+                            },
+                            {
+                              'filter': { 'term': { 'part_of_r': 1 } },
+                              'field_value_factor': {
+                                'field': 'part_of_r',
+                                'modifier': 'log1p',
+                                'factor': 300000
+                              }
+                            }
+                          ],
+                          'boost_mode': 'replace'
+                        }
+                      },
 
-                        "parent_type" : "package",
-                        "score_mode" : "score"
-                      }
+                      'parent_type': 'package',
+                      'score_mode': 'score'
                     }
                   }
                 }
-              ],
-              "minimum_number_should_match": 1,
-              filter: packageMatchQuery
-            }
+              }
+            ],
+            'minimum_number_should_match': 1,
+            filter: packageMatchQuery
+          }
 
-          },
+        },
           size: 5,
           fields: ['name']
-        },
+        }
 
-    ]}).then(function(response) {
-      var packageResult = response.responses[0];
-      var topicResult = response.responses[1];
-      packages = _.map(packageResult.hits.hits, function(hit) {
-        var name = hit.fields.package_name[0];
-        var version = hit.fields.version[0];
-        var uri = sails.getUrlFor({ target: 'PackageVersion.findByNameVersion' })
+      ]}).then(function(response) {
+        var packageResult = response.responses[0];
+        var topicResult = response.responses[1];
+        packages = _.map(packageResult.hits.hits, function(hit) {
+          var name = hit.fields.package_name[0];
+          var version = hit.fields.version[0];
+          var uri = sails.getUrlFor({ target: 'PackageVersion.findByNameVersion' })
           .replace(':name', encodeURIComponent(name))
           .replace(':version', encodeURIComponent(version))
           .replace('/api/', '/');
-        return { uri: uri,  name: name };
-      });
+          return { uri: uri,  name: name };
+        });
 
-      topics = _.map(topicResult.hits.hits, function(hit) {
-        var name = hit.fields.name[0];
-        var id = hit._id;
-        var inner_hit = hit.inner_hits.package_version.hits.hits[0];
-        var package_name = inner_hit.fields.package_name[0];
-        var version = inner_hit.fields.version[0];
-        var uri = '/api/packages/:name/versions/:version/topics/:topic'
+        topics = _.map(topicResult.hits.hits, function(hit) {
+          var name = hit.fields.name[0];
+          var id = hit._id;
+          var inner_hit = hit.inner_hits.package_version.hits.hits[0];
+          var package_name = inner_hit.fields.package_name[0];
+          var version = inner_hit.fields.version[0];
+          var uri = '/api/packages/:name/versions/:version/topics/:topic'
           .replace(':name', encodeURIComponent(package_name))
           .replace(':version', encodeURIComponent(version))
           .replace(':topic', encodeURIComponent(name))
           .replace('/api/', '/');
-        return { uri: uri,  name: name, package_name: package_name, package_version: version };
+          return { uri: uri,  name: name, package_name: package_name, package_version: version };
+        });
       });
-    });
 
-    var coll = Collaborator.quickSearch(token).then(function(result){
-      collaborators = _.map(result,function(collaborator){
+    var coll = Collaborator.quickSearch(token).then(function(result) {
+      collaborators = _.map(result, function(collaborator) {
         var uri = '/collaborators/name/' + encodeURIComponent(collaborator.name);
-        return {uri : uri, name: collaborator.name};
+        return {uri: uri, name: collaborator.name};
       });
     });
 
-    Promise.all([elastic,coll]).then(function(){
+    Promise.all([elastic, coll]).then(function() {
       return res.json({packages: packages, topics: topics, collaborators: collaborators});
     })
     .catch(function(err) {
       return res.negotiate(err);
     });
-
   },
 
   keywordSearch: function(req, res) {
@@ -283,45 +282,45 @@ module.exports = {
 
     es.search({
       index: 'rdoc',
-      body:{
+      body: {
         query: {
           bool: {
             filter: {
-              type : {
-                value : "topic"
+              type: {
+                value: 'topic'
               }
             },
             must: [
               {
                 term: {
-                  keywords:  keyword
+                  keywords: keyword
                 }
               },
               {
-                has_parent : {
-                  parent_type : "package_version",
-                  query : {
-                    term : {
-                        latest_version : 1
+                has_parent: {
+                  parent_type: 'package_version',
+                  query: {
+                    term: {
+                      latest_version: 1
                     }
                   },
-                  inner_hits : { fields: ['package_name', 'version', 'latest_version'] }
+                  inner_hits: { fields: ['package_name', 'version', 'latest_version'] }
                 }
               }
             ]
           }
         },
-        highlight : {
-          pre_tags : ["<mark>"],
-          post_tags : ["</mark>"],
-          "fields" : {
-            "keywords": {
+        highlight: {
+          pre_tags: ['<mark>'],
+          post_tags: ['</mark>'],
+          'fields': {
+            'keywords': {
               highlight_query: {
                 term: {
-                  keywords:  keyword
+                  keywords: keyword
                 }
               }
-            },
+            }
 
           }
         },
@@ -331,7 +330,7 @@ module.exports = {
       }
 
     }).then(function(response) {
-      //return res.json(response);
+      // return res.json(response);
       var hits = response.hits.hits.map(function(hit) {
         var fields = {};
         var highlight = hit.highlight;
@@ -365,10 +364,9 @@ module.exports = {
     .catch(function(err) {
       return res.negotiate(err);
     });
-
   },
 
-  packageSearch: function(req,res){
+  packageSearch: function(req, res) {
     var query = req.param('q');
     var page = parseInt(req.param('page')) || 1;
     var perPage = parseInt(req.param('perPage')) || 15;
@@ -378,11 +376,11 @@ module.exports = {
     var packageVersionFilter = [
       {
         type: {
-          value: "package_version"
+          value: 'package_version'
         }
-      }      
+      }
     ];
-    if(onlyLatestVersion){
+    if (onlyLatestVersion) {
       packageVersionFilter.push({ term: { latest_version: 1 } });
     }
 
@@ -392,69 +390,69 @@ module.exports = {
         query: {
           bool: {
             filter: packageVersionFilter,
-            should:[
+            should: [
               {
                 multi_match: {
                   query: query,
-                  type: "best_fields",
+                  type: 'best_fields',
                   fields: ['package_name^6', 'title^4', 'maintainer.name^4', 'collaborators.name^3', 'description^3', 'license', 'url', 'copyright']
-                },
+                }
               },
               {
-                match_phrase_prefix : {
-                  "package_name" : {
-                      "query" : query,
-                      "max_expansions" : 20,
+                match_phrase_prefix: {
+                  'package_name': {
+                    'query': query,
+                    'max_expansions': 20
                   }
                 }
               },
               {
-                "has_parent" : {
-                  "query" : {
-                    "function_score" : {
-                      "functions": [
+                'has_parent': {
+                  'query': {
+                    'function_score': {
+                      'functions': [
                         {
-                          "filter": { "missing" : { "field" : "part_of_r" } },
-                          "field_value_factor": {
-                            "field":    "last_month_downloads",
-                            "modifier": "log1p"
+                          'filter': { 'missing': { 'field': 'part_of_r' } },
+                          'field_value_factor': {
+                            'field': 'last_month_downloads',
+                            'modifier': 'log1p'
                           }
                         },
                         {
-                          "filter": { "term" : { "part_of_r" : 0 } },
-                          "field_value_factor": {
-                            "field":    "last_month_downloads",
-                            "modifier": "log1p"
+                          'filter': { 'term': { 'part_of_r': 0 } },
+                          'field_value_factor': {
+                            'field': 'last_month_downloads',
+                            'modifier': 'log1p'
                           }
                         },
                         {
-                          "filter": {  "term" : { "part_of_r" : 1 } },
-                          "field_value_factor": {
-                            "field":    "part_of_r",
-                            "modifier": "log1p",
-                            "factor": 300000,
+                          'filter': {  'term': { 'part_of_r': 1 } },
+                          'field_value_factor': {
+                            'field': 'part_of_r',
+                            'modifier': 'log1p',
+                            'factor': 300000
                           }
                         }
                       ],
-                      "boost_mode": "replace"
+                      'boost_mode': 'replace'
                     }
                   },
 
-                  "parent_type" : "package",
-                  "score_mode" : "score"
+                  'parent_type': 'package',
+                  'score_mode': 'score'
                 }
               }
             ],
-            minimum_should_match : 1,
+            minimum_should_match: 1
           }
         },
-        highlight : {
-          pre_tags : ["<mark>"],
-          post_tags : ["</mark>"],
-          "require_field_match": false,
-          "fields" : {
-            "description": {
-              "number_of_fragments" : 0,
+        highlight: {
+          pre_tags: ['<mark>'],
+          post_tags: ['</mark>'],
+          'require_field_match': false,
+          'fields': {
+            'description': {
+              'number_of_fragments': 0,
               highlight_query: {
                 match: { description: query }
               }
@@ -465,33 +463,38 @@ module.exports = {
         size: perPage,
         fields: ['package_name', 'version', 'description', 'maintainer.name']
       }
-    }).then(function(result){
+    }).then(function(result) {
       var packages  = [];
       result.hits.hits.forEach(function(hit) {
-          var fields = {};
-          fields.package_name = hit.fields.package_name[0];
-          fields.version = hit.fields.version[0];
-          fields.maintainer = hit.fields['maintainer.name'];
-          var highlights = _.mapValues(hit.highlight, function(highlight) {
-            return striptags(highlight.toString(),'<mark>');
-          });
-
-          var description = highlights.description || hit.fields.description[0];
-
-          packages.push({
-            description: description,
-            fields: fields,
-            score: hit._score
-          });
+        var fields = {};
+        fields.package_name = hit.fields.package_name[0];
+        fields.version = hit.fields.version[0];
+        fields.maintainer = hit.fields['maintainer.name'];
+        var highlights = _.mapValues(hit.highlight, function(highlight) {
+          return striptags(highlight.toString(), '<mark>');
         });
+
+        var description = highlights.description || hit.fields.description[0];
+
+        packages.push({
+          description: description,
+          fields: fields,
+          score: hit._score
+        });
+      });
       res.locals.layout = null;
+      if (req.headers.accept === 'application/json') {
+        return res.json({
+          packages: packages, hits: result.hits.total
+        });
+      }
       return res.view('search/package_results.ejs', { data: {packages: packages, hits: numeral(result.hits.total).format('0,0')}});
     }).catch(function(err) {
       return res.negotiate(err);
     });
   },
 
-  functionSearch: function(req,res){
+  functionSearch: function(req, res) {
     var query = req.param('q');
     var package = req.param('package');
     var page = parseInt(req.param('page')) || 1;
@@ -501,7 +504,7 @@ module.exports = {
     var searchTopicQuery = {
       multi_match: {
         query: query,
-        type: "best_fields",
+        type: 'best_fields',
         boost: 1,
         fields: [
           'aliases^6',
@@ -513,61 +516,59 @@ module.exports = {
       }
     };
     var prefixQuery = {
-      "multi_match" : {
+      'multi_match': {
         boost: 0.2,
-        "fields" : ["aliases^2", "name"],
-        "query" : query,
-        "type" : "phrase_prefix"
+        'fields': ['aliases^2', 'name'],
+        'query': query,
+        'type': 'phrase_prefix'
       }
     };
-        
+
     var topicFilter = [
       {
-        type : {
-          value : "topic"
+        type: {
+          value: 'topic'
         }
       }
     ];
 
     var packageMatchQuery;
-    if(package === undefined){
+    if (package === undefined) {
       packageMatchQuery = {
-        has_parent : {
-          parent_type : "package_version"
+        has_parent: {
+          parent_type: 'package_version'
         }
       };
-      if(onlyLatestVersion){
-        packageMatchQuery.has_parent.query = {  term : { latest_version : 1 } };
+      if (onlyLatestVersion) {
+        packageMatchQuery.has_parent.query = {  term: { latest_version: 1 } };
         topicFilter.push(packageMatchQuery);
       }
-    }
-    else{
+    }    else {
       packageMatchQuery = {
-        has_parent : {
-          parent_type : "package_version",
-          query : {
-            "bool" : {
-              "must" : [
+        has_parent: {
+          parent_type: 'package_version',
+          query: {
+            'bool': {
+              'must': [
                 {
-                  term : { package_name: package }
+                  term: { package_name: package }
                 }
               ]
             }
           }
         }
       };
-      if(onlyLatestVersion)
-        packageMatchQuery.has_parent.query.bool.must.push({term : { latest_version : 1 }})
+      if (onlyLatestVersion)        {packageMatchQuery.has_parent.query.bool.must.push({term: { latest_version: 1 }});}
 
-      topicFilter.push(packageMatchQuery);  
+      topicFilter.push(packageMatchQuery);
     }
 
     return es.search({
       index: 'rdoc',
       body: {
         query: {
-          bool : {
-            should : [
+          bool: {
+            should: [
               {
                 bool: {
                   filter: topicFilter,
@@ -575,106 +576,111 @@ module.exports = {
                     searchTopicQuery,
                     prefixQuery,
                     {
-                      has_parent : {
-                        parent_type : "package_version",
-                        score_mode: "score",
+                      has_parent: {
+                        parent_type: 'package_version',
+                        score_mode: 'score',
 
-                        query : {
-                          "has_parent" : {
-                            "parent_type" : "package",
-                            "score_mode" : "score",
-                            "query" : {
-                              "function_score" : {
-                                "functions": [
+                        query: {
+                          'has_parent': {
+                            'parent_type': 'package',
+                            'score_mode': 'score',
+                            'query': {
+                              'function_score': {
+                                'functions': [
                                   {
-                                    "filter": { "missing" : { "field" : "part_of_r" } },
-                                    "field_value_factor": {
-                                      "field":    "last_month_downloads",
-                                      "modifier": "log1p"
+                                    'filter': { 'missing': { 'field': 'part_of_r' } },
+                                    'field_value_factor': {
+                                      'field': 'last_month_downloads',
+                                      'modifier': 'log1p'
                                     }
                                   },
                                   {
-                                    "filter": { "term" : { "part_of_r" : 0 } },
-                                    "field_value_factor": {
-                                      "field":    "last_month_downloads",
-                                      "modifier": "log1p"
+                                    'filter': { 'term': { 'part_of_r': 0 } },
+                                    'field_value_factor': {
+                                      'field': 'last_month_downloads',
+                                      'modifier': 'log1p'
                                     }
                                   },
                                   {
-                                    "filter": { "term" : { "part_of_r" : 1 } },
-                                    "field_value_factor": {
-                                      "field":    "part_of_r",
-                                      "modifier": "log1p",
-                                      "factor": 300000,
+                                    'filter': { 'term': { 'part_of_r': 1 } },
+                                    'field_value_factor': {
+                                      'field': 'part_of_r',
+                                      'modifier': 'log1p',
+                                      'factor': 300000
                                     }
                                   }
                                 ],
-                                "boost_mode": "replace"
+                                'boost_mode': 'replace'
                               }
                             }
                           }
                         },
-                        inner_hits : { fields: ['package_name', 'version', 'latest_version', 'maintainer.name'] }
+                        inner_hits: { fields: ['package_name', 'version', 'latest_version', 'maintainer.name'] }
                       }
                     }
                   ],
-                  minimum_should_match : 2,
+                  minimum_should_match: 2
                 }
               }],
-            minimum_should_match : 1,
+            minimum_should_match: 1
           }
         },
-        highlight : {
-          pre_tags : ["<mark>"],
-          post_tags : ["</mark>"],
-          "fields" : {
-            "description": {
-               "number_of_fragments" : 0,
-               highlight_query: searchTopicQuery
-             },
-            "title" : {
-               "number_of_fragments" : 0,
-               highlight_query: searchTopicQuery},
+        highlight: {
+          pre_tags: ['<mark>'],
+          post_tags: ['</mark>'],
+          'fields': {
+            'description': {
+              'number_of_fragments': 0,
+              highlight_query: searchTopicQuery
+            },
+            'title': {
+              'number_of_fragments': 0,
+              highlight_query: searchTopicQuery}
           }
         },
         from: offset,
         size: perPage,
         fields: ['package_name', 'version', 'name', 'maintainer.name', 'description', 'title']
       }
-    }).then(function(result){
+    }).then(function(result) {
       var functions  = [];
       result.hits.hits.forEach(function(hit) {
-          var fields = {};
-          var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
-          fields.package_name = inner_hits_fields.package_name[0];
-          fields.version = inner_hits_fields.version[0];
-          fields.name = hit.fields.name[0];
-          fields.maintainer = inner_hits_fields['maintainer.name'][0];
+        var fields = {};
+        var inner_hits_fields = hit.inner_hits.package_version.hits.hits[0].fields;
+        fields.package_name = inner_hits_fields.package_name[0];
+        fields.version = inner_hits_fields.version[0];
+        fields.name = hit.fields.name[0];
+        fields.maintainer = inner_hits_fields['maintainer.name'][0];
 
-          var highlights = _.mapValues(hit.highlight, function(highlight) {
-            return striptags(highlight.toString(),'<mark>');
-          });
-
-          var description = highlights.description || hit.fields.description[0];
-          var title = highlights.title || hit.fields.title[0];
-
-          functions.push({
-            fields: fields,
-            score: hit._score,
-            description: description,
-            title: title
-          });
+        var highlights = _.mapValues(hit.highlight, function(highlight) {
+          return striptags(highlight.toString(), '<mark>');
         });
+
+        var description = highlights.description || hit.fields.description[0];
+        var title = highlights.title || hit.fields.title[0];
+
+        functions.push({
+          fields: fields,
+          score: hit._score,
+          description: description,
+          title: title
+        });
+      });
       res.locals.layout = null;
+      if (req.headers.accept === 'application/json') {
+        return res.json({
+          functions: functions, hits: result.hits.total
+        });
+      }
       return res.view('search/function_results.ejs', {data: {functions: functions, hits: numeral(result.hits.total).format('0,0')}});
     }).catch(function(err) {
-        return res.negotiate(err);
+      return res.negotiate(err);
     });
   },
 
 
   fullSearch: function(req, res) {
-    return res.ok({query: req.param('q'),current: req.path+ '?' +querystring.stringify(req.query)},'search/result.ejs');
+    return res.ok({query: req.param('q'), current: req.path + '?' + querystring.stringify(req.query)}, 'search/result.ejs');
   }
 
 };
