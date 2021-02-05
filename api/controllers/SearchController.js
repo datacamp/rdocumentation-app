@@ -485,6 +485,11 @@ module.exports = {
           });
         });
       res.locals.layout = null;
+      if (req.headers.accept === 'application/json') {
+        return res.json({
+          packages: packages, hits: result.hits.total
+        });
+      }
       return res.view('search/package_results.ejs', { data: {packages: packages, hits: numeral(result.hits.total).format('0,0')}});
     }).catch(function(err) {
       return res.negotiate(err);
@@ -666,6 +671,11 @@ module.exports = {
           });
         });
       res.locals.layout = null;
+      if (req.headers.accept === 'application/json') {
+        return res.json({
+          functions: functions, hits: result.hits.total
+        });
+      }
       return res.view('search/function_results.ejs', {data: {functions: functions, hits: numeral(result.hits.total).format('0,0')}});
     }).catch(function(err) {
         return res.negotiate(err);
