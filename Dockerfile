@@ -4,11 +4,6 @@ MAINTAINER Ludovic Vannoorenberghe <ludo@datacamp.com>
 
 RUN apt-get update && apt-get install -y python build-essential
 
-# aws env
-RUN curl -o /tmp/aws-env-linux-amd64 -L https://github.com/datacamp/aws-env/releases/download/v0.1-session-fix/aws-env-linux-amd64 && \
-  chmod +x /tmp/aws-env-linux-amd64 && \
-  mv /tmp/aws-env-linux-amd64 /bin/aws-env
-
 RUN npm install -g pm2 node-gyp sails grunt bower jake npm-check-updates
 
 ENV NODE_ENV production
@@ -25,6 +20,6 @@ WORKDIR /opt/app
 ADD . /opt/app
 
 #Expose port
-EXPOSE 1337
+EXPOSE 3000
 
-CMD bash -c "eval $(aws-env) && npm start"
+CMD bash -c "npm start"
