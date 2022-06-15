@@ -9,17 +9,20 @@ module.exports = {
     let basePath = '/link/';
     if(!relative)
       basePath = 'https:' + process.env.BASE_URL + basePath;
+
     $('a').each(function(i, elem) {
       var current = $(elem).attr('href');
+      var topicName = $(elem).text();
       var rdOptions = $(elem).attr('rd-options');
       if(!current) return;
       var absolutePattern = /^https?:\/\//i;
-      if (absolutePattern.test(current)) return;
+      var rdrrPattern = /rdrr.io/i;
+      if (absolutePattern.test(current) && !rdrrPattern.test(current)) return;
       if (rdOptions === '' || !rdOptions) {
-        $(elem).attr('href', url.resolve(basePath, encodeURIComponent(current)) +
+        $(elem).attr('href', url.resolve(basePath, encodeURIComponent(topicName)) +
           '?package=' + encodeURIComponent(packageVersion.package_name) +
           '\&version=' + encodeURIComponent(packageVersion.version));
-        $(elem).attr('data-mini-rdoc', `${packageVersion.package_name}::${current}`);
+        $(elem).attr('data-mini-rdoc', `${packageVersion.package_name}::${topicName}`);
       } else {
         if (rdOptions.split(':') > 1) {
           $(elem).attr('href', url.resolve(basePath, encodeURIComponent(rdOptions[1])) +
@@ -28,11 +31,11 @@ module.exports = {
             '\&to=' + encodeURIComponent(rdOptions[0]));
             $(elem).attr('data-mini-rdoc', `${rdOptions[0]}::${rdOptions[1]}`);
         } else {
-          $(elem).attr('href', url.resolve(basePath, encodeURIComponent(current)) +
+          $(elem).attr('href', url.resolve(basePath, encodeURIComponent(topicName)) +
             '?package=' + encodeURIComponent(packageVersion.package_name) +
             '\&version=' + encodeURIComponent(packageVersion.version) +
             '\&to=' + encodeURIComponent(rdOptions));
-            $(elem).attr('data-mini-rdoc', `${rdOptions}::${current}`);
+            $(elem).attr('data-mini-rdoc', `${rdOptions}::${topicName}`);
         }
       }
 

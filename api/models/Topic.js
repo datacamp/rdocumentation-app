@@ -7,6 +7,7 @@
 
 var _ = require('lodash');
 var Promise = require('bluebird');
+var sanitizeHtml = require('sanitize-html');
 
 module.exports = {
 
@@ -22,39 +23,39 @@ module.exports = {
     },
 
     description: {
-      type: Sequelize.TEXT,
+      type: Sequelize.TEXT
     },
 
     usage: {
-      type: Sequelize.TEXT,
+      type: Sequelize.TEXT
     },
 
     details: {
-      type: Sequelize.TEXT,
+      type: Sequelize.TEXT
     },
 
     value: {
-      type: Sequelize.TEXT,
+      type: Sequelize.TEXT
     },
 
     references: {
-      type: Sequelize.TEXT,
+      type: Sequelize.TEXT
     },
 
     note: {
-      type: Sequelize.TEXT,
+      type: Sequelize.TEXT
     },
 
     author: {
-      type: Sequelize.TEXT,
+      type: Sequelize.TEXT
     },
 
     seealso: {
-      type: Sequelize.TEXT,
+      type: Sequelize.TEXT
     },
 
     examples: {
-      type: Sequelize.TEXT,
+      type: Sequelize.TEXT
     },
 
     sourceJSON: {
@@ -65,7 +66,6 @@ module.exports = {
 
   },
   associations: function() {
-
     Topic.belongsTo(PackageVersion,
       {
         as: 'package_version',
@@ -115,7 +115,7 @@ module.exports = {
             .replace(':version', encodeURIComponent(this.package_version.version))
             .replace(':topic', encodeURIComponent(this.name))
             .replace('/api/', '/');
-        } else return sails.getUrlFor({ target: 'Topic.findById' })
+        } return sails.getUrlFor({ target: 'Topic.findById' })
           .replace(':id', encodeURIComponent(this.id))
           .replace('/api/', '/');
       },
@@ -125,9 +125,9 @@ module.exports = {
             .replace(':name', encodeURIComponent(this.package_version.package_name))
             .replace(':version', encodeURIComponent(this.package_version.version))
             .replace(':topic', encodeURIComponent(this.name));
-        } else return sails.getUrlFor({ target: 'Topic.findById' })
+        } return sails.getUrlFor({ target: 'Topic.findById' })
           .replace(':id', encodeURIComponent(this.id));
-      },
+      }
     },
 
     classMethods: {
@@ -140,8 +140,8 @@ module.exports = {
         var options = _.mergeWith({
           where: criteria,
           include: [
-            {model: Argument, as: 'arguments', attributes: ['name', 'description', 'topic_id'], separate:true },
-            {model: Section, as: 'sections', attributes: ['name', 'description', 'topic_id'], separate:true },
+            {model: Argument, as: 'arguments', attributes: ['name', 'description', 'topic_id'], separate: true },
+            {model: Section, as: 'sections', attributes: ['name', 'description', 'topic_id'], separate: true },
             {model: Tag, as: 'keywords', attributes: ['name']},
             {model: Alias, as: 'aliases', attributes: ['name', 'topic_id'], separate: true },
             {model: Example, as: 'user_examples',
@@ -162,7 +162,7 @@ module.exports = {
           package_name: packageName
         };
 
-        if(version) { //if version is specified, find in this one
+        if (version) { // if version is specified, find in this one
           packageCriteria.version = version;
         }
 
@@ -170,7 +170,7 @@ module.exports = {
           where: { name: name },
           include: [
             { model: PackageVersion, as: 'package_version', attributes: ['package_name', 'version'], where: packageCriteria }
-          ],
+          ]
         };
 
         return Promise.join(
@@ -178,7 +178,8 @@ module.exports = {
           Topic.findByAliasInPackage(packageName, name, version),
         function(topics, aliasesTopics) {
           return topics.concat(aliasesTopics).sort(PackageService.compareVersions('desc', function(topic) {
-            return topic.package_version.version })
+            return topic.package_version.version;
+          })
           )[0];
         });
       },
@@ -188,7 +189,7 @@ module.exports = {
           package_name: packageName
         };
 
-        if(version) { //if version is specified, find in this one
+        if (version) { // if version is specified, find in this one
           packageCriteria.version = version;
         }
 
@@ -200,16 +201,19 @@ module.exports = {
         };
 
         return Topic.findAll(params).then(function(topicInstances) {
-          if(topicInstances) return topicInstances.sort(PackageService.compareVersions('desc', function(topic) {
-            return topic.package_version.version })
+          if (topicInstances) {
+            return topicInstances.sort(PackageService.compareVersions('desc', function(topic) {
+              return topic.package_version.version;
+            })
           )[0];
-          else return topicInstances;
+          }
+          return topicInstances;
         });
       },
 
       createWithRdFile: function(opts) {
         var rdJSON = opts.input;
-        return sequelize.transaction(function (t) {
+        return sequelize.transaction(function(t) {
           var attributes = [
             'name',
             'title',
@@ -225,11 +229,20 @@ module.exports = {
 
           var topic = _.pick(rdJSON, attributes);
 
+          if (topic.usage !== null && typeof topic.usage === 'object') {
+            topic.usage = topic.usage.contents;
+          }
+
+          topic.examples = sanitizeHtml(topic.examples, {
+            allowedTags: ['a' ],
+            allowedAttributes: {}
+          });
+
           var arrayToString = function(val) {
             if (val instanceof Array) {
-              if(_.isEmpty(val)) return "";
-              else return val.join("\n\n");
-            } else return val;
+              if (_.isEmpty(val)) return '';
+              return val.join('\n\n');
+            } return val;
           };
 
           topic = _.mapValues(topic, arrayToString);
@@ -245,14 +258,13 @@ module.exports = {
           var packageVersion = {
             package_name: opts.packageName,
             version: opts.packageVersion,
-            description: "",
-            license: ""
+            description: '',
+            license: ''
           };
 
           return PackageVersion.upsertPackageVersion(packageVersion, {
             transaction: t
           }).spread(function(version, created) {
-
             topic.package_version_id = version.id;
 
 
@@ -281,12 +293,12 @@ module.exports = {
                   {model: Alias, as: 'aliases'}
                 ]
               }),
-              Tag.bulkCreate(keywordsRecords, {transaction:t, ignoreDuplicates: true})
+              Tag.bulkCreate(keywordsRecords, {transaction: t, ignoreDuplicates: true})
               .then(function(instances) {
-                var names = _.map(instances, function (inst) {
+                var names = _.map(instances, function(inst) {
                   return inst.name;
                 });
-                return Tag.findAll({where: {name: {$in: names}}, transaction:t });
+                return Tag.findAll({where: {name: {$in: names}}, transaction: t });
               }),
               function(instanceCreatedArray, keywordsInstances) {
                 var topicInstance = instanceCreatedArray[0];
@@ -329,11 +341,9 @@ module.exports = {
                   topicInstance.setKeywords(keywordsInstances, {transaction: t }),
                   topicInstance.save({transaction: t})
                 ]).then(_.partial(Topic.findOnePopulated, {id: topicInstance.id}, {transaction: t}));
-            });
+              });
           });
-
         });
-
       }
     }
   }
