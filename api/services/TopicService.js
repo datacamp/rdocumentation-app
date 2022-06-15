@@ -15,8 +15,9 @@ module.exports = {
       var topicName = $(elem).text();
       var rdOptions = $(elem).attr('rd-options');
       if(!current) return;
+      var absolutePattern = /^https?:\/\//i;
       var rdrrPattern = /rdrr.io/i;
-      if (!rdrrPattern.test(current)) return;
+      if (absolutePattern.test(current) && !rdrrPattern.test(current)) return;
       if (rdOptions === '' || !rdOptions) {
         $(elem).attr('href', url.resolve(basePath, encodeURIComponent(topicName)) +
           '?package=' + encodeURIComponent(packageVersion.package_name) +
