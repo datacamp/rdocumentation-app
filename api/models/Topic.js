@@ -233,6 +233,10 @@ module.exports = {
             topic.usage = topic.usage.contents;
           }
 
+          if (topic.description !== null && typeof topic.description === 'object') {
+            topic.description = topic.description.contents;
+          }
+
           topic.examples = sanitizeHtml(topic.examples, {
             allowedTags: ['a' ],
             allowedAttributes: {}
