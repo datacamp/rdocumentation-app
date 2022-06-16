@@ -238,7 +238,7 @@ module.exports = {
           }
 
           topic.examples = sanitizeHtml(topic.examples, {
-            allowedTags: ['a' ],
+            allowedTags: [],
             allowedAttributes: {}
           });
 
@@ -319,11 +319,6 @@ module.exports = {
                   'sourceJSON'])
                 );
 
-                var topicArguments = _.isEmpty(rdJSON.arguments) ? [] : rdJSON.arguments.map(function(argument) {
-                  var arg = _.mapValues(argument, arrayToString);
-                  return _.merge({}, arg, {topic_id: topicInstance.id});
-                });
-
                 var aliases = rdJSON.aliases && !(rdJSON.aliases instanceof Array) ? [rdJSON.aliases] : rdJSON.aliases;
                 var aliasesRecords = _.isEmpty(aliases) ? [] : aliases.map(function(alias) {
                   return {name: alias, topic_id: topicInstance.id};
@@ -336,10 +331,8 @@ module.exports = {
                 });
 
                 return Promise.all([
-                  topicInstance.removeArguments(topicInstance.arguments),
                   topicInstance.removeSections(topicInstance.sections),
                   topicInstance.removeAliases(topicInstance.aliases),
-                  Argument.bulkCreate(topicArguments, {transaction: t}),
                   Alias.bulkCreate(aliasesRecords, {transaction: t}),
                   Section.bulkCreate(sections, {transaction: t}),
                   topicInstance.setKeywords(keywordsInstances, {transaction: t }),
