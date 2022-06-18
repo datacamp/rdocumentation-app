@@ -7,22 +7,22 @@ R documentation sifts through all CRAN, GitHub and BioConductor packages hourly,
 The RDocs project is completely open-source. This repository contains the source code for the NodeJS web application that serves [www.rdocumentation.org](https://www.rdocumentation.org). For other codebases, you can check out [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Features
-
-- Quick search through all packages and functions
-
+- Quick search through all packages and functions 
+  
 ![screen shot 2016-08-25 at 14 07 05](https://cloud.githubusercontent.com/assets/1741726/17968459/41bee176-6acd-11e6-9431-3aec36ffd8c8.png)
-
+  
 - Complete search through all packages and function
-
+  
 ![screen shot 2016-08-25 at 14 08 52](https://cloud.githubusercontent.com/assets/1741726/17968498/7ce9a6aa-6acd-11e6-9276-4d5ced4523b3.png)
-
+  
 - Easily assess package quality
 
 ![screen shot 2016-08-25 at 14 11 27](https://cloud.githubusercontent.com/assets/1741726/17968583/df47301a-6acd-11e6-9a28-5167b768fbf1.png)
 
-- Post _community examples_ to help the community understand how to use a function
+- Post *community examples* to help the community understand how to use a function
 
 ![screen shot 2016-08-25 at 14 14 37](https://cloud.githubusercontent.com/assets/1741726/17968654/492bb8f2-6ace-11e6-8a64-c620e9e98efa.png)
+
 
 ## What this app does
 
@@ -33,32 +33,18 @@ This application is part the rdocumentation project. This app is responsible for
 Documentation of the differents endpoints can be found here: http://www.rdocumentation.org/docs/
 
 ## Issue/Feature request
-
 Please post a new issue at https://github.com/datacamp/rdocumentation-app/issues for any bug that you encounter or a feature that you would like to see in rdocumetation.org.
 
 ## Development
 
 ### Using docker
-
 You'll need docker and docker-compose to run this stack locally
 
 - Copy the .env.sample to .env and change relevant variables
 - `docker-compose create` to create the redis and mysql container
 - `docker-compose start` to fire up a local redis an mysql
-- Use the same node version in your terminal as the Dockerfile is using: `nvm use 8.16`
-- `npm install`
 - Run the database migrations by doing `npm run migrate`
 - `npm run start-dev`
-
-### Troubleshooting
-
-If you get an error: `SequelizeConnectionError: ER_NOT_SUPPORTED_AUTH_MODE: Client does not support authentication protocol requested by server; consider upgrading MySQL client`
-follow these steps:
-
-1. Access your mysql container: you can do it either through the docker app by clicking on the "cli" button of the container, or in your terminal by running `docker exec -it <mysql_container_id> bash`
-2. `mysql -u root -p`
-3. Enter: `password`
-4. `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'`
 
 ## How to deploy
 
@@ -70,7 +56,6 @@ The rdocumentation app is hosted on DataCamp's infrastructure, on our AWS ECS cl
 ## What the CI does
 
 This application runs on the DataCamp infrastructure. Our custom CI flow will:
-
 - Build a docker image
 - Upload it the ECR
 - Deploy the new version to ECS
@@ -78,7 +63,6 @@ This application runs on the DataCamp infrastructure. Our custom CI flow will:
 ## How to contribute
 
 We welcome any contributions that could improves rdocumentation.org. There is multiple ways of contributing:
-
 - Report when some packages are missing/outdated/incorrect by creating an issue.
 - Report bugs.
 - Help us improves by proposing features.
