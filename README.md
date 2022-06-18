@@ -1,6 +1,9 @@
 # RDocumentation API
 
-_Note:_ This repo is now only used for its API. Please disregard all the UI code here, which now lives in [datacamp/rdocumentation-2.0](https://github.com/datacamp/rdocumentation-2.0).
+_Important notes:_
+
+1. Please read this [confluence page](https://datacamp.atlassian.net/wiki/spaces/PRODENG/pages/2314469377/RDocumentation) which explains the architecture of how RDocumentation works.
+2. This repo is now only used for its API. Please disregard all the UI code here. THe UI now lives in [datacamp/rdocumentation-2.0](https://github.com/datacamp/rdocumentation-2.0).
 
 rdocumentation.org provides the R community with centralized, quality and easy to search documentation.
 
