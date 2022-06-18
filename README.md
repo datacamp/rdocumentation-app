@@ -25,13 +25,15 @@ You can check docs for the API by running the app locally and going to http://lo
 You'll need docker and docker-compose to run this stack locally
 
 - Copy the .env.sample to .env and change relevant variables
-  - If you already have a mysql db running on port 3306, update the `DATABASE_PORT` to another value
+  - If you already have a mysql db running on port 3306, update the `DATABASE_PORT` to another value as well as the port mapping in docker-compose.yml (e.g. change it to `"3308:3306"`)
 - `docker-compose create` to create the redis and mysql container
 - `docker-compose start` to fire up a local redis an mysql
 - Use the same node version in your terminal as the Dockerfile is using: `nvm use 8.16`
 - `npm install`
 - Run the database migrations by doing `npm run migrate`
 - `npm run start-dev`
+
+Once the db is running, you can use a mysql client like dbeaver to access it. Connect to it based on the environment variables you have in `docker-compose.yml`. The server host should just be `localhost`.
 
 ### Troubleshooting
 
