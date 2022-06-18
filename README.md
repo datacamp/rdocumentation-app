@@ -6,6 +6,15 @@ rdocumentation.org provides the R community with centralized, quality and easy t
 
 R documentation sifts through all CRAN, GitHub and BioConductor packages hourly, parses the documentation files and indexes them in an Elasticsearch database. This makes rdocumentation.org the best online resource to browse all R package documentation.
 
+## How the API works
+
+You can check docs for the API by running the app locally and going to http://localhost:3000/docs/
+
+1. Newly parsed packages are added to the `rdocs-app-worker` SQS queue every hour.
+2. That queue is configured to hit the `/task` path which calls the `processMessage` method of the WorkerController
+3. That `processMessage` method adds topics to the mysql database
+4. After a query is sent to the API to request a topic, that topic is stored in Redis so that it's returned faster next time.
+
 ## Development
 
 ### Using docker
@@ -13,10 +22,23 @@ R documentation sifts through all CRAN, GitHub and BioConductor packages hourly,
 You'll need docker and docker-compose to run this stack locally
 
 - Copy the .env.sample to .env and change relevant variables
+  - If you already have a mysql db running on port 3306, update the `DATABASE_PORT` to another value
 - `docker-compose create` to create the redis and mysql container
 - `docker-compose start` to fire up a local redis an mysql
+- Use the same node version in your terminal as the Dockerfile is using: `nvm use 8.16`
+- `npm install`
 - Run the database migrations by doing `npm run migrate`
 - `npm run start-dev`
+
+### Troubleshooting
+
+If you get an error: `SequelizeConnectionError: ER_NOT_SUPPORTED_AUTH_MODE: Client does not support authentication protocol requested by server; consider upgrading MySQL client`
+follow these steps:
+
+1. Access your mysql container: you can do it either through the docker app by clicking on the "cli" button of the container, or in your terminal by running `docker exec -it <mysql_container_id> bash`
+2. `mysql -u root -p`
+3. Enter: `password`
+4. `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'`
 
 ## How to deploy
 
