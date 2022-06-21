@@ -24,6 +24,14 @@ workflows:
             branches:
               only:
                 - master
+      - datacamp-ecr/pull_push_to_account:
+          context: org-global
+          repo: rdoc-app
+          filters:
+            tags:
+              only: /^release-.*/
+            branches:
+              ignore: /.*/
       - datacamp-deploy/deploy: # Production
           context: org-global
           requires:
