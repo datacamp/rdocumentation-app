@@ -24,14 +24,6 @@ workflows:
             branches:
               only:
                 - master
-      - datacamp-ecr/pull_push_to_account:
-          context: org-global
-          repo: rdoc-app
-          filters:
-            tags:
-              only: /^release-.*/
-            branches:
-              ignore: /.*/
       - datacamp-deploy/deploy: # Production
           context: org-global
           requires:
@@ -40,7 +32,6 @@ workflows:
           aws-access-key-id: $PROD_AWS_ACCESS_KEY_ID
           aws-secret-access-key: $PROD_AWS_SECRET_ACCESS_KEY
           filters:
-            tags:
-              only: /^release-.*/
             branches:
-              ignore: /.*/
+              only:
+                - master
