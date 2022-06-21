@@ -1,5 +1,3 @@
-![rdocumentation_site_banner](https://cloud.githubusercontent.com/assets/1741726/17966806/d52c646a-6ac3-11e6-8f61-60379cfd70bb.png)
-
 The information on this page comes from the original Readme when this app was used for its UI as well, but since the UI now lives in [datacamp/rdocumentation-2.0](https://github.com/datacamp/rdocumentation-2.0), this Readme is just there to remind you the good old' days of RDocumentation.
 
 ## Features
