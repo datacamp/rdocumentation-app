@@ -26,24 +26,27 @@ You'll need docker and docker-compose to run this stack locally
 
 - Copy the .env.sample to .env and change relevant variables
   - If you already have a mysql db running on port 3306, update the `DATABASE_PORT` to another value as well as the port mapping in docker-compose.yml (e.g. change it to `"3308:3306"`)
-- `docker-compose create` to create the redis and mysql container
+- Make sure you are using version 2 of docker-compose, then run `docker-compose create` to create the redis and mysql container
 - `docker-compose start` to fire up a local redis an mysql
 - Use the same node version in your terminal as the Dockerfile is using: `nvm use 8.16`
 - `npm install`
 - Run the database migrations by doing `npm run migrate`
 - `npm run start-dev`
 
-Once the db is running, you can use a mysql client like dbeaver to access it. Connect to it based on the environment variables you have in `docker-compose.yml`. The server host should just be `localhost`.
+Once the db is running, you can use a mysql client like dbeaver to access it. Connect to it based on the environment variables you have in `docker-compose.yml`. You will also need to go in the "Driver properties" tab of the connection window, and set `allowPublicKeyRetrieval` to true. When you are done, click on Finish. The server host should just be `localhost`.
 
 ### Troubleshooting
 
 If you get an error: `SequelizeConnectionError: ER_NOT_SUPPORTED_AUTH_MODE: Client does not support authentication protocol requested by server; consider upgrading MySQL client`
 follow these steps:
 
-1. Access your mysql container: you can do it either through the docker app by clicking on the "cli" button of the container, or in your terminal by running `docker exec -it <mysql_container_id> bash`
+1. Access your mysql container: you can do it either through the docker app by clicking on the "cli" button of the container, or in your terminal by running:
+   - `docker ps` and grabing the container id for mysql
+   - `docker exec -it <mysql_container_id> bash`
 2. `mysql -u root -p`
 3. Enter: `password`
-4. `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'`
+4. `ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'password';`
+5. `flush privileges;`
 
 ## How to deploy
 
