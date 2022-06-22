@@ -52,7 +52,6 @@ follow these steps:
 
 - To deploy to stating (rdocumentation.datacamp-staging.com), merge to master
 - To deploy to production, add a tag which starts with `release-`
-
 The rdocumentation app is hosted on DataCamp's infrastructure, on our AWS ECS cluster.
 
 ## What the CI does
