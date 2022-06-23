@@ -15,7 +15,7 @@
       "containers": [
         {
           "containerName": "rdoc-app",
-          "containerURI": "708371444347.dkr.ecr.us-east-1.amazonaws.com/${SERVICE}:${CIRCLE_SHA1}",
+          "containerURI": "708371444347.dkr.ecr.us-east-1.amazonaws.com/rdoc-app:${CIRCLE_SHA1}",
           "containerPort": 1337,
           "memoryReservation": 256,
           "essential": true,
