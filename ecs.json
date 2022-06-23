@@ -1,68 +1,69 @@
 {
-  "services": [{
-    "cluster": "datacamp-services",
-    "serviceName": "rdoc-app",
-    "serviceProtocol": "none",
-    "desiredCount": 1,
-    "deployment": {
-      "parameters": {
-        "slackChannel": "comm-deploys",
-        "customMessage": "Deploying ${CIRCLE_BUILD_URL}"
-      }
-    },
-    "loadBalancer": "datacamp-rdocumentation",
-    "containers": [
-      {
-        "containerName": "rdoc-app",
-        "containerImage": "rdoc-app",
-        "containerTag": "${CIRCLE_SHA1}",
-        "containerPort": 1337,
-        "memoryReservation": 256,
-        "essential": true,
-        "healthCheck": {
-          "command": [
-            "CMD-SHELL",
-            "curl -f http://localhost:1337/status || exit 1"
-          ],
-          "interval": 60,
-          "startPeriod": 120
-        },
-        "dockerLabels": {
-          "com.datadoghq.ad.instances": "[{ \"name\": \"service_check\", \"url\": \"http://%%host%%:%%port%%/status\", \"tags\": [\"service:rdoc-app\"], \"allow_redirects\": false }]",
-          "com.datadoghq.ad.check_names": "[\"http_check\"]",
-          "com.datadoghq.ad.init_configs": "[{}]"
+  "services": [
+    {
+      "cluster": "datacamp-services",
+      "serviceName": "rdoc-app",
+      "serviceProtocol": "none",
+      "desiredCount": 1,
+      "deployment": {
+        "parameters": {
+          "slackChannel": "comm-deploys",
+          "customMessage": "Deploying ${CIRCLE_BUILD_URL}"
         }
-      }
-    ]
-  },
-  {
-    "cluster": "datacamp-services",
-    "serviceName": "rdoc-app-worker",
-    "serviceProtocol": "none",
-    "desiredCount": 1,
-    "loadBalancer": "datacamp-services-internal",
-    "containers": [
-      {
-        "containerName": "rdoc-app-worker",
-        "containerImage": "rdoc-app",
-        "containerTag": "${CIRCLE_SHA1}",
-        "containerPort": 1337,
-        "memoryReservation": 4000,
-        "cpu": 256,
-        "essential": true
       },
-      {
-        "containerName": "rdoc-app-sqsd",
-        "containerImage": "sqsd",
-        "containerTag": "latest",
-        "memoryReservation": 128,
-        "essential": true,
-        "containerCommand": [
-          "bash",
-          "-c",
-          "eval $(aws-env) && node run-cli.js"
-        ]
-      }
-    ]
-  }]
+      "loadBalancer": "datacamp-rdocumentation",
+      "containers": [
+        {
+          "containerName": "rdoc-app",
+          "containerURI": "708371444347.dkr.ecr.us-east-1.amazonaws.com/rdoc-app:${CIRCLE_SHA1}",
+          "containerPort": 1337,
+          "memoryReservation": 256,
+          "essential": true,
+          "healthCheck": {
+            "command": [
+              "CMD-SHELL",
+              "curl -f http://localhost:1337/status || exit 1"
+            ],
+            "interval": 60,
+            "startPeriod": 120
+          },
+          "dockerLabels": {
+            "com.datadoghq.ad.instances": "[{ \"name\": \"service_check\", \"url\": \"http://%%host%%:%%port%%/status\", \"tags\": [\"service:rdoc-app\"], \"allow_redirects\": false }]",
+            "com.datadoghq.ad.check_names": "[\"http_check\"]",
+            "com.datadoghq.ad.init_configs": "[{}]"
+          }
+        }
+      ]
+    },
+    {
+      "cluster": "datacamp-services",
+      "serviceName": "rdoc-app-worker",
+      "serviceProtocol": "none",
+      "desiredCount": 1,
+      "loadBalancer": "datacamp-services-internal",
+      "containers": [
+        {
+          "containerName": "rdoc-app-worker",
+          "containerImage": "rdoc-app",
+          "containerTag": "${CIRCLE_SHA1}",
+          "containerPort": 1337,
+          "memoryReservation": 4000,
+          "cpu": 256,
+          "essential": true
+        },
+        {
+          "containerName": "rdoc-app-sqsd",
+          "containerImage": "sqsd",
+          "containerTag": "latest",
+          "memoryReservation": 128,
+          "essential": true,
+          "containerCommand": [
+            "bash",
+            "-c",
+            "eval $(aws-env) && node run-cli.js"
+          ]
+        }
+      ]
+    }
+  ]
 }
