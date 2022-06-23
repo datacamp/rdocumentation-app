@@ -13,6 +13,7 @@ workflows:
           aws-secret-access-key: $OPS_AWS_SECRET_ACCESS_KEY
           account-url: $OPS_ECR_URL
           puller-account-ids: '["301258414863", "487088987264"]'
+          repo: rdoc-app
       - datacamp-deploy/deploy: # Staging
           context: org-global
           requires:
