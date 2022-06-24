@@ -42,7 +42,6 @@ module.exports = {
   * @apiSuccess {Integer}  versions.maintainer_id Id of the maintainer of the package version
   * @apiSuccess {String}   type                   Always 'package'
   */
-
   findByName: function(req, res) {
     var packageName = req.param('name');
 
@@ -85,8 +84,10 @@ module.exports = {
   * @api {get} /packages List all packages
   * @apiName Get Packages
   * @apiGroup Package
-  * @apiDescription Return an array of package object containing listed attributes
+  * @apiDescription Return an array of package object containing listed attributes and total number of package objects header.
   *
+  * @apiHeader (Header) {String} x-total-count total count of packages.
+  * 
   * @apiParam {String} limit    the number to use when limiting records to send back (useful for pagination)
   * @apiParam {String} skip     the number of records to skip when limiting (useful for pagination)
   * @apiParam {String} sort     the order of returned records, e.g. `name ASC` or `name DESC`
@@ -106,15 +107,16 @@ module.exports = {
     var limit = Utils.parseLimit(req);
     var offset = Utils.parseSkip(req);
     var sort = Utils.parseSort(req);
-    var criteria = Utils.parseCriteria(req);
+    var criteria = Utils.parseCriteria(req); 
 
     Package.findAll({
-      where: criteria,
       limit: limit,
+      where: criteria,
       offset: offset,
       order: sort,
       include: []
     }).then(function(packages) {
+      res.set('X-Total-Count', packages.length);
       return res.json(packages);
     }).catch(function(err) {
       return res.negotiate(err);
