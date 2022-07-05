@@ -22,14 +22,17 @@ module.exports = {
       result.then(function(value) {
         var key = 'view_topic_' + value.id;
         RedisService.invalidateTopicById(key);
-        console.log(value);
+        // console.log(value);
         res.json(value);
       })
       .catch(Sequelize.UniqueConstraintError, function (err) {
+        console.log('Sequelize.UniqueConstraintError: ', err.errors);
         return res.send(409, err.errors);
       }).catch(Sequelize.ValidationError, function (err) {
+        console.log('Sequelize.ValidationError: ', err.errors);
         return res.send(400, err.errors);
       }).catch(function(err){
+        console.log(err.errors);
         return res.negotiate(err.errors);
       });
 
