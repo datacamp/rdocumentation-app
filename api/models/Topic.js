@@ -229,12 +229,9 @@ module.exports = {
 
           var topic = _.pick(rdJSON, attributes);
 
-          console.log('topic.usage before processing: ', topic.usage);
           if (topic.usage !== null && typeof topic.usage === 'object') {
             topic.usage = topic.usage.contents;
           }
-
-          console.log('topic.usage after processing: ', topic.usage);
 
           if (topic.description !== null && typeof topic.description === 'object') {
             topic.description = topic.description.contents;
