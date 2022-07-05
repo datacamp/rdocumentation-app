@@ -22,6 +22,7 @@ module.exports = {
       result.then(function(value) {
         var key = 'view_topic_' + value.id;
         RedisService.invalidateTopicById(key);
+        console.log(value);
         res.json(value);
       })
       .catch(Sequelize.UniqueConstraintError, function (err) {
