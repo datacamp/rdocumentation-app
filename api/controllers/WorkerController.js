@@ -22,6 +22,7 @@ module.exports = {
       result.then(function(value) {
         var key = 'view_topic_' + value.id;
         RedisService.invalidateTopicById(key);
+        // console.log(value);
         res.json(value);
       })
       .catch(Sequelize.UniqueConstraintError, function (err) {
@@ -31,7 +32,8 @@ module.exports = {
         console.log('SequelizeError: ValidationError: ', err.errors);
         return res.send(400, err.errors);
       }).catch(function(err){
-        return res.negotiate(err.errors);
+        console.log(err.errors);
+        return res.negotiate([...err.errors, "Other"]);
       });
 
     } else if (type === 'version') {
