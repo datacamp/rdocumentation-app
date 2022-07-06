@@ -44,8 +44,7 @@
       "containers": [
         {
           "containerName": "rdoc-app-worker",
-          "containerImage": "rdoc-app",
-          "containerTag": "${CIRCLE_SHA1}",
+          "containerURI": "708371444347.dkr.ecr.us-east-1.amazonaws.com/rdoc-app:${CIRCLE_SHA1}",
           "containerPort": 1337,
           "memoryReservation": 4000,
           "cpu": 256,
@@ -53,8 +52,7 @@
         },
         {
           "containerName": "rdoc-app-sqsd",
-          "containerImage": "sqsd",
-          "containerTag": "latest",
+          "containerURI": "filipsch/sqsd:latest",
           "memoryReservation": 128,
           "essential": true,
           "containerCommand": [
