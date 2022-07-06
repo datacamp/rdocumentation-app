@@ -26,10 +26,10 @@ module.exports = {
         res.json(value);
       })
       .catch(Sequelize.UniqueConstraintError, function (err) {
-        console.log('SequelizeError - UniqueConstraintError: ', err.errors);
+        console.log('SequelizeError - UniqueConstraintError:', err.errors);
         return res.send(409, err.errors);
       }).catch(Sequelize.ValidationError, function (err) {
-        console.log('SequelizeError - ValidationError: ', err.errors);
+        console.log('SequelizeError - ValidationError:', err.errors);
         return res.send(400, err.errors);
       }).catch(function(err){
         console.log(err.errors);
