@@ -48,11 +48,11 @@ follow these steps:
 4. `ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'password';`
 5. `flush privileges;`
 
-## How to deploy
 
-- To deploy to stating (rdocumentation.datacamp-staging.com), merge to master
-- To deploy to production, add a tag which starts with `release-`
-The rdocumentation app is hosted on DataCamp's infrastructure, on our AWS ECS cluster.
+## Deployment
+
+- Commits to master are deployed to staging
+- Tags that use `vx.y.z` are deployed to production
 
 ## What the CI does
 

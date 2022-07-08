@@ -13,26 +13,39 @@ workflows:
           aws-secret-access-key: $OPS_AWS_SECRET_ACCESS_KEY
           account-url: $OPS_ECR_URL
           puller-account-ids: '["301258414863", "487088987264"]'
+          extra-docker-args: "--build-arg VERSION=$(git describe --tags)"
           repo: rdoc-app
+          executor: datacamp-ecr/buildkit
+          filters:
+            branches:
+              only:
+                - master
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
       - datacamp-deploy/deploy: # Staging
+          name: deploy-staging
           context: org-global
           requires:
             - build
           environment: staging
           aws-access-key-id: $STAGING_AWS_ACCESS_KEY_ID
           aws-secret-access-key: $STAGING_AWS_SECRET_ACCESS_KEY
+          extra-env: "VERSION=$(git describe --tags)"
           filters:
             branches:
               only:
                 - master
       - datacamp-deploy/deploy: # Production
+          name: deploy-production
           context: org-global
           requires:
             - build
           environment: prod
           aws-access-key-id: $PROD_AWS_ACCESS_KEY_ID
           aws-secret-access-key: $PROD_AWS_SECRET_ACCESS_KEY
+          extra-env: "VERSION=$(git describe --tags)"
           filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
             branches:
-              only:
-                - master
+              ignore: /.*/
