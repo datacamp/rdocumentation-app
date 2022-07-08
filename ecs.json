@@ -52,14 +52,9 @@
         },
         {
           "containerName": "rdoc-app-sqsd",
-          "containerURI": "487088987264.dkr.ecr.us-east-1.amazonaws.com/sqsd:latest",
+          "containerURI": "filipsch/sqsd:latest",
           "memoryReservation": 128,
-          "essential": true,
-          "containerCommand": [
-            "bash",
-            "-c",
-            "eval $(aws-env) && node run-cli.js"
-          ]
+          "essential": true
         }
       ]
     }
