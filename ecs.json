@@ -52,7 +52,7 @@
         },
         {
           "containerName": "rdoc-app-sqsd",
-          "containerURI": "708371444347.dkr.ecr.us-east-1.amazonaws.com/sqsd:latest",
+          "containerURI": "301258414863.dkr.ecr.us-east-1.amazonaws.com/sqsd:latest",
           "memoryReservation": 128,
           "essential": true,
           "containerCommand": [
