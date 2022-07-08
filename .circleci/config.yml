@@ -15,6 +15,7 @@ workflows:
           puller-account-ids: '["301258414863", "487088987264"]'
           extra-docker-args: "--build-arg VERSION=$(git describe --tags)"
           repo: rdoc-app
+          docker-version: 20.10.2
           executor: datacamp-ecr/buildkit
           filters:
             branches:
