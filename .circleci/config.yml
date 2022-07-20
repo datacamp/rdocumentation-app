@@ -4,6 +4,93 @@ orbs:
   datacamp-deploy: datacamp/deploy@2
 workflows:
   version: 2
+  # BEGIN ANSIBLE MANAGED BLOCK
+  build-and-deploy-eks:
+    jobs:
+      - queue/block_workflow:
+          name: queue
+          context: org-global
+          time: '10'
+          filters:
+            branches:
+              ignore:
+                - /backstage\/.*/
+
+      - datacamp-artifactory/build_and_push_image_to_artifactory: &dockerBuild
+          name: docker-build
+          context: org-global
+          extra-docker-args: "--build-arg NPM_TOKEN=${NPM_TOKEN}"
+          dockerfile: apps/main-service/Dockerfile
+          docker-version: "20.10.2"
+          repo: skill-assessment-api
+          executor: datacamp-artifactory/buildkit
+          git_tag_filter: '--match "[0-9]*.[0-9]*.[0-9]*"'
+          requires:
+           - queue
+
+      - datacamp-artifactory/tag_repository:
+          name: tag
+          context: org-global
+          git_tag_filter: '--match "[0-9]*.[0-9]*.[0-9]*"'
+          requires:
+            - docker-build
+            - queue
+          filters:
+            branches:
+              only:
+                - master
+  deploy-backstage:
+    jobs:
+      - datacamp-artifactory/build_and_push_image_to_artifactory:
+          name: docker-build
+          context: org-global
+          extra-docker-args: "--build-arg NPM_TOKEN=${NPM_TOKEN}"
+          dockerfile: apps/main-service/Dockerfile
+          docker-version: "20.10.2"
+          repo: skill-assessment-api
+          executor: datacamp-artifactory/buildkit
+          filters:
+            branches:
+              only:
+                - /backstage\/.*/
+      - datacamp-deploy-branch/deploy: # Backstage branch deploy
+          name: deploy-to-backstage
+          context: org-global
+          app: skill-assessment
+          env: staging
+          roles: terraform-role,k8s-role
+          region: us-east-1
+          extra-vars: "backstage=true"
+          filters:
+            branches:
+              only:
+                - /backstage\/.*/
+          requires:
+            - docker-build
+
+      - testing-complete: # <<< Require a manual approval to cleandown
+          type: approval
+          requires:
+            - deploy-to-backstage
+          filters:
+            branches:
+              only:
+                - /backstage\/.*/
+
+      - datacamp-deploy-branch/deploy:
+          name: cleandown-backstage
+          context: org-global
+          app: skill-assessment
+          env: staging
+          roles: app-cleandown-role
+          extra-vars: 'backstage=true'
+          filters:
+            branches:
+              only:
+                - /backstage\/.*/
+          requires:
+            - testing-complete
+# END ANSIBLE MANAGED BLOCK
   build-and-deploy:
     jobs:
       - datacamp-ecr/build_and_push_image_to_ecr:
