@@ -2,6 +2,9 @@ version: 2.1
 orbs:
   datacamp-ecr: datacamp/ecr@1
   datacamp-deploy: datacamp/deploy@2
+  queue: eddiewebb/queue@1.7.0
+  datacamp-deploy-branch: datacamp/deploy-branch@1
+  datacamp-artifactory: datacamp/artifactory@1
 workflows:
   version: 2
   # BEGIN ANSIBLE MANAGED BLOCK
