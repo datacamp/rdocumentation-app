@@ -22,10 +22,10 @@ workflows:
       - datacamp-artifactory/build_and_push_image_to_artifactory: &dockerBuild
           name: docker-build
           context: org-global
-          extra-docker-args: "--build-arg NPM_TOKEN=${NPM_TOKEN}"
-          dockerfile: apps/main-service/Dockerfile
+          dockerfile: Dockerfile
           docker-version: "20.10.2"
-          repo: skill-assessment-api
+          extra-docker-args: "--build-arg VERSION=$(git describe --tags)"
+          repo: rdoc-app
           executor: datacamp-artifactory/buildkit
           git_tag_filter: '--match "[0-9]*.[0-9]*.[0-9]*"'
           requires:
@@ -47,10 +47,10 @@ workflows:
       - datacamp-artifactory/build_and_push_image_to_artifactory:
           name: docker-build
           context: org-global
-          extra-docker-args: "--build-arg NPM_TOKEN=${NPM_TOKEN}"
-          dockerfile: apps/main-service/Dockerfile
+          dockerfile: Dockerfile
           docker-version: "20.10.2"
-          repo: skill-assessment-api
+          extra-docker-args: "--build-arg VERSION=$(git describe --tags)"
+          repo: rdoc-app
           executor: datacamp-artifactory/buildkit
           filters:
             branches:
@@ -59,7 +59,7 @@ workflows:
       - datacamp-deploy-branch/deploy: # Backstage branch deploy
           name: deploy-to-backstage
           context: org-global
-          app: skill-assessment
+          app: rdoc-app
           env: staging
           roles: terraform-role,k8s-role
           region: us-east-1
@@ -83,7 +83,7 @@ workflows:
       - datacamp-deploy-branch/deploy:
           name: cleandown-backstage
           context: org-global
-          app: skill-assessment
+          app: rdoc-app
           env: staging
           roles: app-cleandown-role
           extra-vars: 'backstage=true'
