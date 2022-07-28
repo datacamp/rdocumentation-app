@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  description: "rdoc-app service, code: rdocumentation-app infra: RDocumentation-app-infra "
+  name: rdoc-app
+  annotations:
+    github.com/project-slug: "datacamp/rdocumentation-app"
+    circleci.com/project-slug: "github/datacamp/rdocumentation-app"
+  tags:
+    - infrastructure-data
+spec:
+  lifecycle: "production"
+  owner: "infrastructure-data"
+  type: "service"
