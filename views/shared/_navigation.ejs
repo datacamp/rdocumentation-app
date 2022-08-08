@@ -1,0 +1,14 @@
+<ul class="navbar--navigation largescreen">
+  <li><a href="https://www.datacamp.com/groups/business" class="btn btn-secondary-dark">R Enterprise Training</a></li>
+  <% if(!inViewerPane) { %>
+    <li><a href="https://github.com/datacamp/Rdocumentation" class="btn <%= secondaryButtonClass %>">R package</a></li>
+    <li><a href="/trends" class="btn <%= secondaryButtonClass %>">Leaderboard</a></li>
+
+    <% if(typeof(user) === 'undefined') { %>
+      <li><a href="/login?rdr=<%= encodeURIComponent(path)%>" class="btn <%= primaryButtonClass %>">Sign in</a></li>
+    <% } else { %>
+      <li><a href="/users/me" class="link"><%= user.username %></a></li>
+      <li><a href="/logout" class="link">Log out</a></li>
+    <% } %>
+  <% } %>
+</ul>

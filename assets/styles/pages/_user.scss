@@ -1,0 +1,22 @@
+.user {
+  min-height: 82%;
+  .container {
+    margin-top: $default-space;
+  }
+
+  header {
+    margin-bottom: $default-space;
+  }
+}
+
+.user--reviews {
+  h3 {
+    margin-bottom: $default-space / 2.0;
+  }
+}
+
+.example {
+  .clearfix:before, .container:before, .container-fluid:before, .row:before{
+    display: none;
+  }
+}

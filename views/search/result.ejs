@@ -1,0 +1,42 @@
+<div class='search-result'>
+  <div class="container-fluid">
+    <div class='header'>
+      <h3>Search Results for <%- data.query %></h3>
+      <span><a href="https://www.datacamp.com/community/blog/rdocumentation-ranking-scoring">Why do I see these results?</a></span>
+    </div>
+    <div class='header older'>
+      <div>
+      <input id="older" type="checkbox"/><label for="older">Search through all versions</label>
+      </div>
+    </div>
+
+    <div class="row search-result--data">
+      <div class="col-md-6 package-column">
+
+        <div class = "packagedata">
+        </div>
+
+      </div>
+      <div class="col-md-6 topic-column">
+        <div class = "functiondata">
+        </div>
+      </div>
+    </div>
+
+    <div id = "searchtabs" class="search-result--data">
+      <ul>
+        <li><a href="#packages" id = "packagetab" class="js-external js-tabs">Packages</a></li>
+        <li><a href="#functions" id = "functiontab" class="js-external js-tabs">Functions</a></li>
+      </ul>
+      <div id="packages">
+        <div class="packagedata">
+        </div>
+      </div>
+      <div id="functions">
+        <div class = "functiondata">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

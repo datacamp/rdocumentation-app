@@ -1,0 +1,77 @@
+<% path = path.replace(new RegExp('[\/]$'),''); %>
+<header class="package-header">
+  <div class="package--header-content container">
+    <div class="ph-flex-position">
+      <div> <!-- Do not remove this div, needed for ph-flex-position -->
+        <div class='package--title--container'>
+          <h1 class= 'package--title' itemprop="name"><%- pkgVersion.package_name %>
+          <span title="<%= pkgVersion.version === pkgVersion.package.versions[0].version ? "Latest version" : "" %>" class='package--version--v'>v<%= pkgVersion.version %></span></h1>
+
+
+          <div class="package--version--select">
+            <select id='packageVersionSelect'>
+              <% for(var i = 0; i < pkgVersion.package.versions.length; i++) { %>
+                <option data-uri="<%= pkgVersion.package.versions[i].uri %>"
+                  value="<%= pkgVersion.package.versions[i].version %>"
+                  <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'selected disabled' : '' %>
+                  <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'itemprop="softwareVersion"' : '' %>
+                  >
+                  <%= (pkgVersion.package.versions[i].version === pkgVersion.version) ? 'Other versions' : 'v' + pkgVersion.package.versions[i].version %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+
+        </div> <!-- /package-title-container -->
+      </div> <!-- /Do not remove this div, needed for ph-flex-position -->
+
+      <div><!-- Do not remove this div, needed for ph-flex-position -->
+        <% if(inViewerPane) { %>
+          <div class="versionCheck"></div>
+        <%}%>
+        <%if(pkgVersion.package['type_id'] == 1 ){%>
+          <div class="downloads download-task" data-url="/api<%= path %>/downloads/splitted">
+            <span class="downloads-nr" >
+              <span class='indeps'>0</span>
+              <i class="fa fa-info-circle direct-downloads" aria-hidden="false"></i>
+            </span>
+            <p>Monthly downloads</p>
+          </div>
+        <%}%>
+
+        <%if(pkgVersion.package['type_id'] == 1){ %>
+          <div class="downloads" id = "percentile-arrow">
+            <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
+          </div>
+          <% var percentilePath = "/api" + path + "/percentile" %>
+          <%- include ../shared/_percentile.ejs %>
+        <%}%>
+      </div> <!-- /Do not remove this div, needed for ph-flex-position -->
+    </div> <!-- /row -->
+    <div class="ph-flex-position">
+      <% if(pkgVersion.maintainer) { %>
+        <span class='package--maintainer'>by <a itemprop="creator" href="<%= pkgVersion.maintainer.uri %>"><%= pkgVersion.maintainer.name %></a></span>
+      <% } %>
+       <%
+       if(pkgVersion.hasSource) {
+       var sourceLink = '/packages/' + pkgVersion.package_name
+       + '/versions/' + pkgVersion.version + '/source'; %>
+        <span class='package--maintainer'><a href="<%= sourceLink %>">View Source</a></span>
+      <% } %>
+
+      <div>
+        <div class="paste-link">
+          <i class="fa fa-link"
+            aria-hidden="true">
+          </i>
+          <% var canonicalLink = 'https:' + process.env.BASE_URL + '/packages/' + pkgVersion.package_name %>
+          <input id="canonical-link-input" type="text" size="<%= canonicalLink.length %>" readonly value="<%= canonicalLink %>">
+          <button title="Copied !" class="copy-btn" data-clipboard-action="copy" data-clipboard-target="#canonical-link-input">
+            Copy
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div> <!-- /container -->
+</header>

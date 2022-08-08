@@ -1,0 +1,30 @@
+
+<section class="authentication">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-10 col-sm-offset-1 col-lg-6 col-lg-offset-3">
+        <h3 class="authentication--title">Create an account and provide feedback to package authors</h3>
+        <form class="authentication--form" action="/api/users" method="post">
+          <fieldset>
+            <label for="username">Username/email</label>
+            <input id="username" name="username" type="text">
+          </fieldset>
+          <fieldset>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password">
+          </fieldset>
+          <fieldset>
+            <label for="password">Confirm Password</label>
+            <input id="password" name="confirm_password" type="password">
+          </fieldset>
+          <fieldset>
+            <div class="g-recaptcha" data-sitekey="6Lc6hSMTAAAAAFzX7wz-zPcHBfsKsRXvh05oO0Hl"></div>
+          </fieldset>
+          <fieldset>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

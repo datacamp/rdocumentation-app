@@ -1,0 +1,97 @@
+.user-examples {
+  margin-top: $default-space;
+  h3 {
+    margin-bottom: $default-space / 2.0;
+  }
+}
+// ********************
+// One review
+// ********************
+.example {
+  margin-bottom: 1rem;
+  border: 2px solid $primary-lighter;
+  border-radius: 4px;
+}
+
+.example.old {
+  border: 2px solid #efefef;
+}
+
+.example--title {
+  padding: 1rem;
+  background-color: $primary-extra-light;
+  border-bottom: 2px solid $primary-lighter;
+  .rating {
+    margin: 0 1rem;
+  }
+}
+
+.example.old .example--title {
+  border: 2px solid #efefef;
+  background-color: #efefef;
+}
+
+.example--body {
+  p {
+    margin: 0;
+    white-space: pre-wrap;
+  }
+}
+.markdown-body {
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+// ********************
+// Placeholder if there are no examples
+// ********************
+.example--placeholder {
+  border: 1px solid $primary-extra-light;
+  border-radius: 4px;
+  padding: 1rem;
+  background-color: $primary-ultra-light;
+  margin-bottom: 1rem;
+}
+
+// ********************
+// Form to create a example
+// ********************
+.example--form {
+  margin-top: $default-space;
+  fieldset {
+    width: 100%;
+  }
+}
+
+$filled-star-color: black;
+$empty-star-color: black;
+$star-size: 17px;
+
+.example--form-title {
+  padding: 1rem;
+  background-color: $primary-ultra-light;
+  border-bottom: 1px solid $primary-extra-light;
+}
+
+.example--form-body {
+  padding: 1rem 0;
+}
+
+.editor-toolbar.fullscreen, .CodeMirror-fullscreen, .editor-preview-side {
+  margin-top: 30px !important;
+}
+
+.buttons{
+  margin-left: 1rem;
+  float : right;
+}
+
+.submit-edit{
+  margin-top: 1.5em;
+}
+
+.edit-example:hover, .delete-example:hover{
+  cursor: pointer;
+}

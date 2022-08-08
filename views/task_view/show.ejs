@@ -1,0 +1,42 @@
+<% var view = data; %>
+<div class="content">
+  <div class="row">
+    <div class="col-md-8">
+      <h1><%- view.name %></h1>
+      <a href='<%= view.url %>' target='_blank'>More info on CRAN <i class="fa fa-external-link" aria-hidden="true"></i></a>
+    </div>
+  </div>
+  <section class="table-list">
+    <input id="filter" type="text" placeholder="Filter list">
+    <table class="taskviewtable">
+      <thead>
+        <tr>
+          <td>Name <i class="fa fa-sort" aria-hidden="true"></i></td>
+          <td>Description <i class="fa fa-sort" aria-hidden="true"></i></td>
+          <td>Percentile <i class="fa fa-sort" aria-hidden="true"></i></td>
+          <td width="115">Stars <i class="fa fa-sort" aria-hidden="true"></i></td>
+        </tr>
+      </thead>
+      <tbody id="filterableItems">
+        <% for(var i = 0; i < view.packages.length; i++) { %>
+          <% var package = view.packages[i]; %>
+          <tr>
+            <td><a href="<%= package.uri %>"><%= package.name %></a></td>
+            <td> <%= package.latest_version ? package.latest_version.title : package.name %> </td>
+            <td>
+              <span class="percentile-number percentile-task" data-url="/api/packages/<%= package.name %>/percentile" >
+                <span class='percentile'>0th</span>
+              </span>
+            </td>
+            <td>
+              <div class="rating" data-rating="<%= package.stars.length %>">
+                <%= package.stars.length %> <i class="fa fa-star" aria-hidden="true"></i>
+              </div>
+            </td>
+          </tr>
+        <% } %>
+        <tr class="no-results"><td colspan="3">No Results!</td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
