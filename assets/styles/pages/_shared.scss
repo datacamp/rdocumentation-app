@@ -1,0 +1,101 @@
+.body {
+  height: 100%;
+}
+
+#content {
+  height: 100%;
+}
+
+.page-wrap {
+  bottom: 55px;
+  top: 30px;
+  left: 0;
+  right: 0;
+  position: static; /* TODO: Remove after promo? */
+  overflow-y: scroll;
+}
+
+.stats {
+  dd a {
+    margin-right: $default-space / 3;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.fading-text {
+  line-height: 1.5rem;
+  position: relative;
+  height: 4.5rem;
+}
+
+.fading-text:after {
+  content: "";
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 70%;
+  height: 1.5rem;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 1) 50%
+  );
+}
+
+.downloads,
+.percentile-widget {
+  visibility: hidden;
+  vertical-align: middle;
+  margin-left: 0.2rem;
+  display: inline-block;
+  p {
+    -webkit-margin-before: -0.7em;
+    -webkit-margin-after: 0em;
+  }
+  i {
+    font-size: 1.4rem;
+    margin-left: 0.6rem;
+  }
+}
+
+.percentile-task {
+  visibility: hidden;
+}
+
+.downloads-nr,
+.percentile-th {
+  display: flex;
+  align-items: center;
+  span:first-child {
+    font-size: $h3-size;
+  }
+
+  &.small span:first-child {
+    font-size: $h3-size;
+  }
+}
+
+.downloads-ind {
+  display: block;
+  span {
+    font-weight: bold;
+  }
+}
+.downloads-credits {
+  font-size: 0.6rem;
+}
+
+.table-list {
+  input {
+    width: 300px;
+    padding: 0.375em 0.75em;
+    margin: $default-space auto $default-space / 2 auto;
+  }
+}

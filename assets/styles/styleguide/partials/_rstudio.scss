@@ -1,0 +1,16 @@
+ html.rstudio {
+  font-size: 14px;
+
+  .topic {
+    h1 {font-size: $h1-size * 0.6}
+    h2 {font-size: $h2-size * 0.7}
+    h3 {font-size: $h3-size * 0.7}
+    h4 {font-size: $h4-size * 0.6}
+    h5 {font-size: $h5-size * 0.9}
+    .container-fluid {
+      margin-top: 0.5rem;
+    }
+  }
+
+}
+

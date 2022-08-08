@@ -1,0 +1,12 @@
+.view {
+  position: relative;
+  margin-left: 265px;
+  width: calc(100% - 265px);
+  padding: 1rem;
+}
+.percentile-number{
+  font-size:1.5rem;
+}
+.view td[data-column="2"] {
+    width: 115px;
+}

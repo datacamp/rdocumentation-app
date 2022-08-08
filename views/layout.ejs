@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html class="<%= inViewerPane ? 'rstudio' : '' %>">
+  <head>
+    <% if( (typeof data == 'undefined') || (typeof data.pageTitle == 'undefined') ) { %>
+      <title>RDocumentation</title>
+    <% } else { %>
+      <title><%= data.pageTitle %> | R Documentation</title>
+    <% } %>
+    <% var protocol = 'https:' %>
+    <base href="<%= process.env.BASE_URL ? protocol + process.env.BASE_URL : '/' %>">
+
+    <!-- Viewport mobile tag for sensible mobile support -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv=Content-Type content=text/html; charset="UTF-8">
+    <% if( (typeof data !== 'undefined') && (data.description) ) { %>
+      <meta name="description" content="<%= data.description %>" />
+    <% } %>
+    <% if( (typeof data !== 'undefined') && (data.canonicalLink) ) { %>
+      <link href="<%= data.canonicalLink %>" rel="canonical" />
+    <% } %>
+
+    <!-- No index if not production -->
+    <% if(process.env.NODE_ENV !== 'production') { %>
+      <meta name="robots" content="noindex">
+    <% } %>
+
+    <!--STYLES-->
+    <link rel="stylesheet" href="/styles/application.css">
+    <link rel="stylesheet" href="/styles/widgets/mono-blue.css">
+    <!--STYLES END-->
+    <link href='<%= protocol %>//fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="<%= protocol %>//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <link rel="stylesheet" href='/css/nv.d3.min.css'>
+    <link rel="stylesheet" href='/css/bootstrap-treeview.css'>
+     <link rel="stylesheet" href='/css/bootstrap-glyphicons.css'>
+    <link rel="stylesheet" href='<%= protocol %>//cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css'>
+    <link href = "<%= protocol %>//code.jquery.com/ui/1.12.0-rc.2/themes/smoothness/jquery-ui.css" rel = "stylesheet">
+    <script src="<%= protocol %>//www.google.com/recaptcha/api.js" async defer></script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-WB38P87');</script>
+    <!-- End Google Tag Manager -->
+  </head>
+
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WB38P87"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <div id="content">
+      <%- partial ('inner_layout.ejs') %>
+    </div>
+    <% if(!inCampus) { %>
+      <%- partial ('./shared/_dc_footer.ejs') %>
+    <% } %>
+
+    <!--TEMPLATES-->
+    
+    <!--TEMPLATES END-->
+
+    <script src="<%= protocol %>//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src = "<%= protocol %>//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.2/js/jquery.tablesorter.min.js"> </script>
+    <script src = "<%= protocol %>//code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+    <script src = "<%= protocol %>//cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"> </script>
+    <script src = "<%= protocol %>//cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.min.js"> </script>
+    <script src="<%= protocol %>//cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.6.0/clipboard.min.js"></script>
+    <script src="<%= protocol %>//cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <script src = "<%= protocol %>//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [ ['$','$'], ['\\(','\\)']  ],
+          displayMath: [ ['$$','$$'] ],
+          processEscapes: true,
+          packages: ['base', 'ams', 'noerrors', 'noundefined']
+        },
+        options: {
+          ignoreHtmlClass: 'tex2jax_ignore',
+          processHtmlClass: 'tex2jax_process'
+        },
+        loader: {
+          load: ['[tex]/noerrors']
+        }
+      };
+    </script>
+    <script src="<%= protocol %>//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+    <% if(!inViewerPane) { %>
+      <script src="<%= protocol %>//cdn.datacamp.com/datacamp-light-latest.min.js"></script>
+    <% } %>
+    <script type="text/javascript">
+      var $jq = jQuery.noConflict();
+    </script>
+    <!--SCRIPTS-->
+    <script src="/js/dependencies/async_loader.js"></script>
+    <script src="/js/dependencies/highlight.pack.js"></script>
+    <script src="/js/dependencies/highlightjs-line-numbers.js"></script>
+    <script src="/js/dependencies/rstudio_navigator.js"></script>
+    <script src="/js/helpers/boot.js"></script>
+    <script src="/js/helpers/downloadStats.js"></script>
+    <script src="/js/helpers/list-table-filtering.js"></script>
+    <script src="/js/helpers/toggle.js"></script>
+    <script src="/js/helpers/utils.js"></script>
+    <script src="/js/libs/bootstrap-treeview.js"></script>
+    <script src="/js/libs/countUp.min.js"></script>
+    <script src="/js/libs/experiment.js"></script>
+    <script src="/js/libs/jquery.cookie-1.4.1.min.js"></script>
+    <script src="/js/libs/marked.min.js"></script>
+    <script src="/js/libs/tooltip.js"></script>
+    <script src="/js/pages/collaborator.js"></script>
+    <script src="/js/pages/examples.js"></script>
+    <script src="/js/pages/package.js"></script>
+    <script src="/js/pages/search.js"></script>
+    <script src="/js/pages/source.js"></script>
+    <script src="/js/pages/task_views.js"></script>
+    <script src="/js/pages/trending.js"></script>
+    <script src="/js/pages/user.js"></script>
+    <script src="/js/search.js"></script>
+    <!--SCRIPTS END-->
+
+    <%- partial('./shared/_snowplow.ejs') %>
+
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','<%= protocol %>//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-41577880-1', 'rdocumentation.org');
+      ga('send', 'pageview');
+    </script>
+
+    <script async src="https://promo.datacamp.com/banner.js"></script>
+  </body>
+</html>

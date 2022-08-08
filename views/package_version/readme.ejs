@@ -1,0 +1,20 @@
+<% var pkgVersion = data; %>
+<section class="package">
+  <%- include ../package_version/_header.ejs %>
+
+  <div class="container">
+    <% if(pkgVersion.readmemd) { %>
+      <div class="package--readme">
+        <h3>Readme</h3>
+        <% if(pkgVersion.url) { %>
+           <%- md(pkgVersion.readmemd,pkgVersion.url.autoLink({ target: "_blank", id: "1" })) %>
+        <%} %>
+        <% if(!pkgVersion.url) {%>
+          <%-md(pkgVersion.readmemd,"") %>
+        <% }%>
+
+      </div>
+    <% } %>
+  </div>
+
+</section>

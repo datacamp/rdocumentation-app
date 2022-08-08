@@ -1,0 +1,102 @@
+.footer {
+	padding: $header-margin 0;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  background-color: white;
+	border-top: 1px solid $primary-extra-light;
+
+	@include clearfix;
+
+	.navbar--title {
+		float:left;
+		margin-right: $default-space;
+
+    a {
+      display: inline-block;
+      margin-left: 0;
+    }
+
+		.logo {
+			background: url("../images/logo-dark.png") no-repeat center center;
+			background-size: contain;
+			width: 20px;
+			height: 20px;
+		}
+		.logo-title {
+			font-size: 0.9rem;
+			color: $text-tertiary !important;
+			margin-top: 0;
+      line-height: 25px;
+      vertical-align: middle
+		}
+	}
+
+  .apidoc {
+    position: absolute;
+    padding-top: 0px;
+    :hover {
+      cursor: pointer;
+    }
+    height: 20px;
+  }
+}
+
+.footer .navbar--title{
+    margin-top: 0;
+    margin-bottom: 0;
+    z-index: 1;
+}
+
+
+
+.footer--credits--title {
+    float: left;
+    position:relative;
+    left: calc(50% - 15em);
+
+  .footer--credits {
+    font-size: 0.9rem;
+    font-weight: 500;
+    position: relative;
+    left: -50%;
+    margin: 0 0 0 3px;
+    line-height: $navbar-height - 10px;
+  }
+
+}
+
+.dc-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background-color: #1f697f;
+  color: white;
+  z-index: 1000;
+  text-align: center;
+  .dc-footer--text {
+    line-height: 40px;
+    margin-right: 1rem;
+  }
+  .dc-footer--link {
+    padding: 5px 15px;
+  }
+  .dc-footer--cross {
+    float: right;
+    height: 100%;
+    vertical-align: middle;
+    line-height: 40px;
+    padding: 0px 15px;
+  }
+  .dc-footer--cross:hover {
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 850px){
+	.navbar--title.footer-largescreen{
+		display: none;
+	}
+}

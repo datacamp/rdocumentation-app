@@ -1,0 +1,19 @@
+<% var package = data; %>
+<section class="package">
+  <div class="container">
+    <header>
+      <h1 itemprop="name"><%- package.name %></h1>
+    </header>
+
+    <p>No versions for package <%- package.name %></p>
+
+    <section class="package--dependencies">
+      <h4>Reverse Dependencies</h4>
+      <ul class="inline">
+        <% for(var i = 0; i < package.reverse_dependencies.length; i++) { %>
+          <li ><a href="<%= package.reverse_dependencies[i].uri %>"><%= package.reverse_dependencies[i].package_name %></a></li>
+        <% } %>
+      </ul>
+    </section>
+  </div>
+</section>
