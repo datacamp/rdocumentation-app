@@ -8,6 +8,7 @@
 var _ = require('lodash');
 var Promise = require('bluebird');
 var sanitizeHtml = require('sanitize-html');
+var htmlEntities = require('html-entities');
 
 module.exports = {
 
@@ -237,10 +238,10 @@ module.exports = {
             topic.description = topic.description.contents;
           }
 
-          topic.examples = sanitizeHtml(topic.examples, {
+          topic.examples = htmlEntities.decode(sanitizeHtml(topic.examples, {
             allowedTags: [],
             allowedAttributes: {}
-          });
+          }));
 
           var arrayToString = function(val) {
             if (val instanceof Array) {

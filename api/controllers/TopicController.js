@@ -6,6 +6,7 @@
  */
 var Promise = require('bluebird');
 var _ = require('lodash');
+var htmlEntities = require('html-entities');
 
 
 module.exports = {
@@ -166,6 +167,8 @@ module.exports = {
           else return compareValue;
         });
         topicJSON.dcl = dcl || (topicJSON.package_version && topicJSON.package_version.package.type_id === 4); //in the list or in base r
+        // We decode html entities again (as some older packages didn't have this fix in place)
+        topicJSON.examples = htmlEntities.decode(topicJSON.examples)
         topicJSON.user_examples = userExamples;
         return topicJSON;
       });
