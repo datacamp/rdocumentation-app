@@ -1,4 +1,4 @@
-FROM node:8.16
+FROM node:18.7.0
 
 RUN apt-get update && apt-get install -y python build-essential
 
