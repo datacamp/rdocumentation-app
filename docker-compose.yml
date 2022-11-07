@@ -1,7 +1,7 @@
 version: "2"
 services:
   db:
-    image: mysql:5.7
+    image: mysql:latest
     ports:
       - "3306:3306"
     environment:
@@ -9,7 +9,6 @@ services:
       MYSQL_USER: rdoc
       MYSQL_PASSWORD: password
       MYSQL_DATABASE: rdocs
-    platform: linux/amd64
   redis:
     image: redis
     ports:
