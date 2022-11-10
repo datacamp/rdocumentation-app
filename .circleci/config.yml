@@ -46,6 +46,7 @@ workflows:
     jobs:
       - datacamp-artifactory/build_and_push_image_to_artifactory:
           name: docker-build
+          artifactory-url: artifactory-proxy-public.ops.datacamp.com
           context: org-global
           dockerfile: Dockerfile
           docker-version: "20.10.2"
