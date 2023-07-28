@@ -23,7 +23,7 @@
 module.exports.routes = {
   // Homepage
   'get /': 'HomeController.index',
-  'get /status': 'HomeController.status', 
+  'get /status': 'HomeController.status',
 
   // Authentication
   'get /login': 'AuthController.login',
@@ -184,6 +184,7 @@ module.exports.routes = {
 
   // Parsing
   'get /api/parsing/jobs': 'PackageController.toParse',
+  'get /api/users': 'UserController.show',
   'get /api/users/*': 'UserController.show',
 
 };
