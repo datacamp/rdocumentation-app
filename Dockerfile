@@ -1,6 +1,8 @@
 FROM node:8.16
 
-RUN apt-get update && apt-get install -y python build-essential
+RUN sed -i -e 's/deb.debian.org/archive.debian.org/g' -e 's|security.debian.org|archive.debian.org/|g' -e '/stretch-updates/d' /etc/apt/sources.list && \
+  apt-get update && \
+  apt-get install -y python3 build-essential
 
 RUN npm install -g pm2 node-gyp sails grunt bower jake npm-check-updates
 
