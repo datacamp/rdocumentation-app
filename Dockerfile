@@ -1,4 +1,4 @@
-FROM node:8.16
+FROM node:8.17
 
 RUN sed -i -e 's/deb.debian.org/archive.debian.org/g' -e 's|security.debian.org|archive.debian.org/|g' -e '/stretch-updates/d' /etc/apt/sources.list && \
   apt-get update && \
