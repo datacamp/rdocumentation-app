@@ -126,8 +126,11 @@ module.exports = {
 
       quickSearch: function(pattern){
         var query = "SELECT coll.name, Sum(direct_downloads) as total From Packages pack INNER JOIN PackageVersions versions ON pack.latest_version_id=versions.id RIGHT OUTER JOIN Collaborators coll ON versions.maintainer_id = coll.id LEFT OUTER JOIN DownloadStatistics downloads ON pack.name=downloads.package_name "+
-        " WHERE (downloads.date >= current_date() - interval '1' month or downloads.date is null) and coll.name LIKE '%"+pattern+"%' group by coll.name order by total desc limit 0,5";
-        return sequelize.query(query, {type: sequelize.QueryTypes.SELECT});
+        " WHERE (downloads.date >= current_date() - interval '1' month or downloads.date is null) and coll.name LIKE '%$pattern%' group by coll.name order by total desc limit 0,5";
+        return sequelize.query(query, {
+          bind: { pattern: pattern },
+          type: sequelize.QueryTypes.SELECT
+        });
       }
 
     }
