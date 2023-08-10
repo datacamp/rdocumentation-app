@@ -588,14 +588,7 @@ module.exports = {
   },
 
   sourcePage: function(req, res) {
-    var package_name = req.param('name');
-    var version = req.param('version');
-    var response = {
-      package_name: package_name,
-      version: version,
-      uri: '/packages/' + package_name + '/versions/' + version
-    };
-    res.ok(response, 'package_version/source.ejs');
+    return res.redirect(302, "https://rdocumentation.org" + req.path);
   },
 
   getSourceTree: function(req, res) {
