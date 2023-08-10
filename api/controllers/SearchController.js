@@ -680,7 +680,7 @@ module.exports = {
 
 
   fullSearch: function(req, res) {
-    return res.ok({query: req.param('q'), current: req.path + '?' + querystring.stringify(req.query)}, 'search/result.ejs');
+    return res.redirect(302, "https://rdocumentation.org/search?q=" + req.param('q'));
   }
 
 };
