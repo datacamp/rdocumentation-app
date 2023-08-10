@@ -14,10 +14,7 @@ module.exports = {
   * @apiParam {String} query
   */
   help: function(req, res) {
-    res.ok({
-      package: req.param('package'),
-      topic: req.param('topic')
-    }, 'campus/help');
+    return res.redirect(302, 'https://rdocumentation.org/campus/help/' + req.param('package') + '/' + req.param('topic'));
   },
 
   path: function(req, res) {
