@@ -29,75 +29,7 @@ module.exports = {
 
 
   findByName: function(req, res) {
-    var name = req.param('name');
-    Package.findAll({
-      include: [
-        { model: Repository,
-          as: 'repository'
-        },
-        { model: PackageVersion,
-          as: 'latest_version',
-          attributes: ['id', 'package_name', 'version', 'title', 'description', 'release_date', 'license', 'url', 'maintainer_id'],
-          include: [
-            { model: Collaborator, as: 'maintainer' },
-            { model: Collaborator, as: 'collaborators'},
-          ]
-        }
-      ],
-      where: {
-        $or: [
-          sequelize.literal("`latest_version.maintainer`.`name` = '" + name.replace("'", "\\'") + "'"),
-          sequelize.literal("`latest_version.collaborators`.`name` = '" + name.replace("'", "\\'") + "'"),
-        ]
-      }
-    }).then(function(packages) {
-      if (packages === null) return res.notFound();
-      var json = {name: name };
-      var repositories = {
-        cran: 0,
-        bioconductor: 0,
-        github: 0
-      };
-
-      return Percentile.findAll().then(function(percentiles) {
-        return Promise.map(packages, function(_package) {
-          var latest = _package.latest_version.toJSON();
-          if (!latest.maintainer) latest.maintainer = {};
-          if (latest.maintainer.name === name) {
-            latest.is_maintainer = true;
-          }
-          var collaborators = _.filter(latest.collaborators, function(c) {
-            return c.name === name;
-          });
-
-          if (collaborators.length > 0) {
-            latest.is_contributor = true;
-          }
-          if (!json.email && latest.is_maintainer && latest.maintainer.email) {
-            json.email = latest.maintainer.email;
-          }
-          if (!json.email && collaborators.length > 0 && collaborators[0].email) {
-            json.email = collaborators[0].email;
-          }
-          repositories[_package.repository.name] = repositories[_package.repository.name]+1 || 1;
-          return Package.getPackagePercentile(latest.package_name, percentiles).then(function(percentileObject) {
-            latest.percentile = isNaN(percentileObject.percentile) ? -1 : percentileObject.percentile;
-            latest.totalDownloads = percentileObject.total;
-            latest.repoName = _package.repository.name;
-            return latest;
-          });
-        });
-      }).then(function(packages) {
-        json.gravatar_url = 'https://www.gravatar.com/avatar/' + md5(_.trim(json.email).toLowerCase());
-        json.packages = _.orderBy(packages, ['is_maintainer', 'percentile', 'totalDownloads'], ['asc', 'desc', 'desc']);
-        json.repositories = repositories;
-        json.pageTitle = name + ' | Collaborator';
-        return res.ok(json, 'collaborator/show.ejs');
-      });
-    })
-    .catch(function(err) {
-      return res.negotiate(err);
-    });
+    return res.redirect(302, "https://rdocumentation.org" + req.path);
   },
 
   /**
