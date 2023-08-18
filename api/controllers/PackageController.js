@@ -62,17 +62,7 @@ module.exports = {
         _package.type = 'package';
         return res.json(_package);
       } else {
-        if (_package.versions.length === 0)
-          return Package.findOne({
-            where: {name: packageName},
-            include: [{ model: PackageVersion, attributes: ['package_name', 'version', 'id'], as: 'reverse_dependencies'}]
-          }).then(function(packageInstance) {
-            if (packageInstance === null) return res.notFound();
-            var _package = packageInstance.toJSON();
-            _package.pageTitle = packageInstance.name;
-            return res.ok(_package, 'package/show.ejs');
-          });
-        else return res.rstudio_redirect(301, _package.versions.sort(PackageService.compareVersions('desc', 'version'))[0].uri);
+        return res.redirect(302, "https://rdocumentation.org" + req.path);
       }
     }).catch(function(err) {
       return res.negotiate(err);
