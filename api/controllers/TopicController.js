@@ -111,7 +111,74 @@ module.exports = {
   */
 
   findByName: function(req, res) {
-    return res.redirect(302, "https://rdocumentation.org" + req.path);
+    var packageName = req.param('name');
+    var packageVersion = req.param('version');
+    var topic = req.param('topic');
+    var key = 'view_topic_' + packageName + '_' + packageVersion + '_' + topic;
+    if (topic.endsWith('.html')) topic = topic.replace('.html', '');
+
+
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function() {
+      var canonicalPromise = Topic.findByNameInPackage(packageName, topic).then(function(t) {
+        if(t === null || t === undefined) return null;
+        return t.uri;
+      });
+
+      var examplesPromise = Example.findPackageExamples(packageName, topic);
+
+      var topicPromise = Topic.findOnePopulated({name: topic}, {
+        include: [{
+          model: PackageVersion,
+          as: 'package_version',
+          where: { package_name: packageName, version: packageVersion },
+          include: [{ model: Package, as: 'package', attributes: ['name', 'latest_version_id', 'type_id' ]},
+          { model: Collaborator, as: 'maintainer'}]
+        },]
+      }).then(function(topicInstance) {
+        if(topicInstance === null) {
+          return Topic.findByAliasInPackage(packageName, topic, packageVersion).then(function(topicInstance) {
+            if(!topicInstance) return null;
+            else return { redirect_uri: topicInstance.uri };
+          });
+        }
+        else{
+          return topicInstance;
+        }
+      }).then(function(topicInstance) {
+        if(topicInstance === null) return null;
+        else if(topicInstance.redirect_uri) return topicInstance;
+        else return TopicService.processHrefs(topicInstance)
+          .then(function(topic) {
+            topic.pageTitle = topic.name + ' function';
+            topic.type = 'topic';
+            return topic;
+          });
+      });
+
+      var dclPromise = PackageService.isDCLSupported(packageName, packageVersion)
+
+      return Promise.join(topicPromise, examplesPromise, canonicalPromise, dclPromise, function(topicJSON, examples, canonicalLink, dcl) {
+        if(topicJSON === null) return null;
+        topicJSON.canonicalLink = canonicalLink;
+        var userExamples = examples.sort(function (example1, example2) {
+          const compare = PackageService.compareVersions('desc');
+          const compareValue = compare(example1.topic.package_version.version, example2.topic.package_version.version);
+          if (compareValue === 0) return example2.created_at.getTime() - example1.created_at.getTime();
+          else return compareValue;
+        });
+        topicJSON.dcl = dcl || (topicJSON.package_version && topicJSON.package_version.package.type_id === 4); //in the list or in base r
+        // We decode html entities again (as some older packages didn't have this fix in place)
+        topicJSON.examples = htmlEntities.decode(topicJSON.examples)
+        topicJSON.user_examples = userExamples;
+        return topicJSON;
+      });
+    }).then(function(topicJSON) {
+      if(topicJSON === null) return res.rstudio_redirect(301, '/packages/' + encodeURIComponent(packageName) + '/versions/' + encodeURIComponent(packageVersion));
+      else if(topicJSON.redirect_uri) return res.rstudio_redirect(301, topicJSON.redirect_uri);
+      return res.ok(topicJSON, 'topic/show.ejs');
+    }).catch(function(err) {
+      return res.negotiate(err);
+    });
   },
 
    /**
@@ -155,7 +222,36 @@ module.exports = {
   */
 
   findById: function(req, res) {
-    return res.redirect(302, "https://rdocumentation.org" + req.path);
+    var id = req.param('id');
+    var key = 'view_topic_' + id;
+
+
+    RedisService.getJSONFromCache(key, res, RedisService.DAILY, function () {
+
+
+      return Topic.findOnePopulated({ id: id }, {
+      }).then(function (topicInstance) {
+        if (topicInstance === null) return null;
+        else {
+          return Topic.findByNameInPackage(topicInstance.package_version.package_name, topicInstance.name).then(function (t) {
+            return TopicService.processHrefs(topicInstance)
+              .then(function (topic) {
+                topic.pageTitle = topic.name + ' function';
+                topic.canonicalLink = t.uri;
+                return topic;
+              });
+          });
+        }
+
+      });
+
+    }).then(function (topicJSON) {
+      if (topicJSON === null) return res.notFound();
+      return res.rstudio_redirect(301, topicJSON.uri);
+    }).catch(function (err) {
+      return res.negotiate(err);
+    });
+
   },
 
   /**
