@@ -650,11 +650,9 @@ module.exports = {
         fields.package_name = inner_hits_fields.package_name[0];
         fields.version = inner_hits_fields.version[0];
         fields.name = hit.fields.name[0];
-        if (inner_hits_fields && inner_hits_fields['maintainer.name']) {
-          fields.maintainer = inner_hits_fields['maintainer.name'][0];
-        } else {
-          fields.maintainer = undefined;
-        }
+        fields.maintainer = (inner_hits_fields && inner_hits_fields['maintainer.name'])
+            ? inner_hits_fields['maintainer.name'][0]
+            : undefined;
 
         var highlights = _.mapValues(hit.highlight, function(highlight) {
           return striptags(highlight.toString(), '<mark>');
