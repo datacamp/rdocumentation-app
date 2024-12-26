@@ -1,0 +1,1 @@
+-- ALTER TABLE `Collaborators` DROP COLUMN `isDepsyAvailable`;

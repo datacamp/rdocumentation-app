@@ -48,6 +48,17 @@ follow these steps:
 4. `ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'password';`
 5. `flush privileges;`
 
+If you get an error: `ERROR 1524 (HY000): Plugin 'mysql_native_password' is not loaded`
+
+This is because MySQL 8.4+ no longer includes 'mysql_native_password'. 
+Until an upgrade is possible, you might want to use MySQL 8.3 to maintain the project.
+
+1. Open the `docker-compose.yml`
+2. Change the db image version to `mysql:8.3`
+3. `docker-compose down`
+4. `docker-compose create`
+5. `docker-compose start`
+
 
 ## Deployment
 
