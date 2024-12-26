@@ -23,13 +23,12 @@ workflows:
           name: docker-build
           context: org-global
           dockerfile: Dockerfile
-          docker-version: "20.10.2"
           extra-docker-args: "--build-arg VERSION=$(git describe --tags)"
           repo: rdoc-app
           executor: datacamp-artifactory/buildkit
           git_tag_filter: '--match "[0-9]*.[0-9]*.[0-9]*"'
           requires:
-           - queue
+            - queue
 
       - datacamp-artifactory/tag_repository:
           name: tag
@@ -49,7 +48,6 @@ workflows:
           artifactory-url: artifactory-proxy-public.ops.datacamp.com
           context: org-global
           dockerfile: Dockerfile
-          docker-version: "20.10.2"
           extra-docker-args: "--build-arg VERSION=$(git describe --tags)"
           repo: rdoc-app
           executor: datacamp-artifactory/buildkit
