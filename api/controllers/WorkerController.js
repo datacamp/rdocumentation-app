@@ -22,18 +22,27 @@ module.exports = {
       result.then(function(value) {
         var key = 'view_topic_' + value.id;
         RedisService.invalidateTopicById(key);
-        // console.log(value);
         res.json(value);
       })
       .catch(Sequelize.UniqueConstraintError, function (err) {
-        console.log('SequelizeError - UniqueConstraintError:', err.errors);
-        return res.send(409, err.errors);
+        console.log('SequelizeError - UniqueConstraintError:', err);
+        var errorResponse = err.errors || [{message: 'Unique constraint violation'}];
+        return res.send(409, errorResponse);
       }).catch(Sequelize.ValidationError, function (err) {
-        console.log('SequelizeError - ValidationError:', err.errors);
-        return res.send(400, err.errors);
+        console.log('SequelizeError - ValidationError:', err);
+        var errorResponse = err.errors || [{message: 'Validation error'}];
+        return res.send(400, errorResponse);
       }).catch(function(err){
-        console.log(err.errors);
-        return res.negotiate([...err.errors, "Other"]);
+        console.log('Unhandled error in Topic.createWithRdFile:', err);
+        var errorResponse = [];
+        if (err.errors && Array.isArray(err.errors)) {
+          errorResponse = [...err.errors, "Other"];
+        } else if (err.errors) {
+          errorResponse = [{message: String(err.errors)}, "Other"];
+        } else {
+          errorResponse = [{message: err.message || "Unknown error occurred"}, "Other"];
+        }
+        return res.negotiate(errorResponse);
       });
 
     } else if (type === 'version') {
