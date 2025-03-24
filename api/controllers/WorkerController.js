@@ -39,10 +39,8 @@ module.exports = {
           errorResponse = [...err.errors, "Other"];
         } else if (err.errors) {
           errorResponse = [{message: String(err.errors)}, "Other"];
-        } else if (err.message) {
-          errorResponse = [{message: err.message}, "Other"];
         } else {
-          errorResponse = ["Unknown error occurred", "Other"];
+          errorResponse = [{message: err.message || "Unknown error occurred"}, "Other"];
         }
         return res.negotiate(errorResponse);
       });
