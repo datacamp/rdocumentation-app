@@ -429,7 +429,7 @@ module.exports = {
                             {
                               "field":    "part_of_r",
                               "modifier": "log1p",
-                              "factor": 300000
+                              "factor": 3000
                             }
                           }
                         ],

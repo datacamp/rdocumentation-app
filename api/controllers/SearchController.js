@@ -123,7 +123,7 @@ module.exports = {
                           'field_value_factor': {
                             'field': 'part_of_r',
                             'modifier': 'log1p',
-                            'factor': 300000
+                            'factor': 3000
                           }
                         }
                       ],
@@ -201,7 +201,7 @@ module.exports = {
                               'field_value_factor': {
                                 'field': 'part_of_r',
                                 'modifier': 'log1p',
-                                'factor': 300000
+                                'factor': 3000
                               }
                             }
                           ],
@@ -430,7 +430,7 @@ module.exports = {
                           'field_value_factor': {
                             'field': 'part_of_r',
                             'modifier': 'log1p',
-                            'factor': 300000
+                            'factor': 3000
                           }
                         }
                       ],
@@ -606,7 +606,7 @@ module.exports = {
                                     'field_value_factor': {
                                       'field': 'part_of_r',
                                       'modifier': 'log1p',
-                                      'factor': 300000
+                                      'factor': 3000
                                     }
                                   }
                                 ],
@@ -619,7 +619,7 @@ module.exports = {
                       }
                     }
                   ],
-                  minimum_should_match: 2
+                  minimum_should_match: 1
                 }
               }],
             minimum_should_match: 1
