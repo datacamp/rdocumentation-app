@@ -40,7 +40,7 @@ require('dotenv').config({silent: true});
   }
 
   // DEBUG: Global redirect detection
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production' && process.env.DEBUG_REDIRECTS === 'true') {
     console.log('=== APP STARTUP DEBUG ===');
     console.log('Timestamp:', new Date().toISOString());
     console.log('NODE_ENV:', process.env.NODE_ENV);
