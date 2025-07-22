@@ -39,6 +39,16 @@ require('dotenv').config({silent: true});
     return;
   }
 
+  // DEBUG: Global redirect detection
+  if (process.env.NODE_ENV === 'production' && process.env.DEBUG_REDIRECTS === 'true') {
+    console.log('=== APP STARTUP DEBUG ===');
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    console.log('BASE_URL:', process.env.BASE_URL);
+    console.log('App starting...');
+    console.log('=== APP STARTUP DEBUG END ===');
+  }
+
   // Try to get `rc` dependency
   var rc;
   try {

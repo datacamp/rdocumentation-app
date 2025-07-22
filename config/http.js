@@ -59,6 +59,54 @@ module.exports.http = {
       '500'
     ],
 
+  // DEBUG REQUEST LOGGER MIDDLEWARE
+  debugRequestLogger: function(req, res, next) {
+    // Only log API requests to avoid noise
+    if (req.path.startsWith('/api/') || req.path.startsWith('/search_')) {
+      console.log('=== REQUEST DEBUG START ===');
+      console.log('Timestamp:', new Date().toISOString());
+      console.log('Request URL:', req.url);
+      console.log('Request Path:', req.path);
+      console.log('Request Method:', req.method);
+      console.log('Request Host:', req.get('Host'));
+      console.log('Request Origin:', req.get('Origin'));
+      console.log('Request X-Forwarded-Proto:', req.get('X-Forwarded-Proto'));
+      console.log('Request X-Forwarded-Host:', req.get('X-Forwarded-Host'));
+      console.log('Request X-Real-IP:', req.get('X-Real-IP'));
+      console.log('BASE_URL env:', process.env.BASE_URL);
+      console.log('NODE_ENV:', process.env.NODE_ENV);
+      
+      // Intercept response methods to log redirects
+      var originalRedirect = res.redirect;
+      var originalLocation = res.location;
+      
+      res.redirect = function(status, url) {
+        if (arguments.length === 1) {
+          url = status;
+          status = 302;
+        }
+        console.log('=== REDIRECT DETECTED ===');
+        console.log('Redirect Status:', status);
+        console.log('Redirect URL:', url);
+        console.log('Stack trace:', new Error().stack);
+        console.log('=== REDIRECT END ===');
+        return originalRedirect.call(this, status, url);
+      };
+      
+      res.location = function(url) {
+        console.log('=== LOCATION HEADER SET ===');
+        console.log('Location URL:', url);
+        console.log('Stack trace:', new Error().stack);
+        console.log('=== LOCATION END ===');
+        return originalLocation.call(this, url);
+      };
+      
+      console.log('=== REQUEST DEBUG END ===');
+    }
+    
+    return next();
+  },
+
   readRstudioSession: function(req, res, next) {
     if(req.headers['x-rstudio-ajax'] === 'true') {
       if (req.headers['x-rstudio-session']);
