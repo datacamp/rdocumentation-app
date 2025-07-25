@@ -495,24 +495,6 @@ module.exports = {
   },
 
   functionSearch: function(req, res) {
-    // PRODUCTION DEBUG: Secure logging for redirect debugging
-    if (process.env.NODE_ENV === 'production' && process.env.DEBUG_REDIRECTS === 'true') {
-      // Sanitize and log only essential headers (no auth tokens, cookies, etc.)
-      var safeHeaders = {
-        host: req.get('Host'),
-        'x-forwarded-host': req.get('X-Forwarded-Host'),
-        'x-forwarded-proto': req.get('X-Forwarded-Proto'),
-        'user-agent': req.get('User-Agent') ? req.get('User-Agent').substring(0, 50) + '...' : undefined
-      };
-      
-      // Sanitize URL to remove potentially sensitive query params
-      var safeUrl = req.path + (Object.keys(req.query).length > 0 ? '?[PARAMS_REDACTED]' : '');
-      
-      sails.log.info('SEARCH_FUNCTIONS_DEBUG: Request to', safeUrl);
-      sails.log.info('SEARCH_FUNCTIONS_DEBUG: Safe headers:', JSON.stringify(safeHeaders));
-      sails.log.info('SEARCH_FUNCTIONS_DEBUG: BASE_URL env:', process.env.BASE_URL);
-    }
-
     var query = req.param('q');
     var package = req.param('package');
     var page = parseInt(req.param('page')) || 1;
@@ -687,13 +669,6 @@ module.exports = {
         });
       });
       res.locals.layout = null;
-      
-      // PRODUCTION DEBUG: Secure response logging
-      if (process.env.NODE_ENV === 'production' && process.env.DEBUG_REDIRECTS === 'true') {
-        sails.log.info('SEARCH_FUNCTIONS_DEBUG: Sending response, functions count:', functions.length);
-        // Don't log Accept header as it could contain sensitive info in some cases
-      }
-      
       if (req.headers.accept === 'application/json') {
         return res.json({
           functions: functions, hits: result.hits.total
@@ -701,10 +676,6 @@ module.exports = {
       }
       return res.view('search/function_results.ejs', {data: {functions: functions, hits: numeral(result.hits.total).format('0,0')}});
     }).catch(function(err) {
-      if (process.env.NODE_ENV === 'production' && process.env.DEBUG_REDIRECTS === 'true') {
-        // Log only the error message, not the full error object which might contain sensitive data
-        sails.log.error('SEARCH_FUNCTIONS_DEBUG: Error -', err.message || 'Unknown error');
-      }
       return res.negotiate(err);
     });
   },
