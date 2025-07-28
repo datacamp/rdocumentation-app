@@ -279,7 +279,17 @@ module.exports = {
     var prevPageQuery = _.clone(req.query);
     prevPageQuery.page = page - 1;
 
-
+    sails.log.verbose("keywordSearch()", {
+      keyword,
+      page,
+      perPage,
+      offset,
+      nextPageQuery,
+      prevPageQuery,
+      headers: req.headers,
+      wantsJson: req.wantsJSON,
+    });
+    
     es.search({
       index: 'rdoc',
       body: {
