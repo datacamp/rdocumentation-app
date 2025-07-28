@@ -279,7 +279,7 @@ module.exports = {
     var prevPageQuery = _.clone(req.query);
     prevPageQuery.page = page - 1;
 
-    sails.log.verbose("keywordSearch()", {
+    sails.log.info("keywordSearch()", {
       keyword,
       page,
       perPage,
@@ -289,7 +289,7 @@ module.exports = {
       headers: req.headers,
       wantsJson: req.wantsJSON,
     });
-    
+
     es.search({
       index: 'rdoc',
       body: {
@@ -393,6 +393,15 @@ module.exports = {
     if (onlyLatestVersion) {
       packageVersionFilter.push({ term: { latest_version: 1 } });
     }
+
+    sails.log.info("packageSearch()", {
+      query,
+      page,
+      perPage,
+      offset,
+      headers: req.headers,
+      wantsJson: req.wantsJSON,
+    });
 
     return es.search({
       index: 'rdoc',
