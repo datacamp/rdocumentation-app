@@ -279,16 +279,10 @@ module.exports = {
     var prevPageQuery = _.clone(req.query);
     prevPageQuery.page = page - 1;
 
-    sails.log.info("keywordSearch()", {
-      keyword,
-      page,
-      perPage,
-      offset,
-      nextPageQuery,
-      prevPageQuery,
+    sails.log.info("keywordSearch()", JSON.stringify({
       headers: req.headers,
       wantsJson: req.wantsJSON,
-    });
+    }));
 
     es.search({
       index: 'rdoc',
@@ -394,14 +388,10 @@ module.exports = {
       packageVersionFilter.push({ term: { latest_version: 1 } });
     }
 
-    sails.log.info("packageSearch()", {
-      query,
-      page,
-      perPage,
-      offset,
+    sails.log.info("packageSearch()", JSON.stringify({
       headers: req.headers,
       wantsJson: req.wantsJSON,
-    });
+    }));
 
     return es.search({
       index: 'rdoc',
