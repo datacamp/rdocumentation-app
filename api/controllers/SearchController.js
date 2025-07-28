@@ -279,11 +279,6 @@ module.exports = {
     var prevPageQuery = _.clone(req.query);
     prevPageQuery.page = page - 1;
 
-    sails.log.info("keywordSearch()", JSON.stringify({
-      headers: req.headers,
-      wantsJson: req.wantsJSON,
-    }));
-
     es.search({
       index: 'rdoc',
       body: {
@@ -387,11 +382,6 @@ module.exports = {
     if (onlyLatestVersion) {
       packageVersionFilter.push({ term: { latest_version: 1 } });
     }
-
-    sails.log.info("packageSearch()", JSON.stringify({
-      headers: req.headers,
-      wantsJson: req.wantsJSON,
-    }));
 
     return es.search({
       index: 'rdoc',
