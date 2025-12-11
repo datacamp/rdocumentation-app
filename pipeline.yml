@@ -1,0 +1,18 @@
+---
+pipelines:
+  - name: staging
+    environments:
+      - name: staging
+    auto_deploy: false
+
+  - name: prod
+    environments:
+      - name: prod
+    after: staging
+    auto_deploy: false
+
+  - name: us-west-2-prod
+    environments:
+      - name: us-west-2-prod
+    after: prod
+    auto_deploy: false

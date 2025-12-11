@@ -1,0 +1,66 @@
+---
+prod:
+  cluster_name: app-cluster
+  app_account: true
+  kong_deck:
+    tags: rdoc-app
+  k8s:
+    deployment:
+      replicas: 2
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 500m
+        memory: 512Mi
+    hpa:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 70
+
+us-west-2-prod:
+  cluster_name: app-cluster
+  app_account: true
+  kong_deck:
+    tags: rdoc-app
+  k8s:
+    deployment:
+      replicas: 0
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 500m
+        memory: 512Mi
+    hpa:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 70
+
+staging:
+  cluster_name: app-cluster
+  app_account: true
+  kong_deck:
+    tags: rdoc-app
+  k8s:
+    deployment:
+      replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi
+    hpa:
+      enabled: false
+  deployment_tests:
+    enabled: true
+  acceptance_tests:
+    enabled: true
+  integration_tests:
+    enabled: true
