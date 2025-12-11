@@ -93,3 +93,28 @@ workflows:
           requires:
             - testing-complete
 # END ANSIBLE MANAGED BLOCK
+
+  plan-us-west-2-prod:
+    jobs:
+      # - tfplan/terraform-plan:
+      #     context:
+      #       - org-global
+      #       - us-west-2-prod
+      #     app: rdoc-app
+      #     env: us-west-2-prod
+      #     region: us-west-2
+      #     aws-access-key-id: ${US_WEST_2_PROD_AWS_ACCESS_KEY_ID}
+      #     aws-secret-access-key: ${US_WEST_2_PROD_AWS_SECRET_ACCESS_KEY}
+      #     kong-admin-uri: ${US_WEST_2_PROD_KONG_ADMIN_URI}
+      #     kong-api-key: ${US_WEST_2_PROD_KONG_API_KEY}
+      - kong/deck-operations:
+          name: deck-operations-us-west-2-prod
+          kong_addr: ${US_WEST_2_PROD_KONG_ADMIN_URI}
+          app: rdoc-app
+          kong_tags: rdoc-app
+          context:
+            - org-global
+            - kong-us-west-2-prod
+          filters:
+            branches:
+              ignore: master
